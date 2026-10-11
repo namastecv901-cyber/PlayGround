@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v117.0 فتح بموافقة الدخول)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v120.0 حذف المكتملة وتحديد القفل)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -992,6 +992,14 @@ body>*{position:relative;z-index:1}
 .card-lock span{font-size:2.6rem;filter:drop-shadow(0 0 14px #ea394388)}
 .card-lock b{font-size:1.05rem;color:#ff9aa2}
 .card-lock small{font-size:.74rem;color:var(--mut)}
+.lock-cond{margin-top:2px;font-size:.8rem;font-weight:900;background:#00000055;border:1px solid var(--line);border-radius:10px;padding:6px 12px}
+.lock-prices{display:flex;align-items:center;justify-content:center;gap:14px;margin:10px 0;width:100%}
+.lock-prices>div{background:#00000055;border:1px solid var(--line);border-radius:12px;padding:8px 16px;min-width:110px}
+.lock-prices small{display:block;font-size:.68rem;color:var(--mut)}
+.lock-prices b{font-size:1.25rem;font-variant-numeric:tabular-nums}
+.lock-prices .lp-in b{color:#f0b90b}
+.lock-prices .lp-now b{color:#ff7b85}
+.lock-gap{font-size:1rem;font-weight:900;color:#ff7b85}
 
 
 
@@ -1113,6 +1121,10 @@ body{max-width:680px;margin:0 auto;padding:12px}
 .new-badge{display:block;text-align:center;font-weight:900;font-size:.8rem;color:#ffd9a8;background:linear-gradient(90deg,#ff9f2e33,#f0b90b33);border:1px solid #ff9f2e77;border-radius:10px;padding:6px;margin-bottom:10px}
 /* ===== v45 COMPACT: تضييق المسافة بين التحليل والعملات وباقي الأقسام ===== */
 .lux-hero{padding:14px;margin-bottom:8px}
+.one-decision{margin:10px 0;border-radius:14px;padding:11px 14px;font-weight:900;font-size:.9rem;text-align:center;border:2px solid var(--line);background:#ffffff08}
+.one-decision.od-buy{background:#16c78414;border-color:#16c78466;color:#1fe196}
+.one-decision.od-avoid{background:#ea394312;border-color:#ea394355;color:#ff7b85}
+.one-decision.od-wait{background:#f0b90b10;border-color:#f0b90b44;color:#f0b90b}
 .calc-bar{margin:8px 0;padding:8px 12px}
 .section-head{margin:8px 0 4px!important}
 .toolbar-btns{margin:8px 0}
@@ -1337,6 +1349,7 @@ body.linkmode #masterFab{display:none!important}
   </div>
 </div>
 
+<div class="one-decision od-wait" id="oneDecision">⏳ القرار الواحد: جارٍ التحليل...</div>
 <div class="member-bar" id="memberBar">
   <span class="mb-badge mb-guest" id="mbBadge">👤 زائر</span>
   <span id="mbTxt">محتوى الأعضاء محمي 🔒</span>
@@ -1813,6 +1826,7 @@ function scan(){
   if(!buys.length){
     if(st) st.textContent=`🧠 الذكاء رفض العشوائية — حلل ${RADAR.coins.length}/500 ولا توجد فرصة حقيقية الآن (يحميك من الوهم)`;
     if(feed) feed.innerHTML='<li class="muted empty">🧠 لا شراء الآن — الذكاء لم يجد صعوداً حقيقياً. المراقبة مستمرة.</li>';
+    try{ paintOneDecision(); }catch(e){}
     try{ if(window.DEALS&&window.DEALS.render) window.DEALS.render(); }catch(e){}
     return;
   }
@@ -1829,7 +1843,25 @@ function scan(){
     if(fresh.length){ beep(); notifyFresh(fresh); }
     if(feed) while(feed.children.length>10) feed.lastChild.remove();
   }
+  try{ paintOneDecision(); }catch(e){}
   try{ if(window.DEALS&&window.DEALS.render) window.DEALS.render(); }catch(e){}
+}
+function paintOneDecision(){
+  try{
+    const el=$('oneDecision'); if(!el) return;
+    const all=RADAR.analyzed||[];
+    const notDone=a=>{ try{ return !(window.isDealCompleted&&window.isDealCompleted(a.c.id)); }catch(e){ return true; } };
+    const buys=all.filter(a=>a.isBuy&&notDone(a));
+    const strong=buys.filter(a=>a.grade==='strong');
+    const trap=all.filter(a=>a.grade==='trap'||a.grade==='avoid').length;
+    const guest=(window.MEMBER&&window.MEMBER.mode==='guest');
+    let cls='od-wait', txt='⚪ القرار الواحد: انتظار — لا إشارة واضحة الآن';
+    if(strong.length){ cls='od-buy'; txt=guest?'🟢 القرار الواحد: ادخل — توجد فرصة قوية الآن (التفاصيل للمشتركين)':('🟢 القرار الواحد: ادخل — أقوى فرصة: '+(strong[0].c.symbol||'').toUpperCase()+' (ثقة '+strong[0].score+'%)'); }
+    else if(buys.length>=3){ cls='od-buy'; txt='🟢 القرار الواحد: شراء انتقائي — '+buys.length+' فرص حقيقية، الأقوى أولاً'; }
+    else if(buys.length>=1){ cls='od-buy'; txt=guest?('🟢 القرار الواحد: توجد فرصة شراء (التفاصيل للمشتركين)'):('🟢 القرار الواحد: فرصة واحدة — '+(buys[0].c.symbol||'').toUpperCase()); }
+    else if(all.length&&trap>all.length*0.4){ cls='od-avoid'; txt='🔴 القرار الواحد: تجنب — السوق مليء بالفخاخ ('+trap+')'; }
+    el.className='one-decision '+cls; el.textContent=txt;
+  }catch(e){}
 }
 function beep(){ /* 🔇 صامت */ }
 function notifyFresh(){ /* 🔕 صامت */ }
@@ -1848,6 +1880,7 @@ function start(){
 }
 window.RADAR=RADAR; window.AI_MONEY=money;
 window.AI_RESCAN=function(){ try{ cycle(); return true; }catch(e){ return false; } };
+window.AI_ONEDECISION=function(){ try{ paintOneDecision(); return true; }catch(e){ return false; } };
 window.AI_EMERGENCY=function(){ try{ RADAR.coins=DEMO.slice(); scan(); return (RADAR.analyzed||[]).length; }catch(e){ return 0; } };
 document.addEventListener('DOMContentLoaded',start);
 })();
@@ -1918,6 +1951,17 @@ function nearEntry(a){
   }catch(e){ return false; }
 }
 function safeRise(id){ try{ if(window.LIVE39&&window.LIVE39.riseOk) return window.LIVE39.riseOk(id); }catch(e){} return true; }
+// تأكيد ذكي قبل إعلان فوات الدخول: يلزم الثبات عبر عينتين سعريتين مختلفتين (أو 90 ثانية) — حتى لا يقفل من ومضة واحدة
+function beyondConfirmed(a,P,cur){
+  try{
+    window.__bcon=window.__bcon||{};
+    const b=window.__bcon[a.c.id]||(window.__bcon[a.c.id]={n:0,last:null,t0:0});
+    if(cur!==b.last){ b.last=cur; b.n=(b.n||0)+1; if(!b.t0) b.t0=Date.now(); }
+    if(b.n>=2||(Date.now()-(b.t0||Date.now())>90000)) return {ok:true};
+    return {ok:false};
+  }catch(e){ return {ok:true}; }
+}
+function beyondReset(id){ try{ if(window.__bcon&&window.__bcon[id]){ window.__bcon[id].n=0; window.__bcon[id].t0=0; } }catch(e){} }
 function entryState(a){
   try{ if(window.ENTRY_ACCEPT&&window.ENTRY_ACCEPT.has(a.c.id)) return 'open'; }catch(e){}
   const p=guardOf(a.c.id);
@@ -1928,7 +1972,11 @@ function entryState(a){
   }
   const P=planOf(a);
   const cur=a.c.current_price||P.entry;
-  if(cur>P.entry*1.005) return p?'miss':'gone';
+  if(cur>P.entry*1.005){
+    if(beyondConfirmed(a,P,cur).ok) return p?'miss':'gone';
+    return 'confirm';
+  }
+  beyondReset(a.c.id);
   if(cur<P.entry*0.999) return 'wait';
   return 'open';
 }
@@ -1937,6 +1985,7 @@ const ENTRY={
   done:['🔒','الدخول مغلق — حققت الهدف، صفقتك داخل ولا دخول جديد','is-done'],
   miss:['🟠','الدخول قفز فوق نقطة الدخول — أُلغيت الصفقة','is-void'],
   gone:['⏳','فاتتك نقطة الدخول المثبتة — لا تدخل بسعر أعلى','is-wait'],
+  confirm:['🔍','نتحقق من الاختراق — لا تدخل بعد','is-wait'],
   wait:['⏳','دخول معلّق — انتظر عودة السعر لنقطة الدخول','is-wait'],
   open:['🟢','الدخول الآن','is-open'],
   fresh:['🟢','الدخول الآن','is-open']
@@ -1944,6 +1993,7 @@ const ENTRY={
 function decisionOf(a){
   const p=guardOf(a.c.id);
   const st=entryState(a);
+  if(st==='confirm'){ const Pc=planOf(a); const cuc=a.c.current_price||Pc.entry; return ['wait','g-risk','🔍 اختراق يحتاج تأكيد','السعر '+money(cuc)+' فوق الدخول '+money(Pc.entry)+' • نتحقق من الثبات قبل القرار — لا تدخل الآن']; }
   if(st==='void'||st==='miss') return ['void','g-void','🟠 الدخول مغلق — فاتتك هذه الصفقة','قفز السعر فوق نقطة الدخول '+money(p?p.entry:a.entry)+' • أُلغيت نهائياً ولن تدخلها مجدداً • صفقة جديدة فقط عند ارتداع حقيقي + setup نظيف'];
   if(st==='done') return ['done','g-t2','🔒 الدخول مغلق — صفقتك داخل','تحقّق الهدف ف-'+(p.t2hit?'2':'1')+' • لا دخول جديد • '+p.note.slice(0,80)];
   if(st==='gone') return ['wait','g-risk','⏳ فاتتك نقطة الدخول المثبتة','قرار واحد ثابت عند '+money((planOf(a)).entry)+' • السعر الآن '+money(a.c.current_price)+' • لا تدخل بسعر أعلى — قرار جديد بعد ارتداع'];
@@ -1963,6 +2013,13 @@ function decisionOf(a){
   const g=GRADE[d.g]||GRADE.neutral;
   return [g[0],g[1],g[2]+' — '+d.sc+'%',g[3]];
 }
+function lockPrices(entry,cur){
+  try{
+    const gap=(cur-entry)/entry*100;
+    const gs=(gap>=0?'+':'')+gap.toFixed(2)+'%';
+    return '<div class="lock-prices"><div class="lp-in"><small>🎯 الدخول</small><b>'+money(entry)+'</b></div><div class="lock-gap">'+gs+'</div><div class="lp-now"><small>💵 السعر الآن</small><b>'+money(cur)+'</b></div></div>';
+  }catch(e){ return ''; }
+}
 function acceptTag(a){
   try{
     const st=entryState(a);
@@ -1977,11 +2034,36 @@ function acceptLine(a){
     return '<button class="accept-btn inline" data-accept="'+a.c.id+'">✅ أوافق على الدخول — افتح الصفقة</button>';
   }catch(e){ return ''; }
 }
+function lockDetail(a,P,cur){
+  try{
+    const h1=(a.c&&a.c.price_change_percentage_1h_in_currency)||0;
+    const mom=a.mom||0;
+    const trust=(a.trust&&a.trust.score)||100;
+    const score=a.score||0;
+    if(score<45||trust<45||a.grade==='trap'||a.grade==='avoid') return '⛔ غير صالحة للدخول';
+    const pos=guardOf(a.c.id);
+    if(pos&&pos.open&&((pos.effSL||0)>=pos.entry)) return '🛡️ محمية — الوقف عند الدخول';
+    if(cur>P.entry*1.005) return '🔒 فاتك — السعر فوق الدخول';
+    if(cur<P.entry*0.995||mom<40||h1<-1) return '🔻 هبوط — السعر تحت الدخول';
+    if(mom>=60||h1>=1.5) return '🟢 صعود مؤكد';
+    return '⏳ اصبر — تذبذب، انتظر وضوح الاتجاه';
+  }catch(e){ return ''; }
+}
+function lockCond(a){
+  try{
+    const st=entryState(a);
+    if(st==='open'||st==='fresh') return '';
+    const P=planOf(a);
+    const cur=(a.c&&a.c.current_price)||P.entry;
+    const s=lockDetail(a,P,cur);
+    return s?' • '+s:'';
+  }catch(e){ return ''; }
+}
 function decisionBlock(a){
   const d=decisionOf(a);
   const watched=!!guardOf(a.c.id);
   return '<div class="ai-dec '+d[0]+'" data-dec="'+a.c.id+'">'
-  +'<div class="ad-main"><b>'+d[2]+'</b><small>'+d[3]+'</small></div>'
+  +'<div class="ad-main"><b>'+d[2]+'</b><small>'+d[3]+lockCond(a)+'</small></div>'
   +'<div class="ad-score">'+(decisionRecord(a)||{sc:a.score}).sc+'<small>ثقة القرار</small></div>'
   +(watched?'<div class="ad-tag">🛡️ قيد المراقبة الحيّة</div>':'')
   +'</div>';
@@ -2052,7 +2134,7 @@ function card(a,i){
   +'<button class="tv-btn ghost" data-tv="'+c.id+'">🔍 شارت حي</button></div></div>'
   +'</details>'
   +'<div class="ai-foot">اضغط البطاقة للنسخ • وقف إلزامي • ليست نصيحة مالية</div>'
-  +(LOCKED?(EST==='done'?'<div class="card-lock"><span>🔒</span><b>بطاقة مقفلة — ضربت الأهداف</b><small>الدخول كان '+money(P.entry)+' • السعر الآن '+money(a.c.current_price||P.entry)+' • الدخول الآن متأخر</small><button class="accept-btn" data-accept="'+c.id+'">✅ أوافق على الدخول — افتح الصفقة</button></div>':'<div class="card-lock"><span>🔒</span><b>بطاقة مقفلة — فاتتك نقطة الدخول</b><small>الدخول '+money(P.entry)+' • السعر الآن '+money(a.c.current_price||P.entry)+'</small><button class="accept-btn" data-accept="'+c.id+'">✅ أوافق على الدخول — افتح الصفقة</button></div>'):'')
+  +(LOCKED?(EST==='done'?'<div class="card-lock"><span>🔒</span><b>بطاقة مقفلة — ضربت الأهداف</b><div class="lock-cond">'+lockDetail(a,P,(a.c.current_price||P.entry))+'</div>'+lockPrices(P.entry,(a.c.current_price||P.entry))+'<small>الدخول الآن متأخر</small><button class="accept-btn" data-accept="'+c.id+'">✅ أوافق على الدخول — افتح الصفقة</button></div>':'<div class="card-lock"><span>🔒</span><b>بطاقة مقفلة — فاتتك نقطة الدخول</b><div class="lock-cond">'+lockDetail(a,P,(a.c.current_price||P.entry))+'</div>'+lockPrices(P.entry,(a.c.current_price||P.entry))+'<button class="accept-btn" data-accept="'+c.id+'">✅ أوافق على الدخول — افتح الصفقة</button></div>'):'')
   +'</article>';
 }
 function render(){
@@ -2060,12 +2142,15 @@ function render(){
   if(!g) return;
   const all=(window.RADAR&&window.RADAR.analyzed)||[];
   if(!all.length){ g.innerHTML='<div class="loading">🧠 الذكاء يحلل 500 عملة...</div>'; return; }
+  const isDone=id=>{ try{ return window.isDealCompleted&&window.isDealCompleted(id); }catch(e){ return false; } };
+  try{ all.forEach(a=>{ try{ if(isDone(a.c.id)&&window.PLAN40&&window.PLAN40.retire) window.PLAN40.retire(a.c.id); }catch(e){} }); }catch(e){}
+  const live=all.filter(a=>!isDone(a.c.id));
   let list=[];
-  if(DEALS.filter==='buy'){ const isF=a=>{ try{ const r=(window.PLAN40&&window.PLAN40.get(a.c.id))||null; return !r||(Date.now()-(r.at||0)<10*60*1000); }catch(e){ return true; } }; const fr=all.filter(a=>a.isBuy&&isF(a)); list=(fr.length?fr:all.filter(a=>a.isBuy)).slice(0,24); }
-  else if(DEALS.filter==='strong') list=all.filter(a=>a.grade==='strong').slice(0,24);
-  else if(DEALS.filter==='watch') list=all.filter(a=>a.grade==='watch').slice(0,24);
-  else if(DEALS.filter==='trap') list=all.filter(a=>a.grade==='trap'||a.grade==='avoid').slice(0,24);
-  else list=all.slice(0,24);
+  if(DEALS.filter==='buy'){ const isF=a=>{ try{ const r=(window.PLAN40&&window.PLAN40.get(a.c.id))||null; return !r||(Date.now()-(r.at||0)<10*60*1000); }catch(e){ return true; } }; const fr=live.filter(a=>a.isBuy&&isF(a)); list=(fr.length?fr:live.filter(a=>a.isBuy)).slice(0,24); }
+  else if(DEALS.filter==='strong') list=live.filter(a=>a.grade==='strong').slice(0,24);
+  else if(DEALS.filter==='watch') list=live.filter(a=>a.grade==='watch').slice(0,24);
+  else if(DEALS.filter==='trap') list=live.filter(a=>a.grade==='trap'||a.grade==='avoid').slice(0,24);
+  else list=live.slice(0,24);
   if(st) st.textContent='حلل الذكاء '+all.length+' عملة • يعرض '+list.length+' • رفض العشوائية: الشراء فقط عند صعود حقيقي';
   if(!list.length){
     if(DEALS.filter==='buy'){
@@ -2232,19 +2317,25 @@ function cycle(){
     else if(p.entryBlocked && !p.t1hit){ v='ENTRY_LOCKED'; note='🔒 الدخول مغلق — قفز السعر فوق نقطة الدخول '+money(p.entry)+'، لن يُفتح إلا عند عودته لها (الآن '+money(cur)+')'; }
     else if(cur<p.entry){ v='HOLD_RISK'; note='⏳ تحت الدخول '+pnl.toFixed(2)+'% — الحارس يراقب الوقف '+money(eff)+' ويحميك من خسارة كبيرة'; }
     else { v='HOLD'; note=p.t1hit?'🟢 بعد التخفيف — الباقي مؤمّن بوقف التعادل، مستمر نحو الأخير':'🟢 الوضع سليم — مستمر نحو الأهداف والوقف يحميك'; }
-    // missed entry: price jumped past entry without us catching it
-      // قفزة فوق الدخول => إلغاء نهائي لهذه الصفقة (لن تُعاد أبداً)
+    // missed entry: لا إلغاء من ومضة واحدة — يلزم الثبات عبر عينتين مختلفتين (أو قفزة كبيرة >1.5% أو 90 ثانية)
       if(!p.t1hit && !p.entryBlocked && cur>p.entry*1.005){
-        p.entryBlocked=true; p.entryHit=true; p.voidAt=cur;
-        p.history.unshift({t:Date.now(),type:'MISSED',price:cur,note:'⚡ قفزة فوق الدخول '+money(p.entry)+' — أُلغيت هذه الصفقة نهائياً عند '+money(cur)+' ولا تدخلها مجدداً'});
-        p.open=false; p.verdict='MISSED'; v='MISSED';
-        note='🟠 الدخول مغلق — قفز السعر فوق نقطة الدخول '+money(p.entry)+'، أُلغيت هذه الصفقة ولن تدخلها مجدداً';
-        p.note=note; p.closeWhy='⚡ فاتتك الدخول — أُلغيت الصفقة نهائياً'; p.closeAt=Date.now();
-        G.knownBuys.delete(a.c.id);
-        G.retry[p.id]={peak:cur, at:Date.now()};
-        beep([660,330],0.3,[0,0.25]); notify('🟠 أُلغيت الصفقة: '+p.sym,'ففز السعر فوق الدخول — لن تدخلها مجدداً، وبانتظار صفقة جديدة من setups جديدة');
-        save();
-      }
+        if(cur!==p.missLast){ p.missLast=cur; p.missN=(p.missN||0)+1; if(!p.missT0) p.missT0=Date.now(); }
+        if(p.missN>=2 || cur>p.entry*1.015 || (Date.now()-(p.missT0||Date.now())>90000)){
+          p.entryBlocked=true; p.entryHit=true; p.voidAt=cur;
+          p.history.unshift({t:Date.now(),type:'MISSED',price:cur,note:'⚡ قفزة فوق الدخول '+money(p.entry)+' — أُلغيت هذه الصفقة نهائياً عند '+money(cur)+' ولا تدخلها مجدداً'});
+          p.open=false; p.verdict='MISSED'; v='MISSED';
+          note='🟠 الدخول مغلق — قفز السعر فوق نقطة الدخول '+money(p.entry)+'، أُلغيت هذه الصفقة ولن تدخلها مجدداً';
+          p.note=note; p.closeWhy='⚡ فاتتك الدخول — أُلغيت الصفقة نهائياً'; p.closeAt=Date.now();
+          G.knownBuys.delete(a.c.id);
+          G.retry[p.id]={peak:cur, at:Date.now()};
+          beep([660,330],0.3,[0,0.25]); notify('🟠 أُلغيت الصفقة: '+p.sym,'ففز السعر فوق الدخول — لن تدخلها مجدداً، وبانتظار صفقة جديدة من setups جديدة');
+          save();
+          p.missN=0; p.missT0=0;
+        } else {
+          v='ENTRY_LOCKED';
+          note='🔍 قفزة فوق الدخول تحتاج تأكيد — نتحقق من الثبات قبل الإلغاء (الآن '+money(cur)+')';
+        }
+      } else if(!(cur>p.entry*1.005)){ p.missN=0; p.missT0=0; }
     p.verdict=v; p.note=note;
     if(prev!==v && (v==='EXIT_NOW'||v==='PULLBACK')){ beep(v==='EXIT_NOW'?[440,330,220]:[660,520,390],0.35,[0,0.35,0.7]); notify(v==='EXIT_NOW'?'🚨 اخرج الآن: '+p.sym:'📉 تراجع بعد الهدف الأول: '+p.sym, note); }
     else if(prev!==v && v==='DANGER'){ beep(660,0.35); notify('⚠️ خطر: '+p.sym, note); }
@@ -2748,6 +2839,47 @@ function hit(id,lv){
   S[id].hits=S[id].hits||{};
   if(!S[id].hits[lv]){ S[id].hits[lv]=Date.now(); save(); }
 }
+function clear(id){ try{ if(S[id]){ delete S[id]; save(); } }catch(e){} }
+function completed(id){
+  try{
+    const r=S[id];
+    if(r&&r.hits&&r.hits.t1&&r.hits.t2&&r.hits.t3) return true;
+  }catch(e){}
+  try{
+    const G=(window.GUARDIAN&&window.GUARDIAN.G)||{pos:[]};
+    const p=G.pos.find(x=>x.id===id);
+    if(p&&!p.open&&(p.verdict==='FINAL'||p.t3hit)) return true;
+  }catch(e){}
+  return false;
+}
+function retire(id){
+  try{ if(!completed(id)) return false; }catch(e){ return false; }
+  try{
+    const BT=(window.BOT49&&window.BOT49.S)||null;
+    const tr=BT&&BT.trades&&(BT.trades[id]||BT.trades['m5:'+id]);
+    if(tr&&tr.open) return false;
+  }catch(e){}
+  try{
+    const G2=(window.GUARDIAN&&window.GUARDIAN.G)||null;
+    const gp=G2&&G2.pos?G2.pos.find(x=>x.id===id):null;
+    if(gp&&gp.open) return false;
+  }catch(e){}
+  try{ if(S[id]){ delete S[id]; save(); } }catch(e){}
+  try{ const m=JSON.parse(localStorage.getItem('ai_entry_accept_v1')||'{}'); if(m&&m[id]){ delete m[id]; localStorage.setItem('ai_entry_accept_v1',JSON.stringify(m)); } }catch(e){}
+  try{
+    const G=(window.GUARDIAN&&window.GUARDIAN.G)||null;
+    if(G&&G.pos){
+      const ix=G.pos.findIndex(x=>x.id===id);
+      if(ix>=0){
+        G.pos.splice(ix,1);
+        try{ if(G.knownBuys&&G.knownBuys.delete) G.knownBuys.delete(id); }catch(e){}
+        try{ localStorage.setItem('ai_guardian_v1', JSON.stringify({pos:G.pos.slice(-60), auto:G.auto, retry:G.retry||{}})); }catch(e){}
+      }
+    }
+  }catch(e){}
+  try{ const lg=JSON.parse(localStorage.getItem('ai_sess_v1')||'[]'); lg.unshift({t:Date.now(),who:'النظام',action:'اكتملت كل الأهداف — حُذفت البطاقة وتجدد الدخول ('+id+')'}); localStorage.setItem('ai_sess_v1',JSON.stringify(lg.slice(0,200))); }catch(e){}
+  return true;
+}
 // ترقيع planOf: المصدر الوحيد = الخطة المثبتة
 function patch(){
   try{
@@ -2835,7 +2967,8 @@ function paint(){
   }catch(e){}
 }
 document.addEventListener('DOMContentLoaded',()=>{ load(); patch(); setTimeout(patch,3000); setInterval(()=>{patch();paint();},2000); setTimeout(paint,2500); });
-window.PLAN40={get,ensure,hit};
+window.PLAN40={get,ensure,hit,clear,completed,retire};
+window.isDealCompleted=function(id){ try{ return completed(id); }catch(e){ return false; } };
 })();
 </script>
 <script>// 🆘 WATCHDOG v46 — ممنوع الفراغ: إعادة فحص، ثم بطاقات طوارئ تجريبية إن لزم
