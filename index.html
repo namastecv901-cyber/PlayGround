@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v110.0 رابط يومي)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v111.0 ثلاث مجانية وتوصيل الاسم)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1468,8 +1468,8 @@ body.linkmode #masterFab{display:none!important}
   <div class="sig-grid cards-grid" id="strongGrid" style="margin-top:8px"></div>
 </div>
 <div class="free-gate only-guest" id="freeGate">
-  <h3>🎁 صفقة مجانية باسمك</h3>
-  <p>أدخل اسمك وإيميلك لفتح صفقة اليوم المجانية فوراً — هكذا تبدو الصفقة الحقيقية</p>
+  <h3>🎁 3 صفقات مجانية باسمك</h3>
+  <p>أدخل اسمك وإيميلك لفتح 3 صفقات مجانية فوراً — هكذا تبدو الصفقة الحقيقية</p>
   <div class="fg-row">
     <input id="leadName" type="text" placeholder="الاسم الكريم" maxlength="30">
     <input id="leadEmail" type="text" inputmode="email" dir="ltr" placeholder="email@example.com" maxlength="60">
@@ -1519,7 +1519,7 @@ body.linkmode #masterFab{display:none!important}
         <div class="link-row"><b>🔗 رابط اليوم</b><code id="todayLinkTxt">—</code><span class="ok" id="todayLinkSt">🟢 نشط</span><span style="margin-inline-start:auto;display:flex;gap:4px"><button class="btn btn-primary btn-sm" id="todayLinkCopy">📋 نسخ</button><button class="btn btn-sm" id="todayLinkStop">⛔ إيقاف</button></span></div>
         <div id="linksList"></div>
       </div>
-      <div data-opane="leads" hidden><div id="leadsList"></div></div>
+      <div data-opane="leads" hidden><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><button class="btn btn-sm" id="leadRenew">🔄 تجديد المجانية (3 جديدة)</button><button class="btn btn-sm" id="leadTest">📤 تجربة التنبيه</button><span class="muted" id="leadAutoSt" style="font-size:.74rem"></span></div><div id="leadsList"></div></div>
       <div data-opane="set" hidden>
         <label>رابط الدفع ($30)</label><input id="setPay" type="text" dir="ltr" placeholder="https://...">
         <label>رابط التواصل (تيليجرام/واتساب)</label><input id="setContact" type="text" dir="ltr" placeholder="https://t.me/...">
@@ -3624,19 +3624,21 @@ window.AI_RESYNC=cycles;
 "use strict";
 const $=id=>document.getElementById(id);
 const K_OWNER='ai_owner_v1', K_SUBS='ai_subs_v1', K_SESS='ai_sess_v1', K_ME='ai_me_v1', K_LEAD='ai_lead_v1', K_LEADS='ai_leads_v1';
-const FREE_N=1, SUB_DAYS=30, PRICE=30;
+const FREE_N=3, SUB_DAYS=30, PRICE=30;
 const M={mode:'guest',name:'',until:0,lead:null};
 function getLead(){ try{ return JSON.parse(localStorage.getItem(K_LEAD)||'null'); }catch(e){ return null; } }
 const K_FREE='ai_free_v1';
 function todayStr(){ try{ return new Date().toISOString().slice(0,10); }catch(e){ return ''; } }
 function getFree(){ try{ return JSON.parse(localStorage.getItem(K_FREE)||'null'); }catch(e){ return null; } }
 function freePick(buys){
-  const day=todayStr();
   let f=getFree();
-  if(f&&f.day===day&&f.id&&buys.some(c=>c.dataset.id===f.id)) return f.id;
-  const id=buys.length?buys[0].dataset.id:null;
-  try{ localStorage.setItem(K_FREE,JSON.stringify({day:day,id:id})); }catch(e){}
-  return id;
+  const ids=(f&&f.ids)||[];
+  const live=ids.filter(id=>buys.some(c=>c.dataset.id===id));
+  if(live.length) return live;
+  if(f&&f.ids&&f.ids.length) return [];
+  const pick=buys.slice(0,FREE_N).map(c=>c.dataset.id);
+  try{ localStorage.setItem(K_FREE,JSON.stringify({ids:pick})); }catch(e){}
+  return pick;
 }
 function getLeads(){ try{ return JSON.parse(localStorage.getItem(K_LEADS)||'[]'); }catch(e){ return []; } }
 async function sha(s){ try{ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('salt::'+s)); return [...new Uint8Array(b)].map(x=>('0'+x.toString(16)).slice(-2)).join(''); }catch(e){ let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return 'f'+(h>>>0).toString(16); } }
@@ -3656,12 +3658,13 @@ function paint(){
   document.body.classList.add(M.mode);
   if(M.mode==='owner'){ b.className='mb-badge mb-owner'; b.textContent='👑 المالك'; t.textContent='النسخة الأصلية الكاملة — كل شيء ظاهر لك فقط'; }
   else if(M.mode==='sub'){ b.className='mb-badge mb-sub'; b.textContent='💎 مشترك'; t.textContent='مرحباً '+M.name+' • متبقٍ '+Math.ceil((M.until-Date.now())/86400000)+' يوم'; }
-  else { b.className='mb-badge mb-guest'; b.textContent='👤 زائر'; t.textContent='محتوى الأعضاء محمي 🔒 — صفقة واحدة مجانية بالأسفل'; }
+  else { b.className='mb-badge mb-guest'; b.textContent='👤 زائر'; t.textContent='محتوى الأعضاء محمي 🔒 — 3 صفقات مجانية بالأسفل'; }
   try{ document.body.classList.toggle('no-lead',(M.mode==='guest'&&!getLead())); }catch(e){}
   const pw=$('paywall'); if(pw){ let show=M.mode==='guest'&&!!getLead(); try{ if(show&&getVis().paywall===false) show=false; }catch(e){} pw.style.display=show?'':'none'; }
   const o=getOwner()||{};
   const pb=$('payBtn'); if(pb) pb.href=o.pay||'#';
-  const cb=$('contactBtn'); if(cb){ cb.href=o.contact||'#'; cb.textContent='💬 تواصل للتفعيل'+(o.contactName?' ('+o.contactName+')':''); }
+  const cb=$('contactBtn'); if(cb){ const oc=readOwnerContact()||o.contact||'#'; cb.href=oc; cb.textContent='💬 تواصل للتفعيل'+(o.contactName?' ('+o.contactName+')':''); }
+  try{ const lc=$('linkExpContact'); if(lc) lc.href=readOwnerContact()||o.contact||'#'; }catch(e){}
   gateCards();
 }
 function gateCards(){
@@ -3685,8 +3688,8 @@ function gateCards(){
       return;
     }
     const buys=cardsAll.filter(c=>c.classList.contains('g-buy')||c.classList.contains('g-strong'));
-    const freeId=freePick(buys);
-    const free=freeId?buys.filter(c=>c.dataset.id===freeId):[];
+    const freeIds=freePick(buys);
+    const free=buys.filter(c=>freeIds.includes(c.dataset.id));
     free.forEach(c=>{
       const d=document.createElement('div'); d.className='free-badge';
       let done=false;
@@ -3698,8 +3701,8 @@ function gateCards(){
         const gp=G.pos.find(x=>x.id===c.dataset.id);
         if(gp&&!gp.open) done=true;
       }catch(e){}
-      if(done){ d.textContent='✅ انتهت صفقة اليوم — غداً إن شاء الله فرصة جديدة 🎁 أو اشترك وتمتع بغير محدود من الصفقات اللحظية 💎'; }
-      else { d.textContent='🎁 هدية اليوم لـ '+lead.name+' — غداً صفقة مجانية أخرى'; }
+      if(done){ d.textContent='✅ انتهت هذه الصفقة — اشترك وتمتع بغير محدود من الصفقات اللحظية 💎'; }
+      else { const fi=free.indexOf(c)+1; d.textContent='🎁 هدية '+fi+' من 3 لـ '+lead.name+' — هكذا تبدو الصفقة الحقيقية'; }
       c.prepend(d);
     });
     cards.forEach(c=>{
@@ -3827,7 +3830,9 @@ function ymd(d){ try{ return d.toISOString().slice(0,10); }catch(e){ return ''; 
 function dayStr(off){ try{ const d=new Date(); d.setDate(d.getDate()+(off||0)); return ymd(d); }catch(e){ return ''; } }
 function getLinks(){ try{ return JSON.parse(localStorage.getItem(K_LINKS)||'{}'); }catch(e){ return {}; } }
 function saveLinks(l){ try{ localStorage.setItem(K_LINKS,JSON.stringify(l)); }catch(e){} }
-function guestURL(day){ try{ return location.origin+location.pathname+'?guest=1&d='+day; }catch(e){ return '?guest=1&d='+day; } }
+function guestURL(day){ try{ let c=''; try{ const oo=getOwner()||{}; if(oo.contact) c='&c='+encodeURIComponent(oo.contact); }catch(e){} return location.origin+location.pathname+'?guest=1&d='+day+c; }catch(e){ return '?guest=1&d='+day; } }
+window.__oc='';
+function readOwnerContact(){ try{ const q=new URLSearchParams(location.search); const c=q.get('c'); if(c){ window.__oc=c; return c; } }catch(e){} return window.__oc||''; }
 function linkFresh(){
   try{
     const q=new URLSearchParams(location.search);
@@ -3839,6 +3844,13 @@ function linkFresh(){
     if(L['stop:'+d]) return {link:true,ok:false,stopped:true,day:d};
     return {link:true,ok:true,day:d};
   }catch(e){ return {link:false,ok:true}; }
+}
+function paintLeadAuto(){
+  try{
+    const el=$('leadAutoSt'); if(!el) return;
+    const o=getOwner()||{};
+    el.textContent=(o.leadBot&&o.leadChat)?'🔔 التنبيه التلقائي مفعّل — يصلك كل اسم فوراً':'⚠️ التنبيه التلقائي متوقف — أدخله من الإعدادات';
+  }catch(e){}
 }
 function paintLeads(){
   try{
@@ -3854,7 +3866,7 @@ function openOwner(){
   const o=getOwner();
   $('ownerLogin').hidden=!!(M.mode==='owner');
   $('ownerDash').hidden=!(M.mode==='owner');
-  if(M.mode==='owner'){ paintSubs(); paintLog(); paintLeads(); paintLinks(); paintMaster(); const s=$('setPay'); if(s){ const oo=getOwner()||{}; s.value=oo.pay||''; $('setContact').value=oo.contact||''; $('setContactName').value=oo.contactName||''; $('setLeadBot').value=oo.leadBot||''; $('setLeadChat').value=oo.leadChat||''; } }
+  if(M.mode==='owner'){ paintSubs(); paintLog(); paintLeads(); paintLeadAuto(); paintLinks(); paintMaster(); const s=$('setPay'); if(s){ const oo=getOwner()||{}; s.value=oo.pay||''; $('setContact').value=oo.contact||''; $('setContactName').value=oo.contactName||''; $('setLeadBot').value=oo.leadBot||''; $('setLeadChat').value=oo.leadChat||''; } }
   else { $('pinMsg').textContent=o?'أدخل PIN للدخول':'أنت المالك؟ اختر PIN جديداً الآن (يُحفظ في جهازك فقط)'; }
 }
 document.addEventListener('DOMContentLoaded',()=>{
@@ -3898,7 +3910,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     sess('المالك','تجديد +30 يوم لـ'+subs[code].name);
     try{ toast('✅ تم التجديد لـ'+subs[code].name); }catch(e){}
   };
-  document.querySelectorAll('[data-otab]').forEach(b=>{ b.onclick=()=>{ if(b.id==='ownerLock'){ M.mode='guest'; M.name=''; saveMe(); paint(); $('ownerModal').classList.remove('open'); return; } document.querySelectorAll('[data-otab]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); document.querySelectorAll('[data-opane]').forEach(p=>p.hidden=p.dataset.opane!==b.dataset.otab); if(b.dataset.otab==='log') paintLog(); if(b.dataset.otab==='leads') paintLeads(); if(b.dataset.otab==='links') paintLinks(); if(b.dataset.otab==='vis') paintVis(); if(b.dataset.otab==='errs') paintErr(); if(b.dataset.otab==='master') paintMaster(); }; });
+  document.querySelectorAll('[data-otab]').forEach(b=>{ b.onclick=()=>{ if(b.id==='ownerLock'){ M.mode='guest'; M.name=''; saveMe(); paint(); $('ownerModal').classList.remove('open'); return; } document.querySelectorAll('[data-otab]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); document.querySelectorAll('[data-opane]').forEach(p=>p.hidden=p.dataset.opane!==b.dataset.otab); if(b.dataset.otab==='log') paintLog(); if(b.dataset.otab==='leads'){ paintLeads(); paintLeadAuto(); } if(b.dataset.otab==='links') paintLinks(); if(b.dataset.otab==='vis') paintVis(); if(b.dataset.otab==='errs') paintErr(); if(b.dataset.otab==='master') paintMaster(); }; });
   $('pinGo').onclick=async()=>{
     const v=($('pinInput').value||'').trim(); if(v.length<4){ $('pinMsg').textContent='PIN من 4 أحرف على الأقل'; return; }
     const h=await sha(v), o=getOwner();
@@ -3924,10 +3936,21 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(!ls.some(x=>x.email===em)) ls.unshift(lead);
       localStorage.setItem(K_LEADS,JSON.stringify(ls.slice(0,300)));
     }catch(e){}
-    m.textContent='✅ تم '+nm+' — صفقتك المجانية مفتوحة بالأسفل 🎁'; m.style.color='#1fe196';
-    sess(nm,'فتح الصفقة المجانية ('+em+')');
+    m.innerHTML='✅ تم '+nm+' — صفقاتك المجانية (3) مفتوحة بالأسفل 🎁<br><button class="btn btn-primary btn-sm" id="leadConfirm" style="margin-top:8px">📩 تأكيد بياناتي للمالك</button>'; m.style.color='#1fe196';
+    sess(nm,'فتح الصفقات المجانية ('+em+')');
     notifyLead(nm,em);
     paint();
+    try{
+      const lb=$('leadConfirm');
+      if(lb) lb.onclick=()=>{
+        const msg='🎁 زائر جديد: '+nm+' — '+em+' — يطلب الصفقات المجانية';
+        try{ navigator.clipboard.writeText(nm+' | '+em); }catch(e){}
+        const url=readOwnerContact();
+        if(url&&url!=='#'){ try{ window.open(url,'_blank'); }catch(e){} }
+        else { m.innerHTML+='<br><span class="muted">انسخ بياناتك وأرسلها للمالك: '+nm+' | '+em+'</span>'; }
+        sess(nm,'تأكيد البيانات للمالك');
+      };
+    }catch(e){}
   };
   $('subAdd').onclick=()=>{
     const nm=($('subName').value||'').trim()||'مشترك';
@@ -3988,6 +4011,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   }catch(err){} });
   $('todayLinkCopy').onclick=()=>{ try{ navigator.clipboard.writeText($('todayLinkTxt').textContent); sess('المالك','نسخ رابط اليوم'); }catch(e){} };
   $('todayLinkStop').onclick=()=>{ try{ const L=getLinks(); const t=dayStr(0); if(L['stop:'+t]) delete L['stop:'+t]; else L['stop:'+t]=Date.now(); saveLinks(L); window.__paintLinks(); sess('المالك',(L['stop:'+t]?'إيقاف رابط اليوم':'تشغيل رابط اليوم')); }catch(e){} };
+  $('leadRenew').onclick=()=>{ try{ localStorage.removeItem(K_FREE); sess('المالك','تجديد الصفقات المجانية (3 جديدة)'); paint(); try{ toast('✅ تم التجديد — 3 صفقات جديدة'); }catch(e){} }catch(e){} };
+  $('leadTest').onclick=()=>{
+    try{
+      const o=getOwner()||{};
+      if(!o.leadBot||!o.leadChat){ try{ toast('❌ أدخل التوكن والشات من الإعدادات أولاً'); }catch(e){} return; }
+      fetch('https://api.telegram.org/bot'+o.leadBot+'/sendMessage?chat_id='+encodeURIComponent(o.leadChat)+'&text='+encodeURIComponent('🔔 تجربة التنبيه تعمل ✅ — ستصلك أسماء الزوار هنا')).then(()=>{ try{ toast('✅ أُرسلت التجربة — تحقق من تيليجرام'); }catch(e){} }).catch(()=>{ try{ toast('❌ فشل الإرسال — تحقق من التوكن'); }catch(e){} });
+    }catch(e){}
+  };
   $('subLink').onclick=()=>{ try{ const u=guestURL(dayStr(0)); navigator.clipboard.writeText(u); }catch(e){} sess('المالك','نسخ رابط المشتركين (رابط اليوم)'); };
   $('setSave').onclick=()=>{ const o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); paint(); sess('المالك','حفظ الإعدادات'); };
   document.querySelectorAll('[data-bot-state]').forEach(()=>{});
