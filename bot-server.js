@@ -19,7 +19,7 @@ const CFG = {
   key: process.env.BINANCE_KEY || process.env.KEY || '',
   sec: process.env.BINANCE_SECRET || process.env.SECRET || '',
   stake: parseFloat(process.env.STAKE_USD || '20'),
-  tp: parseFloat(process.env.TP_USD || '0.7'),
+  tp: parseFloat(process.env.TP_USD || '0.3'),
   max: parseInt(process.env.MAX_TRADES || '3', 10),
   minVol: parseFloat(process.env.MIN_VOL_USD || '20000000'),
   poll: Math.max(15, parseInt(process.env.POLL_SEC || '60', 10)),

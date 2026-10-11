@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 بطاقة واحدة: ذكاء + حاسبة + حارس (v81.0 لوحة الشراء)</title>
+<title>🧠 بطاقة واحدة: ذكاء + حاسبة + حارس (v82.0 أي ربح صغير)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1195,7 +1195,7 @@ body{max-width:680px;margin:0 auto;padding:12px}
     <label class="chk"><input type="checkbox" id="botScalp" checked> ⚡ صفقات سريعة فقط</label>
     <label class="chk"><input type="checkbox" id="botFull"> 🏆 ربح مكتمل بعد هدف 1</label>
     <label>🎯 جني الربح/صفقة $<input id="botTP" type="number" value="0.7" min="0.1" step="0.1"></label>
-    <label>⚡ ربح فوري إغلاق كامل $<input id="botInstant" type="number" value="0.7" min="0.1" step="0.1"></label>
+    <label>⚡ ربح فوري إغلاق كامل $<input id="botInstant" type="number" value="0.3" min="0.1" step="0.1"></label>
     <label>💰 رأس مال الروبوت $<input id="botEq" type="number" value="100" min="10" step="10"></label>
     <label>📊 طريقة الحصة<select id="botSize"><option value="fixed">ثابتة $</option><option value="pct">% من رأس المال</option></select></label>
     <label>📈 النسبة %<input id="botPct" type="number" value="20" min="5" max="50" step="5"></label>
@@ -2530,7 +2530,7 @@ document.addEventListener('DOMContentLoaded',boot);
 "use strict";
 const $=id=>document.getElementById(id);
 const LS='ai_bot49_v1';
-const S={enabled:false,mode:'paper',cap:20,max:3,key:'',sec:'',mute:true,trades:{},log:[],profit:0,closed:0,timeOffset:0,info:{},cool:{},busy:false,fastOnly:false,dayLimit:10,recOn:true,day:'',dayPnl:0,deficit:0,recStreak:0,tpCap:0.7,equity:100,equityStart:100,chartSel:'',sizeMode:'fixed',sizePct:20,noLoss:true,dayCount:0,buyCount:0,lastEv:null,confirm:true,confirmIn:0,confirmOut:0,challenge:false,autoResume:true,wasEnabled:false,quick:false,full:false,brain:'both',statLink:null,statSolo:null,m5last:0,m5busy:false,noBin:{},goal:10,goalDone:false,scalp:true,instant:true,instantMin:0.7,closedList:[]};
+const S={enabled:false,mode:'paper',cap:20,max:3,key:'',sec:'',mute:true,trades:{},log:[],profit:0,closed:0,timeOffset:0,info:{},cool:{},busy:false,fastOnly:false,dayLimit:10,recOn:true,day:'',dayPnl:0,deficit:0,recStreak:0,tpCap:0.7,equity:100,equityStart:100,chartSel:'',sizeMode:'fixed',sizePct:20,noLoss:true,dayCount:0,buyCount:0,lastEv:null,confirm:true,confirmIn:0,confirmOut:0,challenge:false,autoResume:true,wasEnabled:false,quick:false,full:false,brain:'both',statLink:null,statSolo:null,m5last:0,m5busy:false,noBin:{},goal:10,goalDone:false,scalp:true,instant:true,instantMin:0.3,closedList:[]};
 // ---------- SHA256 + HMAC (توقيع Binance محلياً) ----------
 function sha256Bytes(m){
   const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
@@ -2570,7 +2570,7 @@ function hmacHex(keyStr,msgStr){
   return sha256Bytes(k.map(b=>b^0x5c).concat(inner)).map(b=>('0'+b.toString(16)).slice(-2)).join('');
 }
 // ---------- تخزين ----------
-function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['mode','cap','max','key','sec','mute','trades','log','profit','closed','fastOnly','dayLimit','recOn','day','dayPnl','deficit','recStreak','tpCap','equity','equityStart','chartSel','sizeMode','sizePct','noLoss','dayCount','buyCount','lastEv','confirm','confirmIn','confirmOut','challenge','autoResume','wasEnabled','quick','full','brain','statLink','statSolo','m5last','noBin','goal','goalDone','scalp','instant','instantMin','closedList','v'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); if(S.v!==78){ S.v=78; S.tpCap=0.7; S.instantMin=0.7; S.instant=true; S.quick=false; S.full=false; S.goal=10; } }catch(e){} }
+function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['mode','cap','max','key','sec','mute','trades','log','profit','closed','fastOnly','dayLimit','recOn','day','dayPnl','deficit','recStreak','tpCap','equity','equityStart','chartSel','sizeMode','sizePct','noLoss','dayCount','buyCount','lastEv','confirm','confirmIn','confirmOut','challenge','autoResume','wasEnabled','quick','full','brain','statLink','statSolo','m5last','noBin','goal','goalDone','scalp','instant','instantMin','closedList','v'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); if(S.v!==82){ S.v=82; S.tpCap=0.7; S.instantMin=0.3; S.instant=true; S.quick=false; S.full=false; S.goal=10; } }catch(e){} }
 function save(){ try{ localStorage.setItem(LS,JSON.stringify({mode:S.mode,cap:S.cap,max:S.max,key:S.key,sec:S.sec,mute:S.mute,trades:S.trades,log:(S.log||[]).slice(0,30),profit:S.profit,closed:S.closed,fastOnly:S.fastOnly,dayLimit:S.dayLimit,recOn:S.recOn,day:S.day,dayPnl:S.dayPnl,deficit:S.deficit,recStreak:S.recStreak,tpCap:S.tpCap,equity:S.equity,equityStart:S.equityStart,chartSel:S.chartSel,sizeMode:S.sizeMode,sizePct:S.sizePct,noLoss:S.noLoss,dayCount:S.dayCount,buyCount:S.buyCount,lastEv:S.lastEv,confirm:S.confirm,confirmIn:S.confirmIn,confirmOut:S.confirmOut,challenge:S.challenge,autoResume:S.autoResume,wasEnabled:S.wasEnabled,quick:S.quick,full:S.full,brain:S.brain,statLink:S.statLink,statSolo:S.statSolo,m5last:S.m5last,noBin:S.noBin,goal:S.goal,goalDone:S.goalDone,scalp:S.scalp,instant:S.instant,instantMin:S.instantMin,v:S.v,closedList:(S.closedList||[]).slice(0,20)})); }catch(e){} }
 // ---------- حصة الصفقة (تعويض مستمر مهما حدث: حتى 2× الحجم حتى يُعوَّض العجز كاملاً) ----------
 function eqFloor(){ return Math.min(10,(parseFloat(S.equityStart)||10)*0.2); }
@@ -2773,7 +2773,7 @@ async function manage(st){
   const live=liveOf(st.id,st.entry);
   const pnlNow=(st.rev||0)-(st.sold||0)*st.entry+(live-st.entry)*(st.qty-(st.sold||0));
   // ⚡ خروج فوري: إغلاق كامل عند أول ربح (يخرج فوراً مع الشراء بربح) — يُتجاوز بعد هدف 1 في وضع الربح المكتمل
-  if(!(S.full&&st.s1)&&S.instant&&pnlNow>=(parseFloat(S.instantMin)||0.7)){ const rem=st.qty-(st.sold||0); if(rem>0) await sellPart(st,rem/st.qty,'INST',live); return; }
+  if(!(S.full&&st.s1)&&S.instant&&pnlNow>=(parseFloat(S.instantMin)||0.3)){ const rem=st.qty-(st.sold||0); if(rem>0) await sellPart(st,rem/st.qty,'INST',live); return; }
   // 🎯 سقف الربح: إغلاق كامل فور بلوغ الهدف — يُتجاوز بعد هدف 1 في وضع الربح المكتمل لتركها تكتمل
   if(!(S.full&&st.s1)&&pnlNow>=(parseFloat(S.tpCap)||0.7)){ const rem=st.qty-(st.sold||0); if(rem>0) await sellPart(st,rem/st.qty,'TP',live); return; }
   // ⚡ خروج سريع: كامل الكمية بهدف 1 مباشرة ثم انتظار الفرصة التالية
@@ -2981,8 +2981,8 @@ function readField(t,silent){
   else if(id==='botNoLoss'){ S.noLoss=t.checked; if(!silent) log(t.checked?'🎯 التركيز: لا خروج بخسارة — الانتظار للتعادل بدل البيع الخاسر':'🎯 وضع عدم الخسارة متوقف'); }
     else if(id==='botConfirm'){ S.confirm=t.checked; if(!silent) log(t.checked?'🧠 التأكيد المستقل مفعّل: أحلل السوق وأميز الوهمي قبل كل دخول':'🧠 التأكيد المستقل متوقف: دخول مباشر على إشارة الحارس'); }
     else if(id==='botQuick'){ S.quick=t.checked; save(); paint(); log(t.checked?'⚡ الوضع السريع: دخول القوية فقط وخروج كامل بهدف 1 ثم انتظار الفرصة التالية':'⚡ الوضع السريع متوقف: خروج متدرج T1/T2/T3'); }
-    else if(id==='botScalp'){ S.scalp=t.checked; if(t.checked){ S.fastOnly=true; S.quick=false; S.instant=true; S.full=false; S.tpCap=0.7; S.instantMin=0.7; setInputs(); log('⚡ مخصص صفقات سريعة: 15m+M5 فقط • أي صعود مؤكد صغير/كبير • خروج +$0.70 فقط'); } else log('⚡ التخصيص السريع متوقف: تحكم يدوي كامل'); }
-    else if(id==='botInstant'){ S.instant=true; S.instantMin=Math.max(0.1,parseFloat(t.value)||0.7); }
+    else if(id==='botScalp'){ S.scalp=t.checked; if(t.checked){ S.fastOnly=true; S.quick=false; S.instant=true; S.full=false; S.tpCap=0.7; S.instantMin=0.3; setInputs(); log('⚡ مخصص صفقات سريعة: 15m+M5 فقط • أي صعود مؤكد صغير/كبير • خروج بأي ربح من $0.30 ليجمع $10 صافي'); } else log('⚡ التخصيص السريع متوقف: تحكم يدوي كامل'); }
+    else if(id==='botInstant'){ S.instant=true; S.instantMin=Math.max(0.1,parseFloat(t.value)||0.3); }
     else if(id==='botFull'){ S.full=t.checked; }
     else if(id==='botFull'){ S.full=t.checked; save(); paint(); log(t.checked?'🏆 الربح المكتمل: بعد هدف 1 تُترك الصفقة تكتمل لآخر هدف بربح كامل':'🏆 الربح المكتمل متوقف: سقف الربح يغلق مبكراً'); }
   else if(id==='botAlways'){ S.autoResume=t.checked; if(!t.checked) S.wasEnabled=false; }
