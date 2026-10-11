@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v115.0 رابط الاشتراك الشخصي)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v116.0 الكود يرسل رابطاً)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3869,6 +3869,29 @@ function verifySubToken(tok){
     return {name:j.n||'مشترك',until:j.u,code:j.c||''};
   }catch(e){ return null; }
 }
+function personalLinkFor(code){
+  try{
+    const subs=getSubs(); const sb=subs[code]; if(!sb) return '';
+    const tok=makeSubToken(sb.name,sb.until,code);
+    let cc=''; try{ const oo=getOwner()||{}; if(oo.contact) cc+='&c='+encodeURIComponent(oo.contact); }catch(e2){}
+    try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) cc+='&pick='+encodeURIComponent(pk.id); }catch(e3){}
+    return location.origin+location.pathname+'?guest=1&d='+dayStr(0)+'&sub='+encodeURIComponent(tok)+cc;
+  }catch(e){ return ''; }
+}
+function activateSubToken(tok){
+  const r=verifySubToken(tok);
+  if(!r) return false;
+  try{
+    const subs=getSubs(); const key=r.code||('LINK-'+String(r.until).slice(-6));
+    if(!subs[key]) subs[key]={name:r.name,created:Date.now(),until:r.until,blocked:false,viaLink:true};
+    saveSubs(subs);
+  }catch(e){}
+  M.mode='sub'; M.name=r.name; M.until=r.until; saveMe();
+  try{ document.body.classList.remove('link-expired'); }catch(e){}
+  sess(r.name,'تفعيل برابط الاشتراك الشخصي');
+  paint();
+  return true;
+}
 window.__pick='';
 function readPick(){ try{ const q=new URLSearchParams(location.search); const k=q.get('pick'); if(k){ window.__pick=k; return k; } }catch(e){} return window.__pick||''; }
 window.__oc='';
@@ -3946,21 +3969,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if((q.get('guest')||'')==='1'){ M.mode='guest'; saveMe(); try{ document.body.classList.add('linkmode'); }catch(e2){} }
     try{
       const stok=q.get('sub');
-      let subOk=false;
-      if(stok){
-        const r=verifySubToken(stok);
-        if(r){
-          try{
-            const subs=getSubs(); const key=r.code||('LINK-'+String(r.until).slice(-6));
-            if(!subs[key]) subs[key]={name:r.name,created:Date.now(),until:r.until,blocked:false,viaLink:true};
-            saveSubs(subs);
-          }catch(e){}
-          M.mode='sub'; M.name=r.name; M.until=r.until; saveMe();
-          try{ document.body.classList.remove('link-expired'); }catch(e){}
-          sess(r.name,'تفعيل برابط الاشتراك الشخصي');
-          subOk=true;
-        }
-      }
+      const subOk=stok?activateSubToken(stok):false;
       if(!subOk){
         const lf=linkFresh();
         if(lf.link&&!lf.ok){
@@ -4007,8 +4016,16 @@ document.addEventListener('DOMContentLoaded',()=>{
     else { $('pinMsg').textContent='PIN خطأ'; sess('مجهول','محاولة PIN فاشلة'); }
   };
   $('codeGo').onclick=()=>{
-    const r=unlockSub($('codeInput').value, '');
+    const raw=($('codeInput').value||'').trim();
     const m=$('codeMsg');
+    if(/sub=/i.test(raw)){
+      let tok='';
+      try{ const u=new URL(raw,location.href); tok=u.searchParams.get('sub')||''; }catch(e){ const mm=raw.match(/sub=([^&\s]+)/); tok=mm?mm[1]:''; }
+      try{ tok=decodeURIComponent(tok); }catch(e){}
+      if(tok&&activateSubToken(tok)){ m.textContent='✅ تم التفعيل — أهلاً '+M.name; m.style.color='#1fe196'; return; }
+      m.textContent='❌ رابط غير صالح — اطلب رابطاً جديداً من المالك'; m.style.color='#ff7b85'; sess('زائر','رابط فاشل'); return;
+    }
+    const r=unlockSub(raw, '');
     if(r.ok){ m.textContent='✅ تم التفعيل — أهلاً '+M.name; m.style.color='#1fe196'; }
     else { m.textContent='❌ '+r.why; m.style.color='#ff7b85'; sess('زائر','كود فاشل'); }
   };
@@ -4046,6 +4063,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     subs[cd]={name:nm,created:Date.now(),until:Date.now()+SUB_DAYS*864e5,blocked:false};
     saveSubs(subs); $('subName').value=''; paintSubs();
     sess('المالك','إصدار كود لـ'+nm);
+    try{ const url=personalLinkFor(cd); if(url){ try{ navigator.clipboard.writeText(url); }catch(e){} try{ toast('🔗 تم نسخ رابط الاشتراك — أرسله للمشترك'); }catch(e){} } }catch(e){}
   };
   $('subPaid').onclick=()=>{
     const nm=($('subName').value||'').trim();
@@ -4066,7 +4084,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const subs=getSubs();
     const gc=k=>Object.keys(subs).find(x=>x===k);
     if(b.dataset.subLink){ const cd=gc(b.dataset.subLink); if(cd){ const sb=subs[cd]; const tok=makeSubToken(sb.name,sb.until,cd); let cc=''; try{ const oo=getOwner()||{}; if(oo.contact) cc+='&c='+encodeURIComponent(oo.contact); }catch(e2){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) cc+='&pick='+encodeURIComponent(pk.id); }catch(e3){} const url=location.origin+location.pathname+'?guest=1&d='+dayStr(0)+'&sub='+encodeURIComponent(tok)+cc; try{ navigator.clipboard.writeText(url); }catch(err){} sess('المالك','نسخ رابط اشتراك '+sb.name); } }
-    else if(b.dataset.subCopy){ const cd=gc(b.dataset.subCopy); try{ navigator.clipboard.writeText(cd); }catch(err){} }
+    else if(b.dataset.subCopy){ const cd=gc(b.dataset.subCopy); if(cd){ const url=personalLinkFor(cd); try{ navigator.clipboard.writeText(url||cd); }catch(err){} sess('المالك','نسخ رابط اشتراك '+((subs[cd]||{}).name||cd)); } }
     else if(b.dataset.subBlock){ const cd=gc(b.dataset.subBlock); if(cd){ subs[cd].blocked=!subs[cd].blocked; saveSubs(subs); paintSubs(); sess('المالك',(subs[cd].blocked?'إيقاف ':'تشغيل ')+subs[cd].name); } }
     else if(b.dataset.subPlus){ const cd=gc(b.dataset.subPlus); if(cd){ subs[cd].until=Math.max(Date.now(),subs[cd].until||0)+30*864e5; subs[cd].blocked=false; saveSubs(subs); paintSubs(); sess('المالك','تمديد '+subs[cd].name); } }
     else if(b.dataset.subDel){ const cd=gc(b.dataset.subDel); if(cd){ sess('المالك','حذف '+subs[cd].name); delete subs[cd]; saveSubs(subs); paintSubs(); } }
