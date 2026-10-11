@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 بطاقة واحدة: ذكاء + حاسبة + حارس (v73.0 المكتملة بالصافي)</title>
+<title>🧠 بطاقة واحدة: ذكاء + حاسبة + حارس (v74.0 إعادة تشغيل الروبوت)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1196,6 +1196,7 @@ body{max-width:680px;margin:0 auto;padding:12px}
   <div class="bot-acts">
     <button class="btn btn-primary btn-sm" id="botStart">▶ تشغيل</button>
     <button class="btn btn-sm" id="botStop">⏸ إيقاف</button>
+    <button class="btn btn-sm" id="botRestart">🔄 إعادة تشغيل</button>
     <button class="btn btn-sm" id="botChal">🚀 $5→$30</button>
     <button class="btn btn-ghost btn-sm" id="botClear">🗑 مسح المفاتيح</button>
     <label class="mute-sw"><input type="checkbox" id="botMute" checked> 🔕 كتم</label>
@@ -2897,6 +2898,15 @@ async function startBot(silent){
   await syncTime(); holdWake(); tick();
   return true;
 }
+async function restartBot(){
+  syncInputs();
+  S.enabled=false; S.busy=false; S.m5busy=false; save(); paint();
+  log('🔄 إعادة تشغيل الروبوت — إيقاف لحظي ثم تشغيل بنفس الإعدادات...');
+  await new Promise(r=>setTimeout(r,600));
+  const ok=await startBot(true);
+  if(ok) log('✅ الروبوت أعيد تشغيله ويعمل الآن');
+  return ok;
+}
 function readField(t,silent){
   if(!t||!t.id||t.id.indexOf('bot')!==0) return;
   const id=t.id;
@@ -2931,6 +2941,7 @@ function readField(t,silent){
 function bind(){
   const st=$('botStart'); if(st) st.onclick=()=>{ startBot(false); };
   const sp=$('botStop'); if(sp) sp.onclick=()=>{ S.enabled=false; S.wasEnabled=false; save(); paint(); log('⏸ الروبوت متوقف — الصفقات المفتوحة تبقى بيدك (بعها يدوياً أو من الحارس)'); };
+  const rs=$('botRestart'); if(rs) rs.onclick=()=>{ restartBot(); };
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ holdWake(); if(S.enabled) tick(); } });
   const cl=$('botClear'); if(cl) cl.onclick=()=>{ S.key=''; S.sec=''; save(); setInputs(); log('🗑 تم مسح المفاتيح'); };
   const ch=$('botChal'); if(ch) ch.onclick=()=>{ applyChallenge(); };
@@ -2940,7 +2951,7 @@ function bind(){
 document.addEventListener('DOMContentLoaded',()=>{ load(); setInputs(); bind(); paint(); holdWake(); setInterval(()=>{ if(S.enabled) tick(); profitLine(); },6000); setInterval(paint,10000); setInterval(()=>{ try{ paintEq(); }catch(e){} },2000);
   if(S.autoResume&&S.wasEnabled){ log('🔁 استئناف تلقائي بعد إعادة الفتح — الروبوت يواصل بدون توقف (مزامنة الصفقات المفتوحة)'); startBot(true); }
 });
-window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan};
+window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,restartBot,m5scan};
 })();
 </script>
 <script>// 🗂 SEC61 — الصعود الجديد وحده + الصعود المؤكد وحده (بدون خلط)
