@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v97.0 لا يتوقف)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v102.0 تحكم الظهور)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1157,9 +1157,14 @@ body{max-width:680px;margin:0 auto;padding:12px}
 #botToasts div{background:#0b1226f0;border:1px solid #f0b90b66;color:#ffe9a8;border-radius:12px;padding:9px 16px;font-size:.82rem;font-weight:900;animation:guardSlide .4s ease;max-width:680px}
 @media(max-width:520px){.bot-grid{grid-template-columns:1fr}}
 /* ===== v55 BOTEVENT: شريط آخر عملية + عدّاد الشراء ===== */
-.bot-event{margin:8px 0;border-radius:12px;padding:9px 12px;font-weight:900;font-size:.82rem;text-align:center;background:#ffffff08;border:1px solid var(--line);color:var(--mut)}
-.bot-event.ev-buy{background:#16c78414;border-color:#16c78466;color:#1fe196}
-.bot-event.ev-sell{background:#ea394312;border-color:#ea394355;color:#ff9aa2}
+.bot-event{margin:8px 0;border-radius:12px;padding:9px 12px;font-weight:900;font-size:.82rem;text-align:center;background:#2a1c10;border:1px solid #a0785a;color:#e8c89a;box-shadow:0 0 12px #a0785a33}
+.bot-event.ev-buy{background:#2a1c10;border-color:#a0785a;color:#ffd9a8}
+.bot-event.ev-sell{background:#2a1c10;border-color:#a0785a;color:#ffb08a}
+.bot-event .ev-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#c89b6d;margin-inline-end:7px;vertical-align:middle;animation:evPulse 1.3s infinite}
+@keyframes evPulse{0%,100%{box-shadow:0 0 0 0 #c89b6daa;transform:scale(1)}50%{box-shadow:0 0 0 9px #c89b6d00;transform:scale(1.25)}}
+.bot-event.flash{animation:evFlash .8s ease 2}
+@keyframes evFlash{50%{box-shadow:0 0 26px #c89b6dcc}}
+.bot-event .ev-live{display:block;font-size:.68rem;font-weight:700;color:#b08d5f;margin-top:3px}
 #botBuys{color:#8fa9ff}
 .bot-preview{font-size:.78rem;font-weight:900;color:#f0d675;background:#f0b90b0d;border:1px solid #f0b90b33;border-radius:10px;padding:7px 12px;margin-bottom:8px;text-align:center}
 .bot-chal{margin-bottom:8px;padding:10px 12px;border-radius:12px;background:linear-gradient(90deg,#ff8a3d22,#f0b90b22);border:1px solid #ff8a3d66}
@@ -1204,6 +1209,13 @@ body.owner .only-guest{display:none!important}
 body:not(.guest) .only-guest{display:none!important}
 body.guest #botPanel,body.sub #botPanel{display:none}
 body.guest .calc-bar label,body.sub .calc-bar label{opacity:.45;pointer-events:none}
+.vis-row{display:flex;gap:8px;align-items:center;background:#ffffff06;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:.8rem;font-weight:800;margin-bottom:6px}
+.vis-row small{color:var(--mut);font-weight:600}
+.vis-row .tgl{margin-inline-start:auto;width:52px;height:28px;border-radius:99px;border:1px solid var(--line);background:#ffffff10;cursor:pointer;position:relative;font-family:inherit}
+.vis-row .tgl.on{background:#16c78433;border-color:#16c784}
+.vis-row .tgl i{position:absolute;top:3px;inset-inline-start:4px;width:20px;height:20px;border-radius:50%;background:#8a94a6;transition:.2s}
+.vis-row .tgl.on i{inset-inline-start:26px;background:#1fe196}
+.err-badge{display:inline-block;background:#ea3943;color:#fff;border-radius:99px;font-size:.66rem;font-weight:900;padding:1px 8px;margin-inline-start:6px}
 .lead-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#ffffff06;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.78rem;margin-bottom:6px}
 .ai-card.card-guestlock{position:relative}
 .card-guestlock .glock{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:#06070bd8;backdrop-filter:blur(3px);border-radius:20px;text-align:center;padding:18px}
@@ -1227,6 +1239,22 @@ body.guest .bot-closed-wrap{display:none}
 .owner-card label{display:block;font-size:.76rem;color:var(--mut);margin:8px 0 2px}
 .owner-card input[type=text],.owner-card input[type=password]{width:100%}
 .pin-row{display:flex;gap:8px}.pin-row input{flex:1;text-align:center;letter-spacing:3px}
+body.linkmode #masterFab,body.linkmode #mbOwner{display:none!important}
+.master-fab{position:fixed;bottom:18px;inset-inline-start:18px;z-index:390;width:56px;height:56px;border-radius:50%;border:2px solid #f0b90b;background:linear-gradient(135deg,#f0b90b,#ff8a3d);font-size:1.5rem;cursor:pointer;box-shadow:0 0 22px #f0b90b66;font-family:inherit}
+.master-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#ffffff06;border-radius:10px;padding:9px 12px;font-size:.8rem;font-weight:800;margin-bottom:7px;border-inline-start:5px solid var(--line)}
+.master-row small{display:block;width:100%;color:var(--mut);font-weight:600;font-size:.7rem}
+.mr-green{border-inline-start-color:#16c784}.mr-red{border-inline-start-color:#ea3943}.mr-gold{border-inline-start-color:#f0b90b}.mr-blue{border-inline-start-color:#4f7cff}.mr-purple{border-inline-start-color:#8b5cf6}
+.master-row input{width:90px}
+#mStart{background:linear-gradient(135deg,#16c784,#0a8a5c)!important;color:#04120a!important;border:none!important;animation:goPulse 1.6s infinite}
+@keyframes goPulse{0%,100%{box-shadow:0 0 0 0 #16c78477}50%{box-shadow:0 0 0 9px #16c78400}}
+#mStop{background:linear-gradient(135deg,#3a0d12,#1a0508)!important;color:#ff7b85!important;border:1px solid #ea394366!important;animation:stopPulse 1.4s infinite}
+#botStart.go{animation:goPulse 1.6s infinite}
+#botStop.alert{animation:stopPulse 1.4s infinite}
+@keyframes stopPulse{0%,100%{box-shadow:0 0 0 0 #ea394366}50%{box-shadow:0 0 0 8px #ea394300}}
+.master-row .pill{background:#00000055;border-radius:99px;padding:3px 12px;font-size:.76rem}
+.stepper{display:flex;gap:6px;align-items:center}
+.stepper button{width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:#ffffff10;color:var(--txt);font-size:1rem;font-weight:900;cursor:pointer;font-family:inherit}
+.stepper b{min-width:30px;text-align:center;font-size:1rem}
 </style>
 </head>
 <body class="single-col guest">
@@ -1263,7 +1291,7 @@ body.guest .bot-closed-wrap{display:none}
 <div class="paywall" id="paywall">
   <div class="pay-top">
     <h2>💎 TRAININGV8 Premium — صفقات قوية بدقة عالية</h2>
-    <p>شاهد كيف تبدو الصفقة مجاناً (3 صفقات) — وافتح الكل بالاشتراك الشهري</p>
+    <p>شاهد كيف تبدو الصفقة مجاناً (صفقة هدية كل يوم) — وافتح الكل بالاشتراك الشهري</p>
     <div class="price-card">
       <div class="pr">$30</div>
       <div class="per">اشتراك شهري • إلغاء في أي وقت</div>
@@ -1296,7 +1324,7 @@ body.guest .bot-closed-wrap{display:none}
 <div id="msgBox"></div>
 <ul id="radarFeed" style="display:none"></ul><span id="radarCount" style="display:none">0</span>
 
-<div class="calc-bar">
+<div class="calc-bar" id="calcBar">
   <span class="cb-t">🧪 رأس مال تجريبي</span>
   <label>💰 $<input id="gCapital" type="number" value="1000" min="10" step="10"></label>
   <label>⚖️ مخاطرة %<input id="gRisk" type="number" value="1.5" min="0.25" max="5" step="0.25"></label>
@@ -1382,6 +1410,7 @@ body.guest .bot-closed-wrap{display:none}
   <div class="muted" id="leadMsg" style="font-size:.76rem;margin-top:6px"></div>
 </div>
 <div class="sig-grid" id="dealsGrid" style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:10px"><div class="loading">🧠 الذكاء يحلل 500 عملة...</div></div>
+<button class="master-fab" id="masterFab" title="تحكم المالك">👑</button>
 <div class="owner-modal" id="ownerModal">
   <div class="owner-card">
     <div style="display:flex;align-items:center;gap:8px"><b>👑 لوحة المالك</b><span style="margin-inline-start:auto"></span><button class="btn btn-sm" id="ownerX">✕</button></div>
@@ -1392,17 +1421,30 @@ body.guest .bot-closed-wrap{display:none}
     </div>
     <div id="ownerDash" hidden>
       <div class="owner-tabs">
-        <button class="chip active" data-otab="subs">👥 المشتركون</button>
+        <button class="chip active" data-otab="master">🎛 التحكم</button>
+        <button class="chip" data-otab="subs">👥 المشتركون</button>
+        <button class="chip" data-otab="vis">👁 الظهور</button>
+        <button class="chip" data-otab="errs">⚠️ الأخطاء<span class="err-badge" id="errBadge" hidden>0</span></button>
         <button class="chip" data-otab="leads">📩 الزوار</button>
         <button class="chip" data-otab="log">📜 السجل</button>
         <button class="chip" data-otab="set">⚙️ الإعدادات</button>
         <button class="chip" data-otab="lock" id="ownerLock">🔒 قفل</button>
       </div>
+      <div data-opane="master">
+        <div class="master-row mr-green"><span class="pill" id="mStatus">⏸ متوقف</span><span style="margin-inline-start:auto;display:flex;gap:6px"><button class="btn btn-primary btn-sm" id="mStart">▶ تشغيل</button><button class="btn btn-sm" id="mStop">⏸ إيقاف</button></span><small>🟢 تشغيل / 🔴 إيقاف الروبوت فوراً</small></div>
+        <div class="master-row mr-gold"><span>📦 الصفقات القصوى</span><span class="stepper" style="margin-inline-start:auto"><button id="mMaxDown">−</button><b id="mMaxV">3</b><button id="mMaxUp">+</button></span><small>كم صفقة يفتح معاً (1–10)</small></div>
+        <div class="master-row mr-blue"><span>🎯 جني الربح $</span><input id="mTP" type="number" min="0.1" step="0.1" style="margin-inline-start:auto"><small>الربح الذي يغلق عنده الصفقة</small></div>
+        <div class="master-row mr-blue"><span>⚡ ربح فوري $</span><input id="mInst" type="number" min="0.1" step="0.1" style="margin-inline-start:auto"><small>أول ربح يُغلق فوراً</small></div>
+        <div class="master-row mr-gold"><span>🏆 هدف اليوم $</span><input id="mGoal" type="number" min="1" step="1" style="margin-inline-start:auto"><small>يتوقف تلقائياً عند بلوغه</small></div>
+        <div class="master-row mr-purple"><span>🔄 تجديد اشتراك بكود</span><span style="display:flex;gap:6px;margin-inline-start:auto"><input id="mRenew" type="text" dir="ltr" placeholder="XXXX-XXXX" style="width:130px"><button class="btn btn-primary btn-sm" id="mRenewGo">+30 يوم</button></span><small>أدخل كود المشترك لتمديد اشتراكه شهراً</small></div>
+      </div>
       <div data-opane="subs">
-        <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap"><input id="subName" type="text" placeholder="اسم المشترك" style="flex:1;min-width:140px"><button class="btn btn-primary btn-sm" id="subAdd">➕ إصدار كود (30 يوم)</button><button class="btn btn-sm" id="subLink">🔗 نسخ رابط المشتركين</button></div>
+        <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap"><input id="subName" type="text" placeholder="اسم المشترك" style="flex:1;min-width:140px"><button class="btn btn-primary btn-sm" id="subAdd">➕ إصدار كود (30 يوم)</button><button class="btn btn-primary btn-sm" id="subPaid">✅ تم الدفع — إصدار وإرسال</button><button class="btn btn-sm" id="subLink">🔗 نسخ رابط المشتركين</button></div>
         <div id="subsList"></div>
       </div>
       <div data-opane="log" hidden><ul class="log-list" id="sessLog"></ul></div>
+      <div data-opane="vis" hidden><p class="muted" style="font-size:.76rem">تحكم ماذا يرى الزوار (المشتركون يرون كل الإشارات دائماً)</p><div id="visList"></div></div>
+      <div data-opane="errs" hidden><div style="margin-bottom:8px"><button class="btn btn-sm" id="errClear">🧹 مسح</button></div><ul class="log-list" id="errLog"></ul></div>
       <div data-opane="leads" hidden><div id="leadsList"></div></div>
       <div data-opane="set" hidden>
         <label>رابط الدفع ($30)</label><input id="setPay" type="text" dir="ltr" placeholder="https://...">
@@ -2820,6 +2862,7 @@ function applyPlan(id,silent){
   if(!silent) log('🟣 خطة الروبوت: '+pl.name+' — '+pl.desc);
   return true;
 }
+function paintChal(){ try{ const box=$('botChalBox'); if(!box) return; if(!S.challenge){ box.hidden=true; return; } box.hidden=false; const e=parseFloat(S.equity)||0, s0=parseFloat(S.equityStart)||5, goal=30; const pct=Math.max(0,Math.min(100,(e-s0)/(goal-s0)*100)); const tx=$('botChalTxt'); if(tx) tx.textContent='$'+e.toFixed(2)+' / $'+goal+' • '+pct.toFixed(0)+'%'; const fl=$('botChalFill'); if(fl) fl.style.width=pct+'%'; }catch(e){} }
 function paintPlans(){
   try{
     const box=$('botPlans'); if(!box) return;
@@ -2888,18 +2931,8 @@ function paintBotStrips(){
     });
   }catch(e){}
 }
-function setEv(side,coin,price,why,pnl){ S.lastEv={side:side,coin:coin,price:price,why:why||'',pnl:(pnl==null?null:pnl),t:Date.now()}; save(); paintEv(); }
-function paintEv(){ const el=$('botEvent'); if(!el) return; const e=S.lastEv; if(!e){ el.className='bot-event'; el.textContent='🔔 بانتظار أول عملية شراء/بيع...'; return; } el.className='bot-event '+(e.side==='buy'?'ev-buy':'ev-sell'); el.textContent=(e.side==='buy'?'🟢 تم الشراء هنا: ':'🔴 تم البيع هنا: ')+e.coin+' @ '+money(e.price)+(e.why?' ('+e.why+')':'')+(e.pnl!=null?' ربح '+(e.pnl>=0?'+':'')+'$'+e.pnl.toFixed(2):'')+' • '+new Date(e.t).toLocaleTimeString('ar'); }
-function paintChal(){
-  const box=$('botChalBox'); if(!box) return;
-  if(!S.challenge){ box.hidden=true; return; }
-  box.hidden=false;
-  const e=parseFloat(S.equity)||0;
-  const pct=Math.max(0,Math.min(100,(e-5)/25*100));
-  const t=$('botChalTxt'); if(t) t.textContent='$'+e.toFixed(2)+' • '+pct.toFixed(0)+'%';
-  const f=$('botChalFill'); if(f) f.style.width=pct.toFixed(1)+'%';
-  if(e>=30){ S.challenge=false; save(); paint(); log('🏆 اكتمل تحدي $5 → $30! رأس المال $'+e.toFixed(2)+' — أحسنت!'); toast('🏆 التحدي اكتمل: $'+e.toFixed(2)); }
-}
+function setEv(side,coin,price,why,pnl){ S.lastEv={side:side,coin:coin,price:price,why:why||'',pnl:(pnl==null?null:pnl),t:Date.now()}; save(); paintEv(); try{ const el=$('botEvent'); if(el){ el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }catch(e){} }
+function paintEv(){ try{ const el=$('botEvent'); if(!el) return; let open=0; try{ open=Object.values(S.trades).filter(x=>x&&x.open&&!x.skip).length; }catch(e){} const live='<span class="ev-live">● حي • '+open+' مفتوحة • اليوم '+( (S.dayPnl||0)>=0?'+':'')+'$'+(S.dayPnl||0).toFixed(2)+' • '+new Date().toLocaleTimeString('ar')+'</span>'; const e=S.lastEv; if(!e){ el.className='bot-event'; el.innerHTML='<span class="ev-dot"></span>🔔 بانتظار أول عملية شراء/بيع...'+live; return; } el.className='bot-event '+(e.side==='buy'?'ev-buy':'ev-sell'); el.innerHTML='<span class="ev-dot"></span>'+(e.side==='buy'?'🟢 تم الشراء هنا: ':'🔴 تم البيع هنا: ')+e.coin+' @ '+money(e.price)+(e.why?' ('+e.why+')':'')+(e.pnl!=null?' ربح '+(e.pnl>=0?'+':'')+'$'+e.pnl.toFixed(2):'')+' • '+new Date(e.t).toLocaleTimeString('ar')+live; }catch(e){} }
 function applyChallenge(){
   S.mode='paper'; S.equity=5; S.equityStart=5; S.sizeMode='pct'; S.sizePct=40; S.tpCap=1; S.fastOnly=true; S.max=2; S.dayLimit=2; S.recOn=true; S.noLoss=true; S.challenge=true; S.deficit=0; S.recStreak=0; S.dayPnl=0;
   save(); setInputs(); paint();
@@ -3364,7 +3397,7 @@ function bind(){
   document.addEventListener('input',e=>{ const t=e.target; if(t&&(t.tagName==='INPUT'||t.tagName==='SELECT')&&t.id&&t.id.indexOf('bot')===0&&(t.type==='number'||t.type==='text'||t.type==='password')) readField(t,true); });
   document.addEventListener('change',e=>{ readField(e.target,false); });
 }
-document.addEventListener('DOMContentLoaded',()=>{ load(); setInputs(); bind(); paint(); holdWake(); setInterval(()=>{ if(S.enabled) tick(); profitLine(); },6000); setInterval(()=>{ try{ save(); }catch(e){} },5000); setInterval(paint,10000); setInterval(()=>{ try{ paintEq(); paintBotStrips(); }catch(e){} },2000);
+document.addEventListener('DOMContentLoaded',()=>{ load(); setInputs(); bind(); paint(); holdWake(); setInterval(()=>{ if(S.enabled) tick(); profitLine(); },6000); setInterval(()=>{ try{ save(); }catch(e){} },5000); setInterval(paint,10000); setInterval(()=>{ try{ paintEq(); paintBotStrips(); paintEv(); }catch(e){} },2000);
   try{ const today=new Date().toISOString().slice(0,10); if(S.day!==today){ S.day=today; S.dayPnl=0; S.dayCount=0; S.goalDone=false; save(); paint(); } }catch(e){}
   if(S.autoResume&&S.wasEnabled&&!S.goalDone){ log('🔁 استئناف تلقائي بعد إعادة الفتح — الروبوت يواصل بدون توقف (مزامنة الصفقات المفتوحة)'); startBot(true); }
   else if(S.goalDone){ try{ log('🏆 هدف اليوم ($'+(S.goal||10)+') متحقق — الروبوت متوقف حتى الغد'); }catch(e){} }
@@ -3456,6 +3489,17 @@ const K_OWNER='ai_owner_v1', K_SUBS='ai_subs_v1', K_SESS='ai_sess_v1', K_ME='ai_
 const FREE_N=3, SUB_DAYS=30, PRICE=30;
 const M={mode:'guest',name:'',until:0,lead:null};
 function getLead(){ try{ return JSON.parse(localStorage.getItem(K_LEAD)||'null'); }catch(e){ return null; } }
+const K_FREE='ai_free_v1';
+function todayStr(){ try{ return new Date().toISOString().slice(0,10); }catch(e){ return ''; } }
+function getFree(){ try{ return JSON.parse(localStorage.getItem(K_FREE)||'null'); }catch(e){ return null; } }
+function freePick(buys){
+  const day=todayStr();
+  let f=getFree();
+  if(f&&f.day===day&&f.id&&buys.some(c=>c.dataset.id===f.id)) return f.id;
+  const id=buys.length?buys[0].dataset.id:null;
+  try{ localStorage.setItem(K_FREE,JSON.stringify({day:day,id:id})); }catch(e){}
+  return id;
+}
 function getLeads(){ try{ return JSON.parse(localStorage.getItem(K_LEADS)||'[]'); }catch(e){ return []; } }
 async function sha(s){ try{ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('salt::'+s)); return [...new Uint8Array(b)].map(x=>('0'+x.toString(16)).slice(-2)).join(''); }catch(e){ let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return 'f'+(h>>>0).toString(16); } }
 function getOwner(){ try{ return JSON.parse(localStorage.getItem(K_OWNER)||'null'); }catch(e){ return null; } }
@@ -3475,7 +3519,7 @@ function paint(){
   if(M.mode==='owner'){ b.className='mb-badge mb-owner'; b.textContent='👑 المالك'; t.textContent='النسخة الأصلية الكاملة — كل شيء ظاهر لك فقط'; }
   else if(M.mode==='sub'){ b.className='mb-badge mb-sub'; b.textContent='💎 مشترك'; t.textContent='مرحباً '+M.name+' • متبقٍ '+Math.ceil((M.until-Date.now())/86400000)+' يوم'; }
   else { b.className='mb-badge mb-guest'; b.textContent='👤 زائر'; t.textContent='محتوى الأعضاء محمي 🔒 — '+FREE_N+' صفقات مجانية بالأسفل'; }
-  const pw=$('paywall'); if(pw) pw.style.display=(M.mode==='guest')?'':'none';
+  const pw=$('paywall'); if(pw){ let show=M.mode==='guest'; try{ if(show&&getVis().paywall===false) show=false; }catch(e){} pw.style.display=show?'':'none'; }
   const o=getOwner()||{};
   const pb=$('payBtn'); if(pb) pb.href=o.pay||'#';
   const cb=$('contactBtn'); if(cb){ cb.href=o.contact||'#'; cb.textContent='💬 تواصل للتفعيل'+(o.contactName?' ('+o.contactName+')':''); }
@@ -3505,13 +3549,14 @@ function gateCards(){
       return;
     }
     const buys=cardsAll.filter(c=>c.classList.contains('g-buy')||c.classList.contains('g-strong'));
-    const free=buys.slice(0,FREE_N);
-    free.forEach(c=>{ const d=document.createElement('div'); d.className='free-badge'; d.textContent='🎁 هدية لـ '+lead.name+' — هكذا تبدو الصفقة الحقيقية'; c.prepend(d); });
+    const freeId=freePick(buys);
+    const free=freeId?buys.filter(c=>c.dataset.id===freeId):[];
+    free.forEach(c=>{ const d=document.createElement('div'); d.className='free-badge'; d.textContent='🎁 هدية اليوم لـ '+lead.name+' — غداً صفقة مجانية أخرى'; c.prepend(d); });
     cards.forEach(c=>{
       if(free.includes(c)) return;
       c.classList.add('card-guestlock');
       const d=document.createElement('div'); d.className='glock';
-      d.innerHTML='<span>🔒</span><b>للمشتركين فقط — $'+PRICE+'/شهر</b><small>صفقات قوية بدقة عالية أمامك لحظة بلحظة</small>';
+      d.innerHTML='<span>🔒</span><b>للمشتركين فقط — $'+PRICE+'/شهر</b><small>غداً صفقة مجانية أخرى 🎁 أو اشترك شهرياً غير محدود 💎</small>';
       const btn=document.createElement('button'); btn.className='btn btn-primary btn-sm'; btn.textContent='💎 اشترك الآن';
       btn.onclick=()=>{ sess('guest','click-subscribe'); const p=$('paywall'); if(p) p.scrollIntoView({behavior:'smooth'}); };
       d.appendChild(btn);
@@ -3566,6 +3611,58 @@ function paintLog(){
     ul.innerHTML=l.length?l.map(h=>'<li><time>'+new Date(h.t).toLocaleString('ar')+'</time> <b>'+h.who+'</b> — '+h.action+'</li>').join(''):'<li class="muted">لا نشاط بعد</li>';
   }catch(e){}
 }
+function paintMaster(){
+  try{
+    const BS=(window.BOT49&&window.BOT49.S)||null; if(!BS) return;
+    const st=$('mStatus'); if(st){ const on=!!BS.enabled; st.textContent=on?('🟢 يعمل • '+BS.mode):'⏸ متوقف'; st.style.color=on?'#1fe196':'#ff7b85'; }
+    const mv=$('mMaxV'); if(mv) mv.textContent=BS.max;
+    const tp=$('mTP'); if(tp&&document.activeElement!==tp) tp.value=BS.tpCap;
+    const im=$('mInst'); if(im&&document.activeElement!==im) im.value=BS.instantMin;
+    const gl=$('mGoal'); if(gl&&document.activeElement!==gl) gl.value=BS.goal;
+  }catch(e){}
+}
+const K_VIS='ai_vis_v1', K_ERR='ai_err_v1', K_ERRSEEN='ai_err_seen';
+const VIS_SECTIONS=[
+ {id:'paywall',name:'💎 قسم الاشتراك',def:true},
+ {id:'freeGate',name:'🎁 بوابة الهدية اليومية',def:true},
+ {id:'newSec',name:'🆕 قسم الصعود الجديد',def:true},
+ {id:'strongSec',name:'🔥 قسم الصعود المؤكد',def:true},
+ {id:'dealsGrid',name:'💎 شبكة البطاقات الرئيسية',def:true},
+ {id:'calcBar',name:'🧮 شريط رأس المال التجريبي',def:true},
+ {id:'botPanel',name:'🤖 لوحة الروبوت (حساسة)',def:false}
+];
+function getVis(){ try{ const j=JSON.parse(localStorage.getItem(K_VIS)||'null'); if(j) return j; }catch(e){} const d={}; VIS_SECTIONS.forEach(s=>d[s.id]=s.def); return d; }
+function applyVis(){
+  try{
+    if(M.mode!=='guest') return;
+    const v=getVis();
+    VIS_SECTIONS.forEach(s=>{
+      const el=document.getElementById(s.id==='calcBar'?s.id:s.id);
+      const tgt=document.getElementById(s.id);
+      if(!tgt) return;
+      if(s.id==='paywall'||s.id==='freeGate'){ if(v[s.id]===false) tgt.style.display='none'; return; }
+      tgt.style.display=(v[s.id]===false)?'none':'';
+    });
+  }catch(e){}
+}
+function paintVis(){
+  try{
+    const box=$('visList'); if(!box) return;
+    const v=getVis();
+    box.innerHTML=VIS_SECTIONS.map(s=>'<div class="vis-row"><span>'+s.name+'</span><small>'+(v[s.id]!==false?'يظهر للزوار':'مخفي عن الزوار')+'</small><button class="tgl'+(v[s.id]!==false?' on':'')+'" data-vis="'+s.id+'"><i></i></button></div>').join('');
+  }catch(e){}
+}
+function getErrs(){ try{ return JSON.parse(localStorage.getItem(K_ERR)||'[]'); }catch(e){ return []; } }
+function pushErr(msg,src){
+  try{
+    const l=getErrs(); l.unshift({t:Date.now(),msg:String(msg||'').slice(0,160),src:String(src||'').slice(0,80)});
+    localStorage.setItem(K_ERR,JSON.stringify(l.slice(0,50)));
+    paintErrBadge();
+    if(M.mode==='owner'){ try{ toast('⚠️ خطأ: '+String(msg||'').slice(0,60)); }catch(e){} }
+  }catch(e){}
+}
+function paintErrBadge(){ try{ const b=$('errBadge'); if(!b) return; const seen=parseInt(localStorage.getItem(K_ERRSEEN)||'0'); const n=getErrs().filter(x=>x.t>seen).length; b.hidden=n===0; b.textContent=n; }catch(e){} }
+function paintErr(){ try{ const ul=$('errLog'); if(!ul) return; const l=getErrs(); ul.innerHTML=l.length?l.map(h=>'<li><time>'+new Date(h.t).toLocaleString('ar')+'</time> '+h.msg+(h.src?' <span class="mut">'+h.src+'</span>':'')+'</li>').join(''):'<li class="muted">لا أخطاء مسجلة 🎉</li>'; try{ localStorage.setItem(K_ERRSEEN,String(Date.now())); }catch(e){} setTimeout(paintErrBadge,100); }catch(e){} }
 function paintLeads(){
   try{
     const box=$('leadsList'); if(!box) return;
@@ -3573,19 +3670,21 @@ function paintLeads(){
     box.innerHTML=ls.length?ls.slice(0,100).map(x=>'<div class="lead-row"><b>'+x.name+'</b><span class="mut">'+x.email+'</span><span class="mut" style="margin-inline-start:auto">'+new Date(x.at).toLocaleString('ar')+'</span></div>').join(''):'<div class="muted" style="font-size:.8rem">لا زوار بعد — شارك رابطك وستظهر بياناتهم هنا</div>';
   }catch(e){}
 }
+const IS_LINKMODE=(()=>{ try{ return /[?&]guest=1/.test(location.search); }catch(e){ return false; } })();
 function openOwner(){
+  if(IS_LINKMODE) return;
   $('ownerModal').classList.add('open');
   const o=getOwner();
   $('ownerLogin').hidden=!!(M.mode==='owner');
   $('ownerDash').hidden=!(M.mode==='owner');
-  if(M.mode==='owner'){ paintSubs(); paintLog(); paintLeads(); const s=$('setPay'); if(s){ const oo=getOwner()||{}; s.value=oo.pay||''; $('setContact').value=oo.contact||''; $('setContactName').value=oo.contactName||''; } }
+  if(M.mode==='owner'){ paintSubs(); paintLog(); paintLeads(); paintMaster(); const s=$('setPay'); if(s){ const oo=getOwner()||{}; s.value=oo.pay||''; $('setContact').value=oo.contact||''; $('setContactName').value=oo.contactName||''; } }
   else { $('pinMsg').textContent=o?'أدخل PIN للدخول':'أنت المالك؟ اختر PIN جديداً الآن (يُحفظ في جهازك فقط)'; }
 }
 document.addEventListener('DOMContentLoaded',()=>{
   loadMe();
   try{
     const q=new URLSearchParams(location.search);
-    if((q.get('guest')||'')==='1'){ M.mode='guest'; saveMe(); }
+    if((q.get('guest')||'')==='1'){ M.mode='guest'; saveMe(); try{ document.body.classList.add('linkmode'); }catch(e2){} }
     const qc=q.get('code');
     if(qc){ const ci=$('codeInput'); if(ci) ci.value=qc; }
   }catch(e){}
@@ -3597,7 +3696,24 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('mbCode').onclick=()=>{ const p=$('paywall'); if(p){ p.style.display=''; p.scrollIntoView({behavior:'smooth'}); const i=$('codeInput'); if(i) i.focus(); } };
   $('mbOwner').onclick=openOwner;
   $('ownerX').onclick=()=>$('ownerModal').classList.remove('open');
-  document.querySelectorAll('[data-otab]').forEach(b=>{ b.onclick=()=>{ if(b.id==='ownerLock'){ M.mode='guest'; M.name=''; saveMe(); paint(); $('ownerModal').classList.remove('open'); return; } document.querySelectorAll('[data-otab]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); document.querySelectorAll('[data-opane]').forEach(p=>p.hidden=p.dataset.opane!==b.dataset.otab); if(b.dataset.otab==='log') paintLog(); if(b.dataset.otab==='leads') paintLeads(); }; });
+  $('masterFab').onclick=openOwner;
+  $('mStart').onclick=()=>{ try{ window.BOT49.startBot(false); sess('المالك','تشغيل الروبوت من لوحة التحكم'); }catch(e){} setTimeout(paintMaster,500); };
+  $('mStop').onclick=()=>{ try{ const BS=window.BOT49.S; BS.enabled=false; BS.wasEnabled=false; sess('المالك','إيقاف الروبوت من لوحة التحكم'); }catch(e){} setTimeout(paintMaster,500); };
+  $('mMaxDown').onclick=()=>{ try{ const BS=window.BOT49.S; BS.max=Math.max(1,(parseInt(BS.max)||3)-1); sess('المالك','الصفقات القصوى → '+BS.max); }catch(e){} paintMaster(); };
+  $('mMaxUp').onclick=()=>{ try{ const BS=window.BOT49.S; BS.max=Math.min(10,(parseInt(BS.max)||3)+1); sess('المالك','الصفقات القصوى → '+BS.max); }catch(e){} paintMaster(); };
+  const mCommit=()=>{ try{ const BS=window.BOT49.S; const tp=parseFloat($('mTP').value), im=parseFloat($('mInst').value), gl=parseFloat($('mGoal').value); if(tp>=0.1) BS.tpCap=tp; if(im>=0.1){ BS.instant=true; BS.instantMin=im; } if(gl>=1) BS.goal=gl; sess('المالك','تعديل قيم الروبوت'); }catch(e){} paintMaster(); };
+  $('mTP').onchange=mCommit; $('mInst').onchange=mCommit; $('mGoal').onchange=mCommit;
+  $('mRenewGo').onclick=()=>{
+    const cd=String(($('mRenew').value||'').toUpperCase().replace(/[^A-Z0-9]/g,''));
+    const code=cd.length===8?cd.slice(0,4)+'-'+cd.slice(4):cd;
+    const subs=getSubs();
+    if(!subs[code]){ try{ toast('❌ الكود غير موجود'); }catch(e){} return; }
+    subs[code].until=Math.max(Date.now(),subs[code].until||0)+30*864e5; subs[code].blocked=false;
+    saveSubs(subs); $('mRenew').value=''; paintSubs();
+    sess('المالك','تجديد +30 يوم لـ'+subs[code].name);
+    try{ toast('✅ تم التجديد لـ'+subs[code].name); }catch(e){}
+  };
+  document.querySelectorAll('[data-otab]').forEach(b=>{ b.onclick=()=>{ if(b.id==='ownerLock'){ M.mode='guest'; M.name=''; saveMe(); paint(); $('ownerModal').classList.remove('open'); return; } document.querySelectorAll('[data-otab]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); document.querySelectorAll('[data-opane]').forEach(p=>p.hidden=p.dataset.opane!==b.dataset.otab); if(b.dataset.otab==='log') paintLog(); if(b.dataset.otab==='leads') paintLeads(); if(b.dataset.otab==='vis') paintVis(); if(b.dataset.otab==='errs') paintErr(); if(b.dataset.otab==='master') paintMaster(); }; });
   $('pinGo').onclick=async()=>{
     const v=($('pinInput').value||'').trim(); if(v.length<4){ $('pinMsg').textContent='PIN من 4 أحرف على الأقل'; return; }
     const h=await sha(v), o=getOwner();
@@ -3634,6 +3750,17 @@ document.addEventListener('DOMContentLoaded',()=>{
     saveSubs(subs); $('subName').value=''; paintSubs();
     sess('المالك','إصدار كود لـ'+nm);
   };
+  $('subPaid').onclick=()=>{
+    const nm=($('subName').value||'').trim();
+    if(nm.length<2){ try{ toast('❌ أدخل اسم المشترك أولاً'); }catch(e){} return; }
+    const subs=getSubs(); let cd=mkCode(); while(subs[cd]) cd=mkCode();
+    subs[cd]={name:nm,created:Date.now(),until:Date.now()+SUB_DAYS*864e5,blocked:false,paid:true};
+    saveSubs(subs); $('subName').value=''; paintSubs();
+    sess('المالك','تم الدفع ✅ + إصدار كود لـ'+nm);
+    const msg='✅ اشتراكك في TRAININGV8 Premium مفعّل / '+nm+' / كودك: '+cd+' / صالح 30 يوم — أدخله في الموقع';
+    try{ navigator.clipboard.writeText(cd); }catch(e){}
+    try{ window.open('https://t.me/share/url?url='+encodeURIComponent(location.href.split('?')[0]+'?guest=1')+'&text='+encodeURIComponent(msg),'_blank'); }catch(e){}
+  };
   $('subsList').onclick=e=>{
     const b=e.target.closest('button'); if(!b) return;
     const subs=getSubs();
@@ -3643,6 +3770,10 @@ document.addEventListener('DOMContentLoaded',()=>{
     else if(b.dataset.subPlus){ const cd=gc(b.dataset.subPlus); if(cd){ subs[cd].until=Math.max(Date.now(),subs[cd].until||0)+30*864e5; subs[cd].blocked=false; saveSubs(subs); paintSubs(); sess('المالك','تمديد '+subs[cd].name); } }
     else if(b.dataset.subDel){ const cd=gc(b.dataset.subDel); if(cd){ sess('المالك','حذف '+subs[cd].name); delete subs[cd]; saveSubs(subs); paintSubs(); } }
   };
+  document.addEventListener('click',e=>{ try{ const b=e.target.closest('[data-vis]'); if(!b) return; const v=getVis(); v[b.dataset.vis]=!(v[b.dataset.vis]!==false); localStorage.setItem(K_VIS,JSON.stringify(v)); paintVis(); applyVis(); sess('المالك','ظهور '+b.dataset.vis+' → '+(v[b.dataset.vis]?'يظهر':'مخفي')); }catch(err){} });
+  window.addEventListener('error',e=>{ pushErr(e.message,'js'); });
+  window.addEventListener('unhandledrejection',e=>{ try{ pushErr((e.reason&&e.reason.message)||String(e.reason),'promise'); }catch(err){} });
+  setInterval(()=>{ try{ applyVis(); paintErrBadge(); }catch(err){} },5000);
   $('subLink').onclick=()=>{ try{ const u=location.origin+location.pathname+'?guest=1'; navigator.clipboard.writeText(u); }catch(e){} sess('المالك','نسخ رابط المشتركين'); };
   $('setSave').onclick=()=>{ const o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); saveOwner(o); paint(); sess('المالك','حفظ الإعدادات'); };
   document.querySelectorAll('[data-bot-state]').forEach(()=>{});
