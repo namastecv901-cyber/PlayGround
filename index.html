@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v116.0 الكود يرسل رابطاً)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v117.0 فتح بموافقة الدخول)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -983,6 +983,9 @@ body>*{position:relative;z-index:1}
 .pl-entry.no-enter>span{color:#ff9aa2!important}
 .pl-entry.no-enter b{color:var(--mut)!important;font-size:.92rem}
 .noenter-tag{display:inline-block;background:#ea394322;border:1px solid #ea394366;color:#ff7b85;border-radius:6px;padding:1px 7px;font-size:.64rem;font-weight:900;white-space:nowrap}
+.accept-btn{display:block;width:100%;margin-top:10px;border:none;border-radius:12px;padding:11px;font-family:inherit;font-weight:900;font-size:.88rem;cursor:pointer;background:linear-gradient(135deg,#16c784,#0a8a5c);color:#04120a;box-shadow:0 0 18px #16c78455}
+.accept-btn.inline{margin:10px 0 2px}
+.accept-tag{display:inline-block;background:#16c78422;border:1px solid #16c78466;color:#1fe196;border-radius:6px;padding:1px 7px;font-size:.64rem;font-weight:900;white-space:nowrap;cursor:pointer}
 /* ===== v68 LOCKALL: قفل شامل على البطاقة كاملة ===== */
 .ai-card.card-locked{position:relative}
 .card-lock{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:#06070bd9;border-radius:20px;text-align:center;padding:16px}
@@ -1855,6 +1858,7 @@ document.addEventListener('DOMContentLoaded',start);
 "use strict";
 const $ = id => document.getElementById(id);
 const DEALS = { filter:'buy' };
+window.ENTRY_ACCEPT=window.ENTRY_ACCEPT||(function(){ const K='ai_entry_accept_v1'; const rd=()=>{ try{ return JSON.parse(localStorage.getItem(K)||'{}'); }catch(e){ return {}; } }; return { list:rd, has(id){ try{ const m=rd(); return !!(m&&m[id]); }catch(e){ return false; } }, add(id){ try{ const m=rd(); m[id]={at:Date.now()}; localStorage.setItem(K,JSON.stringify(m)); }catch(e){} }, del(id){ try{ const m=rd(); delete m[id]; localStorage.setItem(K,JSON.stringify(m)); }catch(e){} } }; })();
 function money(n){ if(window.AI_MONEY) return window.AI_MONEY(n); if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
 function bar(v){ v=Math.max(0,Math.min(100,Math.round(v))); const cls=v>=65?'b-g':v>=50?'b-y':'b-r'; return '<div class="ai-bar"><i class="'+cls+'" style="width:'+v+'%"></i></div>'; }
 function guardOf(id){ const G=(window.GUARDIAN&&window.GUARDIAN.G)||{pos:[]}; return G.pos.find(x=>x.id===id); }
@@ -1915,6 +1919,7 @@ function nearEntry(a){
 }
 function safeRise(id){ try{ if(window.LIVE39&&window.LIVE39.riseOk) return window.LIVE39.riseOk(id); }catch(e){} return true; }
 function entryState(a){
+  try{ if(window.ENTRY_ACCEPT&&window.ENTRY_ACCEPT.has(a.c.id)) return 'open'; }catch(e){}
   const p=guardOf(a.c.id);
   if(p){
     // 🔓 قفل ذكي بآمان: عودة + صعود أخضر → يُفتح، عودة هابطة أو بعيد → مقفل
@@ -1945,6 +1950,7 @@ function decisionOf(a){
   if(st==='wait'){ const P=planOf(a); const cur=a.c.current_price||P.entry; const near=Math.abs(cur-P.entry)/P.entry<=0.004; if(near&&!safeRise(a.c.id)) return ['wait','g-risk','🔒 مقفل بأمان — عودة هابطة','عاد السعر قرب الدخول '+money(P.entry)+' لكن الاتجاه أحمر هابط — القفل يبقى حتى تأكيد صعود أخضر']; return ['wait','g-risk','⏳ لا تدخل بعد — السعر تحت نقطة الدخول','نقطة الدخول '+money(p?p.entry:a.entry)+' والسعر الحالي '+money(a.c.current_price)+' • انتظر عودة السعر لها ولا تدخل بسعر أعلى']; }
   if(p){
     if(!p.open){
+      try{ if(window.ENTRY_ACCEPT&&window.ENTRY_ACCEPT.has(a.c.id)) return ['fresh','g-hold','🟢 مفتوحة بموافقتك — الدخول الآن','فتحت هذه الصفقة بموافقتك • الدخول المتأخر على مسؤوليتك • نقطة الدخول '+money((planOf(a)).entry)]; }catch(e){}
       if((p.verdict==='MISSED'||p.entryBlocked)&&!p.t1hit&&!p.t2hit&&nearEntry(a)&&safeRise(a.c.id)){ const P=planOf(a); const cur=a.c.current_price||P.entry; if(cur>=P.entry*0.999) return ['fresh','g-hold','🟢 عاد صاعد بأمان — فُك القفل: الدخول الآن','عاد السعر لنقطة الدخول '+money(P.entry)+' والاتجاه أخضر صاعد • القفل الذكي فُتح • ادخل الآن بسعر السوق']; return ['wait','g-risk','🔓 عاد صاعد — القفل سيُفتح عند اللمسة','السعر '+money(cur)+' قريب من الدخول '+money(P.entry)+' وصاعد • انتظر اللمسة ثم ادخل']; }
       if(p.verdict==='MISSED'||p.entryBlocked) return ['void','g-void','🟠 الدخول مغلق — فاتتك هذه الصفقة','قفز السعر فوق نقطة الدخول '+money(p.entry)+' • أُلغيت نهائياً ولن تدخلها مجدداً • ستُفتح صفقة جديدة فقط عند ارتداع حقيقي + setup نظيف من الذكاء'];
       if(p.verdict==='FINAL') return ['done','g-final','🏆 اكتملت — صفقة رابحة','الهدف الأخير تحقق • أرشفة، لا إعادة دخول الآن'];
@@ -1956,6 +1962,20 @@ function decisionOf(a){
   const d=decisionRecord(a)||{g:a.grade,act:a.action,sc:a.score};
   const g=GRADE[d.g]||GRADE.neutral;
   return [g[0],g[1],g[2]+' — '+d.sc+'%',g[3]];
+}
+function acceptTag(a){
+  try{
+    const st=entryState(a);
+    if(st!=='open'&&st!=='fresh') return ' <span class="noenter-tag">⛔ ليس أمر دخول</span>';
+    if(window.ENTRY_ACCEPT&&window.ENTRY_ACCEPT.has(a.c.id)) return ' <span class="accept-tag" data-unaccept="'+a.c.id+'" title="إلغاء الموافقة">🔓 فتح بموافقتك ✕</span>';
+    return '';
+  }catch(e){ return ''; }
+}
+function acceptLine(a){
+  try{
+    if(entryState(a)!=='done') return '';
+    return '<button class="accept-btn inline" data-accept="'+a.c.id+'">✅ أوافق على الدخول — افتح الصفقة</button>';
+  }catch(e){ return ''; }
 }
 function decisionBlock(a){
   const d=decisionOf(a);
@@ -1982,10 +2002,10 @@ function card(a,i){
   const tfFast=tfTxt.indexOf('15m')===0;
   const tfBadge=tfTxt?'<div class="tf-badge '+(tfFast?'fast':'slow')+'">⏱ الفريم الممتاز للدخول: <b>'+tfTxt+'</b>'+(tfFast?' ⚡':' 🧘')+'</div>':'';
   const ticket='<section class="strip strip-plan">'
-  +'<div class="st-head"><span>🎫 خطة الصفقة '+(P.locked?((entryState(a)==='void'||entryState(a)==='miss')?'<i class="lock void">🟠 ملغاة</i>':(entryState(a)==='done'?'<i class="lock blue">🔒 مغلقة</i>':'<i class="lock">🔒 مثبّتة</i>')):'')+'</span><em>'+ (P.entryType||pl.entryType||'') +'</em></div>'
+  +'<div class="st-head"><span>🎫 خطة الصفقة '+(P.locked?((entryState(a)==='void'||entryState(a)==='miss'||entryState(a)==='gone'?'<i class="lock void">🟠 ملغاة</i>':(entryState(a)==='done'?'<i class="lock blue">🔒 مغلقة</i>':'<i class="lock">🔒 مثبّتة</i>'))):'')+'</span><em>'+ (P.entryType||pl.entryType||'') +'</em></div>'
   +tfBadge
   +'<div class="st-plan">'
-  +'<div class="pl-row pl-entry '+ENTRY[entryState(a)][2]+((entryState(a)==='open'||entryState(a)==='fresh')?'':' no-enter')+'"><span>'+ENTRY[entryState(a)][0]+' '+ENTRY[entryState(a)][1]+'</span><b>'+money(P.entry)+((entryState(a)==='open'||entryState(a)==='fresh')?'':' <span class="noenter-tag">⛔ ليس أمر دخول</span>')+'</b></div>'
+  +'<div class="pl-row pl-entry '+ENTRY[entryState(a)][2]+((entryState(a)==='open'||entryState(a)==='fresh')?'':' no-enter')+'"><span>'+ENTRY[entryState(a)][0]+' '+ENTRY[entryState(a)][1]+'</span><b>'+money(P.entry)+acceptTag(a)+'</b></div>'
   +'<div class="pl-row"><span>🎯 هدف 1 <em>R1.5 · اجنِ 30%</em></span><b class="up">+'+pct(P.t1)+'</b><small>'+money(P.t1)+'</small></div>'
   +'<div class="pl-row"><span>🎯 هدف 2 <em>R2.5 · اجنِ 50%</em></span><b class="up">+'+pct(P.t2)+'</b><small>'+money(P.t2)+'</small></div>'
   +'<div class="pl-row"><span>🎯 هدف 3 <em>R4 · خروج كامل</em></span><b class="up">+'+pct(P.t3)+'</b><small>'+money(P.t3)+'</small></div>'
@@ -1999,7 +2019,7 @@ function card(a,i){
   +'<div class="cc-out" data-cc-out="'+c.id+'">⏳ يحسب...</div>'
   +'</section>';
   const pv=PREV[c.id]; const fl=pv==null?'':(a.price>pv?' flash-up':a.price<pv?' flash-down':'');
-  const EST=entryState(a); const LOCKED=(EST==='void'||EST==='miss');
+  const EST=entryState(a); const LOCKED=(EST==='void'||EST==='miss'||EST==='gone'||EST==='done');
   const ALLOCK=LOCKED;
 
   return '<article class="ai-card enter g-'+a.grade+(LOCKED?' card-locked':'')+'" data-id="'+c.id+'" style="animation-delay:'+Math.min((i||0)*60,600)+'ms">'
@@ -2032,7 +2052,7 @@ function card(a,i){
   +'<button class="tv-btn ghost" data-tv="'+c.id+'">🔍 شارت حي</button></div></div>'
   +'</details>'
   +'<div class="ai-foot">اضغط البطاقة للنسخ • وقف إلزامي • ليست نصيحة مالية</div>'
-  +(LOCKED?'<div class="card-lock"><span>🔒</span><b>بطاقة مقفلة — لا دخول</b><small>السعر بعيد عن نقطة الدخول • تُفتح بعودة صاعدة آمنة</small></div>':'')
+  +(LOCKED?(EST==='done'?'<div class="card-lock"><span>🔒</span><b>بطاقة مقفلة — ضربت الأهداف</b><small>الدخول كان '+money(P.entry)+' • السعر الآن '+money(a.c.current_price||P.entry)+' • الدخول الآن متأخر</small><button class="accept-btn" data-accept="'+c.id+'">✅ أوافق على الدخول — افتح الصفقة</button></div>':'<div class="card-lock"><span>🔒</span><b>بطاقة مقفلة — فاتتك نقطة الدخول</b><small>الدخول '+money(P.entry)+' • السعر الآن '+money(a.c.current_price||P.entry)+'</small><button class="accept-btn" data-accept="'+c.id+'">✅ أوافق على الدخول — افتح الصفقة</button></div>'):'')
   +'</article>';
 }
 function render(){
@@ -2113,6 +2133,15 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeTV(); });
 function bindCards(g,all){
   g.querySelectorAll('[data-tv]').forEach(b=>{ b.onclick=(e)=>{ e.stopPropagation(); openTV(b.dataset.tv); }; });
   g.querySelectorAll('[data-track]').forEach(b=>{ b.onclick=(e)=>{ e.stopPropagation(); try{ if(window.GUARDIAN) window.GUARDIAN.track(b.dataset.track); }catch(err){} }; });
+  g.querySelectorAll('[data-accept]').forEach(b=>{ b.onclick=(e)=>{ e.stopPropagation(); try{
+    const id=b.dataset.accept;
+    if(window.ENTRY_ACCEPT) window.ENTRY_ACCEPT.add(id);
+    try{ const ax=all.find(x=>x.c.id===id); if(ax){ const txt=(ax.c.symbol||'').toUpperCase()+' | دخول '+money(ax.entry)+' | هـ1 '+money(ax.t1)+' | هـ2 '+money(ax.t2)+' | هـ3 '+money(ax.t3)+' | وقف '+money(ax.sl)+' | ثقة '+ax.score+'%'; navigator.clipboard.writeText(txt); } }catch(_){}
+    try{ const lg=JSON.parse(localStorage.getItem('ai_sess_v1')||'[]'); lg.unshift({t:Date.now(),who:'مستخدم',action:'موافقة دخول '+id}); localStorage.setItem('ai_sess_v1',JSON.stringify(lg.slice(0,200))); }catch(_){}
+    if(window.DEALS&&window.DEALS.render) window.DEALS.render();
+    try{ const el2=g.querySelector('.ai-card[data-id="'+id+'"]'); if(el2){ el2.style.outline='2px solid #16c784'; setTimeout(()=>{ el2.style.outline=''; },1200); } }catch(_){}
+  }catch(err){} }; });
+  g.querySelectorAll('[data-unaccept]').forEach(b=>{ b.onclick=(e)=>{ e.stopPropagation(); try{ if(window.ENTRY_ACCEPT) window.ENTRY_ACCEPT.del(b.dataset.unaccept); if(window.DEALS&&window.DEALS.render) window.DEALS.render(); }catch(err){} }; });
   try{ if(window.CALC) window.CALC.sync(); }catch(e){}
   try{ if(window.GUARDIAN) window.GUARDIAN.renderInto(); }catch(e){}
 }
