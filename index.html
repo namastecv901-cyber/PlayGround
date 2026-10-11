@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v95.0 موقع مدفوع)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v96.0 بوابة الزوار)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1194,6 +1194,17 @@ body{max-width:680px;margin:0 auto;padding:12px}
 .code-box{margin:14px;padding:12px;border-radius:14px;background:#00000055;border:1px dashed #8b5cf677;text-align:center}
 .code-box input{direction:ltr;text-align:center;font-weight:900;letter-spacing:2px;width:200px}
 .free-badge{display:block;text-align:center;font-weight:900;font-size:.78rem;color:#04120a;background:linear-gradient(90deg,#1fe196,#f0b90b);border-radius:10px;padding:6px;margin-bottom:10px}
+/* ===== v96 LEAD: بوابة الاسم والإيميل + إخفاء الإعدادات عن غير المالك ===== */
+.free-gate{margin:12px 0;padding:18px;border-radius:18px;background:linear-gradient(160deg,#0d2418,#0b0d15 65%);border:2px solid #1fe19688;text-align:center;box-shadow:0 0 30px #16c78422}
+.free-gate h3{color:#1fe196;font-size:1.05rem}
+.free-gate p{color:var(--mut);font-size:.8rem;margin:6px 0 10px}
+.free-gate .fg-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.free-gate input{min-width:150px}
+body.owner .only-guest{display:none!important}
+body:not(.guest) .only-guest{display:none!important}
+body.guest #botPanel,body.sub #botPanel{display:none}
+body.guest .calc-bar label,body.sub .calc-bar label{opacity:.45;pointer-events:none}
+.lead-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#ffffff06;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.78rem;margin-bottom:6px}
 .ai-card.card-guestlock{position:relative}
 .card-guestlock .glock{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:#06070bd8;backdrop-filter:blur(3px);border-radius:20px;text-align:center;padding:18px}
 .card-guestlock .glock span{font-size:2.4rem}
@@ -1218,7 +1229,7 @@ body.guest .bot-closed-wrap{display:none}
 .pin-row{display:flex;gap:8px}.pin-row input{flex:1;text-align:center;letter-spacing:3px}
 </style>
 </head>
-<body class="single-col">
+<body class="single-col guest">
 <div class="orbs"><i class="o1"></i><i class="o2"></i><i class="o3"></i></div>
 
 <div class="lux-hero">
@@ -1359,6 +1370,16 @@ body.guest .bot-closed-wrap{display:none}
   <div class="strong-head"><h2>🔥 الصعود المؤكد — القوية وحدها</h2><span class="strong-count" id="strongCount">0</span></div>
   <div class="sig-grid" id="strongGrid" style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px"></div>
 </div>
+<div class="free-gate only-guest" id="freeGate">
+  <h3>🎁 3 صفقات مجانية باسمك</h3>
+  <p>أدخل اسمك وإيميلك لفتح الصفقات المجانية فوراً — هكذا تبدو الصفقة الحقيقية</p>
+  <div class="fg-row">
+    <input id="leadName" type="text" placeholder="الاسم الكريم" maxlength="30">
+    <input id="leadEmail" type="text" inputmode="email" dir="ltr" placeholder="email@example.com" maxlength="60">
+    <button class="btn btn-primary btn-sm" id="leadGo">افتح هديتي 🎁</button>
+  </div>
+  <div class="muted" id="leadMsg" style="font-size:.76rem;margin-top:6px"></div>
+</div>
 <div class="sig-grid" id="dealsGrid" style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:10px"><div class="loading">🧠 الذكاء يحلل 500 عملة...</div></div>
 <div class="owner-modal" id="ownerModal">
   <div class="owner-card">
@@ -1371,6 +1392,7 @@ body.guest .bot-closed-wrap{display:none}
     <div id="ownerDash" hidden>
       <div class="owner-tabs">
         <button class="chip active" data-otab="subs">👥 المشتركون</button>
+        <button class="chip" data-otab="leads">📩 الزوار</button>
         <button class="chip" data-otab="log">📜 السجل</button>
         <button class="chip" data-otab="set">⚙️ الإعدادات</button>
         <button class="chip" data-otab="lock" id="ownerLock">🔒 قفل</button>
@@ -1380,6 +1402,7 @@ body.guest .bot-closed-wrap{display:none}
         <div id="subsList"></div>
       </div>
       <div data-opane="log" hidden><ul class="log-list" id="sessLog"></ul></div>
+      <div data-opane="leads" hidden><div id="leadsList"></div></div>
       <div data-opane="set" hidden>
         <label>رابط الدفع ($30)</label><input id="setPay" type="text" dir="ltr" placeholder="https://...">
         <label>رابط التواصل (تيليجرام/واتساب)</label><input id="setContact" type="text" dir="ltr" placeholder="https://t.me/...">
@@ -3425,9 +3448,11 @@ window.AI_RESYNC=cycles;
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
-const K_OWNER='ai_owner_v1', K_SUBS='ai_subs_v1', K_SESS='ai_sess_v1', K_ME='ai_me_v1';
+const K_OWNER='ai_owner_v1', K_SUBS='ai_subs_v1', K_SESS='ai_sess_v1', K_ME='ai_me_v1', K_LEAD='ai_lead_v1', K_LEADS='ai_leads_v1';
 const FREE_N=3, SUB_DAYS=30, PRICE=30;
-const M={mode:'guest',name:'',until:0};
+const M={mode:'guest',name:'',until:0,lead:null};
+function getLead(){ try{ return JSON.parse(localStorage.getItem(K_LEAD)||'null'); }catch(e){ return null; } }
+function getLeads(){ try{ return JSON.parse(localStorage.getItem(K_LEADS)||'[]'); }catch(e){ return []; } }
 async function sha(s){ try{ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('salt::'+s)); return [...new Uint8Array(b)].map(x=>('0'+x.toString(16)).slice(-2)).join(''); }catch(e){ let h=0; for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return 'f'+(h>>>0).toString(16); } }
 function getOwner(){ try{ return JSON.parse(localStorage.getItem(K_OWNER)||'null'); }catch(e){ return null; } }
 function saveOwner(o){ try{ localStorage.setItem(K_OWNER,JSON.stringify(o)); }catch(e){} }
@@ -3461,9 +3486,23 @@ function gateCards(){
       const nb=c.querySelector('.free-badge'); if(nb) nb.remove();
     });
     if(M.mode!=='guest') return;
-    const buys=cards.filter(c=>c.classList.contains('g-buy')||c.classList.contains('g-strong'));
+    const lead=getLead();
+    const cardsAll=[...document.querySelectorAll('.ai-card')];
+    if(!lead){
+      cardsAll.forEach(c=>{
+        c.classList.add('card-guestlock');
+        const d=document.createElement('div'); d.className='glock';
+        d.innerHTML='<span>🎁</span><b>3 صفقات مجانية باسمك</b><small>أدخل اسمك وإيميلك بالأعلى لفتحها فوراً</small>';
+        const btn=document.createElement('button'); btn.className='btn btn-primary btn-sm'; btn.textContent='🎁 افتح هديتي';
+        btn.onclick=()=>{ const f=$('freeGate'); if(f) f.scrollIntoView({behavior:'smooth'}); const n=$('leadName'); if(n) n.focus(); };
+        d.appendChild(btn);
+        c.appendChild(d);
+      });
+      return;
+    }
+    const buys=cardsAll.filter(c=>c.classList.contains('g-buy')||c.classList.contains('g-strong'));
     const free=buys.slice(0,FREE_N);
-    free.forEach(c=>{ const d=document.createElement('div'); d.className='free-badge'; d.textContent='🎁 صفقة مجانية (1 من '+FREE_N+') — هكذا تبدو الصفقة'; c.prepend(d); });
+    free.forEach(c=>{ const d=document.createElement('div'); d.className='free-badge'; d.textContent='🎁 هدية لـ '+lead.name+' — هكذا تبدو الصفقة الحقيقية'; c.prepend(d); });
     cards.forEach(c=>{
       if(free.includes(c)) return;
       c.classList.add('card-guestlock');
@@ -3523,12 +3562,19 @@ function paintLog(){
     ul.innerHTML=l.length?l.map(h=>'<li><time>'+new Date(h.t).toLocaleString('ar')+'</time> <b>'+h.who+'</b> — '+h.action+'</li>').join(''):'<li class="muted">لا نشاط بعد</li>';
   }catch(e){}
 }
+function paintLeads(){
+  try{
+    const box=$('leadsList'); if(!box) return;
+    const ls=getLeads();
+    box.innerHTML=ls.length?ls.slice(0,100).map(x=>'<div class="lead-row"><b>'+x.name+'</b><span class="mut">'+x.email+'</span><span class="mut" style="margin-inline-start:auto">'+new Date(x.at).toLocaleString('ar')+'</span></div>').join(''):'<div class="muted" style="font-size:.8rem">لا زوار بعد — شارك رابطك وستظهر بياناتهم هنا</div>';
+  }catch(e){}
+}
 function openOwner(){
   $('ownerModal').classList.add('open');
   const o=getOwner();
   $('ownerLogin').hidden=!!(M.mode==='owner');
   $('ownerDash').hidden=!(M.mode==='owner');
-  if(M.mode==='owner'){ paintSubs(); paintLog(); const s=$('setPay'); if(s){ const oo=getOwner()||{}; s.value=oo.pay||''; $('setContact').value=oo.contact||''; $('setContactName').value=oo.contactName||''; } }
+  if(M.mode==='owner'){ paintSubs(); paintLog(); paintLeads(); const s=$('setPay'); if(s){ const oo=getOwner()||{}; s.value=oo.pay||''; $('setContact').value=oo.contact||''; $('setContactName').value=oo.contactName||''; } }
   else { $('pinMsg').textContent=o?'أدخل PIN للدخول':'أنت المالك؟ اختر PIN جديداً الآن (يُحفظ في جهازك فقط)'; }
 }
 document.addEventListener('DOMContentLoaded',()=>{
@@ -3547,7 +3593,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('mbCode').onclick=()=>{ const p=$('paywall'); if(p){ p.style.display=''; p.scrollIntoView({behavior:'smooth'}); const i=$('codeInput'); if(i) i.focus(); } };
   $('mbOwner').onclick=openOwner;
   $('ownerX').onclick=()=>$('ownerModal').classList.remove('open');
-  document.querySelectorAll('[data-otab]').forEach(b=>{ b.onclick=()=>{ if(b.id==='ownerLock'){ M.mode='guest'; M.name=''; saveMe(); paint(); $('ownerModal').classList.remove('open'); return; } document.querySelectorAll('[data-otab]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); document.querySelectorAll('[data-opane]').forEach(p=>p.hidden=p.dataset.opane!==b.dataset.otab); if(b.dataset.otab==='log') paintLog(); }; });
+  document.querySelectorAll('[data-otab]').forEach(b=>{ b.onclick=()=>{ if(b.id==='ownerLock'){ M.mode='guest'; M.name=''; saveMe(); paint(); $('ownerModal').classList.remove('open'); return; } document.querySelectorAll('[data-otab]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); document.querySelectorAll('[data-opane]').forEach(p=>p.hidden=p.dataset.opane!==b.dataset.otab); if(b.dataset.otab==='log') paintLog(); if(b.dataset.otab==='leads') paintLeads(); }; });
   $('pinGo').onclick=async()=>{
     const v=($('pinInput').value||'').trim(); if(v.length<4){ $('pinMsg').textContent='PIN من 4 أحرف على الأقل'; return; }
     const h=await sha(v), o=getOwner();
@@ -3560,6 +3606,22 @@ document.addEventListener('DOMContentLoaded',()=>{
     const m=$('codeMsg');
     if(r.ok){ m.textContent='✅ تم التفعيل — أهلاً '+M.name; m.style.color='#1fe196'; }
     else { m.textContent='❌ '+r.why; m.style.color='#ff7b85'; sess('زائر','كود فاشل'); }
+  };
+  $('leadGo').onclick=()=>{
+    const nm=($('leadName').value||'').trim(), em=($('leadEmail').value||'').trim().toLowerCase();
+    const m=$('leadMsg');
+    if(nm.length<2){ m.textContent='❌ أدخل اسمك الكريم'; return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ m.textContent='❌ أدخل إيميلاً صحيحاً'; return; }
+    const lead={name:nm,email:em,at:Date.now()};
+    try{
+      localStorage.setItem(K_LEAD,JSON.stringify(lead));
+      const ls=getLeads();
+      if(!ls.some(x=>x.email===em)) ls.unshift(lead);
+      localStorage.setItem(K_LEADS,JSON.stringify(ls.slice(0,300)));
+    }catch(e){}
+    m.textContent='✅ تم '+nm+' — صفقاتك المجانية مفتوحة بالأسفل 🎁'; m.style.color='#1fe196';
+    sess(nm,'فتح الصفقات المجانية ('+em+')');
+    gateCards();
   };
   $('subAdd').onclick=()=>{
     const nm=($('subName').value||'').trim()||'مشترك';
