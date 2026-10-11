@@ -20,6 +20,7 @@ const CFG = {
   sec: process.env.BINANCE_SECRET || process.env.SECRET || '',
   stake: parseFloat(process.env.STAKE_USD || '20'),
   tp: parseFloat(process.env.TP_USD || '0.7'),
+  minTp: parseFloat(process.env.MIN_TP_USD || '0.3'),
   max: parseInt(process.env.MAX_TRADES || '3', 10),
   minVol: parseFloat(process.env.MIN_VOL_USD || '20000000'),
   poll: Math.max(15, parseInt(process.env.POLL_SEC || '60', 10)),
@@ -141,7 +142,7 @@ async function sellPart(st, frac, why, live) {
   st.sold += q; st.rev += q * live;
   if (why === 'T1') st.s1 = true;
   if (why === 'T2') st.s2 = true;
-  if (st.sold >= st.qty * 0.999 || why === 'STOP' || why === 'T3' || why === 'TP') {
+  if (st.sold >= st.qty * 0.999 || why === 'STOP' || why === 'T3' || why === 'TP' || why === 'INST') {
     st.open = false; st.closeWhy = why; st.closeAt = Date.now();
     const pnl = st.rev - st.qty * st.entry;
     S.profit += pnl; S.closed++; S.dayPnl += pnl; S.equity += pnl;
@@ -159,7 +160,11 @@ async function manage(st, live) {
   if (!st || !st.open) return;
   st.peak = Math.max(st.peak || st.entry, live);
   const pnlNow = (st.rev || 0) - (st.sold || 0) * st.entry + (live - st.entry) * (st.qty - (st.sold || 0));
+  st.peakPnl = Math.max(st.peakPnl || 0, pnlNow);
+  // تجميع مستمر: أي ربح من MIN_TP (0.30$) حتى TP (0.70$) يُغلق فوراً ويتراكم لهدف اليوم
   if (pnlNow >= CFG.tp) { const rem = st.qty - (st.sold || 0); if (rem > 0) await sellPart(st, rem / st.qty, 'TP', live); return; }
+  if (pnlNow >= CFG.minTp) { const rem = st.qty - (st.sold || 0); if (rem > 0) await sellPart(st, rem / st.qty, 'INST', live); return; }
+  if (pnlNow >= 0.3 && (st.peakPnl || 0) >= 0.7 && pnlNow < (st.peakPnl || 0) * 0.8) { const rem = st.qty - (st.sold || 0); if (rem > 0) await sellPart(st, rem / st.qty, 'INST', live); return; }
   if (live >= st.t1 && !st.s1) await sellPart(st, 0.30, 'T1', live);
   if (st.open && live >= st.t2 && !st.s2) await sellPart(st, 0.50, 'T2', live);
   if (!st.open) return;
@@ -244,6 +249,7 @@ async function selftest() {
   const p = makePlan(100, K.map(r => r[4]));
   ok('plan-levels', p.t3 > p.t2 && p.t2 > p.t1 && p.t1 > p.entry && p.sl < p.entry);
   const _tp = CFG.tp; CFG.tp = 1e9;
+  const _minTp = CFG.minTp; CFG.minTp = 1e9;
   const st = { id: 'm5:T', sym: 'TUSDT', coin: 'T', qty: 1, entry: 100, t1: 101.5, t2: 102.5, t3: 104, sl: 99, step: 0.001, open: true, s1: false, s2: false, sold: 0, rev: 0, mode: 'paper', t0: Date.now(), stake: 100 };
   S.trades['m5:T'] = st;
   await manage(st, 101.6);
@@ -252,7 +258,7 @@ async function selftest() {
   ok('T2-partial-50%', st.s2 === true && st.sold > 0.3 && st.open === true);
   await manage(st, 104.5);
   ok('T3-full-close', st.open === false && st.closeWhy === 'T3');
-  CFG.tp = _tp;
+  CFG.tp = _tp; CFG.minTp = _minTp;
   ok('TP-cap-closes-early', await (async () => { const sx = { id: 'm5:TP', sym: 'PUSDT', coin: 'P', qty: 100, entry: 10, t1: 10.5, t2: 11, t3: 12, sl: 9.9, step: 1, open: true, s1: false, s2: false, sold: 0, rev: 0, mode: 'paper', t0: Date.now(), stake: 1000 }; S.trades['m5:TP'] = sx; await manage(sx, 10.008); return sx.open === false && sx.closeWhy === 'TP'; })());
   const st2 = { id: 'm5:T2', sym: 'XUSDT', coin: 'X', qty: 10, entry: 100, t1: 101.5, t2: 102.5, t3: 104, sl: 99, step: 1, open: true, s1: false, s2: false, sold: 0, rev: 0, mode: 'paper', t0: Date.now(), stake: 1000 };
   S.trades['m5:T2'] = st2;
