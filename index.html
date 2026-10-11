@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v105.0 نبض لا يتجمد)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v106.0 واجهة الرادار)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1194,6 +1194,36 @@ body{max-width:680px;margin:0 auto;padding:12px}
 .bot-chal-top{display:flex;justify-content:space-between;font-size:.8rem;font-weight:900;color:#ffb066;margin-bottom:6px}
 .bot-chal-bar{height:10px;background:#00000055;border-radius:99px;overflow:hidden}
 .bot-chal-bar i{display:block;height:100%;background:linear-gradient(90deg,#ff8a3d,#f0b90b);border-radius:99px;transition:width .8s ease}
+/* ===== v106 LAYOUT: شريط أسعار + رادار + تنبيهات + شبكة 4 أعمدة ===== */
+body{max-width:1280px}
+#dealsGrid,#newGrid,#strongGrid{grid-template-columns:repeat(4,1fr)!important;gap:12px!important}
+@media(max-width:1100px){#dealsGrid,#newGrid,#strongGrid{grid-template-columns:repeat(3,1fr)!important}}
+@media(max-width:860px){#dealsGrid,#newGrid,#strongGrid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:620px){#dealsGrid,#newGrid,#strongGrid{grid-template-columns:1fr!important}}
+.ai-card{min-width:0}
+.ai-card .live-row canvas.spark{width:100%}
+.ai-top b{font-size:1.02rem}
+.ai-top small{font-size:.68rem}
+.toolbar-btns{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.toolbar-btns .chip{flex:1;white-space:nowrap;padding:10px 16px;font-size:.88rem;border-radius:12px}
+.tick-wrap{position:sticky;top:0;z-index:60;background:#06070bee;border-bottom:1px solid var(--line);margin:0 -12px;padding:6px 12px}
+.radar-panel{background:linear-gradient(135deg,#0e1a30,#0b0d15 65%);border:1px solid #4f7cff44;border-radius:18px;padding:14px;margin:12px 0}
+.radar-panel h2{font-size:1.1rem;margin-bottom:2px}
+.radar-panel .sub{color:var(--mut);font-size:.76rem;margin-bottom:10px}
+.stat-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+@media(max-width:860px){.stat-cards{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.stat-cards{grid-template-columns:repeat(2,1fr)}}
+.stat-card{background:#00000044;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stat-card small{color:var(--mut);font-size:.66rem;display:block}
+.stat-card b{font-size:1.15rem;color:#f6e27a}
+.alerts-panel{background:#0b0d15cc;border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0}
+.alerts-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.alerts-head h3{font-size:1rem}
+.alerts-head small{margin-inline-start:auto;color:var(--mut);font-size:.72rem}
+#radarFeed{display:flex!important;flex-direction:column;gap:8px;max-height:260px;overflow:auto;list-style:none;margin:0;padding:0}
+#radarFeed li{display:flex;gap:10px;align-items:center;background:#ffffff06;border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:.8rem}
+#radarFeed li img{width:26px;height:26px;border-radius:50%}
+#radarFeed li time{margin-inline-start:auto;color:var(--mut);font-size:.7rem;white-space:nowrap}
 /* ===== v61 SECTIONS: الصعود الجديد وحده + المؤكد وحده ===== */
 .new-sec{margin:12px 0 6px;padding:12px;border-radius:18px;background:linear-gradient(135deg,#0d1a2c,#0b0d15 60%);border:2px solid #ff9f2e66}
 .new-head{display:flex;align-items:center;gap:10px}
@@ -1282,6 +1312,7 @@ body.linkmode #masterFab,body.linkmode #mbOwner{display:none!important}
 </head>
 <body class="single-col guest">
 <div class="orbs"><i class="o1"></i><i class="o2"></i><i class="o3"></i></div>
+<div class="tick-wrap"><div class="live-ticker" style="margin:0"><div class="tick-mask"><div class="tick-move" id="tickMarquee"></div></div></div></div>
 
 <div class="lux-hero">
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:relative;z-index:1">
@@ -1345,7 +1376,7 @@ body.linkmode #masterFab,body.linkmode #mbOwner{display:none!important}
 </div>
 
 <div id="msgBox"></div>
-<ul id="radarFeed" style="display:none"></ul><span id="radarCount" style="display:none">0</span>
+<span id="radarCount" style="display:none">0</span>
 
 <div class="calc-bar" id="calcBar">
   <span class="cb-t">🧪 رأس مال تجريبي</span>
@@ -1407,6 +1438,22 @@ body.linkmode #masterFab,body.linkmode #mbOwner{display:none!important}
 </div>
 <div id="botToasts"></div>
 
+<div class="radar-panel" id="radarPanel">
+  <h2>🚨 رادار البامب والدعم</h2>
+  <div class="sub">يفحص السوق لحظة بلحظة — <span id="liveClock">🔴 نبض حي</span></div>
+  <div class="stat-cards">
+    <div class="stat-card"><small>المحللة</small><b><span id="scanCount2">0</span>/500</b></div>
+    <div class="stat-card"><small>فرص حقيقية</small><b id="radarCount2">0</b></div>
+    <div class="stat-card"><small>⭐ قوية</small><b id="statStrong">0</b></div>
+    <div class="stat-card"><small>👀 مراقبة</small><b id="statWatch">0</b></div>
+    <div class="stat-card"><small>🚫 فخ/تجنب</small><b id="statTrap">0</b></div>
+  </div>
+  <div class="sub" style="margin-top:8px"><span id="radarStatus">يبدأ الفحص...</span> • <span id="statusLine">...</span> • 🛡️ محمية <b id="guardCount2b">0</b> • <span id="nextScan">⏳ 60</span></div>
+</div>
+<div class="alerts-panel" id="alertsPanel">
+  <div class="alerts-head"><h3>🔔 تنبيهات الشراء والبيع</h3><small id="alertsTime">آخر تنبيه: —</small></div>
+  <ul id="radarFeed"></ul>
+</div>
 <div class="section-head" style="margin:16px 0 6px"><h2>💎 كل شيء في بطاقة واحدة</h2>
 <p class="muted" id="dealsStatus">...</p></div>
 <div class="toolbar-btns">
@@ -2513,7 +2560,7 @@ function paintCard(card, a){
   }
   // 5) 🔓 قفل ذكي حي بآمان: عودة + صعود أخضر → فك، عودة هابطة/بعيد → مقفل أحمر (بطاقة المكتملة تبقى مقفلة 🔒)
   try{
-    if(card.querySelector('.card-lock.lock-done')){ /* مكتملة — القفل الشامل يبقى */ }
+    if(card.querySelector('.done-banner')||card.classList.contains('card-done')){ /* مكتملة — تبقى بتعتيم خفيف */ }
     else {
     const erow=card.querySelector('.pl-entry');
     if(erow){
@@ -3838,6 +3885,20 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('[data-bot-state]').forEach(()=>{});
 });
 window.MEMBER={get mode(){return M.mode;},unlockSub,paint};
+})();
+</script>
+<script>// 📐 LAYOUT106 — مزامنة عدادات الرادار ووقت آخر تنبيه
+(function(){
+"use strict";
+function copyTxt(a,b){ try{ const x=document.getElementById(a),y=document.getElementById(b); if(x&&y&&x.textContent!==y.textContent) y.textContent=x.textContent; }catch(e){} }
+setInterval(()=>{
+  try{
+    copyTxt('scanCount','scanCount2');
+    copyTxt('guardCount2','guardCount2b');
+    const f=document.getElementById('radarFeed');
+    if(f&&f.firstChild){ const tm=f.querySelector('time'); const at=document.getElementById('alertsTime'); if(at) at.textContent='آخر تنبيه: '+(tm?tm.textContent:'الآن'); }
+  }catch(e){}
+},2000);
 })();
 </script>
 </body>
