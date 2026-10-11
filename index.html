@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v102.0 تحكم الظهور)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v103.0 إشارات لا تموت)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2959,10 +2959,9 @@ function paint(){
   if(cf2) cf2.textContent='🧠 تأكيد: ✅ '+(S.confirmIn||0)+' • 🚫 '+(S.confirmOut||0);
   const rc=$('botRec');
   if(rc){ const d=S.deficit||0; rc.textContent=d>0?('🎯 تعويض متبقي: $'+d.toFixed(2)+' • اليوم: '+(S.dayPnl>=0?'+':'')+'$'+(S.dayPnl||0).toFixed(2)):('🎯 لا خسائر معلقة • اليوم: '+(S.dayPnl>=0?'+':'')+'$'+(S.dayPnl||0).toFixed(2)); }
-  profitLine(); paintLog(); paintEq(); paintEv(); paintClosed(); paintBotStrips(); paintPlans(); paintNow();
+  ['profitLine','paintLog','paintEq','paintEv','paintClosed','paintBotStrips','paintPlans','paintNow','paintChal'].forEach(fn=>{ try{ eval(fn+'()'); }catch(e){ try{ pushErr(fn+': '+(e.message||e),'paint'); }catch(err){} } });
   const pv=$('botPreview');
   if(pv){ try{ const s0=stakeFor(); pv.textContent='📊 الحصة الفعلية للصفقة القادمة: $'+s0.stake.toFixed(2)+(S.sizeMode==='pct'?' (نسبة '+S.sizePct+'% من رأس مال $'+(parseFloat(S.equity)||0).toFixed(2)+')':((S.recOn&&(S.deficit||0)>0&&s0.mult>1)?' (تشمل تعويض ×'+s0.mult+')':' (ثابتة)')); }catch(e){} }
-  paintChal();
 }
 // ---------- 🧠 تأكيد مستقل: تحليل السوق كاملاً وتمييز الوهمي من الحقيقي ----------
 function confirmTrade(p){
