@@ -6,7 +6,8 @@
  *    MODE=testnet BINANCE_KEY=xxx BINANCE_SECRET=yyy node bot-server.js
  *    MODE=live BINANCE_KEY=xxx BINANCE_SECRET=yyy node bot-server.js
  *  متغيرات (اختيارية): BASE_URL STAKE_USD TP_USD MAX_TRADES MIN_VOL_USD
- *    POLL_SEC TOP_N DAILY_MAX_LOSS EQUITY_START TG_BOT TG_CHAT STATE_FILE CYCLES
+ *    POLL_SEC TOP_N DAILY_MAX_LOSS DAILY_GOAL_USD EQUITY_START TG_BOT TG_CHAT STATE_FILE CYCLES
+ *    REINFORCE SPLIT_INIT REIN_DROP REIN_MAX HEARTBEAT_CYCLES
  *  فحص ذاتي: node bot-server.js --selftest
  */
 'use strict';
@@ -26,6 +27,8 @@ const CFG = {
   poll: Math.max(15, parseInt(process.env.POLL_SEC || '60', 10)),
   topN: Math.max(3, parseInt(process.env.TOP_N || '15', 10)),
   dayMaxLoss: parseFloat(process.env.DAILY_MAX_LOSS || '10'),
+  dailyGoal: parseFloat(process.env.DAILY_GOAL_USD || '10'),
+  heartbeat: Math.max(10, parseInt(process.env.HEARTBEAT_CYCLES || '30', 10)),
   equityStart: parseFloat(process.env.EQUITY_START || '100'),
   rein: process.env.REINFORCE !== '0',
   splitInit: Math.min(1, Math.max(0.2, parseFloat(process.env.SPLIT_INIT || '0.5'))),
@@ -155,6 +158,7 @@ async function sellPart(st, frac, why, live) {
     log((pnl >= 0 ? 'CLOSE-WIN' : 'CLOSE-LOSS'), st.coin, '(' + why + ')', (pnl >= 0 ? '+' : '') + pnl.toFixed(2), 'equity=' + S.equity.toFixed(2));
     await tg((pnl >= 0 ? '✅ ' : '🔴 ') + st.coin + ' (' + why + ') ' + (pnl >= 0 ? '+' : '') + pnl.toFixed(2));
     if (S.dayPnl <= -CFG.dayMaxLoss) { log('DAILY-LOSS-LIMIT hit, stopping'); stop(); }
+    if (S.dayPnl >= CFG.dailyGoal) { log('DAILY-GOAL $' + CFG.dailyGoal + ' hit — stopping for today 🏆'); await tg('🏆 هدف اليوم $' + CFG.dailyGoal + ' تحقق — توقف حتى الغد'); stop(); }
   } else {
     saveState();
     log('PART', st.coin, why, 'sold ' + q.toFixed(4) + ' @ ' + live);
@@ -250,6 +254,7 @@ async function cycle(n) {
     }
   }
   log('scanned-klines=' + scanned);
+  if (n % CFG.heartbeat === 0) log('heartbeat: alive, open=' + Object.values(S.trades).filter(t => t && t.open).length + ' equity=$' + S.equity.toFixed(2) + ' dayPnl=' + (S.dayPnl >= 0 ? '+' : '') + S.dayPnl.toFixed(2));
   try {
     const prices = {};
     const syms = [...new Set(Object.values(S.trades).filter(t => t && t.open).map(t => t.sym))];
@@ -272,6 +277,7 @@ function stop() { running = false; }
 async function selftest() {
   let pass = 0, fail = 0;
   const ok = (name, cond) => { if (cond) { pass++; console.log('PASS', name); } else { fail++; console.log('FAIL', name); } };
+  S.dayPnl = 0; S.day = todayUTC(); S.trades = {}; running = true;
   const K = [];
   for (let i = 0; i < 20; i++) { const o = 100 + i * 0.3; K.push([0, o, o + 0.5, o - 0.2, o + 0.4, 1000 + i * 100]); }
   const s1 = m5setup(K.map(r => r.map(String)));
@@ -301,6 +307,12 @@ async function selftest() {
   S.trades['m5:T2'] = st2;
   await manage(st2, 98.5);
   ok('STOP-close', st2.open === false && st2.closeWhy === 'STOP');
+  S.dayPnl = 9.5;
+  running = true;
+  const st3 = { id: 'm5:G', sym: 'GUSDT', coin: 'G', qty: 100, entry: 10, t1: 10.5, t2: 11, t3: 12, sl: 9.9, step: 1, open: true, s1: false, s2: false, sold: 0, rev: 0, mode: 'paper', t0: Date.now(), stake: 1000 };
+  S.trades['m5:G'] = st3;
+  await manage(st3, 10.008);
+  ok('DAILY-GOAL-stop', st3.open === false && running === false && S.dayPnl >= 10);
   console.log(pass + ' passed, ' + fail + ' failed');
   process.exit(fail ? 1 : 0);
 }
@@ -311,7 +323,7 @@ async function main() {
   loadState();
   if (todayUTC() !== S.day) { S.day = todayUTC(); S.dayPnl = 0; }
   await syncTime();
-  log('BOT SERVER start mode=' + CFG.mode + ' base=' + CFG.base + ' stake=$' + CFG.stake + ' tp=$' + CFG.tp + ' max=' + CFG.max + ' equity=$' + S.equity.toFixed(2));
+  log('BOT SERVER start mode=' + CFG.mode + ' base=' + CFG.base + ' stake=$' + CFG.stake + ' tp=$' + CFG.tp + ' max=' + CFG.max + ' goal=$' + CFG.dailyGoal + ' equity=$' + S.equity.toFixed(2));
   let n = 0;
   process.on('SIGINT', () => { log('SIGINT, saving...'); saveState(); process.exit(0); });
   process.on('SIGTERM', () => { log('SIGTERM, saving...'); saveState(); process.exit(0); });

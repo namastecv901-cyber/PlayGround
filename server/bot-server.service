@@ -1,0 +1,29 @@
+# systemd: بديل pm2 — يعيد التشغيل تلقائياً حتى بعد إعادة تشغيل السيرفر نفسه
+# التثبيت (كجذر):
+#   cp server/bot-server.service /etc/systemd/system/tradebot.service
+#   systemctl daemon-reload && systemctl enable --now tradebot
+#   journalctl -u tradebot -f   (لمشاهدة السجل)
+[Unit]
+Description=TradeBot Binance 24/7
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/PlayGround
+ExecStart=/usr/bin/node /root/PlayGround/bot-server.js
+Restart=always
+RestartSec=10
+Environment=MODE=paper
+Environment=STAKE_USD=20
+Environment=TP_USD=0.7
+Environment=MIN_TP_USD=0.3
+Environment=MAX_TRADES=3
+Environment=DAILY_MAX_LOSS=10
+Environment=DAILY_GOAL_USD=10
+Environment=EQUITY_START=100
+Environment=POLL_SEC=60
+
+[Install]
+WantedBy=multi-user.target
