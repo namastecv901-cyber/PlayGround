@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v111.0 ثلاث مجانية وتوصيل الاسم)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v112.0 إصلاح الإعدادات)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3859,6 +3859,28 @@ function paintLeads(){
     box.innerHTML=ls.length?ls.slice(0,100).map(x=>'<div class="lead-row"><b>'+x.name+'</b><span class="mut">'+x.email+'</span><span class="mut" style="margin-inline-start:auto">'+new Date(x.at).toLocaleString('ar')+'</span></div>').join(''):'<div class="muted" style="font-size:.8rem">لا زوار بعد — شارك رابطك وستظهر بياناتهم هنا</div>';
   }catch(e){}
 }
+function paintLinks(){
+    try{
+      const tt=$('todayLinkTxt'); if(!tt) return;
+      const t=dayStr(0), L=getLinks();
+      tt.textContent=guestURL(t);
+      const st=$('todayLinkSt');
+      if(st){ if(L['stop:'+t]){ st.textContent='⛔ موقوف'; st.className='bad'; } else { st.textContent='🟢 نشط'; st.className='ok'; } }
+      const box=$('linksList'); if(!box) return;
+      const days=[];
+      for(let o=0;o>=0-6;o--){ days.push(dayStr(o)); }
+      box.innerHTML=days.map(d=>{
+        const stopped=!!L['stop:'+d];
+        const isT=(d===t);
+        const cls=isT?'<span class="ok">اليوم</span>':(d===dayStr(-1)?'<span class="mut">أمس (مهلة)</span>':'<span class="bad">منتهي تلقائياً</span>');
+        return '<div class="link-row"><b>📅 '+d+'</b>'+cls+(stopped?'<span class="bad">⛔ موقوف يدوياً</span>':'')+'<span style="margin-inline-start:auto;display:flex;gap:4px">'
+        +'<button class="btn btn-sm" data-link-copy="'+d+'">📋</button>'
+        +(isT?'<button class="btn btn-sm" data-link-stop="'+d+'">'+(stopped?'▶ تشغيل':'⏸ إيقاف')+'</button>':'')
+        +'</span></div>';
+      }).join('');
+    }catch(e){}
+  }
+try{ window.__paintLinks=paintLinks; }catch(e){}
 const IS_LINKMODE=(()=>{ try{ return /[?&]guest=1/.test(location.search); }catch(e){ return false; } })();
 function openOwner(){
   if(IS_LINKMODE) return;
@@ -3983,30 +4005,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   window.addEventListener('error',e=>{ pushErr(e.message,'js'); });
   window.addEventListener('unhandledrejection',e=>{ try{ pushErr((e.reason&&e.reason.message)||String(e.reason),'promise'); }catch(err){} });
   setInterval(()=>{ try{ applyVis(); paintErrBadge(); }catch(err){} },5000);
-  function paintLinks(){
-    try{
-      const tt=$('todayLinkTxt'); if(!tt) return;
-      const t=dayStr(0), L=getLinks();
-      tt.textContent=guestURL(t);
-      const st=$('todayLinkSt');
-      if(st){ if(L['stop:'+t]){ st.textContent='⛔ موقوف'; st.className='bad'; } else { st.textContent='🟢 نشط'; st.className='ok'; } }
-      const box=$('linksList'); if(!box) return;
-      const days=[];
-      for(let o=0;o>=0-6;o--){ days.push(dayStr(o)); }
-      box.innerHTML=days.map(d=>{
-        const stopped=!!L['stop:'+d];
-        const isT=(d===t);
-        const cls=isT?'<span class="ok">اليوم</span>':(d===dayStr(-1)?'<span class="mut">أمس (مهلة)</span>':'<span class="bad">منتهي تلقائياً</span>');
-        return '<div class="link-row"><b>📅 '+d+'</b>'+cls+(stopped?'<span class="bad">⛔ موقوف يدوياً</span>':'')+'<span style="margin-inline-start:auto;display:flex;gap:4px">'
-        +'<button class="btn btn-sm" data-link-copy="'+d+'">📋</button>'
-        +(isT?'<button class="btn btn-sm" data-link-stop="'+d+'">'+(stopped?'▶ تشغيل':'⏸ إيقاف')+'</button>':'')
-        +'</span></div>';
-      }).join('');
-    }catch(e){}
-  }
-  try{ window.__paintLinks=paintLinks; }catch(e){}
   document.addEventListener('click',e=>{ try{
-    const c=e.target.closest('[data-link-copy]'); if(c){ try{ const L=getLinks(); const d=c.dataset.linkCopy; const base=location.origin+location.pathname; navigator.clipboard.writeText(base+'?guest=1&d='+d); sess('المالك','نسخ رابط '+d); }catch(err){} return; }
+    const c=e.target.closest('[data-link-copy]'); if(c){ try{ const L=getLinks(); const d=c.dataset.linkCopy; const base=location.origin+location.pathname; let cc=''; try{ const oo=getOwner()||{}; if(oo.contact) cc='&c='+encodeURIComponent(oo.contact); }catch(err2){} navigator.clipboard.writeText(base+'?guest=1&d='+d+cc); sess('المالك','نسخ رابط '+d); }catch(err){} return; }
     const s=e.target.closest('[data-link-stop]'); if(s){ try{ const L=getLinks(); const d=s.dataset.linkStop; if(L['stop:'+d]) delete L['stop:'+d]; else L['stop:'+d]=Date.now(); saveLinks(L); window.__paintLinks(); sess('المالك',(L['stop:'+d]?'إيقاف رابط ':'تشغيل رابط ')+d); }catch(err){} return; }
   }catch(err){} });
   $('todayLinkCopy').onclick=()=>{ try{ navigator.clipboard.writeText($('todayLinkTxt').textContent); sess('المالك','نسخ رابط اليوم'); }catch(e){} };
