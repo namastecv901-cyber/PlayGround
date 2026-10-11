@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v120.0 حذف المكتملة وتحديد القفل)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v121.0 خطط روبوت جديدة)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2587,7 +2587,6 @@ function ensureRail(card, a, P, live){
   const t2hit = (pos && pos.t2hit) || live >= P.t2;
   const dot = pctPos(sl, sl, P.t3, live);
   const stopP = pctPos(sl, sl, P.t3, effSL);
-  const entryP = pctPos(sl, sl, P.t3, entry);
   const t1P = pctPos(sl, sl, P.t3, P.t1), t2P = pctPos(sl, sl, P.t3, P.t2);
   const secs = (LIVE.tick % 60);
   // مرحلة التعبئة التدريجية حتى الأخير
@@ -2600,13 +2599,12 @@ function ensureRail(card, a, P, live){
     +'<div class="lr-track">'
     +'<div class="lr-fill '+stage+'" style="width:'+dot.toFixed(1)+'%"></div>'
     +'<div class="lr-stop'+(t1hit?' moved':'')+'" style="left:'+stopP.toFixed(1)+'%"></div>'
-    +'<div class="lr-entry" style="left:'+entryP.toFixed(1)+'%"></div>'
     +'<div class="lr-t'+(t1hit?' hit':'')+'" data-l="هـ1" style="left:'+t1P.toFixed(1)+'%"></div>'
     +'<div class="lr-t'+(t2hit?' hit':'')+'" data-l="هـ2" style="left:'+t2P.toFixed(1)+'%"></div>'
     +'<div class="lr-t" data-l="هـ3" style="left:99%"></div>'
     +'<div class="lr-dot" style="left:'+dot.toFixed(1)+'%"></div>'
     +'</div>'
-    +'<div class="lr-scale"><span>🛡 <b>'+money(effSL)+'</b></span><span>دخول <b>'+money(entry)+'</b></span><span>🎯 <b>'+money(P.t3)+'</b></span></div>';
+    +'<div class="lr-scale"><span>🛡 <b>'+money(effSL)+'</b></span><span>🎯 <b>'+money(P.t3)+'</b></span></div>';
   return {t1hit, effSL};
 }
 function ensureGuardBanner(card, a, P, live, t1hit){
@@ -3112,7 +3110,10 @@ const PLANS=[
  {id:'boom',name:'🔥 انفجار — هدف 1',desc:'دخول بطاقة الانفجار فقط • ربح 0.30–0.60 حسب الصعود • هدف 1',lvl:'قوي',cfg:{quick:true,fastOnly:false,instant:false,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
  {id:'split',name:'➗ تقسيم الدخول',desc:'الدخول على 3 دفعات (50% + 25% + 25%) • متوسط سعري أفضل • خروج 0.30$+',lvl:'أقوى',cfg:{quick:false,fastOnly:false,instant:true,instantMin:0.3,tpCap:0.7,full:false,noLoss:true,splitInit:0.5,reinforce:true,reinDrop:0.01,reinMax:2,dblWin:false}},
  {id:'boost',name:'🚀 تعزيز — ربح صغير أو ضعف',desc:'تعزيز عند كل هبوط 0.8% (حتى 3) • يربح صغيراً أو ضعفاً عند الارتداد',lvl:'أقوى+',cfg:{quick:false,fastOnly:false,instant:true,instantMin:0.3,tpCap:0.7,full:false,noLoss:true,splitInit:0.5,reinforce:true,reinDrop:0.008,reinMax:3,dblWin:true}},
- {id:'beast',name:'👑 الوحش — انفجار + تعزيز',desc:'دخول الانفجار فقط + تعزيز حتى 3 مرات + هدف مضاعف بعد التعزيز',lvl:'الأقوى 👑',cfg:{quick:true,fastOnly:false,instant:false,full:false,noLoss:true,splitInit:0.4,reinforce:true,reinDrop:0.008,reinMax:3,dblWin:true}}
+ {id:'beast',name:'👑 الوحش — انفجار + تعزيز',desc:'دخول الانفجار فقط + تعزيز حتى 3 مرات + هدف مضاعف بعد التعزيز',lvl:'الأقوى 👑',cfg:{quick:true,fastOnly:false,instant:false,full:false,noLoss:true,splitInit:0.4,reinforce:true,reinDrop:0.008,reinMax:3,dblWin:true}},
+ {id:'sniper',name:'🎯 قناص الفريم — 15m وهدف 1',desc:'صفقات 15m السريعة فقط • بيع الكل عند هدف 1 • خاطف وسريع',lvl:'قوي',cfg:{quick:true,fastOnly:true,instant:false,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
+ {id:'runner',name:'🐎 دع الربح يركض',desc:'خروج متدرج T1/T2/الأخير • سقف ربح $2 • يترك الرابحة تكبر',lvl:'أقوى',cfg:{quick:false,fastOnly:false,instant:false,full:true,tpCap:2.0,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
+ {id:'diamond',name:'💎 ماسي — صبر وتعزيز',desc:'دخول 50% + تعزيز حتى مرتين + إكمال حتى الهدف الأخير',lvl:'الأقوى',cfg:{quick:false,fastOnly:false,instant:false,full:true,tpCap:1.5,noLoss:true,splitInit:0.5,reinforce:true,reinDrop:0.01,reinMax:2,dblWin:false}}
 ];
 function applyPlan(id,silent){
   const pl=PLANS.find(x=>x.id===id); if(!pl) return false;
