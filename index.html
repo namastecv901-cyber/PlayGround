@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 بطاقة واحدة: ذكاء + حاسبة + حارس (v73.0 المكتملة بالصافي)</title>
+<title>🧠 بطاقة واحدة: ذكاء + حاسبة + حارس (v74.0 الروبوت أولاً)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2938,7 +2938,8 @@ function bind(){
   document.addEventListener('change',e=>{ readField(e.target,false); });
 }
 document.addEventListener('DOMContentLoaded',()=>{ load(); setInputs(); bind(); paint(); holdWake(); setInterval(()=>{ if(S.enabled) tick(); profitLine(); },6000); setInterval(paint,10000); setInterval(()=>{ try{ paintEq(); }catch(e){} },2000);
-  if(S.autoResume&&S.wasEnabled){ log('🔁 استئناف تلقائي بعد إعادة الفتح — الروبوت يواصل بدون توقف (مزامنة الصفقات المفتوحة)'); startBot(true); }
+  // 🤖 الروبوت يشتغل أولاً — تشغيل تلقائي فوري قبل كل شيء
+  if(S.autoResume){ log('▶ الروبوت يشتغل أولاً — تشغيل تلقائي'); startBot(true); }
 });
 window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan};
 })();
