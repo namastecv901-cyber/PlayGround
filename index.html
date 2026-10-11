@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v105.0 نبض لا يتجمد)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v106.0 واجهة 4x4)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -996,6 +996,41 @@ body>*{position:relative;z-index:1}
 @keyframes glow{0%,100%{box-shadow:none}50%{box-shadow:0 0 14px #f0b90b44}}
 .guard-move{animation-duration:2s}
 .live-pill i{animation-duration:2.4s}
+/* ===== v105 STATIC: بطاقات ثابتة تماماً بدون أي نبض أو حركة ===== */
+.ai-card,.ai-card *{animation:none!important;transition:none!important}
+.ai-card{opacity:1!important;transform:none!important}
+.ai-card:hover{transform:none!important}
+/* ===== v106 DASH: واجهة مثل الصورة + شبكة 4 أعمدة ===== */
+@media(min-width:1100px){body{max-width:1360px}}
+@media(min-width:700px) and (max-width:1099px){body{max-width:1000px}}
+.price-tape{position:sticky;top:0;z-index:60;background:#06070bee;border-bottom:1px solid #d4af1f33;padding:6px 0}
+.price-tape .tk-item{font-size:.74rem}
+.dash-tabs{position:sticky;top:33px;z-index:59;display:flex;gap:8px;overflow-x:auto;padding:10px 2px;background:linear-gradient(180deg,var(--bg) 85%,transparent)}
+.dash-tabs button{flex:0 0 auto;border:1px solid var(--line);background:#ffffff08;color:var(--mut);border-radius:12px;padding:9px 16px;font-family:inherit;font-weight:800;font-size:.84rem;cursor:pointer;white-space:nowrap}
+.dash-tabs button.on{background:var(--grad);color:#14100a;border-color:transparent}
+.dash-tabs button.warn-on{background:#ea394322;border-color:#ea394377;color:#ff7b85}
+.radar-dash{margin:12px 0;padding:16px;border-radius:20px;background:linear-gradient(160deg,#10131fe6,#0b0d15e6);border:1px solid #d4af1f33}
+.radar-dash h2{font-size:1.2rem}
+.radar-dash>p{color:var(--mut);font-size:.8rem;margin:4px 0 12px}
+.rd-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.rd-stat{background:#00000044;border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center}
+.rd-stat small{color:var(--mut);font-size:.7rem;display:block}
+.rd-stat b{font-size:1.5rem;color:#f6e27a;display:block;margin-top:4px}
+.rd-stat.hot b{color:#ffab6e}
+.alerts{margin:0 0 14px}
+.alerts-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.alerts-head h3{font-size:1rem}
+.alerts-head small{color:var(--mut);margin-inline-start:auto;font-size:.74rem}
+.alert-feed{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;max-height:300px;overflow:auto}
+.alert-feed li{display:flex;gap:10px;align-items:center;background:#00000044;border:1px solid var(--line);border-radius:12px;padding:9px 13px;font-size:.8rem;font-weight:700}
+.alert-feed li img{width:24px;height:24px;border-radius:50%}
+.alert-feed li.buy{border-inline-start:4px solid #16c784}
+.alert-feed li.sell{border-inline-start:4px solid #ea3943}
+.alert-feed li time{margin-inline-start:auto;color:var(--mut);font-size:.68rem;white-space:nowrap}
+.alert-feed .ap{color:#8fa9ff}
+@media(min-width:1100px){#dealsGrid,#newGrid,#strongGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}}
+@media(min-width:700px) and (max-width:1099px){#dealsGrid,#newGrid,#strongGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}}
+@media(max-width:520px){.rd-stats{grid-template-columns:1fr 1fr}.dash-tabs{top:29px}}
 .pl-entry.is-done{background:#4f7cff14;border-color:#4f7cff55}
 .pl-entry.is-done span,.pl-entry.is-done b{color:#8fa9ff}
 .lock.blue{background:#4f7cff26;border-color:#4f7cff66;color:#8fa9ff}
@@ -1282,6 +1317,7 @@ body.linkmode #masterFab,body.linkmode #mbOwner{display:none!important}
 </head>
 <body class="single-col guest">
 <div class="orbs"><i class="o1"></i><i class="o2"></i><i class="o3"></i></div>
+<div class="price-tape"><div class="tick-mask"><div class="tick-move" id="tickMarquee"></div></div></div>
 
 <div class="lux-hero">
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:relative;z-index:1">
@@ -1311,6 +1347,15 @@ body.linkmode #masterFab,body.linkmode #mbOwner{display:none!important}
     <button class="btn btn-ghost btn-sm" id="mbOwner">👑 المالك</button>
   </span>
 </div>
+<nav class="dash-tabs" id="dashTabs">
+  <button data-tab="mkt" class="on">🏠 السوق</button>
+  <button data-tab="deals">💎 الصفقات</button>
+  <button data-tab="pump">🚨 بامب ودعم</button>
+  <button data-tab="bot">🤖 روبوت التداول</button>
+  <button data-tab="mine">📁 صفقاتي</button>
+  <button data-tab="new">🆕 التحليل الفعلي</button>
+  <button data-tab="chart">📈 الشارت</button>
+</nav>
 <div class="paywall" id="paywall">
   <div class="pay-top">
     <h2>💎 TRAININGV8 Premium — صفقات قوية بدقة عالية</h2>
@@ -1407,6 +1452,21 @@ body.linkmode #masterFab,body.linkmode #mbOwner{display:none!important}
 </div>
 <div id="botToasts"></div>
 
+<section class="radar-dash" id="radarDash">
+  <h2>🚀 رادار البامب والدعم</h2>
+  <p>كل التحليلات في مكان واحد — مرتب من الأعلى: تنبيهات، شراء مبكر قبل الانفجار، صناديق الاحمر بحرك متى تخرج.</p>
+  <div class="rd-stats">
+    <div class="rd-stat"><small>حركات مؤكدة</small><b id="rdConfirmed">0</b></div>
+    <div class="rd-stat"><small>قوية (سيولة + زخم)</small><b id="rdStrong">0</b></div>
+    <div class="rd-stat"><small>تحت المراقبة</small><b id="rdWatch">0</b></div>
+    <div class="rd-stat hot"><small>شراء مبكر قبل الانفجار</small><b id="rdPre">0</b></div>
+    <div class="rd-stat"><small>آخر فحص</small><b id="rdClock" style="font-size:1rem">--:--</b></div>
+  </div>
+</section>
+<section class="alerts" id="alertsSec">
+  <div class="alerts-head"><h3>🔔 تنبيهات الشراء والبيع</h3><small id="alertUpd">آخر تنبيه --:--</small></div>
+  <ul class="alert-feed" id="alertFeed"><li class="muted">بانتظار أول فحص...</li></ul>
+</section>
 <div class="section-head" style="margin:16px 0 6px"><h2>💎 كل شيء في بطاقة واحدة</h2>
 <p class="muted" id="dealsStatus">...</p></div>
 <div class="toolbar-btns">
@@ -1425,8 +1485,8 @@ body.linkmode #masterFab,body.linkmode #mbOwner{display:none!important}
   <div class="sig-grid" id="strongGrid" style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px"></div>
 </div>
 <div class="free-gate only-guest" id="freeGate">
-  <h3>🎁 3 صفقات مجانية باسمك</h3>
-  <p>أدخل اسمك وإيميلك لفتح الصفقات المجانية فوراً — هكذا تبدو الصفقة الحقيقية</p>
+  <h3>🎁 صفقة مجانية باسمك كل يوم</h3>
+  <p>أدخل اسمك وإيميلك لفتح صفقة اليوم المجانية فوراً — هكذا تبدو الصفقة الحقيقية</p>
   <div class="fg-row">
     <input id="leadName" type="text" placeholder="الاسم الكريم" maxlength="30">
     <input id="leadEmail" type="text" inputmode="email" dir="ltr" placeholder="email@example.com" maxlength="60">
@@ -3598,7 +3658,7 @@ function gateCards(){
       cardsAll.forEach(c=>{
         c.classList.add('card-guestlock');
         const d=document.createElement('div'); d.className='glock';
-        d.innerHTML='<span>🎁</span><b>3 صفقات مجانية باسمك</b><small>أدخل اسمك وإيميلك بالأعلى لفتحها فوراً</small>';
+        d.innerHTML='<span>🎁</span><b>صفقة مجانية يومياً باسمك</b><small>أدخل اسمك وإيميلك بالأعلى لفتح هدية اليوم فوراً</small>';
         const btn=document.createElement('button'); btn.className='btn btn-primary btn-sm'; btn.textContent='🎁 افتح هديتي';
         btn.onclick=()=>{ const f=$('freeGate'); if(f) f.scrollIntoView({behavior:'smooth'}); const n=$('leadName'); if(n) n.focus(); };
         d.appendChild(btn);
@@ -3681,29 +3741,6 @@ function paintMaster(){
   }catch(e){}
 }
 const K_VIS='ai_vis_v1', K_ERR='ai_err_v1', K_ERRSEEN='ai_err_seen';
-const VIS_SECTIONS=[
- {id:'paywall',name:'💎 قسم الاشتراك',def:true},
- {id:'freeGate',name:'🎁 بوابة الهدية اليومية',def:true},
- {id:'newSec',name:'🆕 قسم الصعود الجديد',def:true},
- {id:'strongSec',name:'🔥 قسم الصعود المؤكد',def:true},
- {id:'dealsGrid',name:'💎 شبكة البطاقات الرئيسية',def:true},
- {id:'calcBar',name:'🧮 شريط رأس المال التجريبي',def:true},
- {id:'botPanel',name:'🤖 لوحة الروبوت (حساسة)',def:false}
-];
-function getVis(){ try{ const j=JSON.parse(localStorage.getItem(K_VIS)||'null'); if(j) return j; }catch(e){} const d={}; VIS_SECTIONS.forEach(s=>d[s.id]=s.def); return d; }
-function applyVis(){
-  try{
-    if(M.mode!=='guest') return;
-    const v=getVis();
-    VIS_SECTIONS.forEach(s=>{
-      const el=document.getElementById(s.id==='calcBar'?s.id:s.id);
-      const tgt=document.getElementById(s.id);
-      if(!tgt) return;
-      if(s.id==='paywall'||s.id==='freeGate'){ if(v[s.id]===false) tgt.style.display='none'; return; }
-      tgt.style.display=(v[s.id]===false)?'none':'';
-    });
-  }catch(e){}
-}
 function paintVis(){
   try{
     const box=$('visList'); if(!box) return;
@@ -3838,6 +3875,78 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('[data-bot-state]').forEach(()=>{});
 });
 window.MEMBER={get mode(){return M.mode;},unlockSub,paint};
+// ---------- 📊 DASH106: تبويبات + رادار + تنبيهات شراء/بيع ----------
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+let lastScan='';
+function money(n){ if(window.AI_MONEY) return window.AI_MONEY(n); if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
+function setClock(){ try{ const el=$('rdClock'); if(el) el.textContent=new Date().toLocaleTimeString('ar'); }catch(e){} }
+function paintDash(){
+  try{
+    const all=(window.RADAR&&window.RADAR.analyzed)||[];
+    if(!all.length) return;
+    const buys=all.filter(a=>a.isBuy);
+    const strong=all.filter(a=>a.grade==='strong');
+    const watch=all.filter(a=>a.grade==='watch');
+    const pre=buys.filter(a=>{ try{ const P=window.DEALS.planOf(a); const cur=a.c.current_price||P.entry; return cur<=P.t1; }catch(e){ return true; } });
+    const set=(id,v)=>{ const el=$(id); if(el) el.textContent=String(v); };
+    set('rdConfirmed',buys.length); set('rdStrong',strong.length); set('rdWatch',watch.length); set('rdPre',pre.length);
+    lastScan=new Date().toLocaleTimeString('ar'); setClock();
+    const au=$('alertUpd'); if(au) au.textContent='آخر تنبيه '+lastScan;
+    const feed=$('alertFeed'); if(!feed) return;
+    const sells=all.filter(a=>a.grade==='trap'||a.grade==='avoid').slice(0,4);
+    const picks=buys.slice(0,6);
+    const rows=[];
+    picks.forEach(a=>{ rows.push({t:a.score,kind:'buy',a:a}); });
+    sells.forEach(a=>{ rows.push({t:a.score-1000,kind:'sell',a:a}); });
+    rows.sort((x,y)=>y.t-x.t); 
+    feed.innerHTML=rows.slice(0,8).map(r=>{
+      const a=r.a,c=a.c,sym=(c.symbol||'').toUpperCase();
+      let P=null; try{ P=window.DEALS.planOf(a); }catch(e){}
+      const img=c.image?'<img src="'+c.image+'" onerror="this.style.display=\'none\'">'+'':'';
+      const det=P?(' <span class="ap">ادخل '+money(P.entry)+' • الهدف '+money(P.t1)+' • الوقف '+money(P.sl)+'</span>'):'';
+      return '<li class="'+r.kind+'">'+img+'<span>'+(r.kind==='buy'?'🟢 شراء':'🔴 بيع')+' <b>'+sym+'</b></span>'+det+'<time>'+lastScan+'</time></li>';
+    }).join('')||'<li class="muted">لا إشارات الآن</li>';
+  }catch(e){}
+}
+function hookDash(){
+  try{
+    if(!window.DEALS||!window.DEALS.render||window.DEALS.render._dash106) return;
+    const orig=window.DEALS.render;
+    const wrapped=function(){ const r=orig.apply(this,arguments); try{ paintDash(); }catch(e){} return r; };
+    wrapped._dash106=true; wrapped._mem95=orig._mem95; wrapped._liveHook=orig._liveHook; wrapped._sec61=orig._sec61; wrapped._strong42=orig._strong42;
+    window.DEALS.render=wrapped;
+  }catch(e){}
+}
+function setFilter(f){
+  try{
+    if(!window.DEALS) return;
+    window.DEALS.filter=f;
+    document.querySelectorAll('.toolbar-btns .chip').forEach(x=>x.classList.toggle('active',x.dataset.ai===f));
+    window.DEALS.render();
+  }catch(e){}
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  hookDash(); setTimeout(hookDash,3000);
+  setClock(); setInterval(setClock,1000);
+  setTimeout(paintDash,5000); setInterval(paintDash,15000);
+  const tabs=$('dashTabs'); if(!tabs) return;
+  const btns=[...tabs.querySelectorAll('button')];
+  const on=k=>{ btns.forEach(b=>b.classList.toggle('on',b.dataset.tab===k)); };
+  tabs.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    const k=b.dataset.tab; on(k);
+    if(k==='mkt'){ setFilter('all'); document.getElementById('dealsGrid').scrollIntoView({behavior:'smooth',block:'start'}); }
+    else if(k==='deals'){ setFilter('buy'); document.getElementById('dealsGrid').scrollIntoView({behavior:'smooth',block:'start'}); }
+    else if(k==='pump'){ setFilter('trap'); document.getElementById('dealsGrid').scrollIntoView({behavior:'smooth',block:'start'}); }
+    else if(k==='bot'){ const p=document.getElementById('botPanel'); if(p) p.scrollIntoView({behavior:'smooth',block:'start'}); }
+    else if(k==='mine'){ const g=document.getElementById('botClosed'); if(g) g.scrollIntoView({behavior:'smooth',block:'center'}); }
+    else if(k==='new'){ const n=document.getElementById('newSec'); (n&&!n.hidden?n:document.getElementById('dealsGrid')).scrollIntoView({behavior:'smooth',block:'start'}); }
+    else if(k==='chart'){ try{ const all=(window.RADAR&&window.RADAR.analyzed)||[]; const a=all.find(x=>x.isBuy)||all[0]; if(a&&window.openTV) window.openTV(a.c.id); }catch(err){} }
+  });
+});
+})();
 })();
 </script>
 </body>
