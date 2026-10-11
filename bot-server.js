@@ -19,7 +19,7 @@ const CFG = {
   key: process.env.BINANCE_KEY || process.env.KEY || '',
   sec: process.env.BINANCE_SECRET || process.env.SECRET || '',
   stake: parseFloat(process.env.STAKE_USD || '20'),
-  tp: parseFloat(process.env.TP_USD || '3'),
+  tp: parseFloat(process.env.TP_USD || '0.7'),
   max: parseInt(process.env.MAX_TRADES || '3', 10),
   minVol: parseFloat(process.env.MIN_VOL_USD || '20000000'),
   poll: Math.max(15, parseInt(process.env.POLL_SEC || '60', 10)),
@@ -81,6 +81,17 @@ async function getInfo(sym) {
 }
 function floorStep(q, step) { if (!step || step <= 0) return q; const dec = (String(step).split('.')[1] || '').length; return parseFloat((Math.floor(q / step) * step).toFixed(dec)); }
 
+function tfRising(kl) {
+  if (!kl || kl.length < 12) return false;
+  const c = kl.map(k => parseFloat(k[4])), o = kl.map(k => parseFloat(k[1])), v = kl.map(k => parseFloat(k[5]));
+  if (c.some(x => !isFinite(x) || x <= 0)) return false;
+  const sma = c.slice(-10).reduce((a, b) => a + b, 0) / 10;
+  const lc = c.slice(-3), lo = o.slice(-3);
+  const green = lo.filter((x, i) => lc[i] > x).length;
+  const rising = lc[2] > lc[1] && lc[1] >= lc[0] * 0.999;
+  const avgV = v.slice(-6, -1).reduce((a, b) => a + b, 0) / 5;
+  return green >= 2 && rising && lc[2] > sma && v[v.length - 1] > avgV * 0.8;
+}
 function m5setup(kl) {
   if (!kl || kl.length < 12) return null;
   const c = kl.map(k => parseFloat(k[4])), o = kl.map(k => parseFloat(k[1])), v = kl.map(k => parseFloat(k[5]));
@@ -182,6 +193,13 @@ async function cycle(n) {
       scanned++;
       const setup = m5setup(kl);
       if (!setup) continue;
+      // تأكيد الفريمات الصغيرة: 15m اتجاه + 1m توقيت
+      const kl15 = await jget(CFG.base + '/api/v3/klines?symbol=' + sym + '&interval=15m&limit=21');
+      scanned++;
+      if (!tfRising(kl15)) continue;
+      const kl1 = await jget(CFG.base + '/api/v3/klines?symbol=' + sym + '&interval=1m&limit=21');
+      scanned++;
+      if (!tfRising(kl1)) continue;
       const chg = parseFloat(t.priceChangePercent || 0);
       if (chg > 25 || chg < -8) continue;
       if (Math.abs(setup.close - parseFloat(t.lastPrice)) / parseFloat(t.lastPrice) > 0.005) continue;
@@ -221,8 +239,11 @@ async function selftest() {
   for (let i = 0; i < 20; i++) { const o = 100 - i * 0.5; Kb.push([0, o, o + 0.2, o - 0.5, o - 0.4, 1000]); }
   ok('m5-bearish-reject', m5setup(Kb.map(r => r.map(String))) === null);
   ok('m5-short-reject', m5setup([[0, '1', '2', '0.5', '1.5', '10']]) === null);
+  ok('tf-bullish-accept', tfRising(K.map(r => r.map(String))) === true);
+  ok('tf-bearish-reject', tfRising(Kb.map(r => r.map(String))) === false);
   const p = makePlan(100, K.map(r => r[4]));
   ok('plan-levels', p.t3 > p.t2 && p.t2 > p.t1 && p.t1 > p.entry && p.sl < p.entry);
+  const _tp = CFG.tp; CFG.tp = 1e9;
   const st = { id: 'm5:T', sym: 'TUSDT', coin: 'T', qty: 1, entry: 100, t1: 101.5, t2: 102.5, t3: 104, sl: 99, step: 0.001, open: true, s1: false, s2: false, sold: 0, rev: 0, mode: 'paper', t0: Date.now(), stake: 100 };
   S.trades['m5:T'] = st;
   await manage(st, 101.6);
@@ -231,6 +252,8 @@ async function selftest() {
   ok('T2-partial-50%', st.s2 === true && st.sold > 0.3 && st.open === true);
   await manage(st, 104.5);
   ok('T3-full-close', st.open === false && st.closeWhy === 'T3');
+  CFG.tp = _tp;
+  ok('TP-cap-closes-early', await (async () => { const sx = { id: 'm5:TP', sym: 'PUSDT', coin: 'P', qty: 100, entry: 10, t1: 10.5, t2: 11, t3: 12, sl: 9.9, step: 1, open: true, s1: false, s2: false, sold: 0, rev: 0, mode: 'paper', t0: Date.now(), stake: 1000 }; S.trades['m5:TP'] = sx; await manage(sx, 10.008); return sx.open === false && sx.closeWhy === 'TP'; })());
   const st2 = { id: 'm5:T2', sym: 'XUSDT', coin: 'X', qty: 10, entry: 100, t1: 101.5, t2: 102.5, t3: 104, sl: 99, step: 1, open: true, s1: false, s2: false, sold: 0, rev: 0, mode: 'paper', t0: Date.now(), stake: 1000 };
   S.trades['m5:T2'] = st2;
   await manage(st2, 98.5);
