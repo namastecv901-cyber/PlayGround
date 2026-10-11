@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v104.0 خطط التكبير)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v105.0 نبض لا يتجمد)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -973,6 +973,29 @@ body>*{position:relative;z-index:1}
 .card-lock.lock-done span{filter:drop-shadow(0 0 14px #16c78488)}
 .stamp-coin{display:block;font-style:normal;font-size:1.05rem;font-weight:900;color:#fff;margin-top:2px}
 .stamp-coin b.up{color:#1fe196}.stamp-coin b.down{color:#ff7b85}
+/* ===== v105 CALM: بطاقات هادئة + ختم أعلى البطاقة ===== */
+.done-banner{margin:10px 0 4px;border-radius:12px;padding:9px 12px;text-align:center;font-weight:900;background:#16c78414;border:1px solid #16c78455;color:#1fe196}
+.done-banner.lost{background:#ea394312;border-color:#ea394355;color:#ff7b85}
+.done-banner span{font-size:1.2rem}
+.done-banner b{display:block;font-size:.92rem;margin:2px 0}
+.done-banner i{display:block;font-style:normal;font-size:.85rem}
+.done-banner small{color:var(--mut);font-size:.7rem}
+.ai-card.card-done{filter:saturate(.75) brightness(.92);border-style:dashed}
+.ai-ring{animation:heartbeat 5s ease-in-out infinite}
+@keyframes heartbeat{0%,100%{transform:scale(1)}12%{transform:scale(1.02)}24%{transform:scale(1)}}
+.flash-up,.flash-down{animation-duration:2.5s}
+.live-price{transition:color 1.2s}
+.lr-dot,.lr-fill,.lr-stop{transition-duration:1.6s}
+.ai-card.enter{animation-duration:.8s}
+.pulse-ring{display:none}
+@keyframes ringp{from{transform:scale(.7);opacity:0}to{transform:scale(1.25);opacity:0}}
+@keyframes newPulse{0%,100%{box-shadow:0 0 8px #ff9f2e44}50%{box-shadow:0 0 16px #ff9f2e66}}
+@keyframes explode{0%,100%{box-shadow:0 0 8px #ff8a3d33}50%{box-shadow:0 0 16px #ff8a3d55;transform:none}}
+@keyframes strongPulse{0%,100%{box-shadow:0 0 8px #f0b90b22}50%{box-shadow:0 0 16px #f0b90b33}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.75}}
+@keyframes glow{0%,100%{box-shadow:none}50%{box-shadow:0 0 14px #f0b90b44}}
+.guard-move{animation-duration:2s}
+.live-pill i{animation-duration:2.4s}
 .pl-entry.is-done{background:#4f7cff14;border-color:#4f7cff55}
 .pl-entry.is-done span,.pl-entry.is-done b{color:#8fa9ff}
 .lock.blue{background:#4f7cff26;border-color:#4f7cff66;color:#8fa9ff}
@@ -1904,10 +1927,12 @@ function card(a,i){
   const EST=entryState(a); const LOCKED=(EST==='void'||EST==='miss');
   const BCLOSED=(function(){ try{ const T=(window.BOT49&&window.BOT49.S&&window.BOT49.S.trades)||{}; const st=T[c.id]||T['m5:'+c.id]; if(st&&!st.open&&!st.skip) return true; const CL=(window.BOT49&&window.BOT49.S&&window.BOT49.S.closedList)||[]; for(let k=0;k<CL.length;k++){ if(CL[k].id===c.id||CL[k].id==='m5:'+c.id) return true; } }catch(e){} return false; })();
   const ALLOCK=LOCKED||BCLOSED;
-  return '<article class="ai-card enter g-'+a.grade+(ALLOCK?' card-locked':'')+'" data-id="'+c.id+'" style="animation-delay:'+Math.min((i||0)*60,600)+'ms">'
-  +'<div class="ai-top"><span class="pulse-ring"></span><img src="'+(c.image||'')+'" onerror="this.style.display=\'none\'">'
+  const CSTAMP=(function(){ if(!BCLOSED) return ''; let nm=sym,pnl=null,why=''; try{ const T=(window.BOT49&&window.BOT49.S&&window.BOT49.S.trades)||{}; const st=T[c.id]||T['m5:'+c.id]; if(st&&!st.open){ pnl=(st.rev||0)-(st.qty||0)*st.entry; why=st.closeWhy||''; } else { const CL=(window.BOT49&&window.BOT49.S&&window.BOT49.S.closedList)||[]; for(let k=0;k<CL.length;k++){ if(CL[k].id===c.id||CL[k].id==='m5:'+c.id){ pnl=CL[k].pnl; why=CL[k].why||''; break; } } } }catch(e){} const win=(pnl==null)||pnl>=0; return '<div class="done-banner '+(win?'':'lost')+'"><span>🔒</span><b>✅ تم — خُتم الربح</b><i>'+nm+' • <b class="'+(win?'up':'down')+'">'+(pnl==null?'':((win?'+':'')+'$'+pnl.toFixed(2)))+'</b></i><small>ننتظر فرصة جديدة 🔄</small></div>'; })();
+  return '<article class="ai-card enter g-'+a.grade+(LOCKED?' card-locked':'')+(BCLOSED?' card-done':'')+'" data-id="'+c.id+'" style="animation-delay:'+Math.min((i||0)*60,600)+'ms">'
+  +'<div class="ai-top"><img src="'+(c.image||'')+'" onerror="this.style.display=\'none\'">'
   +'<div><b>'+sym+'</b><small>'+(c.name||'')+' • <span class="'+fl.trim()+'">'+money(a.price)+'</span></small></div>'
   +'<div class="ai-ring" style="--p:'+a.score+';--c:'+ringC+'"><b>'+a.score+'</b><small>ثقة</small></div></div>'
+  + CSTAMP
   + decisionBlock(a)
   + ticket
   + calcBox
@@ -1934,7 +1959,7 @@ function card(a,i){
   +'<button class="tv-btn ghost" data-tv="'+c.id+'">🔍 شارت حي</button></div></div>'
   +'</details>'
   +'<div class="ai-foot">اضغط البطاقة للنسخ • وقف إلزامي • ليست نصيحة مالية</div>'
-  +(function(){ if(!BCLOSED) return (LOCKED?'<div class="card-lock"><span>🔒</span><b>بطاقة مقفلة — لا دخول</b><small>السعر بعيد عن نقطة الدخول • تُفتح بعودة صاعدة آمنة</small></div>':''); let nm=sym,pnl=null,why=''; try{ const T=(window.BOT49&&window.BOT49.S&&window.BOT49.S.trades)||{}; const st=T[c.id]||T['m5:'+c.id]; if(st&&!st.open){ pnl=(st.rev||0)-(st.qty||0)*st.entry; why=st.closeWhy||''; } else { const CL=(window.BOT49&&window.BOT49.S&&window.BOT49.S.closedList)||[]; for(let k=0;k<CL.length;k++){ if(CL[k].id===c.id||CL[k].id==='m5:'+c.id){ pnl=CL[k].pnl; why=CL[k].why||''; break; } } } }catch(e){} const win=(pnl==null)||pnl>=0; return '<div class="card-lock lock-done"><span>🔒</span><b>✅ تم — خُتم الربح</b><i class="stamp-coin">'+nm+' • <b class="'+(win?'up':'down')+'">'+(pnl==null?'':((win?'+':'')+'$'+pnl.toFixed(2)))+'</b></i><small>البطاقة مقفلة • ننتظر فرصة جديدة 🔄</small></div>'; })()
+  +(function(){ return (LOCKED?'<div class="card-lock"><span>🔒</span><b>بطاقة مقفلة — لا دخول</b><small>السعر بعيد عن نقطة الدخول • تُفتح بعودة صاعدة آمنة</small></div>':''); let nm=sym,pnl=null,why=''; try{ const T=(window.BOT49&&window.BOT49.S&&window.BOT49.S.trades)||{}; const st=T[c.id]||T['m5:'+c.id]; if(st&&!st.open){ pnl=(st.rev||0)-(st.qty||0)*st.entry; why=st.closeWhy||''; } else { const CL=(window.BOT49&&window.BOT49.S&&window.BOT49.S.closedList)||[]; for(let k=0;k<CL.length;k++){ if(CL[k].id===c.id||CL[k].id==='m5:'+c.id){ pnl=CL[k].pnl; why=CL[k].why||''; break; } } } }catch(e){} const win=(pnl==null)||pnl>=0; return '<div class="card-lock lock-done"><span>🔒</span><b>✅ تم — خُتم الربح</b><i class="stamp-coin">'+nm+' • <b class="'+(win?'up':'down')+'">'+(pnl==null?'':((win?'+':'')+'$'+pnl.toFixed(2)))+'</b></i><small>البطاقة مقفلة • ننتظر فرصة جديدة 🔄</small></div>'; })()
   +'</article>';
 }
 function render(){
@@ -3220,9 +3245,14 @@ function tfRising(kl){
     return green>=2&&rising&&lc[2]>sma&&v[v.length-1]>avgV*0.8;
   }catch(e){ return false; }
 }
+async function fetchT(url,ms){
+  const ctl=new AbortController(); const to=setTimeout(()=>{ try{ctl.abort();}catch(e){} },ms||15000);
+  try{ const r=await fetch(url,{signal:ctl.signal}); return r; }
+  finally{ clearTimeout(to); }
+}
 async function tfConfirm(sym,tf){
   try{
-    const r=await fetch('https://api.binance.com/api/v3/klines?symbol='+sym+'&interval='+tf+'&limit=20');
+    const r=await fetchT('https://api.binance.com/api/v3/klines?symbol='+sym+'&interval='+tf+'&limit=20',15000);
     if(!r.ok) return {ok:false,why:'net'};
     const kl=await r.json();
     return tfRising(kl)?{ok:true}:{ok:false,why:'trend'};
@@ -3331,7 +3361,7 @@ async function m5scan(){
         const openN=Object.values(S.trades).filter(t=>t&&t.open).length;
         if(openN>=S.max) break;
         const ex=S.trades['m5:'+c.a.c.id]; if(ex&&(ex.open||ex.skip)) continue; if(ex&&!ex.open) delete S.trades['m5:'+c.a.c.id];
-        const r=await fetch('https://api.binance.com/api/v3/klines?symbol='+c.sym+'&interval=5m&limit=20');
+        const r=await fetchT('https://api.binance.com/api/v3/klines?symbol='+c.sym+'&interval=5m&limit=20',15000);
         if(!r.ok){ if(r.status===400||r.status===404){ S.noBin=S.noBin||{}; S.noBin[c.s]=Date.now(); } continue; }
         const kl=await r.json(); okc++;
         const setup=m5setup(kl);
@@ -3355,7 +3385,7 @@ async function m5scan(){
 async function tick(){
   try{ const today=new Date().toISOString().slice(0,10); if(S.day!==today){ S.day=today; S.dayPnl=0; S.dayCount=0; S.goalDone=false; save(); } }catch(e){}
   if(!S.enabled||S.busy) return;
-  S.busy=true;
+  S.busy=true; S.lastTick=Date.now();
   try{
     const guards=openGuards();
     for(const p of guards){ try{ let st=S.trades[p.id]; if(st&&!st.open&&!st.skip){ delete S.trades[p.id]; st=null; } if(!st||st.skip) st=await openTrade(p); if(st) await manage(st); }catch(e){} }
@@ -3413,7 +3443,7 @@ function readField(t,silent){
 function bind(){
   const st=$('botStart'); if(st) st.onclick=()=>{ startBot(false); };
   const sp=$('botStop'); if(sp) sp.onclick=()=>{ S.enabled=false; S.wasEnabled=false; save(); paint(); log('⏸ الروبوت متوقف — الصفقات المفتوحة تبقى بيدك (بعها يدوياً أو من الحارس)'); };
-  document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ holdWake(); if(S.enabled) tick(); } else { try{ save(); }catch(e){} } });
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ holdWake(); try{ S.busy=false; S.m5busy=false; }catch(e){} if(S.enabled) tick(); } else { try{ save(); }catch(e){} } });
   window.addEventListener('pagehide',()=>{ try{ save(); }catch(e){} });
   window.addEventListener('beforeunload',()=>{ try{ save(); }catch(e){} });
   const cl=$('botClear'); if(cl) cl.onclick=()=>{ S.key=''; S.sec=''; save(); setInputs(); log('🗑 تم مسح المفاتيح'); };
@@ -3428,6 +3458,8 @@ document.addEventListener('DOMContentLoaded',()=>{ load(); setInputs(); bind(); 
   else if(S.goalDone){ try{ log('🏆 هدف اليوم ($'+(S.goal||10)+') متحقق — الروبوت متوقف حتى الغد'); }catch(e){} }
   // 🔁 مراقب الإحياء الذاتي: أي توقف غير مقصود (بدون هدف محقق) يُعاد تشغيله تلقائياً كل دقيقة
   setInterval(()=>{ try{ if(S.autoResume&&S.wasEnabled&&!S.enabled&&!S.goalDone) startBot(true); }catch(e){} },60000);
+  // 💓 مراقب النبض: يعمل لكن لا دورات منذ 90 ثانية (تجميد خلفية/تعليق) → فك التجميد ودورة فورية
+  setInterval(()=>{ try{ if(S.enabled&&Date.now()-(S.lastTick||0)>90000){ S.busy=false; S.m5busy=false; log('💓 إحياء النبض — استئناف الدورات'); tick(); } }catch(e){} },30000);
 });
 window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan};
 })();
@@ -3556,6 +3588,7 @@ function gateCards(){
     cards.forEach(c=>{
       c.querySelectorAll('.glock').forEach(x=>x.remove());
       c.classList.remove('card-guestlock');
+      c.style.display='';
       const nb=c.querySelector('.free-badge'); if(nb) nb.remove();
     });
     if(M.mode!=='guest') return;
@@ -3579,6 +3612,7 @@ function gateCards(){
     free.forEach(c=>{ const d=document.createElement('div'); d.className='free-badge'; d.textContent='🎁 هدية اليوم لـ '+lead.name+' — غداً صفقة مجانية أخرى'; c.prepend(d); });
     cards.forEach(c=>{
       if(free.includes(c)) return;
+      c.style.display='none';
       c.classList.add('card-guestlock');
       const d=document.createElement('div'); d.className='glock';
       d.innerHTML='<span>🔒</span><b>للمشتركين فقط — $'+PRICE+'/شهر</b><small>غداً صفقة مجانية أخرى 🎁 أو اشترك شهرياً غير محدود 💎</small>';
