@@ -44,7 +44,7 @@ const nowISO = () => new Date().toISOString();
 const todayUTC = () => nowISO().slice(0, 10);
 const log = (...a) => console.log('[' + nowISO() + ']', ...a);
 
-let S = { trades: {}, profit: 0, closed: 0, day: todayUTC(), dayPnl: 0, equity: CFG.equityStart, info: {}, noBin: {}, buys: 0 };
+let S = { trades: {}, profit: 0, closed: 0, day: todayUTC(), dayPnl: 0, equity: CFG.equityStart, info: {}, noBin: {}, buys: 0, stopDay: null, stopWhy: '' };
 function loadState() { try { const j = JSON.parse(fs.readFileSync(CFG.stateFile, 'utf8')); Object.keys(j).forEach(k => { S[k] = j[k]; }); } catch (e) {} }
 function saveState() { try { fs.writeFileSync(CFG.stateFile, JSON.stringify(S)); } catch (e) { log('state-save-fail', e.message); } }
 
@@ -124,7 +124,7 @@ async function openTrade(sym, base, plan) {
   const id = 'm5:' + sym;
   if (S.trades[id]) return;
   if (Object.values(S.trades).filter(t => t && t.open).length >= CFG.max) return;
-  if (S.equity < Math.min(10, CFG.equityStart * 0.2)) { log('equity-depleted, stopping'); stop(); return; }
+  if (S.equity < Math.min(10, CFG.equityStart * 0.2)) { log('equity-depleted, pausing'); stop('equity'); return; }
   const firstStake = CFG.stake * CFG.splitInit;
   let qty = firstStake / plan.entry, step = 1;
   if (CFG.mode !== 'paper') {
@@ -157,8 +157,8 @@ async function sellPart(st, frac, why, live) {
     saveState();
     log((pnl >= 0 ? 'CLOSE-WIN' : 'CLOSE-LOSS'), st.coin, '(' + why + ')', (pnl >= 0 ? '+' : '') + pnl.toFixed(2), 'equity=' + S.equity.toFixed(2));
     await tg((pnl >= 0 ? '✅ ' : '🔴 ') + st.coin + ' (' + why + ') ' + (pnl >= 0 ? '+' : '') + pnl.toFixed(2));
-    if (S.dayPnl <= -CFG.dayMaxLoss) { log('DAILY-LOSS-LIMIT hit, stopping'); stop(); }
-    if (S.dayPnl >= CFG.dailyGoal) { log('DAILY-GOAL $' + CFG.dailyGoal + ' hit — stopping for today 🏆'); await tg('🏆 هدف اليوم $' + CFG.dailyGoal + ' تحقق — توقف حتى الغد'); stop(); }
+    if (S.dayPnl <= -CFG.dayMaxLoss) { log('DAILY-LOSS-LIMIT hit, pausing till tomorrow'); stop('loss-limit'); }
+    if (S.dayPnl >= CFG.dailyGoal) { log('DAILY-GOAL $' + CFG.dailyGoal + ' hit — stopping for today 🏆'); await tg('🏆 هدف اليوم $' + CFG.dailyGoal + ' تحقق — توقف حتى الغد'); stop('goal'); }
   } else {
     saveState();
     log('PART', st.coin, why, 'sold ' + q.toFixed(4) + ' @ ' + live);
@@ -217,7 +217,7 @@ async function manage(st, live) {
 }
 function baseOf(sym) { return sym.slice(0, -4); }
 async function cycle(n) {
-  if (todayUTC() !== S.day) { S.day = todayUTC(); S.dayPnl = 0; saveState(); }
+  if (todayUTC() !== S.day) { S.day = todayUTC(); S.dayPnl = 0; S.stopDay = null; S.stopWhy = ''; saveState(); log('new-day: counters reset, resuming 🎯'); }
   log('--- cycle', n, 'mode=' + CFG.mode, 'equity=' + S.equity.toFixed(2), 'dayPnl=' + S.dayPnl.toFixed(2));
   let tickers;
   try { tickers = await jget(CFG.base + '/api/v3/ticker/24hr'); }
@@ -273,7 +273,7 @@ async function cycle(n) {
 }
 
 let running = true;
-function stop() { running = false; }
+function stop(why) { running = false; S.stopDay = todayUTC(); S.stopWhy = why || ''; saveState(); }
 async function selftest() {
   let pass = 0, fail = 0;
   const ok = (name, cond) => { if (cond) { pass++; console.log('PASS', name); } else { fail++; console.log('FAIL', name); } };
@@ -328,9 +328,16 @@ async function main() {
   process.on('SIGINT', () => { log('SIGINT, saving...'); saveState(); process.exit(0); });
   process.on('SIGTERM', () => { log('SIGTERM, saving...'); saveState(); process.exit(0); });
   process.on('unhandledRejection', e => log('unhandled:', (e && e.message) || e));
-  while (running) {
+  while (true) {
     n++;
-    try { await cycle(n); } catch (e) { log('cycle-error:', (e && e.message) || e); }
+    try {
+      if (S.stopDay === todayUTC()) {
+        if (n % 10 === 1) log('paused (' + (S.stopWhy || 'limit') + ') — waiting for next day, will resume automatically 🔁');
+      } else {
+        S.stopDay = null;
+        await cycle(n);
+      }
+    } catch (e) { log('cycle-error:', (e && e.message) || e); }
     if (CFG.maxCycles && n >= CFG.maxCycles) break;
     await new Promise(r => setTimeout(r, CFG.poll * 1000));
   }

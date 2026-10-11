@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v96.0 بوابة الزوار)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v97.0 لا يتوقف)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3365,8 +3365,11 @@ function bind(){
   document.addEventListener('change',e=>{ readField(e.target,false); });
 }
 document.addEventListener('DOMContentLoaded',()=>{ load(); setInputs(); bind(); paint(); holdWake(); setInterval(()=>{ if(S.enabled) tick(); profitLine(); },6000); setInterval(()=>{ try{ save(); }catch(e){} },5000); setInterval(paint,10000); setInterval(()=>{ try{ paintEq(); paintBotStrips(); }catch(e){} },2000);
+  try{ const today=new Date().toISOString().slice(0,10); if(S.day!==today){ S.day=today; S.dayPnl=0; S.dayCount=0; S.goalDone=false; save(); paint(); } }catch(e){}
   if(S.autoResume&&S.wasEnabled&&!S.goalDone){ log('🔁 استئناف تلقائي بعد إعادة الفتح — الروبوت يواصل بدون توقف (مزامنة الصفقات المفتوحة)'); startBot(true); }
   else if(S.goalDone){ try{ log('🏆 هدف اليوم ($'+(S.goal||10)+') متحقق — الروبوت متوقف حتى الغد'); }catch(e){} }
+  // 🔁 مراقب الإحياء الذاتي: أي توقف غير مقصود (بدون هدف محقق) يُعاد تشغيله تلقائياً كل دقيقة
+  setInterval(()=>{ try{ if(S.autoResume&&S.wasEnabled&&!S.enabled&&!S.goalDone) startBot(true); }catch(e){} },60000);
 });
 window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan};
 })();
