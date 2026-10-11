@@ -27,6 +27,10 @@ const CFG = {
   topN: Math.max(3, parseInt(process.env.TOP_N || '15', 10)),
   dayMaxLoss: parseFloat(process.env.DAILY_MAX_LOSS || '10'),
   equityStart: parseFloat(process.env.EQUITY_START || '100'),
+  rein: process.env.REINFORCE !== '0',
+  splitInit: Math.min(1, Math.max(0.2, parseFloat(process.env.SPLIT_INIT || '0.5'))),
+  reinDrop: parseFloat(process.env.REIN_DROP || '0.01'),
+  reinMax: Math.max(0, Math.min(3, parseInt(process.env.REIN_MAX || '2', 10))),
   tgBot: process.env.TG_BOT || '',
   tgChat: process.env.TG_CHAT || '',
   stateFile: process.env.STATE_FILE || './bot-state.json',
@@ -118,16 +122,17 @@ async function openTrade(sym, base, plan) {
   if (S.trades[id]) return;
   if (Object.values(S.trades).filter(t => t && t.open).length >= CFG.max) return;
   if (S.equity < Math.min(10, CFG.equityStart * 0.2)) { log('equity-depleted, stopping'); stop(); return; }
-  let qty = CFG.stake / plan.entry, step = 1;
+  const firstStake = CFG.stake * CFG.splitInit;
+  let qty = firstStake / plan.entry, step = 1;
   if (CFG.mode !== 'paper') {
     if (!CFG.key || !CFG.sec) { log('missing keys'); return; }
     const info = await getInfo(sym); step = info.step || 1;
-    if (CFG.stake < (info.minNot || 0)) { log('below-min-notional', sym); return; }
-    const o = await signed('POST', '/api/v3/order', { symbol: sym, side: 'BUY', type: 'MARKET', quoteOrderQty: CFG.stake });
+    if (firstStake < (info.minNot || 0)) { log('below-min-notional', sym); return; }
+    const o = await signed('POST', '/api/v3/order', { symbol: sym, side: 'BUY', type: 'MARKET', quoteOrderQty: firstStake });
     let q = 0; (o.fills || []).forEach(f => { q += parseFloat(f.qty || 0); });
     if (q > 0) qty = q;
   } else qty = floorStep(qty, 0.000001);
-  S.trades[id] = { id, sym, coin: base, qty, entry: plan.entry, t1: plan.t1, t2: plan.t2, t3: plan.t3, sl: plan.sl, step, open: true, s1: false, s2: false, sold: 0, rev: 0, t0: Date.now(), stake: CFG.stake, peak: plan.entry };
+  S.trades[id] = { id, sym, coin: base, qty, entry: plan.entry, t1: plan.t1, t2: plan.t2, t3: plan.t3, sl: plan.sl, step, open: true, s1: false, s2: false, sold: 0, rev: 0, t0: Date.now(), stake: firstStake, stakePlanned: CFG.stake, splitInit: CFG.splitInit, adds: 0, rT1: plan.t1 / plan.entry, rT2: plan.t2 / plan.entry, rT3: plan.t3 / plan.entry, rSl: plan.sl / plan.entry, peak: plan.entry };
   S.buys++;
   saveState();
   log('BUY', base, 'x' + qty, '@' + plan.entry);
@@ -142,7 +147,7 @@ async function sellPart(st, frac, why, live) {
   st.sold += q; st.rev += q * live;
   if (why === 'T1') st.s1 = true;
   if (why === 'T2') st.s2 = true;
-  if (st.sold >= st.qty * 0.999 || why === 'STOP' || why === 'T3' || why === 'TP' || why === 'INST') {
+  if (st.sold >= st.qty * 0.999 || why === 'STOP' || why === 'T3' || why === 'TP' || why === 'INST' || why === 'TRAIL') {
     st.open = false; st.closeWhy = why; st.closeAt = Date.now();
     const pnl = st.rev - st.qty * st.entry;
     S.profit += pnl; S.closed++; S.dayPnl += pnl; S.equity += pnl;
@@ -156,15 +161,46 @@ async function sellPart(st, frac, why, live) {
   }
   return true;
 }
+async function reinforce(st, live) {
+  if (!CFG.rein || !st || !st.open) return false;
+  if ((st.adds || 0) >= CFG.reinMax) return false;
+  if (!(live <= st.entry * (1 - CFG.reinDrop))) return false;
+  const planned = st.stakePlanned || st.stake || 0;
+  const rem = Math.max(0, planned * (1 - (st.splitInit || 1)) - (st.added || 0));
+  if (rem <= 0) return false;
+  let addStake = rem / Math.max(1, CFG.reinMax - (st.adds || 0));
+  addStake = Math.min(addStake, S.equity * 0.5);
+  if (addStake <= 0) return false;
+  let addQty = addStake / live;
+  if (CFG.mode !== 'paper') {
+    const info = await getInfo(st.sym);
+    if (addStake < (info.minNot || 0)) return false;
+    const o = await signed('POST', '/api/v3/order', { symbol: st.sym, side: 'BUY', type: 'MARKET', quoteOrderQty: addStake });
+    let q = 0; (o.fills || []).forEach(f => { q += parseFloat(f.qty || 0); });
+    if (q > 0) addQty = q;
+  } else addQty = floorStep(addQty, 0.000001);
+  if (!(addQty > 0)) return false;
+  const newQty = st.qty + addQty;
+  const newAvg = (st.entry * st.qty + live * addQty) / newQty;
+  st.qty = newQty; st.entry = newAvg;
+  st.t1 = newAvg * (st.rT1 || 1.02); st.t2 = newAvg * (st.rT2 || 1.03); st.t3 = newAvg * (st.rT3 || 1.05); st.sl = newAvg * (st.rSl || 0.99);
+  st.stake = (st.stake || 0) + addStake; st.added = (st.added || 0) + addStake; st.adds = (st.adds || 0) + 1;
+  saveState();
+  log('ADD', st.coin, '#' + st.adds, '@' + live, 'avg=' + newAvg);
+  await tg('➕ تعزيز ' + st.coin + ' #' + st.adds + ' @ ' + live);
+  return true;
+}
 async function manage(st, live) {
   if (!st || !st.open) return;
   st.peak = Math.max(st.peak || st.entry, live);
+  await reinforce(st, live);
   const pnlNow = (st.rev || 0) - (st.sold || 0) * st.entry + (live - st.entry) * (st.qty - (st.sold || 0));
   st.peakPnl = Math.max(st.peakPnl || 0, pnlNow);
-  // تجميع مستمر: أي ربح من MIN_TP (0.30$) حتى TP (0.70$) يُغلق فوراً ويتراكم لهدف اليوم
+  // سلم الربح التكيفي: هبوط + 0.60$+ → قفل كبير، هبوط + 0.30$+ → خروج صغير، صعود مستمر → يُترك حتى سقف 0.70$
+  const down = live < (st.peak || live) * 0.999;
+  if (pnlNow >= 0.6 && down) { const rem = st.qty - (st.sold || 0); if (rem > 0) await sellPart(st, rem / st.qty, 'TRAIL', live); return; }
+  if (pnlNow >= CFG.minTp && down) { const rem = st.qty - (st.sold || 0); if (rem > 0) await sellPart(st, rem / st.qty, 'INST', live); return; }
   if (pnlNow >= CFG.tp) { const rem = st.qty - (st.sold || 0); if (rem > 0) await sellPart(st, rem / st.qty, 'TP', live); return; }
-  if (pnlNow >= CFG.minTp) { const rem = st.qty - (st.sold || 0); if (rem > 0) await sellPart(st, rem / st.qty, 'INST', live); return; }
-  if (pnlNow >= 0.3 && (st.peakPnl || 0) >= 0.7 && pnlNow < (st.peakPnl || 0) * 0.8) { const rem = st.qty - (st.sold || 0); if (rem > 0) await sellPart(st, rem / st.qty, 'INST', live); return; }
   if (live >= st.t1 && !st.s1) await sellPart(st, 0.30, 'T1', live);
   if (st.open && live >= st.t2 && !st.s2) await sellPart(st, 0.50, 'T2', live);
   if (!st.open) return;
@@ -246,6 +282,7 @@ async function selftest() {
   ok('m5-short-reject', m5setup([[0, '1', '2', '0.5', '1.5', '10']]) === null);
   ok('tf-bullish-accept', tfRising(K.map(r => r.map(String))) === true);
   ok('tf-bearish-reject', tfRising(Kb.map(r => r.map(String))) === false);
+  ok('reinforce-adds-on-dip', await (async () => { const sr = { id: 'm5:R', sym: 'RUSDT', coin: 'R', qty: 0.5, entry: 100, t1: 102, t2: 103, t3: 105, sl: 99, step: 0.001, open: true, s1: false, s2: false, sold: 0, rev: 0, mode: 'paper', t0: Date.now(), stake: 50, stakePlanned: 100, splitInit: 0.5, adds: 0, rT1: 1.02, rT2: 1.03, rT3: 1.05, rSl: 0.99 }; S.trades['m5:R'] = sr; S.equity = 1000; const okAdd = await reinforce(sr, 98.5); return okAdd === true && sr.adds === 1 && sr.qty > 0.5 && sr.entry < 100; })());
   const p = makePlan(100, K.map(r => r[4]));
   ok('plan-levels', p.t3 > p.t2 && p.t2 > p.t1 && p.t1 > p.entry && p.sl < p.entry);
   const _tp = CFG.tp; CFG.tp = 1e9;
