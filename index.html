@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v130.0 صفقة يومية + زر مشاركة)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v131.0 عدّاد التحميلات)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1546,6 +1546,7 @@ body.linkmode #masterFab{display:none!important}
       <div data-opane="links" hidden>
         <p class="muted" style="font-size:.76rem">رابط واحد يتغير كل 24 ساعة تلقائياً — القديم يتوقف وحده. الأصل عندك فقط (بدون رابط + PIN).</p>
         <div class="link-row"><b>🔗 رابط اليوم</b><code id="todayLinkTxt">—</code><span class="ok" id="todayLinkSt">🟢 نشط</span><span style="margin-inline-start:auto;display:flex;gap:4px"><button class="btn btn-primary btn-sm" id="todayLinkCopy">📋 نسخ</button><button class="btn btn-sm" id="todayLinkStop">⛔ إيقاف</button></span></div>
+        <div class="link-row"><b>📥 تحميلات التطبيق (تثبيتات فعلية من كل الأجهزة)</b><code id="dlCount">…</code><span style="margin-inline-start:auto"><button class="btn btn-sm" id="dlRefresh">🔄 تحديث</button></span></div>
         <div id="linksList"></div>
       </div>
       <div data-opane="leads" hidden><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><button class="btn btn-sm" id="leadRenew">🔄 تجديد المجانية (واحدة جديدة)</button><button class="btn btn-sm" id="leadTest">📤 تجربة التنبيه</button><span class="muted" id="leadAutoSt" style="font-size:.74rem"></span></div><div id="leadsList"></div></div>
@@ -4249,6 +4250,18 @@ function paintLeads(){
     box.innerHTML=ls.length?ls.slice(0,100).map(x=>'<div class="lead-row"><b>'+x.name+'</b><span class="mut">'+x.email+'</span><span class="mut" style="margin-inline-start:auto">'+new Date(x.at).toLocaleString('ar')+'</span></div>').join(''):'<div class="muted" style="font-size:.8rem">لا زوار بعد — شارك رابطك وستظهر بياناتهم هنا</div>';
   }catch(e){}
 }
+function paintDl(force){
+    try{
+      const el=$('dlCount'); if(!el) return;
+      let c=null; try{ c=JSON.parse(localStorage.getItem('ai_dl_v1')||'null'); }catch(e){}
+      if(c&&c.n!=null&&!force) el.textContent=c.n+' (آخر فحص '+new Date(c.t).toLocaleTimeString('ar')+')';
+      fetch('https://api.github.com/repos/namastecv901-cyber/PlayGround/releases',{cache:'no-store'}).then(r=>r.json()).then(js=>{
+        let n=0; try{ (js||[]).forEach(r=>{ (r.assets||[]).forEach(a=>{ if(/\.apk$/i.test(a.name||'')) n+=a.download_count||0; }); }); }catch(e){}
+        try{ localStorage.setItem('ai_dl_v1',JSON.stringify({n:n,t:Date.now()})); }catch(e){}
+        const e2=$('dlCount'); if(e2) e2.textContent=n+' (الآن ✅)';
+      }).catch(()=>{ const e3=$('dlCount'); if(e3&&(!c||c.n==null)) e3.textContent='تعذر — تحقق من الإنترنت'; });
+    }catch(e){}
+  }
 function paintLinks(){
     try{
       const tt=$('todayLinkTxt'); if(!tt) return;
@@ -4257,6 +4270,8 @@ function paintLinks(){
       const st=$('todayLinkSt');
       if(st){ if(L['stop:'+t]){ st.textContent='⛔ موقوف'; st.className='bad'; } else { st.textContent='🟢 نشط'; st.className='ok'; } }
       const box=$('linksList'); if(!box) return;
+      try{ paintDl(false); }catch(e){}
+      try{ const dr=$('dlRefresh'); if(dr&&!dr._b){ dr._b=1; dr.onclick=()=>paintDl(true); } }catch(e){}
       try{
         const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null');
         const ex=$('pickInfo'); if(ex) ex.remove();
