@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v148.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v149.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v148.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v149.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1469,6 +1469,7 @@ body.linkmode #masterFab{display:none!important}
     <button class="btn btn-primary btn-sm" id="botStart">▶ تشغيل</button>
     <button class="btn btn-sm" id="botStop">⏸ إيقاف</button>
     <button class="btn btn-sm" id="botChal">🚀 $5→$30</button>
+    <button class="btn btn-ghost btn-sm" id="botReset">🧹 مسح البوت وإعادة التشغيل</button>
     <button class="btn btn-ghost btn-sm" id="botClear">🗑 مسح المفاتيح</button>
     <label class="mute-sw"><input type="checkbox" id="botMute" checked> 🔕 كتم</label>
     <label class="mute-sw"><input type="checkbox" id="botAlways" checked> 🔁 يعمل دوماً</label>
@@ -3841,6 +3842,7 @@ async function m5scan(){
               }
             }
           }catch(e){ netfail++; }
+          if(netfail>=3&&okc===0) break;
           continue;
         }
         const r=await fetchT('https://api.binance.com/api/v3/klines?symbol='+c.sym+'&interval=5m&limit=20',15000);
@@ -3859,6 +3861,7 @@ async function m5scan(){
         if(!t1.ok){ if(t1.why!=='net'&&coolOk('m5o'+c.a.c.id)){ coolSet('m5o'+c.a.c.id); log('⏳ '+c.s+': توقيت 1m غير مناسب — انتظار'); } if(t1.why!=='net') continue; }
         await openSolo(c,setup,'1m+5m+15m');
       }catch(e){ netfail++; }
+      if(netfail>=3&&okc===0) break;
     }
     S.m5reg={n:found,pre:preFound,t:Date.now()};
      if(okc===0&&netfail>=3&&coolOk('m5net')){ coolSet('m5net'); log('📡 تعذر جلب شموع 1m-15m من Binance — تحقق من الإنترنت أو الحظر المنطقي. وضع «وحده» ينتظر البيانات.'); }
@@ -3980,6 +3983,7 @@ function bind(){
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ holdWake(); try{ S.busy=false; S.m5busy=false; }catch(e){} if(S.enabled) tick(); } else { try{ save(); }catch(e){} } });
   window.addEventListener('pagehide',()=>{ try{ save(); }catch(e){} });
   window.addEventListener('beforeunload',()=>{ try{ save(); }catch(e){} });
+  const rs=$('botReset'); if(rs) rs.onclick=()=>{ try{ S.busy=false; S.m5busy=false; S.cool={}; S.lastStop={}; S.noBin={}; S.m5last=0; S.lastTick=Date.now(); save(); setInputs(); paint(); log('🧹 مسح البوت: فككت أي تجميد ومسحت التبريد والحظر المؤقت — إعادة تشغيل نظيفة الآن'); }catch(e){} try{ if(S.enabled) tick(); else startBot(false); }catch(e){} };
   const cl=$('botClear'); if(cl) cl.onclick=()=>{ S.key=''; S.sec=''; save(); setInputs(); log('🗑 تم مسح المفاتيح'); };
   const ch=$('botChal'); if(ch) ch.onclick=()=>{ applyGrowth('c5_30'); };
   document.addEventListener('click',e=>{ try{ const b=e.target&&e.target.closest?e.target.closest('[data-plan]'):null; if(b&&b.dataset.plan){ if(S.autoPlan){ S.autoPlan=false; save(); setInputs(); log('✋ اخترت خطة يدوياً — التبديل التلقائي توقّف (فعّله من 🔄 تلقائي)'); } applyPlan(b.dataset.plan,false); return; } const g=e.target&&e.target.closest?e.target.closest('[data-chal]'):null; if(g&&g.dataset.chal){ applyGrowth(g.dataset.chal,false); }
