@@ -2,8 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<script>/*__BOOTV1__*/(function(){try{var LV='v133.0';var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v||c.v===LV)return;if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v132.0 تنبيه الزوار المدمج)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v133.0 تنبيه الزوار المدمج)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1043,6 +1044,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 #updBanner button{font-family:inherit;font-weight:900;border-radius:10px;padding:4px 14px;margin-inline-start:8px;cursor:pointer}
 #updGo{background:#16c784;color:#04120a;border:none}
 #updX{background:transparent;color:#9fbfb0;border:1px solid #1fe19666}
+#updApk{background:transparent;color:#9fbfb0;border:1px solid #1fe19666}
 @keyframes updPulse{50%{box-shadow:0 0 18px #16c78488}}
 @media(display-mode:standalone){
   .app-bar{display:none !important}
@@ -1234,6 +1236,10 @@ body{max-width:680px;margin:0 auto;padding:12px}
 .bot-event.flash{animation:evFlash .8s ease 2}
 @keyframes evFlash{50%{box-shadow:0 0 26px #c89b6dcc}}
 .bot-event .ev-live{display:block;font-size:.68rem;font-weight:700;color:#b08d5f;margin-top:3px}
+.bot-decres{margin:8px 0;border-radius:12px;padding:9px 12px;font-weight:900;font-size:.82rem;text-align:center;background:#241a08;border:1px solid #f0b90b;color:#ffe9a8;animation:evCalm 3.4s ease-in-out infinite}
+.bot-decres small{display:block;font-size:.68rem;font-weight:700;color:#c9a86d;margin-top:3px}
+.bot-decres.done{border-color:#1fe196;color:#d9ffe9;background:#0d2418}
+.bot-decres.bad{border-color:#ea3943;color:#ffc9cd;background:#2b0f12}
 #botBuys{color:#8fa9ff}
 .bot-preview{font-size:.78rem;font-weight:900;color:#f0d675;background:#f0b90b0d;border:1px solid #f0b90b33;border-radius:10px;padding:7px 12px;margin-bottom:8px;text-align:center}
 .bot-chal{margin-bottom:8px;padding:10px 12px;border-radius:12px;background:linear-gradient(90deg,#ff8a3d22,#f0b90b22);border:1px solid #ff8a3d66}
@@ -1424,6 +1430,7 @@ body.linkmode #masterFab{display:none!important}
 <div class="bot-panel" id="botPanel">
   <div class="bot-head"><span>🤖 روبوت Binance <em>تداول تلقائي — Binance فقط</em></span><b id="botStatus">⏸ متوقف</b></div>
   <div class="bot-now" id="botNow">🟣 الخطة: 🔥 انفجار — هدف 1</div>
+  <div class="bot-decres" id="botDecRes" hidden></div>
   <div class="bot-event" id="botEvent">🔔 بانتظار أول عملية شراء/بيع...</div>
   <div class="bot-link">🔗 <span id="botGuard">متصل بالحارس</span> • <span id="botProfit">💰 الربح: $0.00</span> • <span id="botRec"></span> • <span id="botEqLine"></span> • <span id="botDayN"></span> • <span id="botBuys"></span> • <span id="botConf"></span> • <span id="botDuel"></span> • <span id="botGoalLine"></span></div>
   <div class="bot-grid">
@@ -3031,7 +3038,7 @@ document.addEventListener('DOMContentLoaded',boot);
 "use strict";
 const $=id=>document.getElementById(id);
 const LS='ai_bot49_v1';
-const S={enabled:false,mode:'paper',cap:20,max:3,key:'',sec:'',mute:true,trades:{},log:[],profit:0,closed:0,timeOffset:0,info:{},cool:{},busy:false,fastOnly:false,dayLimit:10,recOn:true,day:'',dayPnl:0,deficit:0,recStreak:0,tpCap:0.7,equity:100,equityStart:100,chartSel:'',sizeMode:'fixed',sizePct:20,noLoss:true,dayCount:0,buyCount:0,lastEv:null,confirm:true,confirmIn:0,confirmOut:0,challenge:false,autoResume:true,wasEnabled:false,quick:true,full:false,brain:'both',statLink:null,statSolo:null,m5last:0,m5busy:false,noBin:{},goal:10,goalDone:false,scalp:false,instant:false,instantMin:0.3,closedList:[],lastStop:{},planId:'boom',entryOnly:true,t1full:true,oneDecision:true,holdStrong:false,splitInit:1,reinforce:false,reinDrop:0.01,reinMax:2,dblWin:false,planStats:{},autoPlan:false,autoPlanT:0,autoWhy:'',regime:null,m5reg:null};
+const S={enabled:false,mode:'paper',cap:20,max:3,key:'',sec:'',mute:true,trades:{},log:[],profit:0,closed:0,timeOffset:0,info:{},cool:{},busy:false,fastOnly:false,dayLimit:10,recOn:true,day:'',dayPnl:0,deficit:0,recStreak:0,tpCap:0.7,equity:100,equityStart:100,chartSel:'',sizeMode:'fixed',sizePct:20,noLoss:true,dayCount:0,buyCount:0,lastEv:null,confirm:true,confirmIn:0,confirmOut:0,challenge:false,autoResume:true,wasEnabled:false,quick:true,full:false,brain:'both',statLink:null,statSolo:null,m5last:0,m5busy:false,noBin:{},goal:10,goalDone:false,scalp:false,instant:false,instantMin:0.3,closedList:[],lastStop:{},planId:'boom',entryOnly:true,t1full:true,oneDecision:true,holdStrong:false,splitInit:1,reinforce:false,reinDrop:0.01,reinMax:2,dblWin:false,planStats:{},autoPlan:false,autoPlanT:0,autoWhy:'',regime:null,m5reg:null,focusCoin:null,decisions:[],lastResult:null};
 // ---------- SHA256 + HMAC (توقيع Binance محلياً) ----------
 function sha256Bytes(m){
   const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
@@ -3071,9 +3078,9 @@ function hmacHex(keyStr,msgStr){
   return sha256Bytes(k.map(b=>b^0x5c).concat(inner)).map(b=>('0'+b.toString(16)).slice(-2)).join('');
 }
 // ---------- تخزين ----------
-function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['mode','cap','max','key','sec','mute','trades','log','profit','closed','fastOnly','dayLimit','recOn','day','dayPnl','deficit','recStreak','tpCap','equity','equityStart','chartSel','sizeMode','sizePct','noLoss','dayCount','buyCount','lastEv','confirm','confirmIn','confirmOut','challenge','autoResume','wasEnabled','quick','full','brain','statLink','statSolo','m5last','noBin','goal','goalDone','scalp','instant','instantMin','closedList','lastStop','planId','entryOnly','t1full','oneDecision','holdStrong','splitInit','reinforce','reinDrop','reinMax','dblWin','planStats','chalId','chalGoal','autoPlan','autoPlanT','autoWhy','v'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); try{ const led=JSON.parse(localStorage.getItem('ai_bot_profit_v1')||'null'); if(led){ if((led.profit||0)>(S.profit||0)){ S.profit=led.profit; S.closed=Math.max(S.closed||0,led.closed||0); } if((led.dayPnl||0)!==0&&led.day===S.day&&(S.dayPnl||0)===0){ S.dayPnl=led.dayPnl; } if((led.equity||0)>(S.equity||0)&&!(S.equity>0)){ S.equity=led.equity; } if(led.day) S.day=S.day||led.day; } }catch(e){} if(S.v!==88){ S.v=88; S.tpCap=0.7; S.instantMin=0.3; S.instant=false; S.quick=true; S.full=false; S.fastOnly=false; S.scalp=false; S.goal=10; S.planId=S.planId||'boom'; if(S.planId==='boom'){ S.splitInit=1; S.reinforce=false; S.dblWin=false; } } }catch(e){} }
+function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['mode','cap','max','key','sec','mute','trades','log','profit','closed','fastOnly','dayLimit','recOn','day','dayPnl','deficit','recStreak','tpCap','equity','equityStart','chartSel','sizeMode','sizePct','noLoss','dayCount','buyCount','lastEv','confirm','confirmIn','confirmOut','challenge','autoResume','wasEnabled','quick','full','brain','statLink','statSolo','m5last','noBin','goal','goalDone','scalp','instant','instantMin','closedList','lastStop','planId','entryOnly','t1full','oneDecision','holdStrong','splitInit','reinforce','reinDrop','reinMax','dblWin','planStats','chalId','chalGoal','autoPlan','autoPlanT','autoWhy','focusCoin','decisions','lastResult','v'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); try{ const led=JSON.parse(localStorage.getItem('ai_bot_profit_v1')||'null'); if(led){ if((led.profit||0)>(S.profit||0)){ S.profit=led.profit; S.closed=Math.max(S.closed||0,led.closed||0); } if((led.dayPnl||0)!==0&&led.day===S.day&&(S.dayPnl||0)===0){ S.dayPnl=led.dayPnl; } if((led.equity||0)>(S.equity||0)&&!(S.equity>0)){ S.equity=led.equity; } if(led.day) S.day=S.day||led.day; } }catch(e){} if(S.v!==88){ S.v=88; S.tpCap=0.7; S.instantMin=0.3; S.instant=false; S.quick=true; S.full=false; S.fastOnly=false; S.scalp=false; S.goal=10; S.planId=S.planId||'boom'; if(S.planId==='boom'){ S.splitInit=1; S.reinforce=false; S.dblWin=false; } } }catch(e){} }
 function cleanTradesForSave(tr){ try{ const ks=Object.keys(tr||{}); const keep=ks.slice(-50); const out={}; keep.forEach(k=>{ const st=tr[k]; if(!st) return; const c={}; ['id','sym','coin','qty','entry','t1','t2','t3','sl','step','open','s1','s2','pulled','sold','rev','mode','t0','stake','stakePlanned','splitInit','adds','added','double','rT1','rT2','rT3','rSl','frame','tf','src','closeWhy','closeAt','beWait','peakPnl','plan','skip','strong','heldOnce'].forEach(f=>{ if(st[f]!==undefined) c[f]=st[f]; }); out[k]=c; }); return out; }catch(e){ return {}; } }
-function save(){ try{ const payload={mode:S.mode,cap:S.cap,max:S.max,key:S.key,sec:S.sec,mute:S.mute,trades:cleanTradesForSave(S.trades),log:(S.log||[]).slice(0,30),profit:S.profit,closed:S.closed,fastOnly:S.fastOnly,dayLimit:S.dayLimit,recOn:S.recOn,day:S.day,dayPnl:S.dayPnl,deficit:S.deficit,recStreak:S.recStreak,tpCap:S.tpCap,equity:S.equity,equityStart:S.equityStart,chartSel:S.chartSel,sizeMode:S.sizeMode,sizePct:S.sizePct,noLoss:S.noLoss,dayCount:S.dayCount,buyCount:S.buyCount,lastEv:S.lastEv,confirm:S.confirm,confirmIn:S.confirmIn,confirmOut:S.confirmOut,challenge:S.challenge,chalId:S.chalId,chalGoal:S.chalGoal,autoResume:S.autoResume,wasEnabled:S.wasEnabled,quick:S.quick,full:S.full,brain:S.brain,statLink:S.statLink,statSolo:S.statSolo,m5last:S.m5last,noBin:S.noBin,goal:S.goal,goalDone:S.goalDone,scalp:S.scalp,instant:S.instant,instantMin:S.instantMin,lastStop:S.lastStop||{},planId:S.planId,entryOnly:S.entryOnly!==false,t1full:S.t1full!==false,oneDecision:S.oneDecision!==false,holdStrong:!!S.holdStrong,splitInit:S.splitInit,reinforce:S.reinforce,reinDrop:S.reinDrop,reinMax:S.reinMax,dblWin:S.dblWin,planStats:S.planStats||{},autoPlan:!!S.autoPlan,autoPlanT:S.autoPlanT||0,autoWhy:S.autoWhy||'',v:S.v,closedList:(S.closedList||[]).slice(0,20)}; try{ localStorage.setItem(LS,JSON.stringify(payload)); }catch(q){ try{ payload.trades={}; payload.log=(S.log||[]).slice(0,10); payload.closedList=(S.closedList||[]).slice(0,10); localStorage.setItem(LS,JSON.stringify(payload)); }catch(e2){} } try{ localStorage.setItem('ai_bot_profit_v1',JSON.stringify({profit:S.profit||0,closed:S.closed||0,dayPnl:S.dayPnl||0,day:S.day||'',equity:S.equity||0,ts:Date.now()})); }catch(e3){} try{ const el=document.getElementById('botSave'); if(el) el.textContent='💾 حفظ تلقائي '+new Date().toLocaleTimeString('ar'); }catch(e4){} }catch(e){} }
+function save(){ try{ const payload={mode:S.mode,cap:S.cap,max:S.max,key:S.key,sec:S.sec,mute:S.mute,trades:cleanTradesForSave(S.trades),log:(S.log||[]).slice(0,30),profit:S.profit,closed:S.closed,fastOnly:S.fastOnly,dayLimit:S.dayLimit,recOn:S.recOn,day:S.day,dayPnl:S.dayPnl,deficit:S.deficit,recStreak:S.recStreak,tpCap:S.tpCap,equity:S.equity,equityStart:S.equityStart,chartSel:S.chartSel,sizeMode:S.sizeMode,sizePct:S.sizePct,noLoss:S.noLoss,dayCount:S.dayCount,buyCount:S.buyCount,lastEv:S.lastEv,confirm:S.confirm,confirmIn:S.confirmIn,confirmOut:S.confirmOut,challenge:S.challenge,chalId:S.chalId,chalGoal:S.chalGoal,autoResume:S.autoResume,wasEnabled:S.wasEnabled,quick:S.quick,full:S.full,brain:S.brain,statLink:S.statLink,statSolo:S.statSolo,m5last:S.m5last,noBin:S.noBin,goal:S.goal,goalDone:S.goalDone,scalp:S.scalp,instant:S.instant,instantMin:S.instantMin,lastStop:S.lastStop||{},planId:S.planId,entryOnly:S.entryOnly!==false,t1full:S.t1full!==false,oneDecision:S.oneDecision!==false,holdStrong:!!S.holdStrong,splitInit:S.splitInit,reinforce:S.reinforce,reinDrop:S.reinDrop,reinMax:S.reinMax,dblWin:S.dblWin,planStats:S.planStats||{},autoPlan:!!S.autoPlan,autoPlanT:S.autoPlanT||0,autoWhy:S.autoWhy||'',focusCoin:S.focusCoin||null,decisions:(S.decisions||[]).slice(0,20),lastResult:S.lastResult||null,v:S.v,closedList:(S.closedList||[]).slice(0,20)}; try{ localStorage.setItem(LS,JSON.stringify(payload)); }catch(q){ try{ payload.trades={}; payload.log=(S.log||[]).slice(0,10); payload.closedList=(S.closedList||[]).slice(0,10); localStorage.setItem(LS,JSON.stringify(payload)); }catch(e2){} } try{ localStorage.setItem('ai_bot_profit_v1',JSON.stringify({profit:S.profit||0,closed:S.closed||0,dayPnl:S.dayPnl||0,day:S.day||'',equity:S.equity||0,ts:Date.now()})); }catch(e3){} try{ const el=document.getElementById('botSave'); if(el) el.textContent='💾 حفظ تلقائي '+new Date().toLocaleTimeString('ar'); }catch(e4){} }catch(e){} }
 // ---------- حصة الصفقة (تعويض مستمر مهما حدث: حتى 2× الحجم حتى يُعوَّض العجز كاملاً) ----------
 function eqFloor(){ return Math.min(10,(parseFloat(S.equityStart)||10)*0.2); }
 function stakeFor(){
@@ -3283,6 +3290,23 @@ function paintBotStrips(){
   }catch(e){}
 }
 function setEv(side,coin,price,why,pnl){ S.lastEv={side:side,coin:coin,price:price,why:why||'',pnl:(pnl==null?null:pnl),t:Date.now()}; save(); paintEv(); try{ const el=$('botEvent'); if(el){ el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }catch(e){} }
+function paintDecRes(){
+  try{
+    const el=$('botDecRes'); if(!el) return;
+    let fc=null;
+    try{ if(S.focusCoin){ const f=S.trades[S.focusCoin]; if(f&&f.open&&!f.skip) fc=f; else { S.focusCoin=null; save(); } } }catch(e){}
+    if(fc){
+      let live=fc.entry, pnl=0;
+      try{ live=liveOf(fc.id,fc.entry); pnl=(fc.rev||0)-(fc.sold||0)*fc.entry+(live-fc.entry)*(fc.qty-(fc.sold||0)); }catch(e){}
+      el.hidden=false; el.className='bot-decres';
+      el.innerHTML='\u0001F9ED \u0627\u0644\u0642\u0631\u0627\u0631 \u0627\u0644\u0648\u0627\u062d\u062f \u064a\u0631\u0627\u0642\u0628 <b>'+fc.coin+'</b> \u062d\u062a\u0649 \u0627\u0644\u0646\u0647\u0627\u064a\u0629 \u2014 \u0644\u0646 \u0623\u062a\u0631\u0643\u0647\u0627'+'<small>\u062f\u062e\u0648\u0644 '+money(fc.entry)+' \u2022 \u062d\u064a '+money(live)+' \u2022 \u0631\u0628\u062d '+(pnl>=0?'+':'')+'$'+pnl.toFixed(2)+'</small>';
+    } else if(S.lastResult){
+      const r=S.lastResult, win=(r.pnl||0)>=0;
+      el.hidden=false; el.className='bot-decres '+(win?'done':'bad');
+      el.innerHTML=(win?'\u2705 ':'\U0001F534 ')+r.coin+': \u0648\u0635\u0644\u062a \u0644\u0633\u0639\u0631 <b>'+money(r.exit)+'</b> \u2014 \u0627\u0644\u0631\u0628\u062d <b>'+(win?'+':'')+'$'+(r.pnl||0).toFixed(2)+'</b> \U0001F3AF'+'<small>'+new Date(r.t).toLocaleTimeString('ar')+' \u2022 \u0627\u0644\u0642\u0631\u0627\u0631 \u062c\u0627\u0647\u0632 \u0644\u0644\u0641\u0631\u0635\u0629 \u0627\u0644\u062c\u062f\u064a\u062f\u0629</small>';
+    } else { el.hidden=true; el.innerHTML=''; }
+  }catch(e){}
+}
 function paintEv(){ try{ const el=$('botEvent'); if(!el) return; let open=0; try{ open=Object.values(S.trades).filter(x=>x&&x.open&&!x.skip).length; }catch(e){} const live='<span class="ev-live">● حي • '+open+' مفتوحة • اليوم '+( (S.dayPnl||0)>=0?'+':'')+'$'+(S.dayPnl||0).toFixed(2)+' • '+new Date().toLocaleTimeString('ar')+'</span>'; const e=S.lastEv; if(!e){ el.className='bot-event'; el.innerHTML='<span class="ev-dot"></span>🔔 بانتظار أول عملية شراء/بيع...'+live; return; } el.className='bot-event '+(e.side==='buy'?'ev-buy':'ev-sell'); el.innerHTML='<span class="ev-dot"></span>'+(e.side==='buy'?'🟢 تم الشراء هنا: ':'🔴 تم البيع هنا: ')+e.coin+' @ '+money(e.price)+(e.why?' ('+e.why+')':'')+(e.pnl!=null?' ربح '+(e.pnl>=0?'+':'')+'$'+e.pnl.toFixed(2):'')+' • '+new Date(e.t).toLocaleTimeString('ar')+live; }catch(e){} }
 function applyChallenge(){
   S.mode='paper'; S.equity=5; S.equityStart=5; S.sizeMode='pct'; S.sizePct=40; S.tpCap=1; S.fastOnly=true; S.max=2; S.dayLimit=2; S.recOn=true; S.noLoss=true; S.challenge=true; S.deficit=0; S.recStreak=0; S.dayPnl=0;
@@ -3306,6 +3330,7 @@ function paint(){
   if(gl){ const g=parseFloat(S.goal)||10, d=S.dayPnl||0; const gs=(Math.round(g*100)/100); gl.textContent='🎯 الهدف: $'+d.toFixed(2)+'/$'+gs; gl.style.color=d>=g?'#1fe196':'#f0d675'; }
   const du=$('botDuel');
   if(du){ const L=S.statLink||{n:0,pnl:0}, O=S.statSolo||{n:0,pnl:0}; du.textContent='🔗 مربوط '+(L.pnl>=0?'+':'')+'$'+(L.pnl||0).toFixed(2)+' ('+(L.n||0)+') • 🤖 وحده '+(O.pnl>=0?'+':'')+'$'+(O.pnl||0).toFixed(2)+' ('+(O.n||0)+')'; }
+  try{ paintDecRes(); }catch(e){}
   const cf2=$('botConf');
   if(cf2) cf2.textContent='🧠 تأكيد: ✅ '+(S.confirmIn||0)+' • 🚫 '+(S.confirmOut||0);
   const rc=$('botRec');
@@ -3356,6 +3381,7 @@ async function openTrade(p){
    // 💰 الدخول بسعر الدخول فقط: لا لحاق بالسعر البعيد — انتظار عودة السعر للدخول
    if(S.oneDecision!==false&&mktRegime()==='down'){ if(coolOk(id+'_dn')){ coolSet(id+'_dn'); log('📉 '+p.sym+': القرار الواحد — هبوط عام، لا دخول جديد (انتظار)'); } return null; }
    if(S.entryOnly!==false){ const lv=liveOf(id,p.entry); if(Math.abs(lv-p.entry)/p.entry>0.005){ if(coolOk(id+'_e')){ coolSet(id+'_e'); log('💰 '+p.sym+': السعر بعيد عن الدخول — انتظار سعر الدخول ('+money(p.entry)+') بدل اللحاق'); } return null; } }
+  if(S.oneDecision!==false&&S.focusCoin){ const fs=S.trades[S.focusCoin]; if(fs&&fs.open&&!fs.skip){ if(coolOk(id+'_fc')){ coolSet(id+'_fc'); log('\U0001F9ED \u0627\u0644\u0642\u0631\u0627\u0631 \u0627\u0644\u0648\u0627\u062d\u062f: \u0623\u0631\u0643\u0632 \u0639\u0644\u0649 '+fs.coin+' \u2014 \u0644\u0627 \u062f\u062e\u0648\u0644 \u062c\u062f\u064a\u062f \u062d\u062a\u0649 \u062a\u0646\u062a\u0647\u064a'); } return null; } else S.focusCoin=null; }
   const cf=confirmTrade(p);
   if(!cf.ok){ if(coolOk(id)){ coolSet(id); S.confirmOut=(S.confirmOut||0)+1; save(); log('🚫 '+p.sym+': رفض الروبوت — '+cf.why); paint(); } return null; }
   if(nOpen>=maxOpen){ if(coolOk(id)){ coolSet(id); log('⏸ '+p.sym+': بلغ الحد الأقصى ('+maxOpen+') — بانتظار إغلاق'); } return null; }
@@ -3385,6 +3411,7 @@ async function openTrade(p){
   }
   const st={id,sym,coin:p.sym,qty,entry:p.entry,t1:p.t1,t2:p.t2,t3:p.t3,sl:p.sl,step,open:true,s1:false,s2:false,pulled:false,sold:0,rev:0,mode:S.mode,t0:Date.now(),stake:firstStake,stakePlanned:stake,splitInit:splitInit,adds:0,double:!!S.dblWin,plan:S.planId||'boom',rT1:p.t1/p.entry,rT2:p.t2/p.entry,rT3:p.t3/p.entry,rSl:p.sl/p.entry,frame:(function(){ try{ const tf=((window.PLAN40&&window.PLAN40.get(id))||{}).tf||''; return tf.indexOf('15m')===0?'15m':'4H'; }catch(e){ return '4H'; } })(),tf:(function(){ try{ return ((window.PLAN40&&window.PLAN40.get(id))||{}).tf||''; }catch(e){ return ''; } })()}; try{ const ax=(window.RADAR&&window.RADAR.analyzed||[]).find(x=>x.c.id===id); st.strong=ax&&ax.grade==='strong'; }catch(e){}
   S.trades[id]=st; S.dayCount=(S.dayCount||0)+1; S.buyCount=(S.buyCount||0)+1; S.confirmIn=(S.confirmIn||0)+1; save();
+  if(S.oneDecision!==false){ S.focusCoin=id; S.lastResult=null; save(); try{ paintDecRes(); }catch(e){} }
   setEv('buy',p.sym,p.entry,(st.frame==='15m'?'⚡ سريعة 15m':'🧘 متوسطة 4H'),null);
   log('🟢 '+(S.mode==='paper'?'[تجريبي] ':'')+(st.frame==='15m'?'دخل صفقة سريعة 15m ⚡':'دخل صفقة متوسطة 4H 🧘')+' — شراء '+p.sym+' × '+qty+' @ '+money(p.entry)+' ($'+stake.toFixed(2)+')'+(st0.mult>1?' (تعويض ×'+st0.mult+')':'')+(cf&&cf.score?' 🧠 تأكيد صعود حقيقي '+cf.score:''));
   toast('🟢 شراء '+p.sym+' @ '+money(p.entry));
@@ -3407,6 +3434,7 @@ async function sellPart(st,frac,why,live){
     const pnl=st.rev-st.qty*st.entry;
     S.profit+=pnl; S.closed++;
     S.closedList=S.closedList||[]; S.closedList.unshift({id:st.id,coin:st.coin,entry:st.entry,exit:st.qty>0?st.rev/st.qty:live,why:why,pnl:pnl,t:Date.now(),mode:st.mode||S.mode}); S.closedList=S.closedList.slice(0,20);
+    try{ if(S.oneDecision!==false&&S.focusCoin&&st.id===S.focusCoin){ const ex=st.qty>0?st.rev/st.qty:live; S.lastResult={coin:st.coin,exit:ex,pnl:pnl,t:Date.now()}; S.decisions=S.decisions||[]; S.decisions.unshift({coin:st.coin,exit:ex,pnl:pnl,t:Date.now()}); S.decisions=S.decisions.slice(0,20); S.focusCoin=null; save(); paintDecRes(); } }catch(e){}
     const KK=st.src==='m5'?'statSolo':'statLink'; S[KK]=S[KK]||{n:0,pnl:0}; S[KK].n++; S[KK].pnl+=pnl;
     try{ const pid=st.plan||S.planId||'boom'; S.planStats=S.planStats||{}; const ps=S.planStats[pid]||{n:0,pnl:0,wins:0}; ps.n++; ps.pnl+=pnl; if(pnl>0) ps.wins++; S.planStats[pid]=ps; }catch(e){}
     S.equity=(parseFloat(S.equity)||0)+pnl;
@@ -3674,6 +3702,7 @@ async function openSolo(c,setup,tf){
   } else qty=floorStep(qty,0.000001);
   const st={id,sym:c.sym,coin:c.s,src:'m5',tf:tf||'5m',frame:'15m',qty,entry,t1,t2,t3,sl,step,open:true,s1:false,s2:false,pulled:false,sold:0,rev:0,mode:S.mode,t0:Date.now(),stake:firstStake,stakePlanned:stake,splitInit:splitInit,adds:0,double:!!S.dblWin,plan:S.planId||'boom',rT1:t1/entry,rT2:t2/entry,rT3:t3/entry,rSl:sl/entry};
   S.trades[id]=st; S.dayCount=(S.dayCount||0)+1; S.buyCount=(S.buyCount||0)+1; S.confirmIn=(S.confirmIn||0)+1; save();
+  if(S.oneDecision!==false){ S.focusCoin=id; S.lastResult=null; save(); try{ paintDecRes(); }catch(e){} }
   setEv('buy',c.s,entry,'⚡ سريعة 15m',null);
   log('🤖 [وحده] دخل صفقة سريعة 15m ⚡ — شراء '+c.s+' × '+qty+' @ '+money(entry)+' ($'+stake.toFixed(2)+') — صاعدة بتحليل شامل + فريمات '+(tf||'5m')+' 🕯📊');
   toast('🤖 شراء '+c.s+' (وحده)');
@@ -3843,20 +3872,39 @@ async function checkUpdate(){
   }catch(e){}
   return false;
 }
+async function applyRemoteUpdate(btn,ts){
+  try{
+    if(btn){ btn.disabled=true; btn.textContent='\u23F3 \u062C\u0627\u0631\u0650 \u0627\u0644\u062A\u062D\u062F\u064A\u062B...'; }
+    const r=await fetch('https://raw.githubusercontent.com/namastecv901-cyber/PlayGround/main/index.html',{cache:'no-store'});
+    if(!r.ok) throw 0;
+    const html=await r.text();
+    if(html.length<100000||html.indexOf('TRAININGV8 Premium')<0||html.indexOf('__BOOTV1__')<0) throw 0;
+    const mt=html.match(/<title>([\s\S]*?)<\/title>/);
+    const vm=mt?mt[1].match(/\(v[\d.]+/):null;
+    const v=vm?vm[0].slice(1):'';
+    if(!v) throw 0;
+    try{ localStorage.setItem('ai_remote_html_v1',JSON.stringify({v:v,html:html,at:Date.now()})); }catch(e){ throw 0; }
+    try{ localStorage.setItem('ai_seen_apk_v1',ts||''); }catch(e){}
+    location.reload();
+  }catch(e){
+    try{ if(btn){ btn.disabled=false; btn.textContent='\U0001F504 \u062A\u062D\u062F\u064A\u062B \u0641\u0648\u0631\u064A (\u0628\u062F\u0648\u0646 \u062A\u0646\u0632\u064A\u0644)'; } toast('\u274C \u062A\u0639\u0630\u0631 \u0627\u0644\u062A\u062D\u062F\u064A\u062B \u0627\u0644\u0641\u0648\u0631\u064A \u2014 \u062A\u062D\u0642\u0642 \u0645\u0646 \u0627\u0644\u0625\u0646\u062A\u0631\u0646\u062A \u0623\u0648 \u062D\u0645\u0651\u0644 APK'); }catch(x){}
+  }
+}
 function showUpdBanner(url,ts){
   try{
     if(document.getElementById('updBanner')) return;
     const d=document.createElement('div');
     d.id='updBanner';
-    d.innerHTML='🎉 <b>تحديث جديد في النظام!</b><button id="updGo">⬇ تحميل التحديث</button><button id="updX" aria-label="إغلاق">✖</button>';
+    d.innerHTML='🎉 <b>تحديث جديد في النظام!</b><button id="updGo">🔄 تحديث فوري (بدون تنزيل)</button><button id="updApk" title="تحميل ملف التثبيت">⬇ APK</button><button id="updX" aria-label="إغلاق">✖</button>';
     document.body.prepend(d);
     const done=()=>{ try{ localStorage.setItem('ai_seen_apk_v1',ts); }catch(e){} d.remove(); };
-    document.getElementById('updGo').onclick=()=>{ try{ window.open(url,'_blank'); }catch(e){ location.href=url; } done(); };
+    document.getElementById('updGo').onclick=function(){ applyRemoteUpdate(this,ts); };
+    document.getElementById('updApk').onclick=()=>{ try{ window.open(url,'_blank'); }catch(e){ location.href=url; } };
     document.getElementById('updX').onclick=done;
     try{ toast('🎉 تحديث جديد متوفر'); }catch(e){}
   }catch(e){}
 }
-window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner,preburst,m5setup,manage,openTrade,mktRegime,holdOf,save};
+window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner,preburst,m5setup,manage,openTrade,mktRegime,holdOf,save,paintDecRes,applyRemoteUpdate};
 })();
 </script>
 <script>// 🗂 SEC61 — الصعود الجديد وحده + الصعود المؤكد وحده (بدون خلط)
