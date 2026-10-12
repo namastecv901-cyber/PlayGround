@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v141.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v142.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v141.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v142.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1475,8 +1475,8 @@ body.linkmode #masterFab{display:none!important}
 <div id="botToasts"></div>
 
 <div class="bot-panel" id="investPanel">
-  <div class="bot-head"><span>💰 مضاعفة رأس المال <em>قسم مستقل — ربح صافي 100% حتى 800%</em></span><b id="investStatus">💰 جاهز</b></div>
-  <div class="bot-plans-head">💰 الاستثمار المضاعف — ربح صافي 100% حتى 800% (اضغط للبدء ✅)</div>
+  <div class="bot-head"><span>💰 صفقات استثمارية <em>هدفها 100% و500% ربح صافي</em></span><b id="investStatus">💰 جاهز</b></div>
+  <div class="bot-plans-head">💰 صفقات استثمارية — هدفها 100% و500% (اضغط للبدء ✅)</div>
   <div class="bot-plans" id="botInvest"></div>
 </div>
 
@@ -3323,9 +3323,7 @@ function confirmTrade(p){
 // ---------- 💰 الاستثمار المضاعف: دخول دقيق + هدف صافي ×2..×9 + مراقبة أياماً ----------
 const INVESTS=[
  {id:'x2',mult:2,pct:100},
- {id:'x3',mult:3,pct:200},
- {id:'x6',mult:6,pct:500},
- {id:'x9',mult:9,pct:800}
+ {id:'x6',mult:6,pct:500}
 ];
 async function openInvest(ladId){
   return _openInvest(ladId);
