@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v142.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v143.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v142.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v143.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3473,7 +3473,7 @@ async function sellPart(st,frac,why,live){
     S.profit+=pnl; S.closed++;
     S.closedList=S.closedList||[]; S.closedList.unshift({id:st.id,coin:st.coin,entry:st.entry,exit:st.qty>0?st.rev/st.qty:live,why:why,pnl:pnl,t:Date.now(),mode:st.mode||S.mode}); S.closedList=S.closedList.slice(0,20);
     try{ if(S.oneDecision!==false&&S.focusCoin&&st.id===S.focusCoin){ const ex=st.qty>0?st.rev/st.qty:live; S.lastResult={coin:st.coin,exit:ex,pnl:pnl,t:Date.now()}; S.decisions=S.decisions||[]; S.decisions.unshift({coin:st.coin,exit:ex,pnl:pnl,t:Date.now()}); S.decisions=S.decisions.slice(0,20); S.focusCoin=null; save(); paintDecRes(); } }catch(e){}
-    try{ if(st.invest&&why==='INVEST'){ const ex=st.qty>0?st.rev/st.qty:live; const np=(st.rev||0)-(st.qty||0)*st.entry; const pc=Math.round((ex/st.entry-1)*100); S.investMsg='✅ '+st.coin+': وصلت '+money(ex)+' — ربح صافي +$'+np.toFixed(2)+' ('+pc+'%) 🎯'; S.investId=null; save(); paintInvest(); try{ toast('🎯 استثمار '+st.coin+' وصل الهدف +$'+np.toFixed(2)); }catch(e){} } }catch(e){}
+    try{ if(st.invest&&why==='INVEST'){ const ex=st.qty>0?st.rev/st.qty:live; const np=(st.rev||0)-(st.qty||0)*st.entry; const pc=Math.round((ex/st.entry-1)*100); let ent='—',dur='—'; try{ ent=new Date(st.t0||Date.now()).toLocaleString('ar'); const ms=Math.max(0,Date.now()-(st.t0||Date.now())); const dd=Math.floor(ms/864e5),hh=Math.floor(ms%864e5/36e5),mm=Math.floor(ms%36e5/6e4); dur=(dd>0?dd+' يوم ':'')+(hh>0?hh+' ساعة ':'')+mm+' دقيقة'; }catch(e){} S.investMsg='✅ '+st.coin+': وصلت '+money(ex)+' 🎯<br>📅 الدخول: '+ent+'<br>⏳ المدة: '+dur+'<br>💰 الربح الكلي: +$'+np.toFixed(2)+' ('+pc+'%)'; S.investId=null; save(); paintInvest(); try{ toast('🎯 '+st.coin+' وصل الهدف +$'+np.toFixed(2)+' خلال '+dur); }catch(e){} } }catch(e){}
     const KK=st.src==='m5'?'statSolo':'statLink'; S[KK]=S[KK]||{n:0,pnl:0}; S[KK].n++; S[KK].pnl+=pnl;
     try{ const pid=st.plan||S.planId||'boom'; S.planStats=S.planStats||{}; const ps=S.planStats[pid]||{n:0,pnl:0,wins:0}; ps.n++; ps.pnl+=pnl; if(pnl>0) ps.wins++; S.planStats[pid]=ps; }catch(e){}
     S.equity=(parseFloat(S.equity)||0)+pnl;
