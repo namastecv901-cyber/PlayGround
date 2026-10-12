@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v140.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v141.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v140.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v141.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1274,6 +1274,7 @@ body.guest .strip-calc,body.guest .strip-guard,body.guest details.fold.tv-fold,b
 body.owner .only-guest{display:none!important}
 body:not(.guest) .only-guest{display:none!important}
 body.guest #botPanel,body.sub #botPanel{display:none}
+body.guest #investPanel,body.sub #investPanel{display:none}
 body.guest .calc-bar label,body.sub .calc-bar label{opacity:.45;pointer-events:none}
 .vis-row{display:flex;gap:8px;align-items:center;background:#ffffff06;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:.8rem;font-weight:800;margin-bottom:6px}
 .vis-row small{color:var(--mut);font-weight:600}
@@ -1452,8 +1453,6 @@ body.linkmode #masterFab{display:none!important}
   <div class="bot-plans" id="botPlans"></div>
   <div class="bot-plans-head">🚀 خطط تكبير رأس المال (اضغط للتفعيل ✅)</div>
   <div class="bot-plans" id="botChals"></div>
-  <div class="bot-plans-head">💰 الاستثمار المضاعف — ربح صافي 100% حتى 800% (اضغط للبدء ✅)</div>
-  <div class="bot-plans" id="botInvest"></div>
   <div class="bot-preview" id="botPreview">📊 الحصة الفعلية للصفقة القادمة: $20.00</div>
   <div class="bot-save" id="botSave">💾 حفظ تلقائي للربح مفعّل</div>
   <div class="bot-chal" id="botChalBox" hidden>
@@ -1474,6 +1473,12 @@ body.linkmode #masterFab{display:none!important}
   <div class="bot-warn">⚠ المفاتيح <b>تداول فقط</b>: فعّل Spot Trading فقط — بدون سحب أو إيداع — وقيّدها بعنوان IP. ابدأ بالتجريبي ثم Testnet. الروبوت يشتري عند إشارة الحارس ويبيع 30% عند هدف 1 و50% عند هدف 2 والباقي عند الأخير/الوقف. وضع 15m للصفقات السريعة فقط. الاسترداد مستمر (حتى 2× الحجم) حتى تعويض كل خسارة مهما حدث، ويتوقف تلقائياً عند حد الخسارة اليومية لحماية رأس المال. التركيز: لا خروج بخسارة + حد 100 صفقة يومياً.</div>
 </div>
 <div id="botToasts"></div>
+
+<div class="bot-panel" id="investPanel">
+  <div class="bot-head"><span>💰 مضاعفة رأس المال <em>قسم مستقل — ربح صافي 100% حتى 800%</em></span><b id="investStatus">💰 جاهز</b></div>
+  <div class="bot-plans-head">💰 الاستثمار المضاعف — ربح صافي 100% حتى 800% (اضغط للبدء ✅)</div>
+  <div class="bot-plans" id="botInvest"></div>
+</div>
 
 <div class="section-head" style="margin:16px 0 6px"><h2>💎 كل شيء في بطاقة واحدة</h2>
 <p class="muted" id="dealsStatus">...</p></div>
