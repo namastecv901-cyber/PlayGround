@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v124.0 تبديل تلقائي + تنبيه التحديث)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v125.0 دخول قبل الانفجار)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3123,7 +3123,8 @@ const PLANS=[
  {id:'sniper',name:'🎯 قناص الفريم — 15m وهدف 1',desc:'صفقات 15m السريعة فقط • بيع الكل عند هدف 1 • خاطف وسريع',lvl:'قوي',cfg:{quick:true,fastOnly:true,instant:false,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
  {id:'runner',name:'🐎 دع الربح يركض',desc:'خروج متدرج T1/T2/الأخير • سقف ربح $2 • يترك الرابحة تكبر',lvl:'أقوى',cfg:{quick:false,fastOnly:false,instant:false,full:true,tpCap:2.0,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
  {id:'diamond',name:'💎 ماسي — صبر وتعزيز',desc:'دخول 50% + تعزيز حتى مرتين + إكمال حتى الهدف الأخير',lvl:'الأقوى',cfg:{quick:false,fastOnly:false,instant:false,full:true,tpCap:1.5,noLoss:true,splitInit:0.5,reinforce:true,reinDrop:0.01,reinMax:2,dblWin:false}},
- {id:'m5',name:'🕯 مخصص فريم 5 دقائق',desc:'محرك الشموع 5m فقط • دخول وخروج سريع • مضاربة لحظية',lvl:'قوي',cfg:{brain:'solo',quick:false,fastOnly:false,instant:true,instantMin:0.3,tpCap:0.7,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}}
+ {id:'m5',name:'🕯 مخصص فريم 5 دقائق',desc:'محرك الشموع 5m فقط • دخول وخروج سريع • مضاربة لحظية',lvl:'قوي',cfg:{brain:'solo',quick:false,fastOnly:false,instant:true,instantMin:0.3,tpCap:0.7,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
+ {id:'pre',name:'⚡ قبل الانفجار — دخول مبكر',desc:'يلتقط ما قبل الانفجار بثوانٍ على فريم 1m • خروج سريع بأول ربح 0.30$+',lvl:'أقوى ⚡',cfg:{brain:'solo',quick:false,fastOnly:false,instant:true,instantMin:0.3,tpCap:0.7,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}}
 ];
 function applyPlan(id,silent){
   const pl=PLANS.find(x=>x.id===id); if(!pl) return false;
@@ -3145,6 +3146,7 @@ function autoPlanTick(){
   if((S.dayPnl||0)<=-dl*0.5){ id='calm'; why='اليوم سالب ('+(S.dayPnl||0).toFixed(1)+'$) — حماية رأس المال'; }
   else if(fresh&&(rg.strong||0)>=4){ id='beast'; why=rg.strong+' انفجارات مؤكدة — الوحش يصطاد 👑'; }
   else if(fresh&&(rg.strong||0)>=2){ id='boom'; why=rg.strong+' انفجارات — دخول الانفجار فقط 🔥'; }
+  else if(m5fresh&&(m5.pre||0)>=2){ id='pre'; why='إشارات ما قبل الانفجار ('+m5.pre+') — دخول مبكر ⚡'; }
   else if(m5fresh&&(m5.n||0)>=2){ id='m5'; why='زخم شموع 5 دقائق ('+m5.n+' إشارات) — مضاربة لحظية 🕯'; }
   else if(fresh&&(rg.total||0)>=3){ id='boost'; why='سوق متذبذب بلا انفجار — تعزيز عند الهبوط 🚀'; }
   else if((S.dayPnl||0)>0&&fresh&&(rg.strong||0)>=1){ id='runner'; why='ربح يتنامى + انفجار — دع الربح يركض 🐎'; }
@@ -3558,6 +3560,25 @@ function m5setup(kl){
     return null;
   }catch(e){ return null; }
 }
+function preburst(kl){
+  try{
+    if(!kl||kl.length<12) return null;
+    const c=kl.map(k=>parseFloat(k[4])), h=kl.map(k=>parseFloat(k[2])), l=kl.map(k=>parseFloat(k[3])), v=kl.map(k=>parseFloat(k[5]));
+    if(c.some(x=>!isFinite(x)||x<=0)) return null;
+    const n=c.length, last=c[n-1];
+    const rising=last>c[n-2]&&c[n-2]>c[n-3]*0.9995;
+    const sma=c.slice(-10).reduce((a,b)=>a+b,0)/10;
+    if(!rising||last<sma) return null;
+    const drift=(last-c[n-6])/c[n-6];
+    if(!(drift>0&&drift<0.01)) return null;
+    const rg=i=>h[i]-l[i];
+    const near=(rg(n-1)+rg(n-2)+rg(n-3))/3, prev=(rg(n-4)+rg(n-5)+rg(n-6)+rg(n-7)+rg(n-8))/5;
+    if(!(near<prev*0.95)) return null;
+    const avgV=v.slice(-6,-1).reduce((a,b)=>a+b,0)/5;
+    if(!(v[n-1]>avgV*1.3)) return null;
+    return {close:last,closes:c.slice(-20),pre:true};
+  }catch(e){ return null; }
+}
 function m5cands(){
   try{
     const all=(window.RADAR.analyzed||[]).filter(a=>a&&a.c&&a.c.current_price);
@@ -3618,7 +3639,7 @@ async function m5scan(){
   if(!S.enabled||S.m5busy||S.brain==='link') return;
   if(Date.now()-(S.m5last||0)<60000) return;
   S.m5busy=true; S.m5last=Date.now();
-  let okc=0, netfail=0, found=0;
+  let okc=0, netfail=0, found=0, preFound=0;
   try{
     const list=m5cands();
     for(const c of list){
@@ -3627,6 +3648,26 @@ async function m5scan(){
         const openN=Object.values(S.trades).filter(t=>t&&t.open).length;
         if(openN>=S.max) break;
         const ex=S.trades['m5:'+c.a.c.id]; if(ex&&(ex.open||ex.skip)) continue; if(ex&&!ex.open) delete S.trades['m5:'+c.a.c.id];
+        if(S.planId==='pre'){
+          try{
+            const r1=await fetchT('https://api.binance.com/api/v3/klines?symbol='+c.sym+'&interval=1m&limit=20',15000);
+            if(!r1.ok){ if(r1.status===400||r1.status===404){ S.noBin=S.noBin||{}; S.noBin[c.s]=Date.now(); } }
+            else{
+              const kl1=await r1.json(); okc++;
+              const pb=preburst(kl1);
+              if(pb){
+                const fc=m5fullCheck(c);
+                if(!fc.ok){ if(coolOk('m5f'+c.a.c.id)){ coolSet('m5f'+c.a.c.id); log('🔍 '+c.s+': مرفوضة بالتحليل الشامل — '+fc.why); } }
+                else{
+                  const t15=await tfConfirm(c.sym,'15m');
+                  if(t15.ok||t15.why==='net'){ preFound++; log('⚡ '+c.s+': ما قبل الانفجار — دخول مبكر قبل الثواني الأخيرة'); await openSolo(c,pb,'pre-1m'); }
+                  else if(coolOk('m5t'+c.a.c.id)){ coolSet('m5t'+c.a.c.id); log('⏳ '+c.s+': فريم 15m غير صاعد — انتظار'); }
+                }
+              }
+            }
+          }catch(e){ netfail++; }
+          continue;
+        }
         const r=await fetchT('https://api.binance.com/api/v3/klines?symbol='+c.sym+'&interval=5m&limit=20',15000);
         if(!r.ok){ if(r.status===400||r.status===404){ S.noBin=S.noBin||{}; S.noBin[c.s]=Date.now(); } continue; }
         const kl=await r.json(); okc++;
@@ -3644,7 +3685,7 @@ async function m5scan(){
         await openSolo(c,setup,'1m+5m+15m');
       }catch(e){ netfail++; }
     }
-    S.m5reg={n:found,t:Date.now()};
+    S.m5reg={n:found,pre:preFound,t:Date.now()};
      if(okc===0&&netfail>=3&&coolOk('m5net')){ coolSet('m5net'); log('📡 تعذر جلب شموع 1m-15m من Binance — تحقق من الإنترنت أو الحظر المنطقي. وضع «وحده» ينتظر البيانات.'); }
     save();
   }catch(e){}
@@ -3763,7 +3804,7 @@ function showUpdBanner(url,ts){
     try{ toast('🎉 تحديث جديد متوفر'); }catch(e){}
   }catch(e){}
 }
-window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner};
+window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner,preburst,m5setup};
 })();
 </script>
 <script>// 🗂 SEC61 — الصعود الجديد وحده + الصعود المؤكد وحده (بدون خلط)
