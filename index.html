@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v144.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v145.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v144.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v145.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3323,8 +3323,29 @@ function confirmTrade(p){
 // ---------- 💰 الاستثمار المضاعف: دخول دقيق + هدف صافي ×2..×9 + مراقبة أياماً ----------
 const INVESTS=[
  {id:'x2',mult:2,pct:100},
- {id:'x6',mult:6,pct:500}
+ {id:'x6',mult:6,pct:500},
+ {id:'auto',auto:true}
 ];
+function investTargetFor(a){
+  try{
+    const c=(a&&a.c)||{};
+    const h1=c.price_change_percentage_1h_in_currency||0;
+    const h24=c.price_change_percentage_24h_in_currency||0;
+    const score=a.score||0, mom=(a.mom||0);
+    if((h1>=2&&h24>=8)||score>=85||mom>=75) return {mult:6,pct:500,why:'حركة قوية'};
+    if((h1>=1&&h24>=4)||score>=70||mom>=60) return {mult:3,pct:200,why:'حركة متوسطة'};
+    return {mult:2,pct:100,why:'حركة هادئة'};
+  }catch(e){ return {mult:2,pct:100,why:'حركة هادئة'}; }
+}
+function investLive(){
+  try{
+    const an=(window.RADAR&&window.RADAR.analyzed)||[];
+    const a=an.find(x=>x&&x.grade==='strong'&&x.isBuy)||an.find(x=>x&&x.grade==='strong');
+    if(!a) return null;
+    const tg=investTargetFor(a);
+    return {a:a,mult:tg.mult,pct:tg.pct,why:tg.why};
+  }catch(e){ return null; }
+}
 async function openInvest(ladId){
   return _openInvest(ladId);
 }
@@ -3348,7 +3369,10 @@ async function _openInvest(ladId){
     if(!t15.ok&&t15.why!=='net'){ log('⏳ '+sym0+': فريم 15m غير صاعد — الاستثمار الدقيق ينتظر'); return null; }
     if((S.dayPnl||0)<=-(parseFloat(S.dayLimit)||10)){ log('🛡 حماية رأس المال: حد الخسارة — لا استثمار جديد'); return null; }
     if((parseFloat(S.equity)||0)<eqFloor()){ log('🛡 رأس المال تحت الأرضية — لا استثمار'); return null; }
-    const entry=P.entry, mult=lad.mult, t3=entry*mult;
+    let mult=lad.mult, pct=lad.pct, autoWhy='';
+    const entry=P.entry;
+    if(lad.auto||!mult){ const tg=investTargetFor(a); mult=tg.mult; pct=tg.pct; autoWhy=' — قررت +'+pct+'% حسب حركة '+sym0+' ('+tg.why+')'; }
+    const t3=entry*mult;
     const st0=stakeFor();
     let stake=Math.min(st0.stake,parseFloat(S.equity)||0);
     try{ const eq=parseFloat(S.equity)||0; if(eq>0) stake=Math.min(stake,eq*0.5); }catch(e){}
@@ -3370,10 +3394,11 @@ async function _openInvest(ladId){
     S.trades[id]=st; S.dayCount=(S.dayCount||0)+1; S.buyCount=(S.buyCount||0)+1; S.confirmIn=(S.confirmIn||0)+1;
     S.investId=lad.id;
     const netP=stake*(mult-1);
-    S.investMsg=sym0+': دخول '+money(entry)+' • هدف '+money(t3)+' • ربح صافي +$'+netP.toFixed(2)+' ('+lad.pct+'%)';
+    S.investMsg=sym0+': دخول '+money(entry)+' • هدف '+money(t3)+' • ربح صافي +$'+netP.toFixed(2)+' ('+pct+'%)'+autoWhy;
+    S.focusCoin=id; S.lastResult=null;
     save(); setEv('buy',sym0,entry,'استثمار ×'+mult,null); paintInvest(); paint();
     if(!S.enabled){ S.enabled=true; S.wasEnabled=true; save(); paint(); log('▶ بدأ المراقبة تلقائياً — الاستثمار يُراقب وحده حتى الهدف'); try{ holdWake(); tick(); }catch(e){} }
-    log('💰 استثمار ×'+mult+': شراء '+sym0+' @ '+money(entry)+' — الهدف '+money(t3)+' — ربح صافي متوقع +$'+netP.toFixed(2)+' ('+lad.pct+'%) — أراقبها أياماً حتى تصل');
+    log('💰 استثمار ×'+mult+': شراء '+sym0+' @ '+money(entry)+' — الهدف '+money(t3)+' — ربح صافي متوقع +$'+netP.toFixed(2)+' ('+pct+'%)'+autoWhy+' — أراقبها أياماً حتى تصل');
     try{ toast('💰 استثمار '+sym0+' ×'+mult); }catch(e){}
     return st;
   }catch(e){ return null; }
@@ -3390,8 +3415,18 @@ function paintInvest(){
       const prog=Math.max(0,Math.min(100,(live-openInv.entry)/total*100));
       const net=(openInv.qty||0)*(tgt-openInv.entry);
       msg='🧭 تراقب <b>'+openInv.coin+'</b> ×'+(openInv.investMult||'?')+' — دخول '+money(openInv.entry)+' • هدف '+money(tgt)+' • حي '+money(live)+' ('+prog.toFixed(1)+'%) • ربح صافي عند الوصول +$'+net.toFixed(2);
-    } else if(S.investMsg){ msg=S.investMsg; }
-    box.innerHTML=INVESTS.map(l=>'<button class="bot-plan'+(S.investId===l.id?' sel':'')+'" data-inv="'+l.id+'"><span class="pl-check">'+(S.investId===l.id?'✅':'○')+'</span><span><b>💰 ×'+l.mult+' — ربح صافي '+l.pct+'%</b><small>دخول بسعر الخطة الدقيق • هدف تلقائي • مراقبة أياماً حتى الوصول</small></span><span class="pl-lvl">×'+l.mult+'</span></button>').join('')+'<div class="auto-why">'+msg+'</div>';
+    } else {
+      try{
+        const lv=investLive();
+        if(lv){ const c0=lv.a.c; msg='🧠 '+c0.symbol+' تتحرك الآن ('+lv.why+') — الهدف المقترح +'+lv.pct+'% (×'+lv.mult+') — اضغط تلقائي للدخول الجاهز'; }
+        else if(S.investMsg){ msg=S.investMsg; }
+      }catch(e){ if(S.investMsg) msg=S.investMsg; }
+    }
+    box.innerHTML=INVESTS.map(l=>{
+      if(l.auto) return '<button class="bot-plan'+(S.investId===l.id?' sel':'')+'" data-inv="auto"><span class="pl-check">'+(S.investId===l.id?'✅':'○')+'</span><span><b>🧠 تلقائي — الربح حسب حركة العملة</b><small>أقرر النسبة من حركة أقوى عملة • دخول جاهز • شريط حي حتى الربح الصافي</small></span><span class="pl-lvl">🧠</span></button>';
+      return '<button class="bot-plan'+(S.investId===l.id?' sel':'')+'" data-inv="'+l.id+'"><span class="pl-check">'+(S.investId===l.id?'✅':'○')+'</span><span><b>💰 ×'+l.mult+' — ربح صافي '+l.pct+'%</b><small>دخول بسعر الخطة الدقيق • هدف تلقائي • مراقبة أياماً حتى الوصول</small></span><span class="pl-lvl">×'+l.mult+'</span></button>';
+    }).join('')+'<div class="auto-why">'+msg+'</div>';
+    try{ const ist=$('investStatus'); if(ist) ist.textContent=openInv?('🧭 تراقب '+openInv.coin):'💰 جاهز'; }catch(e){}
   }catch(e){}
 }
 // ---------- فتح صفقة من إشارة الحارس ----------
@@ -3989,7 +4024,7 @@ function showUpdBanner(url,ts){
     try{ toast('🎉 تحديث جديد متوفر'); }catch(e){}
   }catch(e){}
 }
-window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner,preburst,m5setup,manage,openTrade,mktRegime,holdOf,save,paintDecRes,paintDecStrip,applyRemoteUpdate,startInvest,paintInvest,catchUp};
+window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner,preburst,m5setup,manage,openTrade,mktRegime,holdOf,save,paintDecRes,paintDecStrip,applyRemoteUpdate,startInvest,paintInvest,catchUp,investTargetFor,investLive};
 })();
 </script>
 <script>// 🗂 SEC61 — الصعود الجديد وحده + الصعود المؤكد وحده (بدون خلط)
