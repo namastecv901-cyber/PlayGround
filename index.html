@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v145.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v146.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v145.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v146.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1223,6 +1223,12 @@ body{max-width:680px;margin:0 auto;padding:12px}
 .bot-decres small{display:block;font-size:.68rem;font-weight:700;color:#c9a86d;margin-top:3px}
 .bot-decres.done{border-color:#1fe196;color:#d9ffe9;background:#0d2418}
 .bot-decres.bad{border-color:#ea3943;color:#ffc9cd;background:#2b0f12}
+.inv-coin{display:flex;gap:8px;align-items:center;justify-content:center;background:#241a08;border:1px solid #f0b90b66;border-radius:12px;padding:8px 12px;font-size:.82rem;font-weight:900;color:#ffe9a8;margin-bottom:6px;flex-wrap:wrap}
+.inv-pulse{display:inline-block;width:11px;height:11px;border-radius:50%;background:#1fe196;animation:invPulse 1.6s ease-in-out infinite}
+@keyframes invPulse{0%,100%{box-shadow:0 0 0 0 #1fe196aa;transform:scale(1)}50%{box-shadow:0 0 0 9px #1fe19600;transform:scale(1.3)}}
+.inv-coin small{display:block;width:100%;text-align:center;font-size:.68rem;font-weight:700;color:#c9a86d}
+.inv-move{height:7px;background:#ffffff10;border-radius:99px;margin:0 0 8px;overflow:hidden}
+.inv-move i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1fe196,#f0b90b,#f472b6);transition:width 1s linear;animation:dsMove 3s ease-in-out infinite}
 .dec-strip{margin:-2px 0 8px;border-radius:12px;padding:7px 12px;background:#101322;border:1px solid #f0b90b55;font-size:.76rem;font-weight:800;color:#ffe9a8;text-align:center}
 .dec-strip .ds-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .dec-strip .ds-bar{height:6px;background:#ffffff10;border-radius:99px;margin-top:6px;overflow:hidden}
@@ -3408,7 +3414,7 @@ function paintInvest(){
     const box=$('botInvest'); if(!box) return;
     let openInv=null;
     try{ openInv=Object.values(S.trades||{}).find(x=>x&&x.open&&!x.skip&&x.invest)||null; }catch(e){}
-    let msg='';
+    let msg='', liveHtml='';
     if(openInv){
       let live=openInv.entry; try{ live=liveOf(openInv.id,openInv.entry); }catch(e){}
       const tgt=openInv.t3, total=Math.max(1e-9,tgt-openInv.entry);
@@ -3418,14 +3424,25 @@ function paintInvest(){
     } else {
       try{
         const lv=investLive();
-        if(lv){ const c0=lv.a.c; msg='🧠 '+c0.symbol+' تتحرك الآن ('+lv.why+') — الهدف المقترح +'+lv.pct+'% (×'+lv.mult+') — اضغط تلقائي للدخول الجاهز'; }
+        if(lv){
+          const c0=lv.a.c;
+          let live=c0.current_price||0; try{ live=liveOf(lv.a.c.id,c0.current_price||0)||live; }catch(e){}
+          let entry=0; try{ const PP=(window.DEALS&&window.DEALS.planOf)?window.DEALS.planOf(lv.a):null; if(PP&&PP.entry) entry=PP.entry; }catch(e){}
+          if(!entry) entry=live;
+          const tgt=entry*lv.mult, tot=Math.max(1e-9,tgt-entry);
+          const prog=Math.max(0,Math.min(100,(live-entry)/tot*100));
+          const h1=c0.price_change_percentage_1h_in_currency||0, h24=c0.price_change_percentage_24h_in_currency||0;
+          msg='✅ العلامة المختارة تلقائياً: +'+lv.pct+'% (×'+lv.mult+' — '+lv.why+' حسب الصعود المؤكد) — اضغط 🧠 تلقائي للدخول الجاهز';
+          liveHtml='<div class="inv-coin"><span class="inv-pulse"></span><b>'+c0.symbol+'</b><span>💵 حي '+money(live)+'</span><span>🎯 +'+lv.pct+'%</span><small>صعود مؤكد • 1س '+(h1>=0?'+':'')+h1.toFixed(1)+'% • 24س '+(h24>=0?'+':'')+h24.toFixed(1)+'%</small></div>'
+          +'<div class="inv-move"><i style="width:'+prog.toFixed(1)+'%"></i></div>';
+        }
         else if(S.investMsg){ msg=S.investMsg; }
       }catch(e){ if(S.investMsg) msg=S.investMsg; }
     }
     box.innerHTML=INVESTS.map(l=>{
       if(l.auto) return '<button class="bot-plan'+(S.investId===l.id?' sel':'')+'" data-inv="auto"><span class="pl-check">'+(S.investId===l.id?'✅':'○')+'</span><span><b>🧠 تلقائي — الربح حسب حركة العملة</b><small>أقرر النسبة من حركة أقوى عملة • دخول جاهز • شريط حي حتى الربح الصافي</small></span><span class="pl-lvl">🧠</span></button>';
       return '<button class="bot-plan'+(S.investId===l.id?' sel':'')+'" data-inv="'+l.id+'"><span class="pl-check">'+(S.investId===l.id?'✅':'○')+'</span><span><b>💰 ×'+l.mult+' — ربح صافي '+l.pct+'%</b><small>دخول بسعر الخطة الدقيق • هدف تلقائي • مراقبة أياماً حتى الوصول</small></span><span class="pl-lvl">×'+l.mult+'</span></button>';
-    }).join('')+'<div class="auto-why">'+msg+'</div>';
+    }).join('')+liveHtml+'<div class="auto-why">'+msg+'</div>';
     try{ const ist=$('investStatus'); if(ist) ist.textContent=openInv?('🧭 تراقب '+openInv.coin):'💰 جاهز'; }catch(e){}
   }catch(e){}
 }
