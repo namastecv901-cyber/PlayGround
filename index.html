@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v127.0 القرار الواحد الذكي)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v129.0 حفظ شامل + ألوان القرار)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1222,10 +1222,15 @@ body{max-width:680px;margin:0 auto;padding:12px}
 @media(max-width:520px){.bot-grid{grid-template-columns:1fr}}
 /* ===== v55 BOTEVENT: شريط آخر عملية + عدّاد الشراء ===== */
 .bot-event{margin:8px 0;border-radius:12px;padding:9px 12px;font-weight:900;font-size:.82rem;text-align:center;background:#2a1c10;border:1px solid #a0785a;color:#e8c89a;box-shadow:0 0 12px #a0785a33}
-.bot-event.ev-buy{background:#2a1c10;border-color:#a0785a;color:#ffd9a8}
-.bot-event.ev-sell{background:#2a1c10;border-color:#a0785a;color:#ffb08a}
+.bot-event.ev-buy{background:#2b1220;border-color:#f472b6;color:#ffd3e8;box-shadow:0 0 14px #f472b644;animation:evCalm 3.4s ease-in-out infinite}
+.bot-event.ev-sell{background:#2b0f12;border-color:#ea3943;color:#ffc9cd;box-shadow:0 0 14px #ea394344;animation:evCalm 3.4s ease-in-out infinite}
 .bot-event .ev-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#c89b6d;margin-inline-end:7px;vertical-align:middle;animation:evPulse 1.3s infinite}
+.bot-event.ev-buy .ev-dot{background:#f472b6;animation:evPulsePink 3.4s ease-in-out infinite}
+.bot-event.ev-sell .ev-dot{background:#ea3943;animation:evPulseRed 3.4s ease-in-out infinite}
 @keyframes evPulse{0%,100%{box-shadow:0 0 0 0 #c89b6daa;transform:scale(1)}50%{box-shadow:0 0 0 9px #c89b6d00;transform:scale(1.25)}}
+@keyframes evCalm{0%,100%{box-shadow:0 0 8px #ffffff11}50%{box-shadow:0 0 18px #ffffff33}}
+@keyframes evPulsePink{0%,100%{box-shadow:0 0 0 0 #f472b699;transform:scale(1)}50%{box-shadow:0 0 0 8px #f472b600;transform:scale(1.15)}}
+@keyframes evPulseRed{0%,100%{box-shadow:0 0 0 0 #ea394399;transform:scale(1)}50%{box-shadow:0 0 0 8px #ea394300;transform:scale(1.15)}}
 .bot-event.flash{animation:evFlash .8s ease 2}
 @keyframes evFlash{50%{box-shadow:0 0 26px #c89b6dcc}}
 .bot-event .ev-live{display:block;font-size:.68rem;font-weight:700;color:#b08d5f;margin-top:3px}
@@ -2457,7 +2462,7 @@ function bind(){
   const t=$('guardAuto'); if(t){ t.checked=G.auto; t.onchange=()=>{ G.auto=t.checked; save(); }; }
   const c=$('guardClear'); if(c) c.onclick=()=>{ G.pos=G.pos.filter(p=>p.open); save(); render(); };
 }
-window.GUARDIAN={track, close, render, renderInto, update:cycle, get G(){return G;}};
+window.GUARDIAN={track, close, render, renderInto, update:cycle, save, get G(){return G;}};
 function tickAge(){ document.querySelectorAll('[data-age]').forEach(el=>{ const s=Math.max(0,Math.round((Date.now()-parseInt(el.dataset.age||Date.now()))/1000)); el.textContent=s<3?'محدّث الآن • نبض حي':'منذ '+s+' ث • نبض حي'; }); }
 document.addEventListener('DOMContentLoaded',()=>{ load(); bind(); render(); G.timer=setInterval(cycle,10000); setTimeout(cycle,6000); setInterval(tickAge,1000); });
 })();
@@ -2522,7 +2527,7 @@ function bindInputs(){
   });
 }
 document.addEventListener('DOMContentLoaded',()=>{ load(); bindInputs(); bindTrial(); sync(); setInterval(sync,4000); setTimeout(sync,5000); });
-window.CALC={sync, S};
+window.CALC={sync, save, S};
 })();
 
 </script>
@@ -3849,7 +3854,7 @@ function showUpdBanner(url,ts){
     try{ toast('🎉 تحديث جديد متوفر'); }catch(e){}
   }catch(e){}
 }
-window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner,preburst,m5setup,manage,openTrade,mktRegime,holdOf};
+window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner,preburst,m5setup,manage,openTrade,mktRegime,holdOf,save};
 })();
 </script>
 <script>// 🗂 SEC61 — الصعود الجديد وحده + الصعود المؤكد وحده (بدون خلط)
@@ -4313,7 +4318,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('mStop').onclick=()=>{ try{ const BS=window.BOT49.S; BS.enabled=false; BS.wasEnabled=false; sess('المالك','إيقاف الروبوت من لوحة التحكم'); }catch(e){} setTimeout(paintMaster,500); };
   $('mMaxDown').onclick=()=>{ try{ const BS=window.BOT49.S; BS.max=Math.max(1,(parseInt(BS.max)||3)-1); sess('المالك','الصفقات القصوى → '+BS.max); }catch(e){} paintMaster(); };
   $('mMaxUp').onclick=()=>{ try{ const BS=window.BOT49.S; BS.max=Math.min(10,(parseInt(BS.max)||3)+1); sess('المالك','الصفقات القصوى → '+BS.max); }catch(e){} paintMaster(); };
-  const mCommit=()=>{ try{ const BS=window.BOT49.S; const tp=parseFloat($('mTP').value), im=parseFloat($('mInst').value), gl=parseFloat($('mGoal').value); if(tp>=0.1) BS.tpCap=tp; if(im>=0.1){ BS.instant=true; BS.instantMin=im; } if(gl>=1) BS.goal=gl; sess('المالك','تعديل قيم الروبوت'); }catch(e){} paintMaster(); };
+  const mCommit=()=>{ try{ const BS=window.BOT49.S; const tp=parseFloat($('mTP').value), im=parseFloat($('mInst').value), gl=parseFloat($('mGoal').value); if(tp>=0.1) BS.tpCap=tp; if(im>=0.1){ BS.instant=true; BS.instantMin=im; } if(gl>=1) BS.goal=gl; try{ if(window.BOT49&&window.BOT49.save) window.BOT49.save(); }catch(e){} sess('المالك','تعديل قيم الروبوت'); }catch(e){} paintMaster(); };
+  $('mTP').oninput=mCommit; $('mInst').oninput=mCommit; $('mGoal').oninput=mCommit;
   $('mTP').onchange=mCommit; $('mInst').onchange=mCommit; $('mGoal').onchange=mCommit;
   $('mRenewGo').onclick=()=>{
     const cd=String(($('mRenew').value||'').toUpperCase().replace(/[^A-Z0-9]/g,''));
@@ -4426,10 +4432,34 @@ document.addEventListener('DOMContentLoaded',()=>{
     }catch(e){}
   };
   $('subLink').onclick=()=>{ try{ const u=guestURL(dayStr(0)); navigator.clipboard.writeText(u); }catch(e){} sess('المالك','نسخ رابط المشتركين (رابط اليوم)'); };
+  ['setPay','setContact','setContactName','setLeadBot','setLeadChat'].forEach(function(id){ try{ var el=$(id); if(el) el.oninput=function(){ try{ var o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); }catch(e){} }; }catch(e){} });
   $('setSave').onclick=()=>{ const o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); paint(); sess('المالك','حفظ الإعدادات'); };
   document.querySelectorAll('[data-bot-state]').forEach(()=>{});
 });
 window.MEMBER={get mode(){return M.mode;},unlockSub,paint,makeSubToken,verifySubToken};
+})();
+</script>
+<script>// 💾 AUTOSAVE v1 — أي شيء تعدله يُحفظ مباشرة ويبقى بعد الخروج
+(function(){
+"use strict";
+var K='ai_ui_v1';
+var MANAGED={gCapital:1,gRisk:1,mTP:1,mInst:1,mGoal:1};
+function isManaged(el){ try{ var id=el.id||''; if(!id) return true; if(id.indexOf('bot')===0) return true; if(MANAGED[id]) return true; if(el.type==='password') return true; return false; }catch(e){ return true; } }
+function readMap(){ try{ return JSON.parse(localStorage.getItem(K)||'{}')||{}; }catch(e){ return {}; } }
+function writeMap(m){ try{ localStorage.setItem(K,JSON.stringify(m)); }catch(e){} }
+function stamp(){ try{ var el=document.getElementById('botSave'); if(el) el.textContent='\u0001F4BE \u062D\u0641\u0638 \u062A\u0644\u0642\u0627\u0626\u064A '+new Date().toLocaleTimeString('ar'); }catch(e){} }
+function collect(el){ try{ if(el.type==='checkbox'||el.type==='radio') return {c:!!el.checked}; return {v:el.value}; }catch(e){ return {}; } }
+function applyOne(el,sv){ try{ if(!el||!sv) return; if(el.type==='checkbox'||el.type==='radio'){ if(sv.c!==undefined) el.checked=!!sv.c; } else if(el.tagName==='SELECT'){ if(sv.v!==undefined){ var ok=false; for(var i=0;i<el.options.length;i++){ if(el.options[i].value===sv.v){ ok=true; break; } } if(ok) el.value=sv.v; } } else { if(sv.v!==undefined&&document.activeElement!==el) el.value=sv.v; } }catch(e){} }
+function restore(){ try{ var m=readMap(); Object.keys(m).forEach(function(id){ try{ var el=document.getElementById(id); if(!el) return; if(isManaged(el)) return; applyOne(el,m[id]); }catch(e){} }); }catch(e){} }
+function persist(el){ try{ if(!el||!el.id||isManaged(el)) return; var m=readMap(); m[el.id]=collect(el); var ks=Object.keys(m); if(ks.length>300){ ks.slice(0,ks.length-300).forEach(function(k){ delete m[k]; }); } writeMap(m); stamp(); }catch(e){} }
+function flush(){ try{ if(window.BOT49&&window.BOT49.save) window.BOT49.save(); }catch(e){} try{ if(window.CALC&&window.CALC.save) window.CALC.save(); }catch(e){} try{ if(window.GUARDIAN&&window.GUARDIAN.save) window.GUARDIAN.save(); }catch(e){} }
+document.addEventListener('input',function(e){ try{ var el=e.target; if(el&&(el.tagName==='INPUT'||el.tagName==='SELECT'||el.tagName==='TEXTAREA')&&el.id) persist(el); }catch(x){} },true);
+document.addEventListener('change',function(e){ try{ var el=e.target; if(el&&(el.tagName==='INPUT'||el.tagName==='SELECT'||el.tagName==='TEXTAREA')&&el.id){ persist(el); flush(); } }catch(x){} },true);
+document.addEventListener('visibilitychange',function(){ if(document.hidden){ try{ flush(); }catch(e){} } });
+window.addEventListener('pagehide',function(){ try{ flush(); }catch(e){} });
+window.addEventListener('beforeunload',function(){ try{ flush(); }catch(e){} });
+document.addEventListener('DOMContentLoaded',function(){ restore(); setTimeout(restore,1500); });
+window.AUTOSAVE={restore:restore,flush:flush};
 })();
 </script>
 </body>
