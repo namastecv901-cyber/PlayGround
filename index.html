@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v133.0';var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v||c.v===LV)return;if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v134.0';var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v||c.v===LV)return;if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v133.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v134.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1044,7 +1044,6 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 #updBanner button{font-family:inherit;font-weight:900;border-radius:10px;padding:4px 14px;margin-inline-start:8px;cursor:pointer}
 #updGo{background:#16c784;color:#04120a;border:none}
 #updX{background:transparent;color:#9fbfb0;border:1px solid #1fe19666}
-#updApk{background:transparent;color:#9fbfb0;border:1px solid #1fe19666}
 @keyframes updPulse{50%{box-shadow:0 0 18px #16c78488}}
 @media(display-mode:standalone){
   .app-bar{display:none !important}
@@ -3887,7 +3886,7 @@ async function applyRemoteUpdate(btn,ts){
     try{ localStorage.setItem('ai_seen_apk_v1',ts||''); }catch(e){}
     location.reload();
   }catch(e){
-    try{ if(btn){ btn.disabled=false; btn.textContent='\U0001F504 \u062A\u062D\u062F\u064A\u062B \u0641\u0648\u0631\u064A (\u0628\u062F\u0648\u0646 \u062A\u0646\u0632\u064A\u0644)'; } toast('\u274C \u062A\u0639\u0630\u0631 \u0627\u0644\u062A\u062D\u062F\u064A\u062B \u0627\u0644\u0641\u0648\u0631\u064A \u2014 \u062A\u062D\u0642\u0642 \u0645\u0646 \u0627\u0644\u0625\u0646\u062A\u0631\u0646\u062A \u0623\u0648 \u062D\u0645\u0651\u0644 APK'); }catch(x){}
+    try{ if(btn){ btn.disabled=false; btn.textContent='🔄 تحديث فوري'; } toast('❌ تعذر التحديث — تحقق من الإنترنت وحاول مجدداً'); }catch(x){}
   }
 }
 function showUpdBanner(url,ts){
@@ -3895,11 +3894,10 @@ function showUpdBanner(url,ts){
     if(document.getElementById('updBanner')) return;
     const d=document.createElement('div');
     d.id='updBanner';
-    d.innerHTML='🎉 <b>تحديث جديد في النظام!</b><button id="updGo">🔄 تحديث فوري (بدون تنزيل)</button><button id="updApk" title="تحميل ملف التثبيت">⬇ APK</button><button id="updX" aria-label="إغلاق">✖</button>';
+    d.innerHTML='🎉 <b>تحديث جديد في النظام!</b><button id="updGo">🔄 تحديث فوري</button><button id="updX" aria-label="إغلاق">✖</button>';
     document.body.prepend(d);
     const done=()=>{ try{ localStorage.setItem('ai_seen_apk_v1',ts); }catch(e){} d.remove(); };
     document.getElementById('updGo').onclick=function(){ applyRemoteUpdate(this,ts); };
-    document.getElementById('updApk').onclick=()=>{ try{ window.open(url,'_blank'); }catch(e){ location.href=url; } };
     document.getElementById('updX').onclick=done;
     try{ toast('🎉 تحديث جديد متوفر'); }catch(e){}
   }catch(e){}
