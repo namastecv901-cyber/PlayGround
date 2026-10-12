@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v143.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v144.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v143.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v144.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3372,6 +3372,7 @@ async function _openInvest(ladId){
     const netP=stake*(mult-1);
     S.investMsg=sym0+': دخول '+money(entry)+' • هدف '+money(t3)+' • ربح صافي +$'+netP.toFixed(2)+' ('+lad.pct+'%)';
     save(); setEv('buy',sym0,entry,'استثمار ×'+mult,null); paintInvest(); paint();
+    if(!S.enabled){ S.enabled=true; S.wasEnabled=true; save(); paint(); log('▶ بدأ المراقبة تلقائياً — الاستثمار يُراقب وحده حتى الهدف'); try{ holdWake(); tick(); }catch(e){} }
     log('💰 استثمار ×'+mult+': شراء '+sym0+' @ '+money(entry)+' — الهدف '+money(t3)+' — ربح صافي متوقع +$'+netP.toFixed(2)+' ('+lad.pct+'%) — أراقبها أياماً حتى تصل');
     try{ toast('💰 استثمار '+sym0+' ×'+mult); }catch(e){}
     return st;
