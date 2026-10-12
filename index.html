@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v150.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v151.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v150.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v151.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3289,7 +3289,7 @@ function applyChallenge(){
 }
 function paint(){
   const b=$('botStatus');
-  if(b){ b.innerHTML=S.enabled?('<span class="bot-dot"></span>🟢 يعمل • '+S.mode+' • نبض حي'):'⏸ متوقف'; b.classList.toggle('on',S.enabled); }
+  if(b){ let rs=''; if(!S.enabled){ try{ if(S.goalDone) rs=' • 🏆 هدف اليوم تحقق'; else if((S.dayPnl||0)<=-(parseFloat(S.dayLimit)||10)) rs=' • 🛡 حد الخسارة — راجع غداً'; else if((parseFloat(S.equity)||0)<eqFloor()) rs=' • 💸 رأس المال — زده وابدأ'; else if(S.wasEnabled) rs=' • 🔄 سيعود تلقائياً'; }catch(e){} } b.innerHTML=S.enabled?('<span class="bot-dot"></span>🟢 يعمل • '+S.mode+' • نبض حي'):('⏸ متوقف'+rs); b.classList.toggle('on',S.enabled); }
   const pnl=$('botPanel'); if(pnl) pnl.classList.toggle('bot-live',!!S.enabled);
   const bs2=$('botStart'); if(bs2){ bs2.classList.toggle('go',!!S.enabled); bs2.classList.toggle('idle',!S.enabled); }
   const sp2=$('botStop'); if(sp2){ sp2.classList.toggle('alert',!!S.enabled); sp2.classList.toggle('idle',!S.enabled); }
@@ -3894,8 +3894,8 @@ async function m5scan(){
 async function tick(){
   try{ const today=new Date().toISOString().slice(0,10); if(S.day!==today){ S.day=today; S.dayPnl=0; S.dayCount=0; S.goalDone=false; save(); } }catch(e){}
   if(!S.enabled||S.busy) return;
-  S.busy=true; S.lastTick=Date.now();
-  try{
+  S.busy=false; S.busy=true; S.lastTick=Date.now();
+  try{ try{
     const guards=openGuards();
      try{ const an=(window.RADAR&&window.RADAR.analyzed)||[]; let stn=0,ng=0; for(const a of an){ if(a&&a.grade==='strong') stn++; try{ if(a&&a.c&&(a.c.price_change_percentage_24h_in_currency||0)<-2) ng++; }catch(e){} } S.regime={strong:stn,total:an.length,neg:ng,t:Date.now()}; }catch(e){}
     for(const p of guards){ try{ let st=S.trades[p.id]; if(st&&!st.open&&!st.skip){ delete S.trades[p.id]; st=null; } if(!st||st.skip) st=await openTrade(p); if(st) await manage(st); }catch(e){} }
@@ -3903,7 +3903,8 @@ async function tick(){
     for(const id of Object.keys(S.trades)){ const st=S.trades[id]; if(st&&st.open&&!st.skip){ const gp=guardPos(id); if(!gp||!gp.open){ try{ await manage(st); }catch(e){} } } }
     paint();
   }catch(e){}
-  S.busy=false;
+  }catch(_e){}
+  finally{ S.busy=false; }
   if(S.enabled&&S.brain!=='link'){ try{ m5scan().catch(()=>{}); }catch(e){} }
    try{ autoPlanTick(); }catch(e){}
 }
@@ -3956,6 +3957,7 @@ async function catchUp(){
 async function startBot(silent){
   syncInputs();
   if(S.mode!=='paper'&&(!S.key||!S.sec)){ log('🔑 أدخل API Key و Secret أولاً (أو استخدم الوضع التجريبي)'); toast('🔑 أدخل المفاتيح أولاً'); return false; }
+  S.busy=false; S.m5busy=false;
   S.enabled=true; S.wasEnabled=true; save(); paint();
     if(!silent) log('▶ الروبوت يعمل • وضع '+S.mode+' • عقل '+(S.brain==='both'?'مربوط+وحده':S.brain==='link'?'مربوط':'وحده')+' • رأس مال $'+S.cap+' • حد '+S.max+(S.quick?' • 🔥 انفجار: دخول الانفجار وخروج هدف 1':''));
   await syncTime(); holdWake();
@@ -4002,7 +4004,7 @@ function readField(t,silent){
 function bind(){
   const st=$('botStart'); if(st) st.onclick=()=>{ startBot(false); };
   const sp=$('botStop'); if(sp) sp.onclick=()=>{ S.enabled=false; S.wasEnabled=false; save(); paint(); log('⏸ الروبوت متوقف — الصفقات المفتوحة تبقى بيدك (بعها يدوياً أو من الحارس)'); };
-  document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ holdWake(); try{ S.busy=false; S.m5busy=false; }catch(e){} if(S.enabled) tick(); } else { try{ save(); }catch(e){} } });
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ holdWake(); try{ S.busy=false; S.m5busy=false; }catch(e){} if(S.enabled){ (async()=>{ try{ await catchUp(); }catch(e){} try{ tick(); }catch(e){} })(); } } else { try{ save(); }catch(e){} } });
   window.addEventListener('pagehide',()=>{ try{ save(); }catch(e){} });
   window.addEventListener('beforeunload',()=>{ try{ save(); }catch(e){} });
   const rs=$('botReset'); if(rs) rs.onclick=()=>{ try{ S.busy=false; S.m5busy=false; S.cool={}; S.lastStop={}; S.noBin={}; S.m5last=0; S.lastTick=Date.now(); save(); setInputs(); paint(); log('🧹 مسح البوت: فككت أي تجميد ومسحت التبريد والحظر المؤقت — إعادة تشغيل نظيفة الآن'); }catch(e){} try{ if(S.enabled) tick(); else startBot(false); }catch(e){} };
@@ -4018,9 +4020,9 @@ document.addEventListener('DOMContentLoaded',()=>{ load(); setInputs(); bind(); 
   if(S.autoResume&&S.wasEnabled&&!S.goalDone){ log('🔁 استئناف تلقائي بعد إعادة الفتح — الروبوت يواصل بدون توقف (مزامنة الصفقات المفتوحة)'); startBot(true); }
   else if(S.goalDone){ try{ log('🏆 هدف اليوم ($'+(S.goal||10)+') متحقق — الروبوت متوقف حتى الغد'); }catch(e){} }
   // 🔁 مراقب الإحياء الذاتي: أي توقف غير مقصود (بدون هدف محقق) يُعاد تشغيله تلقائياً كل دقيقة
-  setInterval(()=>{ try{ if(S.autoResume&&S.wasEnabled&&!S.enabled&&!S.goalDone) startBot(true); }catch(e){} },60000);
+  setInterval(()=>{ try{ if(S.autoResume&&S.wasEnabled&&!S.enabled&&!S.goalDone) startBot(true); }catch(e){} },30000);
   // 💓 مراقب النبض: يعمل لكن لا دورات منذ 90 ثانية (تجميد خلفية/تعليق) → فك التجميد ودورة فورية
-  setInterval(()=>{ try{ if(S.enabled&&Date.now()-(S.lastTick||0)>90000){ S.busy=false; S.m5busy=false; log('💓 إحياء النبض — استئناف الدورات'); tick(); } }catch(e){} },30000);
+  setInterval(()=>{ (async()=>{ try{ if(S.enabled&&Date.now()-(S.lastTick||0)>45000){ S.busy=false; S.m5busy=false; log('💓 إحياء النبض — إصلاح ذاتي وفحص الغياب واستئناف'); await catchUp(); tick(); } }catch(e){} })(); },15000);
 });
 const APK_URL='https://github.com/namastecv901-cyber/PlayGround/releases/download/latest/bataqa-wahida.apk';
 async function checkUpdate(){
