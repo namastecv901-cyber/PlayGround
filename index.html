@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v129.0 حفظ شامل + ألوان القرار)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v130.0 صفقة يومية + زر مشاركة)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1496,14 +1496,15 @@ body.linkmode #masterFab{display:none!important}
   <div class="sig-grid cards-grid" id="strongGrid" style="margin-top:8px"></div>
 </div>
 <div class="free-gate only-guest" id="freeGate">
-  <h3>🎁 3 صفقات مجانية باسمك</h3>
-  <p>أدخل اسمك وإيميلك لفتح 3 صفقات مجانية فوراً — هكذا تبدو الصفقة الحقيقية</p>
+  <h3>🎁 صفقة مجانية يوميا؋ باسمك</h3>
+  <p>أدخل اسمك وإيميلك لفتح صفقتك المجانية اليوم — تتجدد غداً 🎁 هكذا تبدو الصفقة الحقيقية</p>
   <div class="fg-row">
     <input id="leadName" type="text" placeholder="الاسم الكريم" maxlength="30">
     <input id="leadEmail" type="text" inputmode="email" dir="ltr" placeholder="email@example.com" maxlength="60">
     <button class="btn btn-primary btn-sm" id="leadGo">افتح هديتي 🎁</button>
   </div>
   <div class="muted" id="leadMsg" style="font-size:.76rem;margin-top:6px"></div>
+  <div style="margin-top:8px"><button class="btn btn-sm" id="shareBtn">📣 شارك التطبيق وادعُ أصدقاءك</button></div>
 </div>
 <div class="sig-grid cards-grid" id="dealsGrid" style="margin-top:10px"><div class="loading">🧠 الذكاء يحلل 500 عملة...</div></div>
 <button class="master-fab" id="masterFab" title="تحكم المالك">👑</button>
@@ -3936,7 +3937,7 @@ window.AI_RESYNC=cycles;
 "use strict";
 const $=id=>document.getElementById(id);
 const K_OWNER='ai_owner_v1', K_SUBS='ai_subs_v1', K_SESS='ai_sess_v1', K_ME='ai_me_v1', K_LEAD='ai_lead_v1', K_LEADS='ai_leads_v1';
-const FREE_N=3, SUB_DAYS=30, PRICE=30;
+const FREE_N=1, SUB_DAYS=30, PRICE=30;
 const M={mode:'guest',name:'',until:0,lead:null};
 function getLead(){ try{ return JSON.parse(localStorage.getItem(K_LEAD)||'null'); }catch(e){ return null; } }
 const K_FREE='ai_free_v1';
@@ -3944,12 +3945,15 @@ function todayStr(){ try{ return new Date().toISOString().slice(0,10); }catch(e)
 function getFree(){ try{ return JSON.parse(localStorage.getItem(K_FREE)||'null'); }catch(e){ return null; } }
 function freePick(buys){
   let f=getFree();
+  const today=todayStr();
+  if(f&&!f.day){ f.day=today; try{ localStorage.setItem(K_FREE,JSON.stringify(f)); }catch(e){} }
+  if(f&&f.day!==today){ f=null; try{ localStorage.removeItem(K_FREE); }catch(e){} }
   const ids=(f&&f.ids)||[];
   const live=ids.filter(id=>buys.some(c=>c.dataset.id===id));
   if(live.length) return live;
   if(f&&f.ids&&f.ids.length) return [];
   const pick=buys.slice(0,FREE_N).map(c=>c.dataset.id);
-  try{ localStorage.setItem(K_FREE,JSON.stringify({ids:pick})); }catch(e){}
+  try{ localStorage.setItem(K_FREE,JSON.stringify({ids:pick,day:todayStr()})); }catch(e){}
   return pick;
 }
 function getLeads(){ try{ return JSON.parse(localStorage.getItem(K_LEADS)||'[]'); }catch(e){ return []; } }
@@ -3978,7 +3982,7 @@ function paint(){
   document.body.classList.add(M.mode);
   if(M.mode==='owner'){ b.className='mb-badge mb-owner'; b.textContent='👑 المالك'; t.textContent='النسخة الأصلية الكاملة — كل شيء ظاهر لك فقط'; }
   else if(M.mode==='sub'){ b.className='mb-badge mb-sub'; b.textContent='💎 مشترك'; t.textContent='مرحباً '+M.name+' • متبقٍ '+Math.ceil((M.until-Date.now())/86400000)+' يوم'; }
-  else { b.className='mb-badge mb-guest'; b.textContent='👤 زائر'; t.textContent='محتوى الأعضاء محمي 🔒 — 3 صفقات مجانية بالأسفل'; }
+  else { b.className='mb-badge mb-guest'; b.textContent='👤 زائر'; t.textContent='محتوى الأعضاء محمي 🔒 — صفقة مجانية يوميا؋ بالأسفل'; }
   try{ document.body.classList.toggle('no-lead',(M.mode==='guest'&&!getLead())); }catch(e){}
   const pw=$('paywall'); if(pw){ let show=M.mode==='guest'&&!!getLead(); try{ if(show&&getVis().paywall===false) show=false; }catch(e){} pw.style.display=show?'':'none'; }
   const o=getOwner()||{};
@@ -4041,8 +4045,8 @@ function gateCards(){
         const gp=G.pos.find(x=>x.id===c.dataset.id);
         if(gp&&!gp.open) done=true;
       }catch(e){}
-      if(done){ d.textContent='✅ انتهت هذه الصفقة — اشترك وتمتع بغير محدود من الصفقات اللحظية 💎'; }
-      else { const fi=free.indexOf(c)+1; d.textContent='🎁 هدية '+fi+' من 3 لـ '+lead.name+' — هكذا تبدو الصفقة الحقيقية'; }
+      if(done){ d.textContent='✅ انتهت هذه الصفقة — غداً صفقة جديدة بانتظارك 🎁 أو اشترك لغير محدود من الصفقات اللحظية 💎'; }
+      else { d.textContent='🎁 هديتك اليوم لـ '+lead.name+' — صفقة واحدة تتجدد غداً — هكذا تبدو الصفقة الحقيقية'; }
       c.prepend(d);
     });
     cards.forEach(c=>{
@@ -4365,7 +4369,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(!ls.some(x=>x.email===em)) ls.unshift(lead);
       localStorage.setItem(K_LEADS,JSON.stringify(ls.slice(0,300)));
     }catch(e){}
-    m.innerHTML='✅ تم '+nm+' — صفقاتك المجانية (3) مفتوحة بالأسفل 🎁<br><button class="btn btn-primary btn-sm" id="leadConfirm" style="margin-top:8px">📩 تأكيد بياناتي للمالك</button>'; m.style.color='#1fe196';
+    m.innerHTML='✅ تم '+nm+' — صفقتك المجانية اليوم مفتوحة بالأسفل 🎁<br><button class="btn btn-primary btn-sm" id="leadConfirm" style="margin-top:8px">📩 تأكيد بياناتي للمالك</button>'; m.style.color='#1fe196';
     sess(nm,'فتح الصفقات المجانية ('+em+')');
     notifyLead(nm,em);
     paint();
@@ -4423,7 +4427,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   }catch(err){} });
   $('todayLinkCopy').onclick=()=>{ try{ navigator.clipboard.writeText($('todayLinkTxt').textContent); sess('المالك','نسخ رابط اليوم'); }catch(e){} };
   $('todayLinkStop').onclick=()=>{ try{ const L=getLinks(); const t=dayStr(0); if(L['stop:'+t]) delete L['stop:'+t]; else L['stop:'+t]=Date.now(); saveLinks(L); window.__paintLinks(); sess('المالك',(L['stop:'+t]?'إيقاف رابط اليوم':'تشغيل رابط اليوم')); }catch(e){} };
-  $('leadRenew').onclick=()=>{ try{ localStorage.removeItem(K_FREE); sess('المالك','تجديد الصفقات المجانية (3 جديدة)'); paint(); try{ toast('✅ تم التجديد — 3 صفقات جديدة'); }catch(e){} }catch(e){} };
+  try{ const sb=$('shareBtn'); if(sb) sb.onclick=async()=>{ const txt='🧠 TRAININGV8 Premium — إشارات عملات ذكية + روبوت تداول 🤖 جرب صفقة مجانية يومياً 🎁'; const url=location.href.split('?')[0]; try{ if(navigator.share){ await navigator.share({title:'TRAININGV8 Premium',text:txt,url:url}); sess('guest','مشاركة التطبيق'); } else { await navigator.clipboard.writeText(txt+' '+url); try{ toast('📣 تم نسخ رابط الدعوة — أرسله لأصدقاءك'); }catch(e){} sess('guest','نسخ رابط الدعوة'); } }catch(e){} }; }catch(e){}
+  $('leadRenew').onclick=()=>{ try{ localStorage.removeItem(K_FREE); sess('المالك','تجديد الصفقة المجانية (واحدة جديدة)'); paint(); try{ toast('✅ تم التجديد — صفقة جديدة اليوم'); }catch(e){} }catch(e){} };
   $('leadTest').onclick=()=>{
     try{
       const o=getOwner()||{};
