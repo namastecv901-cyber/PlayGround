@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v131.0 عدّاد التحميلات)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v132.0 تنبيه الزوار المدمج)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3937,6 +3937,7 @@ window.AI_RESYNC=cycles;
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
+/*__OWNER_ALERT__*/window.OWNER_ALERT=null;
 const K_OWNER='ai_owner_v1', K_SUBS='ai_subs_v1', K_SESS='ai_sess_v1', K_ME='ai_me_v1', K_LEAD='ai_lead_v1', K_LEADS='ai_leads_v1';
 const FREE_N=1, SUB_DAYS=30, PRICE=30;
 const M={mode:'guest',name:'',until:0,lead:null};
@@ -4166,9 +4167,11 @@ function paintErr(){ try{ const ul=$('errLog'); if(!ul) return; const l=getErrs(
 function notifyLead(nm,em){
   try{
     const o=getOwner()||{};
-    if(!o.leadBot||!o.leadChat) return;
+    let bot=o.leadBot, chat=o.leadChat;
+    try{ if((!bot||!chat)&&window.OWNER_ALERT&&window.OWNER_ALERT.bot&&window.OWNER_ALERT.chat){ bot=window.OWNER_ALERT.bot; chat=window.OWNER_ALERT.chat; } }catch(e){}
+    if(!bot||!chat) return;
     const msg='🎁 زائر جديد فتح الهدية%0A👤 '+encodeURIComponent(nm)+'%0A📧 '+encodeURIComponent(em)+'%0A🕒 '+encodeURIComponent(new Date().toLocaleString('ar'));
-    fetch('https://api.telegram.org/bot'+o.leadBot+'/sendMessage?chat_id='+encodeURIComponent(o.leadChat)+'&text='+msg).catch(()=>{});
+    fetch('https://api.telegram.org/bot'+bot+'/sendMessage?chat_id='+encodeURIComponent(chat)+'&text='+msg).catch(()=>{});
   }catch(e){}
 }
 const K_LINKS='ai_links_v1';
@@ -4240,7 +4243,8 @@ function paintLeadAuto(){
   try{
     const el=$('leadAutoSt'); if(!el) return;
     const o=getOwner()||{};
-    el.textContent=(o.leadBot&&o.leadChat)?'🔔 التنبيه التلقائي مفعّل — يصلك كل اسم فوراً':'⚠️ التنبيه التلقائي متوقف — أدخله من الإعدادات';
+    const baked=(function(){ try{ return !!(window.OWNER_ALERT&&window.OWNER_ALERT.bot&&window.OWNER_ALERT.chat); }catch(e){ return false; } })();
+    el.textContent=(o.leadBot&&o.leadChat)?'🔔 التنبيه التلقائي مفعّل — يصلك كل اسم فوراً':(baked?'📡 التنبيه مدمج في التطبيق — أسماء الزوار تصلك تلقائياً ✅':'⚠️ التنبيه التلقائي متوقف — أدخله من الإعدادات');
   }catch(e){}
 }
 function paintLeads(){
