@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v146.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v147.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v146.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v147.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3338,10 +3338,13 @@ function investTargetFor(a){
     const h1=c.price_change_percentage_1h_in_currency||0;
     const h24=c.price_change_percentage_24h_in_currency||0;
     const score=a.score||0, mom=(a.mom||0);
-    if((h1>=2&&h24>=8)||score>=85||mom>=75) return {mult:6,pct:500,why:'حركة قوية'};
-    if((h1>=1&&h24>=4)||score>=70||mom>=60) return {mult:3,pct:200,why:'حركة متوسطة'};
-    return {mult:2,pct:100,why:'حركة هادئة'};
-  }catch(e){ return {mult:2,pct:100,why:'حركة هادئة'}; }
+    // حد العملة الحقيقي من حركتها: تقدير الصعود المتوقع — الأدنى 50% دائماً
+    let est=h24*4+h1*10+score*1.2+mom*0.8;
+    let pct=Math.max(50,Math.min(800,Math.round(est/10)*10));
+    const mult=1+pct/100;
+    const why=(pct>=300?'صعود حقيقي قوي':pct>=100?'صعود حقيقي':'حد أدنى آمن')+' (24س '+(h24>=0?'+':'')+h24.toFixed(1)+'%)';
+    return {mult:mult,pct:pct,why:why};
+  }catch(e){ return {mult:2,pct:100,why:'صعود حقيقي'}; }
 }
 function investLive(){
   try{
