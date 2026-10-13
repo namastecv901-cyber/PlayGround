@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v213.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v214.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v213.0 شريط الخطة)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v214.0 شريط الخطة)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1484,7 +1484,7 @@ body.linkmode #masterFab{display:none!important}
     <label>💰 رأس المال $<input id="tEq" type="number" min="10" step="10"></label>
     <label>🛡 حد الخسارة $<input id="tDay" type="number" min="1" step="1"></label>
     <label>🎯 هدف الربح $<input id="tGoal" type="number" min="1" step="1"></label>
-    <label>📦 صفقات قصوى<input id="tMax" type="number" min="1" max="10" step="1"></label>
+    <label>📦 صفقات قصوى (0=∞)<input id="tMax" type="number" min="0" max="99" step="1"></label>
     <label>🎯 جني $<input id="tTP" type="number" min="0.1" step="0.1"></label>
     <label>⚡ فوري $<input id="tInst" type="number" min="0.1" step="0.1"></label>
     <label>🧭 الوضع<select id="tMode"><option value="paper">🧪 تجريبي</option><option value="live">🔴 حقيقي</option></select></label>
@@ -3272,7 +3272,7 @@ function readTable(el){
     if(id==='tEq'){ const n=parseFloat(v)||0; if(n>=10){ S.equity=n; S.equityStart=n; } }
     else if(id==='tDay'){ const n=parseFloat(v)||0; if(n>=1) S.dayLimit=n; }
     else if(id==='tGoal'){ const n=parseFloat(v)||0; if(n>=1) S.goal=n; }
-    else if(id==='tMax'){ const n=parseInt(v)||0; if(n>=1&&n<=10) S.max=n; }
+    else if(id==='tMax'){ const n=parseInt(v)||0; if(n>=0&&n<=99) S.max=n; }
     else if(id==='tTP'){ const n=parseFloat(v)||0; if(n>=0.1) S.tpCap=n; }
     else if(id==='tInst'){ const n=parseFloat(v)||0; if(n>=0.1) S.instantMin=n; }
     else if(id==='tMode'){
@@ -3454,7 +3454,7 @@ async function scan(){
     if((S.dayPnl||0)<=-dl){ if(Date.now()-(S.guardT||0)>600000){ S.guardT=Date.now(); log('⛔ لا دخول جديد — حد الخسارة اليومية ('+S.dayPnl.toFixed(1)+'$)'); } }
     else if((parseFloat(S.equity)||0)<20){ if(Date.now()-(S.guardT||0)>600000){ S.guardT=Date.now(); log('⛔ لا دخول جديد — رأس المال $'+(S.equity||0).toFixed(2)+' تحت الحد'); } }
     else if(!S.goalDone&&(S.dayPnl||0)>=(parseFloat(S.goal)||10)){ S.goalDone=true; S.enabled=false; log('🏆 هدف اليوم تحقق (+$'+S.dayPnl.toFixed(2)+') — توقف محتفلاً'); toastF('🏆 هدف اليوم تحقق'); }
-    else if(openCount<(parseInt(S.max)||3)){
+    else if(!(parseInt(S.max)||0)||openCount<(parseInt(S.max)||3)){
       if((S.dayCount||0)>=100){ if(Date.now()-(S.guardT||0)>600000){ S.guardT=Date.now(); log('🛑 بلغ 100 صفقة اليوم — لا فتح جديد حتى الغد'); } }
       else{
         let cands=[];
@@ -3480,7 +3480,7 @@ async function scan(){
         for(const c of cands){
           try{
             const n=Object.values(S.trades).filter(x=>x&&x.open&&!x.skip).length;
-            if(n>=(parseInt(S.max)||3)) break;
+            const mx=parseInt(S.max)||0; if(mx>0&&n>=mx) break;
             const stake=Math.min(20,(parseFloat(S.equity)||0)*0.2,parseFloat(S.equity)||0);
             if(stake<5) break;
             const symU=String(c.a.c.symbol||c.a.c.id).toUpperCase();
@@ -3568,10 +3568,10 @@ function paint(){
   }catch(e){}
 }
 const GROWS=[
- {id:'g5_30',from:5,to:30,max:2,day:2},
- {id:'g20_100',from:20,to:100,max:3,day:5},
- {id:'g50_150',from:50,to:150,max:3,day:8},
- {id:'g100_200',from:100,to:200,max:3,day:10}
+ {id:'g5_30',from:5,to:30,max:0,day:2},
+ {id:'g20_100',from:20,to:100,max:0,day:5},
+ {id:'g50_150',from:50,to:150,max:0,day:8},
+ {id:'g100_200',from:100,to:200,max:0,day:10}
 ];
 function applyGrowth(id){
   const c=GROWS.find(x=>x.id===id); if(!c) return false;
@@ -3586,7 +3586,7 @@ function paintGrows(){
   try{
     const box=$('oneGrows'); if(!box) return;
     const e=parseFloat(S.equity)||0;
-    box.innerHTML=GROWS.map(c=>{ const s0=c.from, goal=c.to; const pct=goal>s0?Math.max(0,Math.min(100,(e-s0)/(goal-s0)*100)):0; const on=S.chalId===c.id; return '<button class="bot-plan'+(on?' sel':'')+'" data-grow="'+c.id+'"><span class="pl-check">'+(on?'✅':'○')+'</span><span><b>🚀 $'+c.from+' → $'+c.to+'</b><small>هدف $'+c.to+' • حد يومي $'+c.day+' • '+c.max+' صفقات • '+pct.toFixed(0)+'%</small></span><span class="pl-lvl">'+pct.toFixed(0)+'%</span></button>'; }).join('');
+    box.innerHTML=GROWS.map(c=>{ const s0=c.from, goal=c.to; const pct=goal>s0?Math.max(0,Math.min(100,(e-s0)/(goal-s0)*100)):0; const on=S.chalId===c.id; return '<button class="bot-plan'+(on?' sel':'')+'" data-grow="'+c.id+'"><span class="pl-check">'+(on?'✅':'○')+'</span><span><b>🚀 $'+c.from+' → $'+c.to+'</b><small>هدف $'+c.to+' • حد يومي $'+c.day+' • '+(c.max>0?c.max+' صفقات':'∞ صفقات غير محدودة')+' • '+pct.toFixed(0)+'%</small></span><span class="pl-lvl">'+pct.toFixed(0)+'%</span></button>'; }).join('');
   }catch(e){}
 }
 function start(){ if(S.mode!=='paper'&&(!S.key||!S.sec)){ log('🔑 الوضع الحقيقي يحتاج API Key وSecret — أدخلهما في جدول البوت'); try{ window.toast('🔑 أدخل المفاتيح أولاً'); }catch(e){} return false; } S.enabled=true; S.manual=false; S.day=S.day||new Date().toISOString().slice(0,10); save(); paint(); log('▶ البوت يعمل — متصل بالمحلل مباشرة: أي بطاقة شراء يدخلها'); (async()=>{ try{ await catchUp(); }catch(e){} try{ scan(); }catch(e){} })(); }
@@ -3865,7 +3865,7 @@ function paintMaster(){
   try{
     const BS=(window.BOTONE&&window.BOTONE.S)||null; if(!BS) return;
     const st=$('mStatus'); if(st){ const on=!!BS.enabled; st.textContent=on?('🟢 يعمل • '+BS.mode):'⏸ متوقف'; st.style.color=on?'#1fe196':'#ff7b85'; }
-    const mv=$('mMaxV'); if(mv) mv.textContent=BS.max;
+    const mv=$('mMaxV'); if(mv) mv.textContent=(BS.max>0?BS.max:'∞');
     const tp=$('mTP'); if(tp&&document.activeElement!==tp) tp.value=BS.tpCap;
     const im=$('mInst'); if(im&&document.activeElement!==im) im.value=BS.instantMin;
     const gl=$('mGoal'); if(gl&&document.activeElement!==gl) gl.value=BS.goal;
@@ -4153,8 +4153,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('masterFab').onclick=openOwner;
   $('mStart').onclick=()=>{ try{ window.BOTONE.start(); sess('المالك','تشغيل البوت من لوحة التحكم'); }catch(e){} setTimeout(paintMaster,500); };
   $('mStop').onclick=()=>{ try{ window.BOTONE.stop(); sess('المالك','إيقاف البوت من لوحة التحكم'); }catch(e){} setTimeout(paintMaster,500); };
-  $('mMaxDown').onclick=()=>{ try{ const BS=window.BOTONE.S; BS.max=Math.max(1,(parseInt(BS.max)||3)-1); sess('المالك','الصفقات القصوى → '+BS.max); }catch(e){} paintMaster(); };
-  $('mMaxUp').onclick=()=>{ try{ const BS=window.BOTONE.S; BS.max=Math.min(10,(parseInt(BS.max)||3)+1); sess('المالك','الصفقات القصوى → '+BS.max); }catch(e){} paintMaster(); };
+  $('mMaxDown').onclick=()=>{ try{ const BS=window.BOTONE.S; BS.max=Math.max(0,(parseInt(BS.max)||0)-1); sess('المالك','الصفقات القصوى → '+BS.max); }catch(e){} paintMaster(); };
+  $('mMaxUp').onclick=()=>{ try{ const BS=window.BOTONE.S; BS.max=Math.min(99,(parseInt(BS.max)||0)+1); sess('المالك','الصفقات القصوى → '+BS.max); }catch(e){} paintMaster(); };
   const mCommit=()=>{ try{ const BS=window.BOTONE.S; const tp=parseFloat($('mTP').value), im=parseFloat($('mInst').value), gl=parseFloat($('mGoal').value); if(tp>=0.1) BS.tpCap=tp; if(im>=0.1) BS.instantMin=im; if(gl>=1) BS.goal=gl; try{ if(window.BOTONE&&window.BOTONE.save) window.BOTONE.save(); }catch(e){} sess('المالك','تعديل قيم البوت'); }catch(e){} paintMaster(); };
   $('mTP').oninput=mCommit; $('mInst').oninput=mCommit; $('mGoal').oninput=mCommit;
   $('mTP').onchange=mCommit; $('mInst').onchange=mCommit; $('mGoal').onchange=mCommit;
