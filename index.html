@@ -1244,25 +1244,6 @@ body{max-width:680px;margin:0 auto;padding:12px}
 .bot-decres small{display:block;font-size:.68rem;font-weight:700;color:#c9a86d;margin-top:3px}
 .bot-decres.done{border-color:#1fe196;color:#d9ffe9;background:#0d2418}
 .bot-decres.bad{border-color:#ea3943;color:#ffc9cd;background:#2b0f12}
-.inv-coin{display:flex;gap:8px;align-items:center;justify-content:center;background:#241a08;border:1px solid #f0b90b66;border-radius:12px;padding:8px 12px;font-size:.82rem;font-weight:900;color:#ffe9a8;margin-bottom:6px;flex-wrap:wrap}
-.inv-pulse{display:inline-block;width:11px;height:11px;border-radius:50%;background:#1fe196;animation:invPulse 1.6s ease-in-out infinite}
-@keyframes invPulse{0%,100%{box-shadow:0 0 0 0 #1fe196aa;transform:scale(1)}50%{box-shadow:0 0 0 9px #1fe19600;transform:scale(1.3)}}
-.inv-coin small{display:block;width:100%;text-align:center;font-size:.68rem;font-weight:700;color:#c9a86d}
-.inv-move{height:7px;background:#ffffff10;border-radius:99px;margin:0 0 8px;overflow:hidden}
-.inv-move i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1fe196,#f0b90b,#f472b6);transition:width 1s linear;animation:dsMove 3s ease-in-out infinite}
-.inv-state{text-align:center;font-size:.76rem;font-weight:900;color:#ffd3e8;margin:0 0 8px}
-.t8{display:inline-block;background:#ffffff08;border:1px solid var(--line);border-radius:8px;padding:1px 7px;margin:2px;font-size:.68rem;font-weight:800;color:var(--mut)}
-.t8.hit{border-color:#16c78466;color:#1fe196;background:#16c78414}
-.inv-card{background:linear-gradient(160deg,#121527e6,#0b0d15e6);border:2px solid #f0b90b66;border-radius:18px;padding:12px 14px;margin:0 0 8px;box-shadow:0 10px 30px #00000059}
-.inv-top{display:flex;gap:10px;align-items:center}
-.inv-top img{width:38px;height:38px;border-radius:50%;background:#ffffff10}
-.inv-top b{display:block;font-size:1rem;color:var(--txt)}
-.inv-top small{display:block;font-size:.7rem;color:var(--mut)}
-.inv-top .inv-pulse{margin-inline-start:auto}
-.inv-price{display:flex;gap:8px;align-items:baseline;justify-content:space-between;margin-top:8px;font-size:.85rem;font-weight:900;color:#ffe9a8;flex-wrap:wrap}
-.inv-price .up{color:#1fe196}.inv-price .down{color:#ff7b85}
-.inv-tline{font-size:.76rem;font-weight:800;color:#ffe9a8;margin-top:4px}
-.inv-whale{display:inline-block;font-size:.7rem;font-weight:900;color:#8fd6ff;background:#8fd6ff18;border:1px solid #8fd6ff55;border-radius:8px;padding:1px 8px;margin-top:6px}
 .dec-strip{margin:-2px 0 8px;border-radius:12px;padding:7px 12px;background:#101322;border:1px solid #f0b90b55;font-size:.76rem;font-weight:800;color:#ffe9a8;text-align:center}
 .dec-strip .ds-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .dec-strip .ds-bar{height:6px;background:#ffffff10;border-radius:99px;margin-top:6px;overflow:hidden}
@@ -1370,37 +1351,26 @@ body.linkmode #masterFab{display:none!important}
 .master-row .pill{background:#00000055;border-radius:99px;padding:3px 12px;font-size:.76rem}
 .stepper{display:flex;gap:6px;align-items:center}
 .stepper button{width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:#ffffff10;color:var(--txt);font-size:1rem;font-weight:900;cursor:pointer;font-family:inherit}
-.pex-sec{margin:14px 0}
-.pex-head{display:flex;align-items:center;gap:8px}
-.pex-head h2{font-size:1rem;margin:0}
-.pex-count{background:#f5c542;color:#1a1200;border-radius:99px;font-weight:900;font-size:.75rem;padding:1px 10px}
-.pex-status{font-size:.78rem;font-weight:800;color:#ffe9a8;background:#ffffff06;border:1px solid var(--line);border-radius:10px;padding:7px 12px;margin:8px 0}
-.pex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
-.pex-card{background:#0b0d15;border:2px solid;border-radius:14px;padding:10px 12px;font-size:.78rem}
-.pex-card.st-green{border-color:#1fe196;box-shadow:0 0 12px #1fe19633}
-.pex-card.st-orange{border-color:#ff8a3d;box-shadow:0 0 14px #ff8a3d44}
-.pex-card.st-red{border-color:#ea3943;box-shadow:0 0 18px #ea394366;animation:pexRed 1.2s infinite}
 @keyframes pexRed{50%{box-shadow:0 0 30px #ea394399}}
-.pex-top{display:flex;align-items:center;gap:8px;font-weight:900}
-.pex-dot{width:11px;height:11px;border-radius:50%;flex:0 0 auto}
-.st-green .pex-dot{background:#1fe196;animation:pexG 2.2s ease-in-out infinite}
-.st-orange .pex-dot{background:#ff8a3d;animation:pexO 1.4s ease-in-out infinite}
-.st-red .pex-dot{background:#ea3943;animation:pexR .8s ease-in-out infinite}
-@keyframes pexG{0%,100%{box-shadow:0 0 0 0 #1fe19688}50%{box-shadow:0 0 0 8px #1fe19600}}
 @keyframes pexO{0%,100%{box-shadow:0 0 0 0 #ff8a3d99}50%{box-shadow:0 0 0 9px #ff8a3d00}}
 @keyframes pexR{0%,100%{box-shadow:0 0 0 0 #ea3943aa;transform:scale(1)}50%{box-shadow:0 0 0 10px #ea394300;transform:scale(1.3)}}
-.pex-meta{color:var(--mut);font-size:.7rem;margin-top:2px}
-.pex-state{font-weight:900;margin-top:5px}
-.st-green .pex-state{color:#1fe196}.st-orange .pex-state{color:#ffab6e}.st-red .pex-state{color:#ff7b85}
-.pex-plan{margin-top:5px;line-height:1.9}
-.pex-liq{height:7px;background:#ffffff10;border-radius:99px;margin-top:6px;overflow:hidden}
-.pex-liq i{display:block;height:100%;border-radius:99px;transition:width 1s linear,background .5s}
-.pex-liq.f-buy i{background:linear-gradient(90deg,#0a8a5c,#1fe196);animation:pexLiq 1.6s ease-in-out infinite}
-.pex-liq.f-surge i{background:linear-gradient(90deg,#ff8a3d,#ffc46b);animation:pexLiq 1.1s ease-in-out infinite}
-.pex-liq.f-dump i{background:linear-gradient(90deg,#a3121f,#ea3943);animation:pexLiq .9s ease-in-out infinite}
-.pex-liq.f-calm i{background:linear-gradient(90deg,#334155,#7c8db0)}
-@keyframes pexLiq{0%,100%{filter:brightness(.85)}50%{filter:brightness(1.3)}}
-.pex-flow{font-size:.7rem;font-weight:900;margin-top:3px}
+.ptn-sec{margin:14px 0}
+.ptn-head{display:flex;align-items:center;gap:8px}
+.ptn-head h2{font-size:1rem;margin:0}
+.ptn-count{background:#8b5cf6;color:#fff;border-radius:99px;font-weight:900;font-size:.75rem;padding:1px 10px}
+.ptn-status{font-size:.78rem;font-weight:800;color:#d9c8ff;background:#ffffff06;border:1px solid var(--line);border-radius:10px;padding:7px 12px;margin:8px 0}
+.ptn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.ptn-card{background:#0b0d15;border:2px solid #8b5cf688;border-radius:14px;padding:10px 12px;font-size:.78rem}
+.ptn-card.d-up{border-color:#1fe196;box-shadow:0 0 12px #1fe19633}
+.ptn-card.d-down{border-color:#ea3943;box-shadow:0 0 14px #ea394344}
+.ptn-card.d-brk{border-color:#f0b90b;box-shadow:0 0 14px #f0b90b33}
+.ptn-top{display:flex;align-items:center;gap:8px;font-weight:900;flex-wrap:wrap}
+.ptn-fr{display:inline-block;font-size:.66rem;font-weight:900;background:#8b5cf622;border:1px solid #8b5cf666;color:#c4a4ff;border-radius:8px;padding:1px 8px}
+.ptn-meta{color:var(--mut);font-size:.7rem;margin-top:3px}
+.ptn-bar{height:7px;background:#ffffff10;border-radius:99px;margin-top:6px;overflow:hidden}
+.ptn-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#8b5cf6,#f472b6)}
+.ptn-dir{font-weight:900;margin-top:5px}
+.d-up .ptn-dir{color:#1fe196}.d-down .ptn-dir{color:#ff7b85}.d-brk .ptn-dir{color:#f6e27a}
 .blx-sec{margin:14px 0}
 .blx-head{display:flex;align-items:center;gap:8px}
 .blx-head h2{font-size:1rem;margin:0}
@@ -1425,7 +1395,6 @@ body.linkmode #masterFab{display:none!important}
 .pex-chart iframe{width:100%;height:220px;border:0;display:block}
 .pex-chart a{display:block;text-align:center;font-size:.66rem;font-weight:900;color:#8fd6ff;padding:3px}
 .pex-tv{font-family:inherit;font-size:.68rem;font-weight:900;color:#8fd6ff;background:#8fd6ff12;border:1px solid #8fd6ff55;border-radius:8px;padding:2px 10px;margin-top:6px;cursor:pointer}
-.f-buy .pex-flow{color:#1fe196}.f-surge .pex-flow{color:#ffab6e}.f-dump .pex-flow{color:#ff7b85}.f-calm .pex-flow{color:#8fa3c0}
 .stepper b{min-width:30px;text-align:center;font-size:1rem}
 </style>
 </head>
@@ -1544,10 +1513,10 @@ body.linkmode #masterFab{display:none!important}
 
 </div>
 
-<div class="pex-sec" id="pexSec">
-  <div class="pex-head"><h2>⚡ رادار ما قبل الانفجار — دخول الحيتان فقط</h2><span class="pex-count" id="pexCount">0</span></div>
-  <div class="pex-status" id="pexStatus">🐋 يحلل 500 عملة بحثاً عن دخول الحيتان...</div>
-  <div class="pex-grid" id="pexGrid"></div>
+<div class="ptn-sec" id="ptnSec">
+  <div class="ptn-head"><h2>📐 محلل النماذج — انعكاسي ووتد هابط وغيرها</h2><span class="ptn-count" id="ptnCount">0</span></div>
+  <div class="ptn-status" id="ptnStatus">📐 يحلل النماذج على 500 عملة...</div>
+  <div class="ptn-grid" id="ptnGrid"></div>
 </div>
 
 <div class="blx-sec" id="blxSec">
@@ -4496,222 +4465,200 @@ window.MKthead={refresh:paint};
 })();
 </script>
 
-<script>/* ⚡ PEX v1 — قسم مستقل تماماً: يحلل 500 عملة وحده، دخول قوي مع البامب/الدامب فقط، نبض أخضر→برتقالي→أحمر */
+<script>/* 📐 PTN v1 — قسم مستقل: محلل كل النماذج (انعكاسي + وتد + مثلثات) على كل الفريمات */
 (function(){
 "use strict";
 var $=function(id){ return document.getElementById(id); };
-var LS='ai_pex_v1', COOL=30*60*1000, MINV=10000000;
+var LS='ai_ptn_v1', COOL=2*3600*1000, MINV=10000000;
 var STABLES={usdt:1,usdc:1,dai:1,tusd:1,busd:1,usdd:1,fdusd:1,pyusd:1,usde:1,eurs:1,susd:1,usdb:1,usdx:1,usdy:1};
-var prev={}, mem={warned:{},fired:{},base:{},top:{},dip:{}};
-try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m){ mem.warned=m.warned||{}; mem.fired=m.fired||{}; mem.base=m.base||{}; mem.top=m.top||{}; mem.dip=m.dip||{}; } }catch(e){}
+var ptnK={};
+var mem={seen:{}};
+try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m) mem.seen=m.seen||{}; }catch(e){}
 function save(){ try{ localStorage.setItem(LS,JSON.stringify(mem)); }catch(e){} }
 function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e){} if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
+function big(n){ try{ n=Number(n)||0; var a=Math.abs(n); if(a>=1e9) return '$ '+(n/1e9).toFixed(2)+'B'; if(a>=1e6) return '$ '+(n/1e6).toFixed(2)+'M'; if(a>=1e3) return '$ '+(n/1e3).toFixed(1)+'K'; return '$ '+Math.round(n); }catch(e){ return '—'; } }
 function toast(m){ try{ if(window.toast) window.toast(m); }catch(e){} }
-function fmtBig(n){ try{ n=Number(n)||0; var a=Math.abs(n); if(a>=1e9) return '$ '+(n/1e9).toFixed(2)+'B'; if(a>=1e6) return '$ '+(n/1e6).toFixed(2)+'M'; if(a>=1e3) return '$ '+(n/1e3).toFixed(1)+'K'; return '$ '+Math.round(n); }catch(e){ return '—'; } }
+function real(c,fb){ try{ if(window.realPx) return window.realPx(c,fb); }catch(e){} return (c&&c.current_price)||fb||0; }
 function isSt(c){ try{ var s=String(c.symbol||'').toLowerCase(); if(STABLES[s]) return true; return /stable|pegged|wrapped btc|steth/i.test(c.name||''); }catch(e){ return false; } }
-function classify(a){
-  var c=a.c||{}, w=a.whale||{score:0,buying:false,h1:0};
-  if(isSt(c)) return null;
-  if((c.total_volume||0)<MINV) return null;
-  var h1=w.h1||0, h24=c.price_change_percentage_24h_in_currency||0, px=c.current_price||0;
-  var sc=w.score||0;
-  var p=prev[c.id], dh=p?(h1-p.h1):0;
-  // أحمر: انفجار مؤكد
-  if(h1>=5&&h24>-40) return {lv:'red',dir:'pump',txt:'🔴 انفجرت — دخول قوي مع البامب',entry:px,tp:px*1.08,sl:px*0.96};
-  if(h1<=-5&&sc>=50) return {lv:'red',dir:'dump',txt:'🔴 تفريغ حيتان — دامب مؤكد، لا دخول شراء',entry:0,tp:0,sl:0};
-  // يتطلب دخول حيتان فقط
-  if(sc<60||!w.buying) return null;
-  if(h24>40||h24<-25) return null;
-  // برتقالي: تسارع نحو الانفجار
-  if((h1>=2.5&&h1<5)||(dh>0.8&&h1>1)||(p&&p.vol>0&&(c.total_volume||0)>p.vol*1.5&&h1>1.5))
-    return {lv:'orange',dir:'pump',txt:'🟠 تقترب من الانفجار — الحيتان تضخ',entry:0,tp:0,sl:0};
-  // أخضر: تجميع هادئ قبل الانفجار
-  if(h1>-0.5&&h1<2.5) return {lv:'green',dir:'pump',txt:'🟢 تجميع حيتان — ستنفجر، راقبها',entry:0,tp:0,sl:0};
-  return null;
+function nearR(a,b,t){ try{ return b>0&&Math.abs(a-b)/b<=(t||0.02); }catch(e){ return false; } }
+function ptnPiv(pr,k){
+  var H=[],L=[],n=pr.length,i=0,j=0;
+  if(!pr||n<2*k+5) return {H:H,L:L};
+  for(i=k;i<n-k;i++){
+    var v=pr[i]; if(!(v>0)) continue;
+    var hi=true,lo=true;
+    for(j=1;j<=k;j++){ var a=pr[i-j],b=pr[i+j]; if(!(a>0&&b>0)){ hi=false; lo=false; break; } if(a>v*1.0015||b>v*1.0015) hi=false; if(a<v*0.9985||b<v*0.9985) lo=false; }
+    if(hi) H.push({i:i,v:v});
+    if(lo) L.push({i:i,v:v});
+  }
+  return {H:H,L:L};
 }
-var pexK={};
-async function pexKlines(sym){
+function ptnSlope(pts){
   try{
-    var c=pexK[sym];
-    if(c&&Date.now()-c.t<60000) return c.kl;
-    var ctl=new AbortController(), to=setTimeout(function(){ try{ctl.abort();}catch(e){} },8000);
-    try{
-      var r=await fetch('https://api.binance.com/api/v3/klines?symbol='+sym+'&interval=15m&limit=30',{signal:ctl.signal,cache:'no-store'});
-      if(!r.ok) return null;
-      var kl=await r.json();
-      if(kl&&kl.length>=16){ pexK[sym]={kl:kl,t:Date.now()}; return kl; }
-    }finally{ clearTimeout(to); }
-  }catch(e){}
-  return null;
+    var n=pts.length; if(n<2) return 0;
+    var sx=0,sy=0,sxy=0,sxx=0,k=0;
+    for(k=0;k<n;k++){ var x=pts[k].i,y=pts[k].v; sx+=x; sy+=y; sxy+=x*y; sxx+=x*x; }
+    var d=n*sxx-sx*sx; if(!d) return 0;
+    var base=sy/n; if(!(base>0)) return 0;
+    return (n*sxy-sx*sy)/d*n/base*100;
+  }catch(e){ return 0; }
 }
-function pexRsi(cl){
+function ptnMin(pr,a,b){ var m=Infinity,i=0; for(i=Math.max(0,a);i<=Math.min(pr.length-1,b);i++) if(pr[i]<m) m=pr[i]; return m; }
+function ptnMax(pr,a,b){ var m=0,i=0; for(i=Math.max(0,a);i<=Math.min(pr.length-1,b);i++) if(pr[i]>m) m=pr[i]; return m; }
+function ptnDetect(pr,isKl){
+  var out=[];
   try{
-    if(!cl||cl.length<15) return null;
-    var g=0,l=0;
-    for(var i=cl.length-14;i<cl.length;i++){ var d=cl[i]-cl[i-1]; if(d>0) g+=d; else l-=d; }
-    if(l===0) return 100;
-    return 100-100/(1+g/l);
-  }catch(e){ return null; }
-}
-function pexDip(a){
-  try{
-    var sym=(window.binSym&&window.binSym(a.c))||null; if(!sym) return null;
-    var c=pexK[sym]; if(!c||!c.kl||c.kl.length<10) return null;
-    var kl=c.kl, n=kl.length;
-    var vs=[]; for(var i=n-8;i<n-2;i++) vs.push(parseFloat(kl[i][5])||0);
-    var avg=0; vs.forEach(function(v){ avg+=v; }); avg/=Math.max(1,vs.length);
-    if(!(avg>0)) return null;
-    var lastC=parseFloat(kl[n-1][4]);
-    for(var k=n-3;k<n;k++){
-      var o=parseFloat(kl[k][1]), h=parseFloat(kl[k][2]), l=parseFloat(kl[k][3]), cl=parseFloat(kl[k][4]), v=parseFloat(kl[k][5]);
-      var rg=h-l; if(!(rg>0)) continue;
-      var down=cl<o, bigV=v>=avg*1.6, wick=(Math.min(o,cl)-l)>=rg*0.4, held=lastC>=cl*0.999;
-      if(down&&bigV&&wick&&held) return {ago:n-1-k,depth:l>0?((lastC-l)/l*100):0,vol:v/avg};
+    var n=pr.length; if(n<15) return out;
+    var last=pr[n-1];
+    var P=ptnPiv(pr,isKl?5:4), H=P.H, L=P.L, i=0;
+    if(H.length>=2){
+      var p1=H[H.length-2], p2=H[H.length-1];
+      if(p2.i-p1.i>=3&&nearR(p1.v,p2.v,0.02)){
+        var tr=ptnMin(pr,p1.i,p2.i), dep=(Math.min(p1.v,p2.v)-tr)/tr;
+        if(dep>0.025) out.push({p:'قمتان مزدوجتان 🔻',d:'down',fam:'dbl',s:55+Math.min(20,dep*400)+(last<tr?15:5)+(p2.i>n-12?10:0)});
+      }
     }
-    return null;
+    if(L.length>=2){
+      var q1=L[L.length-2], q2=L[L.length-1];
+      if(q2.i-q1.i>=3&&nearR(q1.v,q2.v,0.02)){
+        var pk=ptnMax(pr,q1.i,q2.i), mx=Math.max(q1.v,q2.v), dp=(pk-mx)/mx;
+        if(dp>0.025) out.push({p:'قاعان مزدوجان 🔺',d:'up',fam:'dbl',s:55+Math.min(20,dp*400)+(last>pk?15:5)+(q2.i>n-12?10:0)});
+      }
+    }
+    if(H.length>=3){
+      var h1=H[H.length-3],h2=H[H.length-2],h3=H[H.length-1];
+      if(h2.v>h1.v*1.03&&h2.v>h3.v*1.03&&nearR(h1.v,h3.v,0.03)){
+        var nk=ptnMin(pr,h1.i,h3.i);
+        if(last<=nk*1.015) out.push({p:'رأس وكتفان 🔻',d:'down',fam:'hs',s:60+(last<nk?15:5)+(nearR(h1.v,h3.v,0.015)?10:0)});
+      }
+    }
+    if(L.length>=3){
+      var l1=L[L.length-3],l2=L[L.length-2],l3=L[L.length-1];
+      if(l2.v<l1.v*0.97&&l2.v<l3.v*0.97&&nearR(l1.v,l3.v,0.03)){
+        var nc=ptnMax(pr,l1.i,l3.i);
+        if(last>=nc*0.985) out.push({p:'رأس وكتفان معكوس 🔺',d:'up',fam:'hs',s:60+(last>nc?15:5)+(nearR(l1.v,l3.v,0.015)?10:0)});
+      }
+    }
+    if(H.length>=3&&L.length>=3){
+      var H3=H.slice(-3), L3=L.slice(-3);
+      var sH=ptnSlope(H3), sL=ptnSlope(L3);
+      var wOld=(H3[0].v-L3[0].v), wNew=(H3[2].v-L3[2].v);
+      var contracting=wOld>0&&wNew>0&&wNew<wOld*0.85;
+      if(sH<-0.3&&sL<0.8&&sL>sH&&contracting&&last>L3[2].v*1.005)
+        out.push({p:'وتد هابط 🔺',d:'up',fam:'wedge',s:62+Math.min(20,(sH-sL)*2)});
+      if(sH>0.3&&sL>-0.8&&sL<sH&&contracting&&last<H3[2].v*0.995)
+        out.push({p:'وتد صاعد 🔻',d:'down',fam:'wedge',s:62+Math.min(20,(sH-sL)*2)});
+      var flatTop=(Math.max(H3[0].v,H3[1].v,H3[2].v)-Math.min(H3[0].v,H3[1].v,H3[2].v))/H3[2].v;
+      var flatBot=(Math.max(L3[0].v,L3[1].v,L3[2].v)-Math.min(L3[0].v,L3[1].v,L3[2].v))/L3[2].v;
+      if(flatTop<0.015&&sL>0.5&&last>=H3[2].v*0.995)
+        out.push({p:'مثلث صاعد 🔺',d:'up',fam:'tri',s:60+Math.min(20,sL)});
+      if(flatBot<0.015&&sH<-0.5&&last<=L3[2].v*1.005)
+        out.push({p:'مثلث هابط 🔻',d:'down',fam:'tri',s:60+Math.min(20,-sH)});
+      if(sH<-0.3&&sL>0.3&&contracting){
+        var mid=(H3[2].v+L3[2].v)/2, rng=(H3[2].v-L3[2].v);
+        if(rng>0&&Math.abs(last-mid)<rng*0.45)
+          out.push({p:'مثلث متماثل 🔀',d:'brk',fam:'tri',s:58+Math.min(20,(sL-sH))});
+      }
+    }
+    for(i=0;i<out.length;i++) out[i].s=Math.max(40,Math.min(98,Math.round(out[i].s)));
+  }catch(e){}
+  return out;
+}
+async function ptnKlines(sym,tf){
+  try{
+    var key=sym+tf, c=ptnK[key];
+    if(c&&Date.now()-c.t<300000) return c.kl;
+    var ctl=new AbortController(), to=setTimeout(function(){ try{ctl.abort();}catch(e){} },10000);
+    var r=null;
+    try{ r=await fetch('https://api.binance.com/api/v3/klines?symbol='+sym+'&interval='+tf+'&limit=100',{signal:ctl.signal,cache:'no-store'}); }finally{ clearTimeout(to); }
+    if(!r||!r.ok) return null;
+    var kl=await r.json();
+    if(!kl||kl.length<40) return null;
+    ptnK[key]={kl:kl,t:Date.now()};
+    return kl;
   }catch(e){ return null; }
 }
-function pexSma(cl,n){ try{ if(!cl||cl.length<n) return 0; var s=0; for(var i=cl.length-n;i<cl.length;i++) s+=cl[i]; return s/n; }catch(e){ return 0; } }
-async function pexConfirm(a){
-  try{
-    var sym=(window.binSym&&window.binSym(a.c))||null; if(!sym) return {trap:false,confirmed:false,why:'net'};
-    var kl=await pexKlines(sym); if(!kl) return {trap:false,confirmed:false,why:'net'};
-    var cl=kl.map(function(k){ return parseFloat(k[4]); });
-    var rsi=pexRsi(cl); if(rsi==null) return {trap:false,confirmed:false,why:'net'};
-    var last=cl[cl.length-1], s20=pexSma(cl,20);
-    var ext=s20>0?((last-s20)/s20*100):0;
-    var rising=last>cl[cl.length-2]&&cl[cl.length-2]>cl[cl.length-3];
-    var h24=(a.c&&a.c.price_change_percentage_24h_in_currency)||0;
-    var net14=(cl[0]>0?((last-cl[0])/cl[0]*100):0);
-    if(rsi>75&&net14>5) return {trap:true,confirmed:false,why:'RSI '+Math.round(rsi)+' +'+net14.toFixed(1)+'% — قمة منهكة (فخ)'};
-    if(ext>8) return {trap:true,confirmed:false,why:'ممتد +'+ext.toFixed(1)+'% فوق المتوسط — لحاق متأخر (فخ)'};
-    if(h24>40) return {trap:true,confirmed:false,why:'بامب مكتمل +'+h24.toFixed(0)+'% — متأخر (فخ)'};
-    if(rsi>=50&&rsi<=70&&s20>0&&last>s20&&rising) return {trap:false,confirmed:true,why:'RSI '+Math.round(rsi)+' + فوق المتوسط + صاعد حقيقي'};
-    return {trap:false,confirmed:false,why:''};
-  }catch(e){ return {trap:false,confirmed:false,why:'net'}; }
-}
-function pexCandles(c){
-  try{
-    var pr=(c.sparkline_in_7d&&c.sparkline_in_7d.price)||[];
-    if(!pr||pr.length<5) return {up:0,rise:0,ok:false};
-    var lastN=pr.slice(-12), n=lastN.length, last=lastN[n-1];
-    var up=0, j=n-1;
-    while(j>0&&lastN[j]>lastN[j-1]){ up++; j--; }
-    var runLow=lastN[j];
-    return {up:up,rise:runLow>0?((last-runLow)/runLow*100):0,ok:true};
-  }catch(e){ return {up:0,rise:0,ok:false}; }
-}
+function klCl(kl){ try{ return kl.map(function(k){ return parseFloat(k[4]); }); }catch(e){ return []; } }
+function klVolOk(kl){ try{ var n=kl.length; if(n<21) return false; var s=0,i=0; for(i=n-20;i<n-1;i++) s+=parseFloat(kl[i][5])||0; var avg=s/19; return (parseFloat(kl[n-1][5])||0)>avg; }catch(e){ return false; } }
 async function scan(){
   try{
-    if(Date.now()-(scan._t||0)<15000) return; scan._t=Date.now();
-    var box=$('pexGrid'); if(!box) return;
+    if(Date.now()-(scan._t||0)<60000) return; scan._t=Date.now();
+    var box=$('ptnGrid'); if(!box) return;
     var all=[]; try{ all=(window.RADAR&&window.RADAR.analyzed)||[]; }catch(e){}
-    var out=[], now=Date.now();
-    for(var i=0;i<all.length;i++){
+    var now=Date.now(), cands=[], i=0;
+    for(i=0;i<all.length;i++){
       var a=all[i]; if(!a||!a.c) continue;
-      var r=classify(a); if(!r) continue;
-      r.a=a; out.push(r);
-      var id=a.c.id, px0=window.realPx(a.c,a.c.current_price)||0;
-      if(px0>0){
-        var b=mem.base[id], tp=mem.top[id];
-        if((r.lv==='green'||r.lv==='orange')&&(!b||now-(b.t||0)>24*3600*1000||px0<b.px*0.9)){ mem.base[id]={px:px0,t:now}; mem.top[id]={px:px0,t:now}; }
-        else if(b&&px0<b.px&&(r.lv==='green'||r.lv==='orange')){ b.px=px0; b.t=now; if(tp&&tp.px<b.px) tp.px=b.px; }
-        if(r.dir==='pump'&&(r.lv==='green'||r.lv==='orange'||r.lv==='red')){
-          if(!tp||now-(tp.t||0)>24*3600*1000) mem.top[id]={px:px0,t:now};
-          else if(px0>tp.px){ tp.px=px0; tp.t=now; }
+      var c=a.c;
+      if(isSt(c)) continue;
+      if((c.total_volume||0)<MINV) continue;
+      var pr=(c.sparkline_in_7d&&c.sparkline_in_7d.price)||[];
+      if(!pr||pr.length<30) continue;
+      var ds=ptnDetect(pr,false);
+      if(!ds.length) continue;
+      var best=ds[0];
+      for(var k=1;k<ds.length;k++) if(ds[k].s>best.s) best=ds[k];
+      if(best.s<50) continue;
+      cands.push({a:a,best:best});
+    }
+    cands.sort(function(x,y){ return y.best.s-x.best.s; });
+    cands=cands.slice(0,8);
+    var out=[];
+    await Promise.all(cands.map(async function(cd){
+      try{
+        var c=cd.a.c, sym=(window.binSym&&window.binSym(c))||null;
+        var frames=['1س'], s=cd.best.s, fam=cd.best.fam;
+        if(sym){
+          var k15=await ptnKlines(sym,'15m'), k4=await ptnKlines(sym,'4h');
+          if(k15){
+            var d15=ptnDetect(klCl(k15),true);
+            for(var q=0;q<d15.length;q++) if(d15[q].fam===fam){ frames.push('15د'); s=Math.max(s,d15[q].s)+5; if(klVolOk(k15)) s+=8; break; }
+          }
+          if(k4){
+            var d4=ptnDetect(klCl(k4),true);
+            for(var w=0;w<d4.length;w++) if(d4[w].fam===fam){ frames.push('4س'); s=Math.max(s,d4[w].s)+5; if(klVolOk(k4)) s+=8; break; }
+          }
         }
-      }
-      if(r.lv==='green'&&(!mem.warned[id]||now-mem.warned[id]>COOL)){ mem.warned[id]=now; toast('🟢 '+(a.c.symbol||'').toUpperCase()+': تجميع حيتان — ستنفجر'); }
-      if(r.lv==='orange'&&(!mem.warned[id+'o']||now-mem.warned[id+'o']>COOL)){ mem.warned[id+'o']=now; toast('🟠 '+(a.c.symbol||'').toUpperCase()+': تقترب من الانفجار'); }
-      if(r.lv==='red'&&(!mem.fired[id]||now-mem.fired[id]>COOL)){ mem.fired[id]=now; toast(r.dir==='pump'?'🔴 '+(a.c.symbol||'').toUpperCase()+': انفجرت — دخول قوي':'🔴 '+(a.c.symbol||'').toUpperCase()+': تفريغ — دامب'); }
+        out.push({a:cd.a,best:cd.best,frames:frames,s:Math.min(98,Math.round(s))});
+      }catch(e){}
+    }));
+    out=out.filter(function(r){ return r.s>=55; });
+    out.sort(function(x,y){ return y.s-x.s; });
+    out=out.slice(0,6);
+    for(i=0;i<out.length;i++){
+      var o=out[i], id=o.a.c.id+o.best.p;
+      if(!mem.seen[id]||now-mem.seen[id]>COOL){ mem.seen[id]=now; toast('📐 '+((o.a.c.symbol||'').toUpperCase())+': '+o.best.p+' ('+o.frames.join('+')+')'); }
     }
     save();
-    var rank={red:0,orange:1,green:2};
-    out.sort(function(x,y){ if(rank[x.lv]!==rank[y.lv]) return rank[x.lv]-rank[y.lv]; return ((y.a.whale||{}).score||0)-((x.a.whale||{}).score||0); });
-    out=out.slice(0,6);
-    try{
-      var cfMap={};
-      await Promise.all(out.map(async function(rr){ try{ cfMap[rr.a.c.id]=await pexConfirm(rr.a); }catch(e){ cfMap[rr.a.c.id]={trap:false,confirmed:false,why:'net'}; } }));
-      out.forEach(function(rr){ rr.cf=cfMap[rr.a.c.id]||{trap:false,confirmed:false,why:'net'}; });
-    }catch(e){}
-    var cnt=$('pexCount'); if(cnt) cnt.textContent=String(out.length);
-    var st=$('pexStatus');
-    if(st) st.textContent=out.length?('🐋 دخول حيتان مرصود في '+out.length+' عملات • آخر فحص '+new Date().toLocaleTimeString('ar')):('🐋 لا دخول حيتان الآن — فحص '+all.length+' عملة • '+new Date().toLocaleTimeString('ar'));
+    var cnt=$('ptnCount'); if(cnt) cnt.textContent=String(out.length);
+    var ups=0; for(i=0;i<out.length;i++) if(out[i].best.d==='up') ups++;
+    var st=$('ptnStatus');
+    if(st) st.textContent=out.length?('📐 '+out.length+' نماذج (🟢 '+ups+' صاعدة • 🔴 '+(out.length-ups)+' هابطة/اختراق) • فريمات 15د/1س/4س • '+new Date().toLocaleTimeString('ar')):('📐 لا نماذج قوية الآن — فحص '+all.length+' عملة • '+new Date().toLocaleTimeString('ar'));
     box.innerHTML=out.length?out.map(function(r){
-      var c=r.a.c, w=r.a.whale||{};
-      var vol=c.total_volume||0, mc=c.market_cap||0, to=mc>0?(vol/mc*100):0;
-      var p0=prev[c.id], dv=p0?(vol-(p0.vol||0)):null, dpx=p0?((c.current_price||0)-(p0.px||0)):null;
-      var fcls='f-calm', ftxt='🐋 هادئ — بانتظار أول قياس';
-      if(dv!=null&&dpx!=null){
-        if(dv>0&&dpx>0){ fcls='f-buy'; ftxt='🟢 تدفق شرائي حقيقي '+(dv>0?'+':'')+fmtBig(dv); }
-        else if(dv>0&&dpx<0){ fcls='f-dump'; ftxt='🔴 ضغط بيع حقيقي '+fmtBig(dv); }
-        else if(dv>0||dpx!==0){ fcls='f-surge'; ftxt='🟠 تسارع سيولة — حركة حقيقية'; }
-      }
-      var wpx=Math.max(4,Math.min(100,to*1.5));
-      var bb=mem.base[c.id], live0=window.realPx(c,c.current_price)||0, botHtml='';
-      if(bb&&bb.px>0&&live0>0){
-        var up=((live0-bb.px)/bb.px*100);
-        botHtml='<div class="pex-flow">🐋 دخول الحيتان من القاع <b>'+money(bb.px)+'</b> • الآن '+(up>=0?'+':'')+up.toFixed(1)+'% فوقه</div>';
-      }
-      var tt=mem.top[c.id], exitNow=false;
-      if(tt&&tt.px>0&&live0>0&&(r.dir==='dump'||live0<tt.px*0.985)){
-        var dn=((live0-tt.px)/tt.px*100);
-        botHtml+='<div class="pex-flow">📤 خروج الحيتان من القمة <b>'+money(tt.px)+'</b> • الآن '+dn.toFixed(1)+'% تحتها</div>';
-        exitNow=true;
-      }
-      var cd=pexCandles(c);
-      var cdHtml=cd.ok?('<div class="pex-flow">🕯 شمعات الصعود: <b>'+cd.up+'/3</b> • من بداية الموجة <b>+'+cd.rise.toFixed(1)+'%</b></div>'):'';
-      var late=cd.ok&&(cd.up>=3||cd.rise>=4);
-      var cfTag=(r.cf&&r.cf.confirmed)?' — ✅ صعود مؤكد حقيقي':'';
-      var trapNow=!!(r.cf&&r.cf.trap)&&!exitNow&&r.dir!=='dump';
-      var dip=null;
-      if(!exitNow&&r.dir!=='dump'&&!trapNow&&!late&&(r.lv==='green'||r.lv==='orange')) dip=pexDip(r.a);
-      var verdict='';
-      if(exitNow) verdict='<div class="pex-state">🔴 اخرج الآن — الحيتان تخرج فعلاً (حقيقي)</div>';
-      else if(r.dir==='dump') verdict='<div class="pex-state">🔴 دامب — لا دخول شراء أبداً</div>';
-      else if(trapNow) verdict='<div class="pex-state">🪤 فخ — لا تدخل ('+(r.cf.why||'إشارة وهمية')+')</div>';
-      else if(late&&(r.lv==='green'||r.lv==='orange'||r.lv==='red')) verdict='<div class="pex-state">⛔ طلعت '+cd.up+' شمعات (+'+cd.rise.toFixed(1)+'%) — خطير، لا تدخل الآن</div>';
-      else if(dip){
-        var dk=r.a.c.id;
-        if(!mem.dip[dk]||now-mem.dip[dk]>3*3600*1000){ mem.dip[dk]=now; save(); toast('🟢 '+((r.a.c.symbol||'').toUpperCase())+': شمعة دخول الحيتان — ادخل بدون خوف'); }
-        verdict='<div class="pex-state">🟢 شمعة دخول الحيتان تحت (قبل '+dip.ago+' شمعة) — ادخل الآن بدون خوف، الانفجار بعدها مباشرة'+cfTag+'</div>';
-      }
-      else if(r.lv==='green') verdict='<div class="pex-state">✅ ادخل مع الحيتان الآن من القاع — حتى لا تخسر'+cfTag+'</div>';
-      else if(r.lv==='orange') verdict='<div class="pex-state">✅ ادخل معهم قبل الانفجار — ما زال مبكراً'+cfTag+'</div>';
-      else if(r.lv==='red'&&bb&&bb.px>0&&live0>bb.px*1.03) verdict='<div class="pex-state">⛔ لا تدخل وسط الانفجار — فاتك الدخول مع الحيتان</div>';
-      else if(r.lv==='red'&&(mem.dip[r.a.c.id]&&now-mem.dip[r.a.c.id]<3*3600*1000)) verdict='<div class="pex-state">🚀 انفجرت كما توقعت شمعة الحيتان — معهم من القاع'+cfTag+'</div>';
-      else if(r.lv==='red') verdict='<div class="pex-state">✅ انفجار بدأ من القاع — دخول مع الحيتان'+cfTag+'</div>';
-      else verdict='<div class="pex-state">🟢 ابقَ — الحيتان ما زالت داخل</div>';
-      var h='<div class="pex-card st-'+r.lv+'"><div class="pex-top"><span class="pex-dot"></span><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(window.realPx(c,c.current_price))+'</span></div>'
-      +'<div class="pex-meta">🐋 سيولة حقيقية <b>'+fmtBig(vol)+'</b> • دوران <b>'+to.toFixed(1)+'%</b> • 1س '+((w.h1||0)>=0?'+':'')+(w.h1||0).toFixed(1)+'% • 24س '+(((c.price_change_percentage_24h_in_currency||0))>=0?'+':'')+(c.price_change_percentage_24h_in_currency||0).toFixed(1)+'%</div>'
-      +'<div class="pex-liq '+fcls+'"><i style="width:'+wpx.toFixed(0)+'%"></i></div><div class="pex-flow">'+ftxt+'</div>'+botHtml+cdHtml+verdict
-      +'<div class="pex-state">'+(exitNow?'🔴 خروج — الحيتان تبيع الآن، لا دخول':(trapNow?('🪤 فخ — '+r.cf.why):r.txt))+'</div>';
-      if(exitNow) h+='<div class="pex-plan">🔴 أمر واحد فقط: <b>اخرج الآن</b> — لا دخول مع الخروج</div>';
-      else if(trapNow) h+='<div class="pex-plan">🪤 فخ — <b>لا دخول</b> ('+r.cf.why+')</div>';
-      else if(r.lv==='red'&&r.dir==='pump') h+='<div class="pex-plan">💰 دخول <b>'+money(r.entry)+'</b> • 🎯 هدف <b>'+money(r.tp)+'</b> • 🛡 وقف <b>'+money(r.sl)+'</b></div>';
+      var c=r.a.c, live=real(c,c.current_price);
+      var dirT=r.best.d==='up'?'🟢 انعكاس صاعد':(r.best.d==='down'?'🔴 انعكاس هابط':'🟡 اختراق مرتقب');
+      var fr=r.frames.map(function(f){ return '<span class="ptn-fr">'+f+' ✅</span>'; }).join(' ');
+      var h='<div class="ptn-card d-'+r.best.d+'"><div class="ptn-top"><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(live)+'</span><span>📐 '+r.best.p+'</span></div>'
+      +'<div class="ptn-meta">الفريمات: '+fr+' • القوة <b>'+r.s+'</b> • سيولة <b>'+big(c.total_volume||0)+'</b></div>'
+      +'<div class="ptn-bar"><i style="width:'+r.s+'%"></i></div>'
+      +'<div class="ptn-dir">'+dirT+'</div>';
       var tvS=(window.binSym&&window.binSym(c))||null;
-      var autoChart=!!(tvS&&!exitNow&&!trapNow&&r.dir!=='dump'&&!late&&(dip||r.lv==='green'||r.lv==='orange'||r.lv==='red')&&!(r.lv==='red'&&bb&&bb.px>0&&live0>bb.px*1.03));
-      if(tvS){
-        if(autoChart){ var ue='https://www.tradingview.com/widgetembed/?symbol=BINANCE:'+tvS+'&interval=15&theme=dark&style=1&locale=ar&hide_side_toolbar=1&allow_symbol_change=0'; h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 إخفاء الشارت</button><div class="pex-chart" data-on="1"><iframe loading="lazy" src="'+ue+'"></iframe><a href="https://www.tradingview.com/chart/?symbol=BINANCE:'+tvS+'" target="_blank" rel="noopener">↗ فتح كامل</a></div></div>'; }
-        else h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><div class="pex-chart" hidden></div></div>';
-      }
+      if(tvS) h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><div class="pex-chart" hidden></div></div>';
       return h+'</div>';
-    }).join(''):'<div class="muted" style="font-size:.8rem">لا إشارات حيتان حالياً — القسم يراقب وحده كل دورة</div>';
-    for(var j=0;j<all.length;j++){ var cc=all[j].c, ww=all[j].whale||{}; prev[cc.id]={h1:ww.h1||0,vol:cc.total_volume||0,px:window.realPx(cc,cc.current_price)||0}; }
-    var ks=Object.keys(prev); if(ks.length>600) ks.slice(0,ks.length-600).forEach(function(k){ delete prev[k]; });
+    }).join(''):'<div class="muted" style="font-size:.8rem">لا نماذج قوية حالياً — القسم يحلل وحده كل دورة</div>';
   }catch(e){}
 }
-document.addEventListener('DOMContentLoaded',function(){ function run(){ try{ var p=scan(); if(p&&p.catch) p.catch(function(){}); }catch(e){} } try{ run(); }catch(e){} setInterval(run,20000); setTimeout(run,8000); });
+function run(){ try{ var p=scan(); if(p&&p.catch) p.catch(function(){}); }catch(e){} }
 document.addEventListener('click',function(e){ try{
-  var b=e.target&&e.target.closest?e.target.closest('[data-tv]'):null; if(!b) return;
-  var wrap=b.parentElement, box=wrap?wrap.querySelector('.pex-chart'):null;
-  if(!box){ box=document.createElement('div'); box.className='pex-chart'; box.hidden=true; wrap.appendChild(box); }
-  if(box.hidden){
-    if(!box.dataset.on){ var u='https://www.tradingview.com/widgetembed/?symbol=BINANCE:'+b.dataset.tv+'&interval=15&theme=dark&style=1&locale=ar&hide_side_toolbar=1&allow_symbol_change=0'; box.innerHTML='<iframe loading="lazy" src="'+u+'"></iframe><a href="https://www.tradingview.com/chart/?symbol=BINANCE:'+b.dataset.tv+'" target="_blank" rel="noopener">↗ فتح كامل</a>'; box.dataset.on='1'; }
-    box.hidden=false; b.textContent='📊 إخفاء الشارت';
-  } else { box.hidden=true; b.textContent='📊 الشارت'; }
+  var b=e.target&&e.target.closest?e.target.closest('button.pex-tv'):null; if(!b) return;
+  var wrap=b.parentElement, bx=wrap?wrap.querySelector('.pex-chart'):null;
+  if(!bx){ bx=document.createElement('div'); bx.className='pex-chart'; bx.hidden=true; wrap.appendChild(bx); }
+  if(bx.hidden){
+    if(!bx.dataset.on){ var u='https://www.tradingview.com/widgetembed/?symbol=BINANCE:'+b.dataset.tv+'&interval=15&theme=dark&style=1&locale=ar&hide_side_toolbar=1&allow_symbol_change=0'; bx.innerHTML='<iframe loading="lazy" src="'+u+'"></iframe><a href="https://www.tradingview.com/chart/?symbol=BINANCE:'+b.dataset.tv+'" target="_blank" rel="noopener">↗ فتح كامل</a>'; bx.dataset.on='1'; }
+    bx.hidden=false; b.textContent='📊 إخفاء الشارت';
+  } else { bx.hidden=true; b.textContent='📊 الشارت'; }
 }catch(x){} });
-window.PEX={scan:scan};
+document.addEventListener('DOMContentLoaded',function(){ try{ run(); }catch(e){} setInterval(run,90000); setTimeout(run,12000); });
+window.PTN={scan:scan,detect:ptnDetect};
 })();
 </script>
 <script>/* 🚀 BLX v2 — بيانات بينانس الحقيقية: أي عملة تنفجر + وقت بدء الانفجار تحتها */
