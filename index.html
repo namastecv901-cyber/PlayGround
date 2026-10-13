@@ -4714,62 +4714,118 @@ document.addEventListener('click',function(e){ try{
 window.PEX={scan:scan};
 })();
 </script>
-<script>/* 🚀 BLX v1 — قسم مستقل: يرصد الانفجارات الكبيرة على الفريم اليومي فقط (مراقبة فقط) تحت قسم الحيتان */
+<script>/* 🚀 BLX v2 — بيانات بينانس الحقيقية: أي عملة تنفجر + وقت بدء الانفجار تحتها */
 (function(){
 "use strict";
 var $=function(id){ return document.getElementById(id); };
-var LS='ai_blx_v1', COOL=3600000, MINV=10000000;
+var LS='ai_blx_v1', COOL=3600000, MINV=3000000;
 var STABLES={usdt:1,usdc:1,dai:1,tusd:1,busd:1,usdd:1,fdusd:1,pyusd:1,usde:1,eurs:1,susd:1,usdb:1,usdx:1,usdy:1};
+var blxK={};
 var mem={seen:{}};
 try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m) mem.seen=m.seen||{}; }catch(e){}
 function save(){ try{ localStorage.setItem(LS,JSON.stringify(mem)); }catch(e){} }
 function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e){} if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
 function big(n){ try{ n=Number(n)||0; var a=Math.abs(n); if(a>=1e9) return '$ '+(n/1e9).toFixed(2)+'B'; if(a>=1e6) return '$ '+(n/1e6).toFixed(2)+'M'; if(a>=1e3) return '$ '+(n/1e3).toFixed(1)+'K'; return '$ '+Math.round(n); }catch(e){ return '—'; } }
 function toast(m){ try{ if(window.toast) window.toast(m); }catch(e){} }
-function real(c,fb){ try{ if(window.realPx) return window.realPx(c,fb); }catch(e){} return (c&&c.current_price)||fb||0; }
-function isSt(c){ try{ var s=String(c.symbol||'').toLowerCase(); if(STABLES[s]) return true; return /stable|pegged|wrapped btc|steth/i.test(c.name||''); }catch(e){ return false; } }
-function scan(){
+function fmtT(ts){ try{ return new Date(ts).toLocaleString('ar'); }catch(e){ return ''; } }
+function isStSym(base,name){ try{ if(STABLES[String(base||'').toLowerCase()]) return true; return /stable|pegged|wrapped btc|steth/i.test(name||''); }catch(e){ return false; } }
+async function blastStart(sym){
   try{
+    var K=blxK[sym];
+    if(K&&Date.now()-K.t<300000) return K.st;
+    var c2=new AbortController(), t2=setTimeout(function(){ try{c2.abort();}catch(e){} },10000);
+    var rr=null;
+    try{ rr=await fetch('https://api.binance.com/api/v3/klines?symbol='+sym+'USDT&interval=1h&limit=48',{signal:c2.signal,cache:'no-store'}); }finally{ clearTimeout(t2); }
+    if(!rr||!rr.ok) return 0;
+    var kl=await rr.json(); if(!kl||!kl.length) return 0;
+    var lo=Infinity, i=0;
+    for(i=0;i<kl.length;i++){ var L=parseFloat(kl[i][3]); if(L<lo) lo=L; }
+    var st=0;
+    for(i=0;i<kl.length;i++){ var C=parseFloat(kl[i][4]); if(lo>0&&C>=lo*1.15){ st=kl[i][0]; break; } }
+    blxK[sym]={st:st,t:Date.now()};
+    return st;
+  }catch(e){ return 0; }
+}
+async function scan(){
+  try{
+    if(Date.now()-(scan._t||0)<25000) return; scan._t=Date.now();
     var box=$('blxGrid'); if(!box) return;
     var all=[]; try{ all=(window.RADAR&&window.RADAR.analyzed)||[]; }catch(e){}
-    var out=[], now=Date.now();
-    for(var i=0;i<all.length;i++){
+    var now=Date.now(), out=[], have={}, i=0;
+    var binOk=false;
+    try{
+      var ctl=new AbortController(), to=setTimeout(function(){ try{ctl.abort();}catch(e){} },15000);
+      var r=null;
+      try{ r=await fetch('https://api.binance.com/api/v3/ticker/24hr',{signal:ctl.signal,cache:'no-store'}); }finally{ clearTimeout(to); }
+      if(r&&r.ok){
+        binOk=true;
+        var ja=await r.json();
+        var cmap={};
+        try{ for(var ci=0;ci<all.length;ci++){ var cc=all[ci].c; if(cc) cmap[String(cc.symbol||'').toUpperCase().replace(/[^A-Z0-9]/g,'')]=all[ci]; } }catch(e){}
+        for(i=0;i<ja.length;i++){
+          var T=ja[i]; if(!T||!T.symbol) continue;
+          var s=T.symbol;
+          if(s.slice(-4)!=='USDT') continue;
+          var base=s.slice(0,-4);
+          if(/^(USDT|USDC|DAI|TUSD|FDUSD|USDE|EUR|USD|TRY|BRL|GBP|ARS)$/.test(base)) continue;
+          if(/(UP|DOWN|BULL|BEAR)$/.test(base)) continue;
+          var pc=parseFloat(T.priceChangePercent)||0;
+          var tier=pc>=90?'vert':(pc>=50?'hot':(pc<=-50?'dump':null));
+          if(!tier) continue;
+          var qv=parseFloat(T.quoteVolume)||0;
+          if(qv<MINV) continue;
+          var mt=cmap[base]||null;
+          if(mt&&isStSym(base,(mt.c||{}).name)) continue;
+          out.push({sym:base,live:parseFloat(T.lastPrice)||0,h24:pc,vol:qv,hi:parseFloat(T.highPrice)||0,tier:tier,src:'bin',a:mt});
+          have[base]=1;
+        }
+      }
+    }catch(e){}
+    for(i=0;i<all.length;i++){
       var a=all[i]; if(!a||!a.c) continue;
       var c=a.c;
-      if(isSt(c)) continue;
+      var bs=String(c.symbol||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+      if(have[bs]) continue;
+      if(isStSym(bs,c.name)) continue;
       if((c.total_volume||0)<MINV) continue;
       var h24=c.price_change_percentage_24h_in_currency||0;
-      var tier=h24>=90?'vert':(h24>=50?'hot':(h24<=-50?'dump':null));
-      if(!tier) continue;
-      var live=real(c,c.current_price), hi=c.high_24h||0;
-      out.push({a:a,tier:tier,h24:h24,live:live,hi:hi});
-      var id=c.id+tier;
+      var tr=h24>=90?'vert':(h24>=50?'hot':(h24<=-50?'dump':null));
+      if(!tr) continue;
+      var lv=0; try{ lv=window.realPx?window.realPx(c,c.current_price):(c.current_price||0); }catch(e){ lv=c.current_price||0; }
+      out.push({sym:bs,live:lv,h24:h24,vol:c.total_volume||0,hi:c.high_24h||0,tier:tr,src:'cg',a:a});
+    }
+    out.sort(function(x,y){ return y.h24-x.h24; });
+    out=out.slice(0,6);
+    try{
+      await Promise.all(out.map(async function(rr){ try{ rr.st=(rr.src==='bin')?await blastStart(rr.sym):0; }catch(e){ rr.st=0; } }));
+    }catch(e){}
+    for(i=0;i<out.length;i++){
+      var o=out[i], id=o.sym+o.tier;
       if(!mem.seen[id]||now-mem.seen[id]>COOL){ mem.seen[id]=now;
-        if(tier==='vert') toast('🚀 '+((c.symbol||'').toUpperCase())+': انفجار عمودي +'+h24.toFixed(0)+'% (فريم يومي)');
-        else if(tier==='dump') toast('📉 '+((c.symbol||'').toUpperCase())+': انهيار '+h24.toFixed(0)+'% — مراقبة');
-        else toast('🔥 '+((c.symbol||'').toUpperCase())+': انفجار كبير +'+h24.toFixed(0)+'% (فريم يومي)');
+        if(o.tier==='vert') toast('🚀 '+o.sym+': انفجار عمودي +'+o.h24.toFixed(0)+'% (بينانس حقيقي)');
+        else if(o.tier==='dump') toast('📉 '+o.sym+': انهيار '+o.h24.toFixed(0)+'% — مراقبة');
+        else toast('🔥 '+o.sym+': انفجار كبير +'+o.h24.toFixed(0)+'% (بينانس حقيقي)');
       }
     }
     save();
-    out.sort(function(x,y){ return y.h24-x.h24; });
-    out=out.slice(0,6);
     var cnt=$('blxCount'); if(cnt) cnt.textContent=String(out.length);
     var st=$('blxStatus');
-    if(st) st.textContent=out.length?('🚀 '+out.length+' انفجارات كبيرة على الفريم اليومي • آخر فحص '+new Date().toLocaleTimeString('ar')):('🚀 لا انفجارات كبيرة الآن — فحص '+all.length+' عملة • '+new Date().toLocaleTimeString('ar'));
+    if(st) st.textContent=out.length?('🚀 '+out.length+' انفجارات ('+(binOk?'بينانس حقيقي ✅':'احتياطي')+') • آخر فحص '+new Date().toLocaleTimeString('ar')):('🚀 لا انفجارات كبيرة الآن — فحص '+all.length+' عملة • '+new Date().toLocaleTimeString('ar'));
     box.innerHTML=out.length?out.map(function(r){
-      var c=r.a.c, vol=c.total_volume||0, mc=c.market_cap||0, to=mc>0?(vol/mc*100):0;
       var lv=r.tier==='vert'?'🚀 انفجار عمودي — فريم يومي':(r.tier==='hot'?'🔴 انفجار كبير — فريم يومي':'📉 انهيار كبير — فريم يومي');
-      var h='<div class="blx-card t-'+r.tier+'"><div class="blx-top"><span class="blx-dot"></span><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(r.live)+'</span><span class="blx-big">'+(r.h24>=0?'+':'')+r.h24.toFixed(1)+'%</span></div>'
-      +'<div class="blx-meta">💧 حجم <b>'+big(vol)+'</b> • دوران <b>'+to.toFixed(1)+'%</b>'+(r.hi>0?(' • قمة اليوم <b>'+money(r.hi)+'</b>'):'')+'</div>'
+      var h='<div class="blx-card t-'+r.tier+'"><div class="blx-top"><span class="blx-dot"></span><b>'+r.sym+'</b><span>'+money(r.live)+'</span><span class="blx-big">'+(r.h24>=0?'+':'')+r.h24.toFixed(1)+'%</span></div>'
+      +'<div class="blx-meta">💧 حجم حقيقي <b>'+big(r.vol)+'</b> • '+(r.src==='bin'?'✅ بينانس حقيقي':'كوين جيكو')+(r.hi>0?(' • قمة اليوم <b>'+money(r.hi)+'</b>'):'')+'</div>'
+      +(r.st>0?('<div class="blx-meta">💥 بدأ الانفجار: <b>'+fmtT(r.st)+'</b></div>'):'')
       +'<div class="blx-lv">'+lv+'</div>'
       +'<div class="blx-meta">👁 مراقبة فقط — القسم يرصد ولا يوصي بدخول</div>';
-      var tvS=(window.binSym&&window.binSym(c))||null;
-      if(tvS) h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><div class="pex-chart" hidden></div></div>';
+      var tvS=r.sym+'USDT';
+      h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><div class="pex-chart" hidden></div></div>';
       return h+'</div>';
     }).join(''):'<div class="muted" style="font-size:.8rem">لا انفجارات كبيرة حالياً — القسم يراقب وحده</div>';
   }catch(e){}
 }
-document.addEventListener('DOMContentLoaded',function(){ try{ scan(); }catch(e){} setInterval(scan,30000); setTimeout(scan,10000); });
+function run(){ try{ var p=scan(); if(p&&p.catch) p.catch(function(){}); }catch(e){} }
+document.addEventListener('DOMContentLoaded',function(){ try{ run(); }catch(e){} setInterval(run,60000); setTimeout(run,10000); });
 window.BLX={scan:scan};
 })();
 </script>
