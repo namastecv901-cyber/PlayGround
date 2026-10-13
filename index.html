@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v184.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v185.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v184.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v185.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1203,6 +1203,11 @@ body{max-width:680px;margin:0 auto;padding:12px}
 #botChal:hover{background:#ff8a3d22}
 .bot-link{font-size:.78rem;color:var(--mut);font-weight:800;margin:8px 0}
 .bot-team{font-size:.78rem;font-weight:900;color:#ffe9a8;background:#f0b90b0d;border:1px solid #f0b90b44;border-radius:10px;padding:7px 12px;margin:0 0 8px;text-align:center}
+.bot-team.good{background:#16c78414;border-color:#16c784aa;color:#d9ffe9;box-shadow:0 0 14px #16c78444}
+.bot-team.bad{background:#ea394314;border-color:#ea394366;color:#ffc9cd;box-shadow:0 0 14px #ea394344}
+.bot-team .up{color:#1fe196}.bot-team .down{color:#ff7b85}
+.live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#1fe196;margin-inline-end:6px;vertical-align:middle;animation:liveDot 1.6s infinite}
+@keyframes liveDot{0%,100%{box-shadow:0 0 0 0 #1fe196aa}50%{box-shadow:0 0 0 8px #1fe19600}}
 .bot-link #botProfit{color:#1fe196}
 .bot-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .bot-grid label{display:flex;align-items:center;gap:6px;background:#00000030;border:1px solid var(--line);border-radius:9px;padding:4px 9px;font-size:.72rem;font-weight:800;color:var(--mut)}
@@ -5251,10 +5256,12 @@ function paintTeam(){
     if(bx){
       const open=Object.values(S2.trades).filter(x=>x&&x.open);
       let oline='لا صفقة مفتوحة';
-      if(open.length){ const st=open[0]; let lv=st.entry, up=0; try{ if(S2.live&&Date.now()-S2.live.t<30000){ lv=S2.live.px; up=(lv-st.entry)*st.qty; } }catch(e){} oline='🟢 '+st.coin+' دخول '+st.entry+' • 💵 حي '+lv+' • ربح '+(up>=0?'+':'')+'$'+up.toFixed(2)+' • هدف '+st.t1+' • وقف '+st.sl; }
+      let openUp=0, hasOpen=open.length>0;
+      if(open.length){ const st=open[0]; let lv=st.entry, up=0; try{ if(S2.live&&Date.now()-S2.live.t<30000){ lv=S2.live.px; up=(lv-st.entry)*st.qty; } }catch(e){} openUp=up; oline='<span class="live-dot"></span>🟢 '+st.coin+' دخول '+st.entry+' • 💵 حي '+lv+' • ربح <span class="'+(up>=0?'up':'down')+'">'+(up>=0?'+':'')+'$'+up.toFixed(2)+'</span> • هدف '+st.t1+' • وقف '+st.sl; }
       const ls=S2.lastScan?('🔍 آخر فحص: '+S2.lastScan.sym+' قوة '+S2.lastScan.s):'🔍 لم يفحص بعد';
       const la=(S2.log&&S2.log[0])?String(S2.log[0].m||'').slice(0,90):'—';
       const eq=S2.equity||0;
+      try{ bx.className='bot-team'+(hasOpen?(openUp>=0?' good':' bad'):(S2.enabled?' good':'')); }catch(e){}
       bx.innerHTML='<b>🤖 الثاني — صياد الاختراق (يعمل وحده بتحليله)</b> '+(S2.enabled?'🟢 يعمل':'⏸ متوقف')+' • 💰 $'+eq.toFixed(2)+' • ربح '+(p2>=0?'+':'')+'$'+p2.toFixed(2)+' ('+S2.wins+'/'+S2.closed+')<br>'+oline+'<br>'+ls+'<br><small>'+la+'</small>';
     }
   }catch(e){}
