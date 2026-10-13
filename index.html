@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v168.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v169.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v168.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v169.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3171,6 +3171,7 @@ const PLANS=[
  {id:'m5',name:'🕯 مخصص فريم 5 دقائق',desc:'محرك الشموع 5m فقط • دخول وخروج سريع • مضاربة لحظية',lvl:'قوي',cfg:{brain:'solo',quick:false,fastOnly:false,instant:true,instantMin:0.3,tpCap:0.7,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
  {id:'pump',name:'🏹 صياد البامب — كل الفريمات',desc:'يفحص 1m+5m+15m معاً • يعرف وقت البامب ويدخل أقوى انفجار حقيقي (70+) • خروج سريع',lvl:'الأقوى 🏹',cfg:{brain:'solo',quick:false,fastOnly:false,instant:true,instantMin:0.3,tpCap:1.0,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
  {id:'magnet',name:'🧲 مغناطيس السيولة',desc:'يلتقط أعلى دوران سيولة (حيتان) مع قوة شمعية • دخول ثقيل وربح مكتمل',lvl:'الأقوى 🧲',cfg:{brain:'solo',quick:false,fastOnly:false,instant:false,full:true,tpCap:1.5,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
+ {id:'hedge',name:'🦔 القنفذ — دفاع السوق الأحمر',desc:'أنصاف حصص • انفجارات 15m القوية فقط • خروج فوري 0.5$ • بلا تعزيز • حماية رأس المال',lvl:'🛡 دفاع',cfg:{brain:'both',quick:true,fastOnly:true,instant:true,instantMin:0.3,tpCap:0.5,full:false,noLoss:true,splitInit:0.5,reinforce:false,reinDrop:0.01,reinMax:0,dblWin:false}},
  {id:'pre',name:'⚡ قبل الانفجار — دخول مبكر',desc:'يلتقط ما قبل الانفجار بثوانٍ على فريم 1m • خروج سريع بأول ربح 0.30$+',lvl:'أقوى ⚡',cfg:{brain:'solo',quick:false,fastOnly:false,instant:true,instantMin:0.3,tpCap:0.7,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}}
 ];
 function applyPlan(id,silent){
@@ -3191,7 +3192,7 @@ function autoPlanTick(){
   const dl=parseFloat(S.dayLimit)||10;
   let id='calm', why= 'لا إشارات واضحة — وضع آمن';
   let mreg='unknown'; try{ mreg=mktRegime(); }catch(e){}
-  if(S.oneDecision!==false&&mreg==='down'){ id='calm'; why='هبوط عام — القرار الواحد: انتظار 📉'; }
+  if(mreg==='down'){ id='hedge'; why='هبوط عام — دفاع القنفذ 🦔'; }
   else if((S.dayPnl||0)<=-dl*0.5){ id='calm'; why='اليوم سالب ('+(S.dayPnl||0).toFixed(1)+'$) — حماية رأس المال'; }
   else if(fresh&&(rg.strong||0)>=4){ id='beast'; why=rg.strong+' انفجارات مؤكدة — الوحش يصطاد 👑'; }
   else if(fresh&&(rg.strong||0)>=2){ id='boom'; why=rg.strong+' انفجارات — دخول الانفجار فقط 🔥'; }
