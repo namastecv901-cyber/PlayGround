@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v155.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v156.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v155.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v156.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1230,6 +1230,16 @@ body{max-width:680px;margin:0 auto;padding:12px}
 .inv-move{height:7px;background:#ffffff10;border-radius:99px;margin:0 0 8px;overflow:hidden}
 .inv-move i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1fe196,#f0b90b,#f472b6);transition:width 1s linear;animation:dsMove 3s ease-in-out infinite}
 .inv-state{text-align:center;font-size:.76rem;font-weight:900;color:#ffd3e8;margin:0 0 8px}
+.inv-card{background:linear-gradient(160deg,#121527e6,#0b0d15e6);border:2px solid #f0b90b66;border-radius:18px;padding:12px 14px;margin:0 0 8px;box-shadow:0 10px 30px #00000059}
+.inv-top{display:flex;gap:10px;align-items:center}
+.inv-top img{width:38px;height:38px;border-radius:50%;background:#ffffff10}
+.inv-top b{display:block;font-size:1rem;color:var(--txt)}
+.inv-top small{display:block;font-size:.7rem;color:var(--mut)}
+.inv-top .inv-pulse{margin-inline-start:auto}
+.inv-price{display:flex;gap:8px;align-items:baseline;justify-content:space-between;margin-top:8px;font-size:.85rem;font-weight:900;color:#ffe9a8;flex-wrap:wrap}
+.inv-price .up{color:#1fe196}.inv-price .down{color:#ff7b85}
+.inv-tline{font-size:.76rem;font-weight:800;color:#ffe9a8;margin-top:4px}
+.inv-whale{display:inline-block;font-size:.7rem;font-weight:900;color:#8fd6ff;background:#8fd6ff18;border:1px solid #8fd6ff55;border-radius:8px;padding:1px 8px;margin-top:6px}
 .dec-strip{margin:-2px 0 8px;border-radius:12px;padding:7px 12px;background:#101322;border:1px solid #f0b90b55;font-size:.76rem;font-weight:800;color:#ffe9a8;text-align:center}
 .dec-strip .ds-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .dec-strip .ds-bar{height:6px;background:#ffffff10;border-radius:99px;margin-top:6px;overflow:hidden}
@@ -3468,6 +3478,23 @@ async function _openInvest(ladId){
     return st;
   }catch(e){ return null; }
 }
+function investCard(c0,live,entry,tgt,pct,whaleTxt,state){
+  try{
+    const sym=(c0.symbol||'').toUpperCase(), nm=c0.name||sym;
+    const img=c0.image||'';
+    const h1=c0.price_change_percentage_1h_in_currency||0, h24=c0.price_change_percentage_24h_in_currency||0;
+    const tot=Math.max(1e-9,tgt-entry);
+    const prog=Math.max(0,Math.min(100,(live-entry)/tot*100));
+    return '<div class="inv-card"><div class="inv-top">'
+    +'<img src="'+img+'" onerror="this.style.display=\'none\'">'
+    +'<div><b>'+sym+'</b><small>'+nm+'</small></div><span class="inv-pulse"></span></div>'
+    +'<div class="inv-price"><span>💵 '+money(live)+'</span><span><span class="'+(h1>=0?'up':'down')+'">1س '+(h1>=0?'+':'')+h1.toFixed(1)+'%</span> • <span class="'+(h24>=0?'up':'down')+'">24س '+(h24>=0?'+':'')+h24.toFixed(1)+'%</span></span></div>'
+    +'<div class="inv-tline">💰 دخول <b>'+money(entry)+'</b> • 🎯 هدف <b>'+money(tgt)+'</b> (+'+pct+'%)</div>'
+    +(whaleTxt?'<div class="inv-whale">'+whaleTxt+'</div>':'')
+    +'<div class="inv-move" style="margin-top:8px"><i style="width:'+prog.toFixed(1)+'%"></i></div>'
+    +'<div class="inv-state">📌 الحالة الآن: '+state+'</div></div>';
+  }catch(e){ return ''; }
+}
 function paintInvest(){
   try{
     const box=$('botInvest'); if(!box) return;
@@ -3480,6 +3507,7 @@ function paintInvest(){
       const prog=Math.max(0,Math.min(100,(live-openInv.entry)/total*100));
       const net=(openInv.qty||0)*(tgt-openInv.entry);
       msg='🧭 تراقب <b>'+openInv.coin+'</b> ×'+(openInv.investMult||'?')+' — دخول '+money(openInv.entry)+' • هدف '+money(tgt)+' • حي '+money(live)+' ('+prog.toFixed(1)+'%) • ربح صافي عند الوصول +$'+net.toFixed(2)+'<br>📌 الحالة الآن: '+investState(openInv.id,live,openInv.entry,tgt);
+      try{ const ax=(window.RADAR&&window.RADAR.analyzed||[]).find(x=>x.c.id===openInv.id); const cc=ax?ax.c:{symbol:openInv.coin,name:openInv.coin,image:''}; const pc=openInv.investMult?Math.round((openInv.investMult-1)*100):0; liveHtml=investCard(cc,live,openInv.entry,tgt,pc,'',investState(openInv.id,live,openInv.entry,tgt)); }catch(e){}
     } else {
       try{
         const lv=investLive();
@@ -3492,7 +3520,8 @@ function paintInvest(){
           const prog=Math.max(0,Math.min(100,(live-entry)/tot*100));
           const h1=c0.price_change_percentage_1h_in_currency||0, h24=c0.price_change_percentage_24h_in_currency||0;
           msg='✅ العلامة المختارة تلقائياً: +'+lv.pct+'% (×'+lv.mult+' — '+lv.why+' حسب الصعود المؤكد) — اضغط 🧠 تلقائي للدخول الجاهز'+(lv.wh?' • '+lv.wtxt:'')+'<br>💰 الدخول: <b>'+money(entry)+'</b> • 🎯 الهدف: <b>'+money(entry*lv.mult)+'</b><br>📌 الحالة الآن: '+investState(lv.a.c.id,live,entry,entry*lv.mult);
-          liveHtml='<div class="inv-coin"><span class="inv-pulse"></span><b>'+c0.symbol+'</b><span>💵 حي '+money(live)+'</span><span>🎯 +'+lv.pct+'%</span><small>صعود مؤكد • 1س '+(h1>=0?'+':'')+h1.toFixed(1)+'% • 24س '+(h24>=0?'+':'')+h24.toFixed(1)+'%</small></div>'
+          liveHtml=investCard(c0,live,entry,entry*lv.mult,lv.pct,(lv.wh?lv.wtxt:''),investState(lv.a.c.id,live,entry,entry*lv.mult))
+          +'<div class="inv-coin"><span class="inv-pulse"></span><b>'+c0.symbol+'</b><span>💵 حي '+money(live)+'</span><span>🎯 +'+lv.pct+'%</span><small>صعود مؤكد • 1س '+(h1>=0?'+':'')+h1.toFixed(1)+'% • 24س '+(h24>=0?'+':'')+h24.toFixed(1)+'%</small></div>'
           +'<div class="inv-move"><i style="width:'+prog.toFixed(1)+'%"></i></div>';
         }
         else if(S.investMsg){ msg=S.investMsg; }
