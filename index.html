@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v182.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v183.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v182.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v183.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -723,7 +723,7 @@ body>*{position:relative;z-index:1}
 @media(min-width:700px) and (max-width:1099px){.cards-grid{grid-template-columns:1fr 1fr}}
 /* ===== لوحة فاخرة واسعة: كل قسم وحده بضربة واحدة ===== */
 @media(min-width:1100px){
-.dash-strips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:10px 0}
+.dash-strips{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
 .dash-strips .one-decision{margin:0}
 .dash-panels{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;align-items:start}
 .dash-panels .bot-panel{margin:10px 0}
@@ -1398,7 +1398,6 @@ body.linkmode #masterFab{display:none!important}
 
 <div class="dash-strips">
 <div class="one-decision od-wait" id="oneDecision">⏳ القرار الواحد: جارٍ التحليل...</div>
-<div class="one-decision od-wait" id="sysAid">🔧 مساعد النظام: يفحص...</div>
 <div class="one-decision od-wait" id="mktHead">🌍 رئيس النظام: يقرأ السوق العام...</div>
 </div>
 <div class="member-bar" id="memberBar">
@@ -2140,8 +2139,7 @@ function lockCond(a){
 function doneChips(a){
   try{
     if(!window.DONE_N) return '';
-    const n=window.DONE_N.get(a.c.id);
-    if(!n||(!n.done&&!n.single&&!n.stop)) return '';
+    const n=window.DONE_N?window.DONE_N.get(a.c.id):{done:0,stop:0,single:0};
     return '<div class="done-chips">'
     +(n.done?'<span>🎯 كاملة #'+n.done+'</span>':'')
     +(n.single?'<span>🥉 هدف #'+n.single+'</span>':'')
@@ -5163,153 +5161,6 @@ async function paint(){
 }
 document.addEventListener('DOMContentLoaded',()=>{ paint(); setInterval(paint,5*60*1000); });
 window.MKthead={refresh:paint};
-})();
-</script>
-<script>// 🔧 SYSAID v1 — مساعد النظام: يفحص كل شيء ويصلح (أمام الرئيس)
-(function(){
-"use strict";
-function $(id){ return document.getElementById(id); }
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').slice(0,140); }
-function cardStates(){
-  const g={}, r={};
-  try{
-    const G=(window.GUARDIAN&&window.GUARDIAN.G)||{pos:[]};
-    for(const p of (G.pos||[])){
-      if(!p||!p.id) continue;
-      if(p.t1hit||p.t2hit||p.t3hit||p.verdict==='FINAL'){ g[p.id]=p.sym||p.id; continue; }
-      const cw=String(p.closeWhy||'');
-      if(!p.open&&(cw.indexOf('STOP')>=0||cw.indexOf('وقف')>=0)) r[p.id]=p.sym||p.id;
-    }
-  }catch(e){}
-  try{
-    const an=(window.RADAR&&window.RADAR.analyzed)||[];
-    for(const a of an){
-      try{ const pl=(window.PLAN40&&window.PLAN40.get(a.c.id))||null; if(pl&&pl.hits&&(pl.hits.t1||pl.hits.t2||pl.hits.t3)) g[a.c.id]=(a.c.symbol||'').toUpperCase()||a.c.id; }catch(e){}
-    }
-  }catch(e){}
-  return {green:Object.keys(g).length,red:Object.keys(r).length,gn:Object.values(g).slice(0,6),rn:Object.values(r).slice(0,6)};
-}
-function check(){
-  const issues=[], oks=[];
-  try{
-    const B=window.BOT49, S=B?B.S:null;
-    if(S){
-      if(S.enabled){ const age=Date.now()-(S.lastTick||0); if(age>120000) issues.push({t:'الروبوت يعمل لكن نبضه متجمد — يحتاج إصلاح',f:'pulse'}); else oks.push('الروبوت يعمل • نبض حي'); }
-      else if(S.wasEnabled&&!S.goalDone) issues.push({t:'الروبوت متوقف وسيعود تلقائياً',f:'start'});
-      else oks.push('الروبوت متوقف (طبيعي)');
-      if(S.busy&&Date.now()-(S.lastTick||0)>120000) issues.push({t:'قفل عالق في الروبوت',f:'pulse'});
-    } else issues.push({t:'الروبوت غير مهيأ بعد',f:'start'});
-  }catch(e){}
-  try{
-    const R=window.RADAR;
-    if(R&&R.demo) issues.push({t:'البيانات تجريبية — التداول متوقف للحماية',f:'rescan'});
-    else if(R&&(R.analyzed||[]).length) oks.push('البيانات حية ('+R.analyzed.length+' عملة)');
-    else issues.push({t:'لا بيانات محللة بعد',f:'rescan'});
-  }catch(e){}
-  try{
-    const G=(window.GUARDIAN&&window.GUARDIAN.G)||null;
-    if(G){ const n=(G.pos||[]).filter(p=>p&&p.open).length; oks.push('الحارس يحرس '+n+' صفقة'); }
-  }catch(e){}
-  try{
-    const B2=window.BOT61, Q=B2?B2.S:null;
-    if(Q&&Q.enabled){
-      const age=Date.now()-(Q.lastScan&&Q.lastScan.t?Q.lastScan.t:0);
-      if(Q.busy&&age>120000) issues.push({t:'الثاني يعمل لكنه عالق — أصلحه الآن',f:'bot2'});
-      else if(age>180000) issues.push({t:'الثاني يعمل ولا يفحص — أعيد تشغيل مسحه',f:'bot2'});
-      else oks.push('الثاني يعمل ويفحص حياً');
-    }
-    else oks.push('الثاني متوقف (يدوي)');
-  }catch(e){}
-  try{
-    const B2=window.BOT49, S2=B2?B2.S:null;
-    const demoB=(B2&&B2.isDemo)?B2.isDemo():false;
-    if(S2){
-      let openInv=null; try{ openInv=Object.values(S2.trades||{}).find(x=>x&&x.open&&!x.skip&&x.invest)||null; }catch(e){}
-      if(demoB) issues.push({t:'الاستثمار على بيانات تجريبية — متوقف للحماية',f:'rescan'});
-      else if(openInv) oks.push('الاستثمار يراقب '+openInv.coin);
-      else oks.push('الاستثمار جاهز');
-      const dl=parseFloat(S2.dayLimit)||10, dp=S2.dayPnl||0;
-      if(dp<=-dl*0.8) issues.push({t:'الخسارة اليومية قرب الحد ('+dp.toFixed(1)+'$)',f:'none'});
-      else oks.push('الربح اليوم '+(dp>=0?'+':'')+'$'+dp.toFixed(2));
-    }
-  }catch(e){}
-  try{
-    const m=JSON.parse(localStorage.getItem('ai_mkt_v1')||'{}');
-    if(m.g&&Date.now()-(m.gt||0)<15*60*1000) oks.push('الرئيس يقرأ السوق ('+(m.lv==='good'?'جيد':m.lv==='bad'?'سيء':'عادي')+')');
-    else issues.push({t:'الرئيس لا يقرأ السوق الآن',f:'mkt'});
-  }catch(e){}
-  try{
-    const L=JSON.parse(localStorage.getItem('ai_links_v1')||'{}');
-    const t=new Date().toISOString().slice(0,10);
-    if(L.cur&&L.cur.code&&L.cur.d===t&&!L['stop:'+t]) oks.push('رابط النشر نشط 🟢');
-    else issues.push({t:'رابط النشر متوقف/محذوف — جدده من لوحة المالك',f:'none'});
-  }catch(e){}
-  return {issues:issues,oks:oks};
-}
-async function fix(kind){
-  const B=window.BOT49, S=B?B.S:null;
-  const did=[];
-  try{
-    if(!B||!S) return {did:did,still:['الروبوت غير مهيأ']};
-    did.push('فحص فقط — لا تنفيذ (أخبار)');
-    try{ if(B.save) B.save(); }catch(e){}
-  }catch(e){}
-  await new Promise(r=>setTimeout(r,2500));
-  let still=[];
-  try{ still=check().issues.map(x=>x.t); }catch(e){}
-  try{ paint(); }catch(e){}
-  return {did:did,still:still};
-}
-async function fixAndVerify(kind){
-  try{
-    const r=await fix(kind);
-    mtoast('📰 فحص: '+(r.still.length?('ما زال: '+r.still[0]):'كل شيء سليم')+' — المساعد أخبار فقط');
-  }catch(e){}
-}
-function paint(){
-  try{
-    const el=$('sysAid'); if(!el) return;
-    hookErr();
-    const c=check(), st=cardStates();
-    const cls=c.issues.length?'od-avoid':(c.oks.length?'od-buy':'od-wait');
-    try{
-      const sg=c.issues.map(x=>x.t).join('|');
-      if(sg!==lastSig){
-        lastSig=sg;
-        if(c.issues.length&&Date.now()-lastAnn>120000){
-          lastAnn=Date.now();
-          c.issues.forEach(x=>mtoast('📰 خبر: '+x.t));
-
-
-        }
-      }
-    }catch(e){}
-    let h=esc(c.issues.length?('🔧 مساعد النظام: '+c.issues.length+' تحتاج إصلاح'):('🔧 مساعد النظام: كل شيء سليم ✅'));
-    h+='<span class="mkt-sub">';
-    if(c.oks.length) h+=c.oks.map(x=>'✅ '+esc(x)).join(' • ')+'<br>';
-    if(c.issues.length) h+=c.issues.map(x=>'⚠️ '+esc(x.t)).join('<br>')+'<br>';
-    h+='🟢 ضربت الأهداف ('+st.green+'): <b>'+(st.gn.length?esc(st.gn.join(' • ')):'—')+'</b><br>🔴 ضربت الوقف ('+st.red+'): <b>'+(st.rn.length?esc(st.rn.join(' • ')):'—')+'</b>';
-    h+=' <button class="btn btn-sm" data-sysfix="news">📰 تحديث الأخبار</button></span>';
-    el.className='one-decision '+cls;
-    el.innerHTML=h;
-  }catch(e){}
-}
-document.addEventListener('click',e=>{ try{ const b=e.target&&e.target.closest?e.target.closest('[data-sysfix]'):null; if(!b) return; try{ paint(); mtoast('📰 حدّثت الأخبار — المساعد مراقبة فقط ولا ينفذ'); }catch(x){} }catch(x){} });
-document.addEventListener('DOMContentLoaded',()=>{ paint(); setInterval(paint,10000); });
-window.addEventListener('error',()=>{ try{ setTimeout(paint,600); }catch(e){} });
-window.addEventListener('unhandledrejection',()=>{ try{ setTimeout(paint,600); }catch(e){} });
-var lastSig='', lastAnn=0;
-function mtoast(m){ try{ const box=$('botToasts'); if(!box) return; const d=document.createElement('div'); d.textContent=m; box.appendChild(d); setTimeout(()=>{ try{d.remove();}catch(e){} },5000); while(box.children.length>3) box.firstChild.remove(); }catch(e){} }
-function hookErr(){
-  try{
-    if(window.pushErr&&!window.pushErr._sys){
-      const pe=window.pushErr;
-      window.pushErr=function(m,src){ try{ pe(m,src); }catch(e){} setTimeout(paint,600); };
-      window.pushErr._sys=1;
-    }
-  }catch(e){}
-}
-window.SYSAID={check:check,fix:fix,paint:paint,cardStates:cardStates};
 })();
 </script>
 <script>// 🤖 BOT61 — الروبوت الثاني: صياد اختراق مستقل (مختلف تماماً: بلا حارس ولا تعزيز ولا متوسط — تجريبي فقط)
