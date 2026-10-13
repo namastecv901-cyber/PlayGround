@@ -1370,6 +1370,8 @@ body.linkmode #masterFab{display:none!important}
 .ptn-bar{height:7px;background:#ffffff10;border-radius:99px;margin-top:6px;overflow:hidden}
 .ptn-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#8b5cf6,#f472b6)}
 .ptn-dir{font-weight:900;margin-top:5px}
+.ptn-svg{margin-top:6px;background:#00000050;border-radius:8px}
+.ptn-svg svg{display:block}
 .d-up .ptn-dir{color:#1fe196}.d-down .ptn-dir{color:#ff7b85}.d-brk .ptn-dir{color:#f6e27a}
 .blx-sec{margin:14px 0}
 .blx-head{display:flex;align-items:center;gap:8px}
@@ -1387,6 +1389,7 @@ body.linkmode #masterFab{display:none!important}
 .t-hot .blx-dot{background:#ff8a3d;animation:pexO 1.4s ease-in-out infinite}
 .t-dump .blx-dot{background:#7c8db0}
 .blx-big{font-size:1rem}
+.blx-top small{font-size:.66rem;color:var(--mut);font-weight:700}
 .blx-meta{color:var(--mut);font-size:.7rem;margin-top:2px}
 .blx-lv{font-weight:900;margin-top:5px}
 .t-vert .blx-lv{color:#ff7b85}.t-hot .blx-lv{color:#ffab6e}.t-dump .blx-lv{color:#8fa3c0}
@@ -4515,28 +4518,44 @@ function ptnDetect(pr,isKl){
       var p1=H[H.length-2], p2=H[H.length-1];
       if(p2.i-p1.i>=3&&nearR(p1.v,p2.v,0.02)){
         var tr=ptnMin(pr,p1.i,p2.i), dep=(Math.min(p1.v,p2.v)-tr)/tr;
-        if(dep>0.025) out.push({p:'قمتان مزدوجتان 🔻',d:'down',fam:'dbl',s:55+Math.min(20,dep*400)+(last<tr?15:5)+(p2.i>n-12?10:0)});
+        if(dep>0.025) out.push({p:'قمتان مزدوجتان 🔻',d:'down',fam:'dbl',s:55+Math.min(20,dep*400)+(last<tr?15:5)+(p2.i>n-12?10:0),g:{dots:[[p1.i,p1.v],[p2.i,p2.v]],lines:[],hline:tr}});
       }
     }
     if(L.length>=2){
       var q1=L[L.length-2], q2=L[L.length-1];
       if(q2.i-q1.i>=3&&nearR(q1.v,q2.v,0.02)){
         var pk=ptnMax(pr,q1.i,q2.i), mx=Math.max(q1.v,q2.v), dp=(pk-mx)/mx;
-        if(dp>0.025) out.push({p:'قاعان مزدوجان 🔺',d:'up',fam:'dbl',s:55+Math.min(20,dp*400)+(last>pk?15:5)+(q2.i>n-12?10:0)});
+        if(dp>0.025) out.push({p:'قاعان مزدوجان 🔺',d:'up',fam:'dbl',s:55+Math.min(20,dp*400)+(last>pk?15:5)+(q2.i>n-12?10:0),g:{dots:[[q1.i,q1.v],[q2.i,q2.v]],lines:[],hline:pk}});
       }
     }
     if(H.length>=3){
+      var t1=H[H.length-3],t2=H[H.length-2],t3=H[H.length-1];
+      if(nearR(t1.v,t2.v,0.015)&&nearR(t2.v,t3.v,0.015)){
+        var trs=[];
+        for(var _a=0;_a<2;_a++){ var A=_a===0?t1:t2, B=_a===0?t2:t3; trs.push(ptnMin(pr,A.i,B.i)); }
+        var mtr=Math.min(trs[0],trs[1]);
+        if((Math.min(t1.v,t2.v,t3.v)-mtr)/mtr>0.02&&last<=mtr*1.01)
+          out.push({p:'قمم ثلاثية 🔻',d:'down',fam:'tpl',s:60+(last<mtr?12:4),g:{dots:[[t1.i,t1.v],[t2.i,t2.v],[t3.i,t3.v]],lines:[],hline:mtr}});
+      }
       var h1=H[H.length-3],h2=H[H.length-2],h3=H[H.length-1];
       if(h2.v>h1.v*1.03&&h2.v>h3.v*1.03&&nearR(h1.v,h3.v,0.03)){
         var nk=ptnMin(pr,h1.i,h3.i);
-        if(last<=nk*1.015) out.push({p:'رأس وكتفان 🔻',d:'down',fam:'hs',s:60+(last<nk?15:5)+(nearR(h1.v,h3.v,0.015)?10:0)});
+        if(last<=nk*1.015) out.push({p:'رأس وكتفان 🔻',d:'down',fam:'hs',s:60+(last<nk?15:5)+(nearR(h1.v,h3.v,0.015)?10:0),g:{dots:[[h1.i,h1.v],[h2.i,h2.v],[h3.i,h3.v]],lines:[],hline:nk}});
       }
     }
     if(L.length>=3){
+      var b1=L[L.length-3],b2=L[L.length-2],b3=L[L.length-1];
+      if(nearR(b1.v,b2.v,0.015)&&nearR(b2.v,b3.v,0.015)){
+        var pks=[];
+        for(var _b=0;_b<2;_b++){ var C=_b===0?b1:b2, D=_b===0?b2:b3; pks.push(ptnMax(pr,C.i,D.i)); }
+        var mPk=Math.max(pks[0],pks[1]), mB=Math.max(b1.v,b2.v,b3.v);
+        if((mPk-mB)/mB>0.02&&last>=mPk*0.99)
+          out.push({p:'قيعان ثلاثية 🔺',d:'up',fam:'tpl',s:60+(last>mPk?12:4),g:{dots:[[b1.i,b1.v],[b2.i,b2.v],[b3.i,b3.v]],lines:[],hline:mPk}});
+      }
       var l1=L[L.length-3],l2=L[L.length-2],l3=L[L.length-1];
       if(l2.v<l1.v*0.97&&l2.v<l3.v*0.97&&nearR(l1.v,l3.v,0.03)){
         var nc=ptnMax(pr,l1.i,l3.i);
-        if(last>=nc*0.985) out.push({p:'رأس وكتفان معكوس 🔺',d:'up',fam:'hs',s:60+(last>nc?15:5)+(nearR(l1.v,l3.v,0.015)?10:0)});
+        if(last>=nc*0.985) out.push({p:'رأس وكتفان معكوس 🔺',d:'up',fam:'hs',s:60+(last>nc?15:5)+(nearR(l1.v,l3.v,0.015)?10:0),g:{dots:[[l1.i,l1.v],[l2.i,l2.v],[l3.i,l3.v]],lines:[],hline:nc}});
       }
     }
     if(H.length>=3&&L.length>=3){
@@ -4544,22 +4563,87 @@ function ptnDetect(pr,isKl){
       var sH=ptnSlope(H3), sL=ptnSlope(L3);
       var wOld=(H3[0].v-L3[0].v), wNew=(H3[2].v-L3[2].v);
       var contracting=wOld>0&&wNew>0&&wNew<wOld*0.85;
+      var gWL={dots:[[H3[0].i,H3[0].v],[H3[2].i,H3[2].v],[L3[0].i,L3[0].v],[L3[2].i,L3[2].v]],lines:[{a:[H3[0].i,H3[0].v],b:[H3[2].i,H3[2].v],dash:0},{a:[L3[0].i,L3[0].v],b:[L3[2].i,L3[2].v],dash:0}],hline:null};
       if(sH<-0.3&&sL<0.8&&sL>sH&&contracting&&last>L3[2].v*1.005)
-        out.push({p:'وتد هابط 🔺',d:'up',fam:'wedge',s:62+Math.min(20,(sH-sL)*2)});
+        out.push({p:'وتد هابط 🔺',d:'up',fam:'wedge',s:62+Math.min(20,(sH-sL)*2),g:gWL});
       if(sH>0.3&&sL>-0.8&&sL<sH&&contracting&&last<H3[2].v*0.995)
-        out.push({p:'وتد صاعد 🔻',d:'down',fam:'wedge',s:62+Math.min(20,(sH-sL)*2)});
+        out.push({p:'وتد صاعد 🔻',d:'down',fam:'wedge',s:62+Math.min(20,(sH-sL)*2),g:gWL});
       var flatTop=(Math.max(H3[0].v,H3[1].v,H3[2].v)-Math.min(H3[0].v,H3[1].v,H3[2].v))/H3[2].v;
       var flatBot=(Math.max(L3[0].v,L3[1].v,L3[2].v)-Math.min(L3[0].v,L3[1].v,L3[2].v))/L3[2].v;
       if(flatTop<0.015&&sL>0.5&&last>=H3[2].v*0.995)
-        out.push({p:'مثلث صاعد 🔺',d:'up',fam:'tri',s:60+Math.min(20,sL)});
+        out.push({p:'مثلث صاعد 🔺',d:'up',fam:'tri',s:60+Math.min(20,sL),g:gWL});
       if(flatBot<0.015&&sH<-0.5&&last<=L3[2].v*1.005)
-        out.push({p:'مثلث هابط 🔻',d:'down',fam:'tri',s:60+Math.min(20,-sH)});
+        out.push({p:'مثلث هابط 🔻',d:'down',fam:'tri',s:60+Math.min(20,-sH),g:gWL});
       if(sH<-0.3&&sL>0.3&&contracting){
         var mid=(H3[2].v+L3[2].v)/2, rng=(H3[2].v-L3[2].v);
         if(rng>0&&Math.abs(last-mid)<rng*0.45)
-          out.push({p:'مثلث متماثل 🔀',d:'brk',fam:'tri',s:58+Math.min(20,(sL-sH))});
+          out.push({p:'مثلث متماثل 🔀',d:'brk',fam:'tri',s:58+Math.min(20,(sL-sH)),g:gWL});
       }
+      if(H3[0].v<H3[1].v&&H3[1].v<H3[2].v&&L3[0].v<L3[1].v&&L3[1].v<L3[2].v&&(H3[2].v-L3[2].v)>(H3[0].v-L3[0].v)*1.25)
+        out.push({p:'وتد متسع (مكبر صوت) 🔊',d:(last>=(H3[2].v+L3[2].v)/2?'up':'down'),fam:'broad',s:56,g:gWL});
     }
+    (function(){
+      var m0=n-22;
+      if(m0<12) return;
+      var seg=pr.slice(m0);
+      function pole(up){
+        for(var e=seg.length-1;e>=10;e--){
+          var win=seg.slice(e-10,e+1), mn=Math.min.apply(null,win), mx=Math.max.apply(null,win);
+          if(up){ if(mx>0&&(mx-mn)/mn>=0.06&&win.indexOf(mx)<=8) return {i:m0+e-10+win.indexOf(mx),top:mx,bi:m0+e-10+win.indexOf(mn),bot:mn}; }
+          else { if(mx>0&&(mx-mn)/mx>=0.06&&win.indexOf(mn)<=8) return {i:m0+e-10+win.indexOf(mn),top:mx,bi:m0+e-10+win.indexOf(mx),bot:mn}; }
+        }
+        return null;
+      }
+      var P=pole(true), isUp=true;
+      if(!P){ P=pole(false); isUp=false; }
+      if(!P) return;
+      var fl=pr.slice(P.i+1);
+      if(fl.length<4) return;
+      var fmx=Math.max.apply(null,fl), fmn=Math.min.apply(null,fl);
+      var rng=(fmx-fmn)/P.top;
+      if(rng<=0.045&&last>=P.top*0.965&&last<=P.top*(isUp?1.005:1.03))
+        out.push({p:isUp?'علم صاعد 🚩🔺':'علم هابط 🚩🔻',d:isUp?'up':'down',fam:'flag',s:60+Math.min(18,(0.045-rng)*400),g:{dots:[[P.bi,P.bot],[P.i,P.top]],lines:[{a:[P.bi,P.bot],b:[P.i,P.top],dash:0},{a:[P.i,P.top],b:[n-1,last],dash:1}],hline:null}});
+    })();
+    (function(){
+      if(n<60) return;
+      var segStart=Math.max(0,n-100), seg=pr.slice(-100);
+      var li=0; for(var i=1;i<60&&i<seg.length;i++) if(seg[i]>seg[li]) li=i;
+      var left=seg[li]; if(!(left>0)) return;
+      var bi=li; for(i=li+1;i<seg.length;i++) if(seg[i]<seg[bi]) bi=i;
+      var bot=seg[bi], dep=(left-bot)/left;
+      if(!(dep>=0.08&&dep<=0.35)) return;
+      var rim=0,rimI=bi;
+      for(i=bi+1;i<seg.length;i++) if(seg[i]>=rim){ rim=seg[i]; rimI=i; }
+      if(!(rim>=left*0.93)||rimI>seg.length-5) return;
+      var hd=seg.slice(rimI);
+      if(hd.length<5) return;
+      var hmn=Math.min.apply(null,hd), hdi=hd.indexOf(hmn);
+      if(!(hmn<=rim*0.99)) return;
+      var hmx=Math.max.apply(null,hd);
+      if(!((hmx-hmn)/rim<=0.06&&last>=rim*0.95&&last<=rim*1.005)) return;
+      var dipAbs=segStart+rimI+hdi;
+      out.push({p:'كوب وعروة ☕🔺',d:'up',fam:'cup',s:62+Math.min(16,dep*60),g:{dots:[[segStart+li,left],[dipAbs,hmn],[segStart+rimI,rim]],lines:[],hline:left}});
+    })();
+    (function(){
+      if(n<40) return;
+      var base0=n-40, tail=pr.slice(-40);
+      var pe=-1, pole=0;
+      for(var e=tail.length-1;e>=12;e--){
+        var win=tail.slice(e-11,e+1), mn=Math.min.apply(null,win), mx=Math.max.apply(null,win);
+        if(mn>0&&(mx-mn)/mn>=0.05){ pe=e; pole=(mx-mn)/mn; break; }
+      }
+      if(pe<0) return;
+      var tri=tail.slice(pe);
+      if(tri.length<9) return;
+      var P2=ptnPiv(tri,2), H2=P2.H, L2=P2.L;
+      if(H2.length<2||L2.length<2) return;
+      var A=H2[0],B=H2[H2.length-1],C=L2[0],D=L2[L2.length-1];
+      var w0=(A.v-C.v), w1=(B.v-D.v);
+      if(!(w0>0&&w1>0&&w1<w0*0.7)) return;
+      if(!(tail[tail.length-1]>=tri[0]*0.96)) return;
+      var ax=base0+pe;
+      out.push({p:'راية (بينانت) 🚩',d:'up',fam:'pen',s:60+Math.min(18,pole*200),g:{dots:[[ax+A.i,A.v],[ax+B.i,B.v]],lines:[{a:[ax+A.i,A.v],b:[ax+B.i,B.v],dash:0},{a:[ax+C.i,C.v],b:[ax+D.i,D.v],dash:0}],hline:null}});
+    })();
     for(i=0;i<out.length;i++) out[i].s=Math.max(40,Math.min(98,Math.round(out[i].s)));
   }catch(e){}
   return out;
@@ -4579,6 +4663,28 @@ async function ptnKlines(sym,tf){
   }catch(e){ return null; }
 }
 function klCl(kl){ try{ return kl.map(function(k){ return parseFloat(k[4]); }); }catch(e){ return []; } }
+function ptnSVG(sl,g,dir,off){
+  try{
+    if(!sl||sl.length<10) return '';
+    var n=sl.length, Wid=220, H=64, pad=5, i=0;
+    var mn=Math.min.apply(null,sl), mx=Math.max.apply(null,sl);
+    if(!(mx>mn)) return '';
+    function X(i){ return (pad+i/(n-1)*(Wid-2*pad)).toFixed(1); }
+    function Y(v){ return (H-pad-(v-mn)/(mx-mn)*(H-2*pad)).toFixed(1); }
+    var col=dir==='up'?'#1fe196':(dir==='down'?'#ff7b85':'#f0b90b');
+    var s='<div class="ptn-svg"><svg viewBox="0 0 '+Wid+' '+H+'" width="100%" height="64" preserveAspectRatio="none">';
+    var pts=[];
+    for(i=0;i<n;i++) pts.push(X(i)+','+Y(sl[i]));
+    s+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+col+'" stroke-width="1.4"/>';
+    function XX(ai){ var r=ai-off; if(r<0) r=0; if(r>n-1) r=n-1; return X(r); }
+    if(g){
+      if(g.hline!=null){ var yy=parseFloat(Y(g.hline)); if(yy>=0&&yy<=H) s+='<line x1="'+pad+'" y1="'+yy+'" x2="'+(Wid-pad)+'" y2="'+yy+'" stroke="'+col+'" stroke-dasharray="4 3" stroke-width="1" opacity="0.8"/>'; }
+      if(g.lines){ for(var k=0;k<g.lines.length;k++){ var L=g.lines[k], ax=XX(L.a[0]),ay=Y(L.a[1]),bx=XX(L.b[0]),by=Y(L.b[1]); s+='<line x1="'+ax+'" y1="'+ay+'" x2="'+bx+'" y2="'+by+'" stroke="'+col+'" stroke-width="1.2"'+(L.dash?' stroke-dasharray="4 2"':'')+' opacity="0.9"/>'; } }
+      if(g.dots){ for(var q=0;q<g.dots.length;q++){ s+='<circle cx="'+XX(g.dots[q][0])+'" cy="'+Y(g.dots[q][1])+'" r="2.4" fill="'+col+'"/>'; } }
+    }
+    return s+'</svg></div><div class="ptn-meta">✏️ رسم 1س بدقة</div>';
+  }catch(e){ return ''; }
+}
 function klVolOk(kl){ try{ var n=kl.length; if(n<21) return false; var s=0,i=0; for(i=n-20;i<n-1;i++) s+=parseFloat(kl[i][5])||0; var avg=s/19; return (parseFloat(kl[n-1][5])||0)>avg; }catch(e){ return false; } }
 async function scan(){
   try{
@@ -4598,7 +4704,7 @@ async function scan(){
       var best=ds[0];
       for(var k=1;k<ds.length;k++) if(ds[k].s>best.s) best=ds[k];
       if(best.s<50) continue;
-      cands.push({a:a,best:best});
+      cands.push({a:a,best:best,pr:pr.slice(-60),flen:pr.length});
     }
     cands.sort(function(x,y){ return y.best.s-x.best.s; });
     cands=cands.slice(0,8);
@@ -4618,7 +4724,7 @@ async function scan(){
             for(var w=0;w<d4.length;w++) if(d4[w].fam===fam){ frames.push('4س'); s=Math.max(s,d4[w].s)+5; if(klVolOk(k4)) s+=8; break; }
           }
         }
-        out.push({a:cd.a,best:cd.best,frames:frames,s:Math.min(98,Math.round(s))});
+        out.push({a:cd.a,best:cd.best,frames:frames,s:Math.min(98,Math.round(s)),pr:cd.pr,off:cd.flen-cd.pr.length});
       }catch(e){}
     }));
     out=out.filter(function(r){ return r.s>=55; });
@@ -4640,7 +4746,7 @@ async function scan(){
       var h='<div class="ptn-card d-'+r.best.d+'"><div class="ptn-top"><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(live)+'</span><span>📐 '+r.best.p+'</span></div>'
       +'<div class="ptn-meta">الفريمات: '+fr+' • القوة <b>'+r.s+'</b> • سيولة <b>'+big(c.total_volume||0)+'</b></div>'
       +'<div class="ptn-bar"><i style="width:'+r.s+'%"></i></div>'
-      +'<div class="ptn-dir">'+dirT+'</div>';
+      +'<div class="ptn-dir">'+dirT+'</div>'+ptnSVG(r.pr,(r.best||{}).g,(r.best||{}).d,r.off||0);
       var tvS=(window.binSym&&window.binSym(c))||null;
       if(tvS) h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><div class="pex-chart" hidden></div></div>';
       return h+'</div>';
@@ -4760,7 +4866,7 @@ async function scan(){
     if(st) st.textContent=out.length?('🚀 '+out.length+' انفجارات ('+(binOk?'بينانس حقيقي ✅':'احتياطي')+') • آخر فحص '+new Date().toLocaleTimeString('ar')):('🚀 لا انفجارات كبيرة الآن — فحص '+all.length+' عملة • '+new Date().toLocaleTimeString('ar'));
     box.innerHTML=out.length?out.map(function(r){
       var lv=r.tier==='vert'?'🚀 انفجار عمودي — فريم يومي':(r.tier==='hot'?'🔴 انفجار كبير — فريم يومي':'📉 انهيار كبير — فريم يومي');
-      var h='<div class="blx-card t-'+r.tier+'"><div class="blx-top"><span class="blx-dot"></span><b>'+r.sym+'</b><span>'+money(r.live)+'</span><span class="blx-big">'+(r.h24>=0?'+':'')+r.h24.toFixed(1)+'%</span></div>'
+      var h='<div class="blx-card t-'+r.tier+'+"><div class="blx-top"><span class="blx-dot"></span><b>'+r.sym+'</b><span>'+money(r.live)+'</span>'+(((r.a&&r.a.c&&r.a.c.name))?('<small>'+r.a.c.name+'</small>'):'')+'<span class="blx-big">'+(r.h24>=0?'+':'')+r.h24.toFixed(1)+'%</span></div>'
       +'<div class="blx-meta">💧 حجم حقيقي <b>'+big(r.vol)+'</b> • '+(r.src==='bin'?'✅ بينانس حقيقي':'كوين جيكو')+(r.hi>0?(' • قمة اليوم <b>'+money(r.hi)+'</b>'):'')+'</div>'
       +(r.st>0?('<div class="blx-meta">💥 بدأ الانفجار: <b>'+fmtT(r.st)+'</b></div>'):'')
       +'<div class="blx-lv">'+lv+'</div>'
