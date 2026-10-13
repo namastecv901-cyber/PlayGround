@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v153.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v154.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v153.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v154.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1565,6 +1565,7 @@ body.linkmode #masterFab{display:none!important}
         <label>رابط الدفع ($30)</label><input id="setPay" type="text" dir="ltr" placeholder="https://...">
         <label>رابط التواصل (تيليجرام/واتساب)</label><input id="setContact" type="text" dir="ltr" placeholder="https://t.me/...">
         <label>اسم جهة التواصل</label><input id="setContactName" type="text" placeholder="تيليجرام">
+        <label>🌍 رابط الموقع العام (يُبنى عليه رابط النشر — فعّل GitHub Pages أو الصق رابط الاستضافة)</label><input id="setSite" type="text" dir="ltr" placeholder="https://namastecv901-cyber.github.io/PlayGround">
         <label>📩 تنبيه الزوار: توكن بوت تيليجرام (اختياري — ليصلك كل اسم وإيميل فوراً)</label><input id="setLeadBot" type="text" dir="ltr" placeholder="123456:ABC...">
         <label>📩 شات ID الذي تستلم عليه التنبيه</label><input id="setLeadChat" type="text" dir="ltr" placeholder="123456789">
         <div style="margin-top:10px"><button class="btn btn-primary btn-sm" id="setSave">💾 حفظ</button></div>
@@ -4476,7 +4477,17 @@ function copyTxt(txt,btn,okMsg){
   }catch(e){}
 }
 function fallbackCopy(txt,done){ try{ const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(e){} ta.remove(); done(); }catch(e){} }
-function guestURL(day){ try{ let c=''; try{ const oo=getOwner()||{}; if(oo.contact) c+='&c='+encodeURIComponent(oo.contact); }catch(e){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) c+='&pick='+encodeURIComponent(pk.id); }catch(e){} try{ const r=linkCodeFor(day); if(r) c='&r='+encodeURIComponent(r)+c; }catch(e){} return location.origin+location.pathname+'?guest=1&d='+day+c; }catch(e){ return '?guest=1&d='+day; } }
+const DEFAULT_SITE='https://namastecv901-cyber.github.io/PlayGround';
+function siteBase(){
+  try{
+    const oo=getOwner()||{};
+    if(oo.site) return String(oo.site).trim().replace(/\/+$/,'');
+    if(/^https?:/.test(location.protocol||'')) return siteBase_http();
+    return DEFAULT_SITE;
+  }catch(e){ return DEFAULT_SITE; }
+}
+function siteBase_http(){ return location.origin+location.pathname; }
+function guestURL(day){ try{ let c=''; try{ const oo=getOwner()||{}; if(oo.contact) c+='&c='+encodeURIComponent(oo.contact); }catch(e){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) c+='&pick='+encodeURIComponent(pk.id); }catch(e){} try{ const r=linkCodeFor(day); if(r) c='&r='+encodeURIComponent(r)+c; }catch(e){} return siteBase()+'?guest=1&d='+day+c; }catch(e){ return '?guest=1&d='+day; } }
 const K_SUBPICK_OWNER='ai_subpick_owner';
 const APP_SALT='T8V#prem1um$2026!app';
 function h53(str,seed){ let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed; str=String(str); for(let i=0;i<str.length;i++){ const ch=str.charCodeAt(i); h1=Math.imul(h1^ch,2654435761); h2=Math.imul(h2^ch,1597334677); } h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909); h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909); return (h2>>>0).toString(16).padStart(8,'0')+(h1>>>0).toString(16).padStart(8,'0'); }
@@ -4503,7 +4514,7 @@ function personalLinkFor(code){
     const tok=makeSubToken(sb.name,sb.until,code);
     let cc=''; try{ const oo=getOwner()||{}; if(oo.contact) cc+='&c='+encodeURIComponent(oo.contact); }catch(e2){}
     try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) cc+='&pick='+encodeURIComponent(pk.id); }catch(e3){}
-    return location.origin+location.pathname+'?guest=1&d='+dayStr(0)+'&sub='+encodeURIComponent(tok)+cc;
+    return siteBase()+'?guest=1&d='+dayStr(0)+'&sub='+encodeURIComponent(tok)+cc;
   }catch(e){ return ''; }
 }
 function activateSubToken(tok){
@@ -4578,6 +4589,7 @@ function paintLinks(){
       const st=$('todayLinkSt');
       if(st){ if(!cur){ st.textContent='🗑 محذوف'; st.className='bad'; } else if(L['stop:'+t]){ st.textContent='⏸ موقوف مؤقتاً'; st.className='bad'; } else { st.textContent='🟢 نشط'; st.className='ok'; } }
       try{ const sb=$('todayLinkStop'); if(sb) sb.textContent=(L['stop:'+t]?'▶ تشغيل':'⏸ إيقاف'); }catch(e){}
+      try{ const m=$('linkMsg'); if(m&&!m.textContent){ const oo=getOwner()||{}; if(!oo.site) m.innerHTML='🌍 الرابط يُبنى على <b>'+DEFAULT_SITE+'</b> — فعّل GitHub Pages من إعدادات المستودع (Settings → Pages → main → Save) أو الصق رابط استضافتك في ⚙️ الإعدادات'; } }catch(e){}
       const box=$('linksList'); if(!box) return;
       try{ paintDl(false); }catch(e){}
       try{ const dr=$('dlRefresh'); if(dr&&!dr._b){ dr._b=1; dr.onclick=()=>paintDl(true); } }catch(e){}
@@ -4610,7 +4622,7 @@ function openOwner(){
   const o=getOwner();
   $('ownerLogin').hidden=!!(M.mode==='owner');
   $('ownerDash').hidden=!(M.mode==='owner');
-  if(M.mode==='owner'){ paintSubs(); paintLog(); paintLeads(); paintLeadAuto(); paintLinks(); paintMaster(); const s=$('setPay'); if(s){ const oo=getOwner()||{}; s.value=oo.pay||''; $('setContact').value=oo.contact||''; $('setContactName').value=oo.contactName||''; $('setLeadBot').value=oo.leadBot||''; $('setLeadChat').value=oo.leadChat||''; } }
+  if(M.mode==='owner'){ paintSubs(); paintLog(); paintLeads(); paintLeadAuto(); paintLinks(); paintMaster(); const s=$('setPay'); if(s){ const oo=getOwner()||{}; s.value=oo.pay||''; $('setContact').value=oo.contact||''; $('setContactName').value=oo.contactName||''; $('setSite').value=oo.site||''; $('setLeadBot').value=oo.leadBot||''; $('setLeadChat').value=oo.leadChat||''; } }
   else { $('pinMsg').textContent=o?'أدخل PIN للدخول':'أنت المالك؟ اختر PIN جديداً الآن (يُحفظ في جهازك فقط)'; }
 }
 document.addEventListener('DOMContentLoaded',()=>{
@@ -4726,7 +4738,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     sess('المالك','تم الدفع ✅ + إصدار كود لـ'+nm);
     const tok=makeSubToken(nm,subs[cd].until,cd);
     let cc=''; try{ const oo=getOwner()||{}; if(oo.contact) cc+='&c='+encodeURIComponent(oo.contact); }catch(e2){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) cc+='&pick='+encodeURIComponent(pk.id); }catch(e3){}
-    const url=location.origin+location.pathname+'?guest=1&d='+dayStr(0)+'&sub='+encodeURIComponent(tok)+cc;
+    const url=siteBase()+'?guest=1&d='+dayStr(0)+'&sub='+encodeURIComponent(tok)+cc;
     const msg='✅ اشتراكك في TRAININGV8 Premium مفعّل / '+nm+' / صالح 30 يوم — افتح رابطك الشخصي: '+url+' (أو أدخل الكود: '+cd+')';
     try{ navigator.clipboard.writeText(url); }catch(e){}
     try{ window.open('https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(msg),'_blank'); }catch(e){}
@@ -4735,7 +4747,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const b=e.target.closest('button'); if(!b) return;
     const subs=getSubs();
     const gc=k=>Object.keys(subs).find(x=>x===k);
-    if(b.dataset.subLink){ const cd=gc(b.dataset.subLink); if(cd){ const sb=subs[cd]; const tok=makeSubToken(sb.name,sb.until,cd); let cc=''; try{ const oo=getOwner()||{}; if(oo.contact) cc+='&c='+encodeURIComponent(oo.contact); }catch(e2){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) cc+='&pick='+encodeURIComponent(pk.id); }catch(e3){} const url=location.origin+location.pathname+'?guest=1&d='+dayStr(0)+'&sub='+encodeURIComponent(tok)+cc; try{ navigator.clipboard.writeText(url); }catch(err){} sess('المالك','نسخ رابط اشتراك '+sb.name); } }
+    if(b.dataset.subLink){ const cd=gc(b.dataset.subLink); if(cd){ const sb=subs[cd]; const tok=makeSubToken(sb.name,sb.until,cd); let cc=''; try{ const oo=getOwner()||{}; if(oo.contact) cc+='&c='+encodeURIComponent(oo.contact); }catch(e2){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) cc+='&pick='+encodeURIComponent(pk.id); }catch(e3){} const url=siteBase()+'?guest=1&d='+dayStr(0)+'&sub='+encodeURIComponent(tok)+cc; try{ navigator.clipboard.writeText(url); }catch(err){} sess('المالك','نسخ رابط اشتراك '+sb.name); } }
     else if(b.dataset.subCopy){ const cd=gc(b.dataset.subCopy); if(cd){ const url=personalLinkFor(cd); try{ navigator.clipboard.writeText(url||cd); }catch(err){} sess('المالك','نسخ رابط اشتراك '+((subs[cd]||{}).name||cd)); } }
     else if(b.dataset.subBlock){ const cd=gc(b.dataset.subBlock); if(cd){ subs[cd].blocked=!subs[cd].blocked; saveSubs(subs); paintSubs(); sess('المالك',(subs[cd].blocked?'إيقاف ':'تشغيل ')+subs[cd].name); } }
     else if(b.dataset.subPlus){ const cd=gc(b.dataset.subPlus); if(cd){ subs[cd].until=Math.max(Date.now(),subs[cd].until||0)+30*864e5; subs[cd].blocked=false; saveSubs(subs); paintSubs(); sess('المالك','تمديد '+subs[cd].name); } }
@@ -4747,7 +4759,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   setInterval(()=>{ try{ applyVis(); paintErrBadge(); }catch(err){} },5000);
   document.addEventListener('click',e=>{ try{
     if(!e.target||!e.target.closest) return;
-    const c=e.target.closest('[data-link-copy]'); if(c){ try{ const L=getLinks(); const d=c.dataset.linkCopy; const base=location.origin+location.pathname; let cc=''; try{ const oo=getOwner()||{}; if(oo.contact) cc+='&c='+encodeURIComponent(oo.contact); }catch(err2){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) cc+='&pick='+encodeURIComponent(pk.id); }catch(err3){} try{ const rr=linkCodeFor(d); if(rr) cc='&r='+encodeURIComponent(rr)+cc; }catch(err4){} copyTxt(base+'?guest=1&d='+d+cc,null,'✅ نُسخ رابط '+d); sess('المالك','نسخ رابط '+d); }catch(err){} return; }
+    const c=e.target.closest('[data-link-copy]'); if(c){ try{ const L=getLinks(); const d=c.dataset.linkCopy; const base=siteBase(); let cc=''; try{ const oo=getOwner()||{}; if(oo.contact) cc+='&c='+encodeURIComponent(oo.contact); }catch(err2){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) cc+='&pick='+encodeURIComponent(pk.id); }catch(err3){} try{ const rr=linkCodeFor(d); if(rr) cc='&r='+encodeURIComponent(rr)+cc; }catch(err4){} copyTxt(base+'?guest=1&d='+d+cc,null,'✅ نُسخ رابط '+d); sess('المالك','نسخ رابط '+d); }catch(err){} return; }
     const s=e.target.closest('[data-link-stop]'); if(s){ try{ const L=getLinks(); const d=s.dataset.linkStop; if(L['stop:'+d]) delete L['stop:'+d]; else L['stop:'+d]=Date.now(); saveLinks(L); window.__paintLinks(); sess('المالك',(L['stop:'+d]?'إيقاف رابط ':'تشغيل رابط ')+d); }catch(err){} return; }
   }catch(err){} });
   const lc=$('todayLinkCopy'); if(lc&&!lc._b){ lc._b=1; lc.onclick=()=>{ try{ const tx=$('todayLinkTxt').textContent; if(!tx||tx.indexOf('guest=1')<0){ const m=$('linkMsg'); if(m){ m.textContent='⚠️ لا رابط — اضغط 🆕 جديد أولاً'; m.style.color='#ff9aa2'; } return; } copyTxt(tx,lc,'✅ نُسخ — انشره في قناتك الآن'); sess('المالك','نسخ رابط النشر'); }catch(e){} }; }
@@ -4764,8 +4776,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     }catch(e){}
   };
   $('subLink').onclick=()=>{ try{ const u=guestURL(dayStr(0)); navigator.clipboard.writeText(u); }catch(e){} sess('المالك','نسخ رابط المشتركين (رابط اليوم)'); };
-  ['setPay','setContact','setContactName','setLeadBot','setLeadChat'].forEach(function(id){ try{ var el=$(id); if(el) el.oninput=function(){ try{ var o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); }catch(e){} }; }catch(e){} });
-  $('setSave').onclick=()=>{ const o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); paint(); sess('المالك','حفظ الإعدادات'); };
+  ['setPay','setContact','setContactName','setSite','setLeadBot','setLeadChat'].forEach(function(id){ try{ var el=$(id); if(el) el.oninput=function(){ try{ var o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.site=$('setSite').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); }catch(e){} }; }catch(e){} });
+  $('setSave').onclick=()=>{ const o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.site=$('setSite').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); paint(); sess('المالك','حفظ الإعدادات'); };
 });
 window.MEMBER={get mode(){return M.mode;},unlockSub,paint,makeSubToken,verifySubToken};
 })();
