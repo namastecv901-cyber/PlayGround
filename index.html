@@ -4484,6 +4484,17 @@ function classify(a){
   if(h1>-0.5&&h1<2.5) return {lv:'green',dir:'pump',txt:'🟢 تجميع حيتان — ستنفجر، راقبها',entry:0,tp:0,sl:0};
   return null;
 }
+function pexCandles(c){
+  try{
+    var pr=(c.sparkline_in_7d&&c.sparkline_in_7d.price)||[];
+    if(!pr||pr.length<5) return {up:0,rise:0,ok:false};
+    var lastN=pr.slice(-12), n=lastN.length, last=lastN[n-1];
+    var up=0, j=n-1;
+    while(j>0&&lastN[j]>lastN[j-1]){ up++; j--; }
+    var runLow=lastN[j];
+    return {up:up,rise:runLow>0?((last-runLow)/runLow*100):0,ok:true};
+  }catch(e){ return {up:0,rise:0,ok:false}; }
+}
 function scan(){
   try{
     var box=$('pexGrid'); if(!box) return;
@@ -4536,9 +4547,13 @@ function scan(){
         botHtml+='<div class="pex-flow">📤 خروج الحيتان من القمة <b>'+money(tt.px)+'</b> • الآن '+dn.toFixed(1)+'% تحتها</div>';
         exitNow=true;
       }
+      var cd=pexCandles(c);
+      var cdHtml=cd.ok?('<div class="pex-flow">🕯 شمعات الصعود: <b>'+cd.up+'/3</b> • من بداية الموجة <b>+'+cd.rise.toFixed(1)+'%</b></div>'):'';
+      var late=cd.ok&&(cd.up>=3||cd.rise>=4);
       var verdict='';
       if(exitNow) verdict='<div class="pex-state">🔴 اخرج الآن — الحيتان تخرج فعلاً (حقيقي)</div>';
       else if(r.dir==='dump') verdict='<div class="pex-state">🔴 دامب — لا دخول شراء أبداً</div>';
+      else if(late&&(r.lv==='green'||r.lv==='orange'||r.lv==='red')) verdict='<div class="pex-state">⛔ طلعت '+cd.up+' شمعات (+'+cd.rise.toFixed(1)+'%) — خطير، لا تدخل الآن</div>';
       else if(r.lv==='green') verdict='<div class="pex-state">✅ ادخل مع الحيتان الآن من القاع — حتى لا تخسر</div>';
       else if(r.lv==='orange') verdict='<div class="pex-state">✅ ادخل معهم قبل الانفجار — ما زال مبكراً</div>';
       else if(r.lv==='red'&&bb&&bb.px>0&&live0>bb.px*1.03) verdict='<div class="pex-state">⛔ لا تدخل وسط الانفجار — فاتك الدخول مع الحيتان</div>';
@@ -4546,7 +4561,7 @@ function scan(){
       else verdict='<div class="pex-state">🟢 ابقَ — الحيتان ما زالت داخل</div>';
       var h='<div class="pex-card st-'+r.lv+'"><div class="pex-top"><span class="pex-dot"></span><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(c.current_price)+'</span></div>'
       +'<div class="pex-meta">🐋 سيولة حقيقية <b>'+fmtBig(vol)+'</b> • دوران <b>'+to.toFixed(1)+'%</b> • 1س '+((w.h1||0)>=0?'+':'')+(w.h1||0).toFixed(1)+'% • 24س '+(((c.price_change_percentage_24h_in_currency||0))>=0?'+':'')+(c.price_change_percentage_24h_in_currency||0).toFixed(1)+'%</div>'
-      +'<div class="pex-liq '+fcls+'"><i style="width:'+wpx.toFixed(0)+'%"></i></div><div class="pex-flow">'+ftxt+'</div>'+botHtml+verdict
+      +'<div class="pex-liq '+fcls+'"><i style="width:'+wpx.toFixed(0)+'%"></i></div><div class="pex-flow">'+ftxt+'</div>'+botHtml+cdHtml+verdict
       +'<div class="pex-state">'+r.txt+'</div>';
       if(r.lv==='red'&&r.dir==='pump') h+='<div class="pex-plan">💰 دخول <b>'+money(r.entry)+'</b> • 🎯 هدف <b>'+money(r.tp)+'</b> • 🛡 وقف <b>'+money(r.sl)+'</b></div>';
       return h+'</div>';
