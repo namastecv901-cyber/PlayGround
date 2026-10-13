@@ -3520,9 +3520,7 @@ function paintInvest(){
           const prog=Math.max(0,Math.min(100,(live-entry)/tot*100));
           const h1=c0.price_change_percentage_1h_in_currency||0, h24=c0.price_change_percentage_24h_in_currency||0;
           msg='✅ العلامة المختارة تلقائياً: +'+lv.pct+'% (×'+lv.mult+' — '+lv.why+' حسب الصعود المؤكد) — اضغط 🧠 تلقائي للدخول الجاهز'+(lv.wh?' • '+lv.wtxt:'')+'<br>💰 الدخول: <b>'+money(entry)+'</b> • 🎯 الهدف: <b>'+money(entry*lv.mult)+'</b><br>📌 الحالة الآن: '+investState(lv.a.c.id,live,entry,entry*lv.mult);
-          liveHtml=investCard(c0,live,entry,entry*lv.mult,lv.pct,(lv.wh?lv.wtxt:''),investState(lv.a.c.id,live,entry,entry*lv.mult))
-          +'<div class="inv-coin"><span class="inv-pulse"></span><b>'+c0.symbol+'</b><span>💵 حي '+money(live)+'</span><span>🎯 +'+lv.pct+'%</span><small>صعود مؤكد • 1س '+(h1>=0?'+':'')+h1.toFixed(1)+'% • 24س '+(h24>=0?'+':'')+h24.toFixed(1)+'%</small></div>'
-          +'<div class="inv-move"><i style="width:'+prog.toFixed(1)+'%"></i></div>';
+          liveHtml=investCard(c0,live,entry,entry*lv.mult,lv.pct,(lv.wh?lv.wtxt:''),investState(lv.a.c.id,live,entry,entry*lv.mult));
         }
         else if(S.investMsg){ msg=S.investMsg; }
       }catch(e){ if(S.investMsg) msg=S.investMsg; }
