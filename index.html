@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v159.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v160.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v159.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v160.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1115,6 +1115,8 @@ body{max-width:680px;margin:0 auto;padding:12px}
 .one-decision.od-buy{background:#16c78414;border-color:#16c78466;color:#1fe196}
 .one-decision.od-avoid{background:#ea394312;border-color:#ea394355;color:#ff7b85}
 .one-decision.od-wait{background:#f0b90b10;border-color:#f0b90b44;color:#f0b90b}
+.mkt-sub{display:block;font-size:.72rem;font-weight:700;margin-top:5px;line-height:2;opacity:.95}
+.mkt-sub a{color:inherit;text-decoration:underline}
 .calc-bar{margin:8px 0;padding:8px 12px}
 .section-head{margin:8px 0 4px!important}
 .toolbar-btns{margin:8px 0}
@@ -1374,6 +1376,7 @@ body.linkmode #masterFab{display:none!important}
 </div>
 
 <div class="one-decision od-wait" id="oneDecision">⏳ القرار الواحد: جارٍ التحليل...</div>
+<div class="one-decision od-wait" id="mktHead">🌍 رئيس النظام: يقرأ السوق العام...</div>
 <div class="member-bar" id="memberBar">
   <span class="mb-badge mb-guest" id="mbBadge">👤 زائر</span>
   <span id="mbTxt">محتوى الأعضاء محمي 🔒</span>
@@ -4867,6 +4870,114 @@ window.addEventListener('pagehide',function(){ try{ flush(); }catch(e){} });
 window.addEventListener('beforeunload',function(){ try{ flush(); }catch(e){} });
 document.addEventListener('DOMContentLoaded',function(){ restore(); setTimeout(restore,1500); });
 window.AUTOSAVE={restore:restore,flush:flush};
+})();
+</script>
+<script>// 🌍 MKTHEAD v1 — رئيس النظام: قمية سوقية + بتكوين + استحواذ + أخبار + تدفق حقيقي (عرض عام فقط)
+(function(){
+"use strict";
+var K='ai_mkt_v1';
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').slice(0,110); }
+function rd(){ try{ return JSON.parse(localStorage.getItem(K)||'{}')||{}; }catch(e){ return {}; } }
+function wr(m){ try{ localStorage.setItem(K,JSON.stringify(m)); }catch(e){} }
+async function jf(url,ms){ const c=new AbortController(); const to=setTimeout(()=>{ try{c.abort();}catch(e){} },ms||15000); try{ const r=await fetch(url,{signal:c.signal,cache:'no-store'}); if(!r.ok) throw 0; return await r.json(); } finally{ clearTimeout(to); } }
+async function fetchMk(){
+  try{
+    const st=rd();
+    if(st.gt&&Date.now()-st.gt<10*60*1000&&st.g) return st.g;
+    const [g,f]=await Promise.all([jf('https://api.coingecko.com/api/v3/global',15000),jf('https://api.alternative.me/fng/?limit=1',15000).catch(()=>null)]);
+    const d=g&&g.data?g.data:null; if(!d) return st.g||null;
+    const out={mc:d.total_market_cap?d.total_market_cap.usd:0,mchg:d.market_cap_change_percentage_24h_usd||0,dom:(d.market_cap_percentage||{}).btc||0,t:Date.now()};
+    try{ const fa=f&&f.data&&f.data[0]; if(fa) out.fg=parseInt(fa.value||'50',10); }catch(e){}
+    st.g=out; st.gt=Date.now(); wr(st);
+    return out;
+  }catch(e){ try{ return rd().g||null; }catch(x){ return null; } }
+}
+async function fetchNews(){
+  try{
+    const st=rd();
+    if(st.nt&&Date.now()-st.nt<30*60*1000&&st.news) return st.news;
+    const j=await jf('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent('https://www.coindesk.com/arc/outboundfeeds/rss/'),15000);
+    const items=((j&&j.items)||[]).slice(0,3).map(x=>({t:x.title,l:x.link}));
+    if(items.length){ st.news=items; st.nt=Date.now(); wr(st); return items; }
+    return st.news||[];
+  }catch(e){ try{ return rd().news||[]; }catch(x){ return []; } }
+}
+function btc24(){
+  try{
+    const an=(window.RADAR&&window.RADAR.analyzed)||[];
+    const b=an.find(x=>x&&x.c&&(x.c.id==='bitcoin'||(x.c.symbol||'').toLowerCase()==='btc'));
+    return b?b.c.price_change_percentage_24h_in_currency||0:null;
+  }catch(e){ return null; }
+}
+function inflows(){
+  try{
+    const an=(window.RADAR&&window.RADAR.analyzed)||[];
+    const out=[];
+    for(const a of an){
+      try{
+        const c=a.c; if(!c) continue;
+        const mc=c.market_cap||0, vol=c.total_volume||0; if(mc<=0) continue;
+        const to=vol/mc, h1=c.price_change_percentage_1h_in_currency||0;
+        if(to>=0.25&&h1>-3) out.push({s:(c.symbol||'').toUpperCase(),m:vol,to:to});
+      }catch(e){}
+    }
+    out.sort((x,y)=>y.m-x.m);
+    return out.slice(0,3);
+  }catch(e){ return []; }
+}
+function verdict(g,b24){
+  let s=50;
+  const mc=g?g.mchg:0, fg=g&&g.fg!=null?g.fg:50;
+  if(mc>=2) s+=20; else if(mc>=0.5) s+=8; else if(mc<=-3) s-=20; else if(mc<=-1) s-=8;
+  if(fg>=55) s+=12; else if(fg>=45) s+=5; else if(fg<=25) s-=12; else if(fg<=35) s-=5;
+  if(b24!=null){ if(b24>=3) s+=8; else if(b24<=-4) s-=10; }
+  if(g&&g.dom>=60&&mc<0) s-=5;
+  if(s>=65) return {v:'good',t:'🟢 سوق اليوم: جيد — شهية حقيقية للمخاطرة'};
+  if(s<=40) return {v:'bad',t:'🔴 سوق اليوم: سيء — حذر، السيولة تهرب'};
+  return {v:'mid',t:'🟡 سوق اليوم: عادي — انتقائي فقط'};
+}
+function mtoast(m){ try{ const box=$('botToasts'); if(!box) return; const d=document.createElement('div'); d.textContent=m; box.appendChild(d); setTimeout(()=>{ try{d.remove();}catch(e){} },5000); while(box.children.length>3) box.firstChild.remove(); }catch(e){} }
+async function tgSend(txt){
+  try{
+    let bot='', chat='';
+    try{ const o=JSON.parse(localStorage.getItem('ai_owner_v1')||'null')||{}; bot=o.leadBot||''; chat=o.leadChat||''; }catch(e){}
+    try{ if((!bot||!chat)&&window.OWNER_ALERT&&window.OWNER_ALERT.bot) { bot=window.OWNER_ALERT.bot; chat=window.OWNER_ALERT.chat; } }catch(e){}
+    if(!bot||!chat) return false;
+    await fetch('https://api.telegram.org/bot'+bot+'/sendMessage?chat_id='+encodeURIComponent(chat)+'&text='+encodeURIComponent(txt));
+    return true;
+  }catch(e){ return false; }
+}
+function fmtM(n){ try{ if(n>=1e12) return (n/1e12).toFixed(2)+'T'; if(n>=1e9) return (n/1e9).toFixed(1)+'B'; return String(Math.round(n)); }catch(e){ return '?'; } }
+async function paint(){
+  try{
+    const el=$('mktHead'); if(!el) return;
+    const g=await fetchMk();
+    const b24=btc24();
+    const vd=verdict(g,b24);
+    const fl=inflows();
+    const cls=vd.v==='good'?'od-buy':(vd.v==='bad'?'od-avoid':'od-wait');
+    let sub='';
+    if(g) sub+='<span>💰 القمية: $'+fmtM(g.mc)+' ('+(g.mchg>=0?'+':'')+g.mchg.toFixed(1)+'%)</span> • <span>₿ بتكوين '+(b24==null?'—':((b24>=0?'+':'')+b24.toFixed(1)+'%'))+'</span> • <span>👑 الاستحواذ '+g.dom.toFixed(1)+'%</span> • <span>'+(g.fg!=null?('😨/🤑 الخوف والطمع '+g.fg):'المعنويات —')+'</span>';
+    else sub+='<span>⏳ بانتظار البيانات العامة...</span>';
+    if(fl.length) sub+='<br><span>💰 دخول أموال حقيقية: '+fl.map(x=>x.s+' +$'+fmtM(x.m)).join(' • ')+'</span>';
+    if(b24!=null&&Math.abs(b24)>=5) sub+='<br><span>🚨 حدث: بتكوين تتحرك '+(b24>=0?'+':'')+b24.toFixed(1)+'% خلال 24س</span>';
+    if(g&&g.fg!=null&&(g.fg<=15||g.fg>=85)) sub+='<br><span>🚨 حدث: معنويات متطرفة ('+g.fg+') — تقلب قادم</span>';
+    el.className='one-decision '+cls;
+    el.innerHTML=esc(vd.t)+'<span class="mkt-sub">'+sub+'<span id="mktNews"></span></span>';
+    try{
+      const st=rd();
+      if(st.lv!==vd.v){ st.lv=vd.v; wr(st); mtoast(vd.t); if(Date.now()-(st.ls||0)>3600000){ st.ls=Date.now(); wr(st); tgSend('🌍 رئيس النظام: '+vd.t); } }
+    }catch(e){}
+    try{
+      const nw=await fetchNews();
+      const ne=$('mktNews');
+      if(ne&&nw.length) ne.innerHTML='<br><span>📰 أخبار العالم: '+nw.map(n=>'<a href="'+esc(n.l)+'" target="_blank" rel="noopener">'+esc(n.t)+'</a>').join(' • ')+'</span>';
+    }catch(e){}
+  }catch(e){}
+}
+document.addEventListener('DOMContentLoaded',()=>{ paint(); setInterval(paint,5*60*1000); });
+window.MKthead={refresh:paint};
 })();
 </script>
 </body>
