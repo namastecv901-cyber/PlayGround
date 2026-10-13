@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v162.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v163.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v162.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v163.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -5066,8 +5066,22 @@ function fix(kind){
 function paint(){
   try{
     const el=$('sysAid'); if(!el) return;
+    hookErr();
     const c=check(), st=cardStates();
     const cls=c.issues.length?'od-avoid':(c.oks.length?'od-buy':'od-wait');
+    try{
+      const sg=c.issues.map(x=>x.t).join('|');
+      if(sg!==lastSig){
+        lastSig=sg;
+        if(c.issues.length&&Date.now()-lastAnn>120000){
+          lastAnn=Date.now();
+          c.issues.forEach(x=>mtoast('⚠️ مشكلة الآن: '+x.t+' — أنا أصلحها'));
+          const kinds={}; c.issues.forEach(x=>{ if(x.f) kinds[x.f]=1; });
+          Object.keys(kinds).forEach(k=>{ try{ fix(k); }catch(e){} });
+          setTimeout(()=>mtoast('🔧 تم الإصلاح — راقب المساعد للتأكيد ✅'),2000);
+        }
+      }
+    }catch(e){}
     let h=esc(c.issues.length?('🔧 مساعد النظام: '+c.issues.length+' تحتاج إصلاح'):('🔧 مساعد النظام: كل شيء سليم ✅'));
     h+='<span class="mkt-sub">';
     if(c.oks.length) h+=c.oks.map(x=>'✅ '+esc(x)).join(' • ')+'<br>';
@@ -5079,7 +5093,20 @@ function paint(){
   }catch(e){}
 }
 document.addEventListener('click',e=>{ try{ const b=e.target&&e.target.closest?e.target.closest('[data-sysfix]'):null; if(!b) return; fix(b.dataset.sysfix||'all'); }catch(x){} });
-document.addEventListener('DOMContentLoaded',()=>{ paint(); setInterval(paint,30000); });
+document.addEventListener('DOMContentLoaded',()=>{ paint(); setInterval(paint,10000); });
+window.addEventListener('error',()=>{ try{ setTimeout(paint,600); }catch(e){} });
+window.addEventListener('unhandledrejection',()=>{ try{ setTimeout(paint,600); }catch(e){} });
+var lastSig='', lastAnn=0;
+function mtoast(m){ try{ const box=$('botToasts'); if(!box) return; const d=document.createElement('div'); d.textContent=m; box.appendChild(d); setTimeout(()=>{ try{d.remove();}catch(e){} },5000); while(box.children.length>3) box.firstChild.remove(); }catch(e){} }
+function hookErr(){
+  try{
+    if(window.pushErr&&!window.pushErr._sys){
+      const pe=window.pushErr;
+      window.pushErr=function(m,src){ try{ pe(m,src); }catch(e){} setTimeout(paint,600); };
+      window.pushErr._sys=1;
+    }
+  }catch(e){}
+}
 window.SYSAID={check:check,fix:fix,paint:paint,cardStates:cardStates};
 })();
 </script>
