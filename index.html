@@ -1827,7 +1827,7 @@ function paintTopTick(){ return;
     const top=(RADAR.analyzed||[]).filter(a=>a.c&&!isStable(a.c)).sort((a,b)=>(b.c.total_volume||0)-(a.c.total_volume||0)).slice(0,12);
     if(!top.length) return;
     const one=top.map(a=>{ const c=a.c, ch=c.price_change_percentage_24h_in_currency||0;
-      return '<span class="tk-item"><b>'+(c.symbol||'').toUpperCase()+'</b> '+money(c.current_price)+' <span class="'+(ch>=0?'up':'down')+'">'+(ch>=0?'▲':'▼')+Math.abs(ch).toFixed(1)+'%</span></span>'; }).join(' • ');
+      return '<span class="tk-item"><b>'+(c.symbol||'').toUpperCase()+'</b> '+money(window.realPx(c,c.current_price))+' <span class="'+(ch>=0?'up':'down')+'">'+(ch>=0?'▲':'▼')+Math.abs(ch).toFixed(1)+'%</span></span>'; }).join(' • ');
     m.innerHTML=one+' • '+one;
   }catch(e){}
 }
@@ -1854,7 +1854,7 @@ function paintTicker(){
   const top=(RADAR.analyzed||[]).filter(a=>a.c&&!isStable(a.c)).sort((a,b)=>(b.c.total_volume||0)-(a.c.total_volume||0)).slice(0,15);
   if(!top.length) return;
   const one=top.map(a=>{ const c=a.c, ch=c.price_change_percentage_24h_in_currency||0;
-    return '<span class="tk-item"><b>'+(c.symbol||'').toUpperCase()+'</b> '+money(c.current_price)+' <em class="'+(ch>=0?'up':'down')+'">'+(ch>=0?'▲':'▼')+Math.abs(ch).toFixed(1)+'%</em></span>'; }).join('<span class="tk-sep">•</span>');
+    return '<span class="tk-item"><b>'+(c.symbol||'').toUpperCase()+'</b> '+money(window.realPx(c,c.current_price))+' <em class="'+(ch>=0?'up':'down')+'">'+(ch>=0?'▲':'▼')+Math.abs(ch).toFixed(1)+'%</em></span>'; }).join('<span class="tk-sep">•</span>');
   m.innerHTML=one+'<span class="tk-sep">•</span>'+one;
 }
 function msg(html,cls){ const box=$('msgBox'); if(!box) return; box.innerHTML=html?'<div class="'+(cls||'okk')+'">'+html+'</div>':''; }
@@ -1951,6 +1951,21 @@ function start(){
   if(navigator.wakeLock){ try{ navigator.wakeLock.request('screen').then(l=>{ try{ l.release(); }catch(e){} }).catch(()=>{}); }catch(e){} }
 }
 window.RADAR=RADAR; window.AI_MONEY=money;
+window.BINPX={map:{},t:0,busy:false};
+window.binSym=function(c){ try{ var s=String((c&&(c.symbol||''))||'').toUpperCase().replace(/[^A-Z0-9]/g,''); if(!s||/^(USDT|USDC|DAI|TUSD|FDUSD|USDE|EUR|USD|TRY|BRL|GBP|ARS)$/.test(s)) return null; return s+'USDT'; }catch(e){ return null; } };
+window.realPx=function(c,fb){ try{ var s=window.binSym(c); var p=s&&window.BINPX.map[s]; if(p>0) return p; }catch(e){} return (c&&c.current_price)||fb||0; };
+async function refreshBinPx(){
+  if(window.BINPX.busy) return; window.BINPX.busy=true;
+  try{
+    var ctl=new AbortController(), to=setTimeout(function(){ try{ctl.abort();}catch(e){} },12000);
+    try{
+      var r=await fetch('https://api.binance.com/api/v3/ticker/price',{signal:ctl.signal,cache:'no-store'});
+      if(r.ok){ var j=await r.json(), m={}; for(var i=0;i<j.length;i++){ var o=j[i]; if(o&&o.symbol&&o.price) m[o.symbol]=parseFloat(o.price); } window.BINPX.map=m; window.BINPX.t=Date.now(); }
+    }finally{ clearTimeout(to); }
+  }catch(e){}
+  window.BINPX.busy=false;
+}
+document.addEventListener('DOMContentLoaded',function(){ try{ refreshBinPx(); }catch(e){} setInterval(function(){ try{ if(!document.hidden) refreshBinPx(); }catch(e){} },30000); setTimeout(function(){ try{ refreshBinPx(); }catch(e){} },5000); });
 window.AI_RESCAN=function(){ try{ cycle(); return true; }catch(e){ return false; } };
 window.AI_ONEDECISION=function(){ try{ paintOneDecision(); return true; }catch(e){ return false; } };
 window.AI_EMERGENCY=function(){ try{ RADAR.demo=true; RADAR.coins=DEMO.slice(); scan(); return (RADAR.analyzed||[]).length; }catch(e){ return 0; } };
@@ -2887,7 +2902,7 @@ function tick(){
     const list = getList();
     if(!list.length) return;
     // حدّث الأسعار الحية أولاً
-    list.forEach(a=>{ if(!LIVE.px[a.c.id]) LIVE.px[a.c.id] = a.c.current_price||a.entry; });
+    list.forEach(a=>{ if(!LIVE.px[a.c.id]) LIVE.px[a.c.id] = window.realPx(a.c,a.c.current_price)||a.entry; });
     const cards = document.querySelectorAll('.ai-card[data-id]');
     cards.forEach(card=>{
       const a = list.find(x=>x.c.id===card.dataset.id);
@@ -4504,7 +4519,7 @@ function scan(){
       var a=all[i]; if(!a||!a.c) continue;
       var r=classify(a); if(!r) continue;
       r.a=a; out.push(r);
-      var id=a.c.id, px0=a.c.current_price||0;
+      var id=a.c.id, px0=window.realPx(a.c,a.c.current_price)||0;
       if(px0>0){
         var b=mem.base[id], tp=mem.top[id];
         if((r.lv==='green'||r.lv==='orange')&&(!b||now-(b.t||0)>24*3600*1000||px0<b.px*0.9)){ mem.base[id]={px:px0,t:now}; mem.top[id]={px:px0,t:now}; }
@@ -4536,7 +4551,7 @@ function scan(){
         else if(dv>0||dpx!==0){ fcls='f-surge'; ftxt='🟠 تسارع سيولة — حركة حقيقية'; }
       }
       var wpx=Math.max(4,Math.min(100,to*1.5));
-      var bb=mem.base[c.id], live0=c.current_price||0, botHtml='';
+      var bb=mem.base[c.id], live0=window.realPx(c,c.current_price)||0, botHtml='';
       if(bb&&bb.px>0&&live0>0){
         var up=((live0-bb.px)/bb.px*100);
         botHtml='<div class="pex-flow">🐋 دخول الحيتان من القاع <b>'+money(bb.px)+'</b> • الآن '+(up>=0?'+':'')+up.toFixed(1)+'% فوقه</div>';
@@ -4559,14 +4574,14 @@ function scan(){
       else if(r.lv==='red'&&bb&&bb.px>0&&live0>bb.px*1.03) verdict='<div class="pex-state">⛔ لا تدخل وسط الانفجار — فاتك الدخول مع الحيتان</div>';
       else if(r.lv==='red') verdict='<div class="pex-state">✅ انفجار بدأ من القاع — دخول مع الحيتان</div>';
       else verdict='<div class="pex-state">🟢 ابقَ — الحيتان ما زالت داخل</div>';
-      var h='<div class="pex-card st-'+r.lv+'"><div class="pex-top"><span class="pex-dot"></span><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(c.current_price)+'</span></div>'
+      var h='<div class="pex-card st-'+r.lv+'"><div class="pex-top"><span class="pex-dot"></span><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(window.realPx(c,c.current_price))+'</span></div>'
       +'<div class="pex-meta">🐋 سيولة حقيقية <b>'+fmtBig(vol)+'</b> • دوران <b>'+to.toFixed(1)+'%</b> • 1س '+((w.h1||0)>=0?'+':'')+(w.h1||0).toFixed(1)+'% • 24س '+(((c.price_change_percentage_24h_in_currency||0))>=0?'+':'')+(c.price_change_percentage_24h_in_currency||0).toFixed(1)+'%</div>'
       +'<div class="pex-liq '+fcls+'"><i style="width:'+wpx.toFixed(0)+'%"></i></div><div class="pex-flow">'+ftxt+'</div>'+botHtml+cdHtml+verdict
       +'<div class="pex-state">'+r.txt+'</div>';
       if(r.lv==='red'&&r.dir==='pump') h+='<div class="pex-plan">💰 دخول <b>'+money(r.entry)+'</b> • 🎯 هدف <b>'+money(r.tp)+'</b> • 🛡 وقف <b>'+money(r.sl)+'</b></div>';
       return h+'</div>';
     }).join(''):'<div class="muted" style="font-size:.8rem">لا إشارات حيتان حالياً — القسم يراقب وحده كل دورة</div>';
-    for(var j=0;j<all.length;j++){ var cc=all[j].c, ww=all[j].whale||{}; prev[cc.id]={h1:ww.h1||0,vol:cc.total_volume||0,px:cc.current_price||0}; }
+    for(var j=0;j<all.length;j++){ var cc=all[j].c, ww=all[j].whale||{}; prev[cc.id]={h1:ww.h1||0,vol:cc.total_volume||0,px:window.realPx(cc,cc.current_price)||0}; }
     var ks=Object.keys(prev); if(ks.length>600) ks.slice(0,ks.length-600).forEach(function(k){ delete prev[k]; });
   }catch(e){}
 }
