@@ -4457,8 +4457,8 @@ window.MKthead={refresh:paint};
 var $=function(id){ return document.getElementById(id); };
 var LS='ai_pex_v1', COOL=30*60*1000, MINV=10000000;
 var STABLES={usdt:1,usdc:1,dai:1,tusd:1,busd:1,usdd:1,fdusd:1,pyusd:1,usde:1,eurs:1,susd:1,usdb:1,usdx:1,usdy:1};
-var prev={}, mem={warned:{},fired:{},base:{}};
-try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m){ mem.warned=m.warned||{}; mem.fired=m.fired||{}; mem.base=m.base||{}; } }catch(e){}
+var prev={}, mem={warned:{},fired:{},base:{},top:{}};
+try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m){ mem.warned=m.warned||{}; mem.fired=m.fired||{}; mem.base=m.base||{}; mem.top=m.top||{}; } }catch(e){}
 function save(){ try{ localStorage.setItem(LS,JSON.stringify(mem)); }catch(e){} }
 function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e){} if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
 function toast(m){ try{ if(window.toast) window.toast(m); }catch(e){} }
@@ -4494,10 +4494,14 @@ function scan(){
       var r=classify(a); if(!r) continue;
       r.a=a; out.push(r);
       var id=a.c.id, px0=a.c.current_price||0;
-      if((r.lv==='green'||r.lv==='orange')&&px0>0){
-        var b=mem.base[id];
-        if(!b||now-(b.t||0)>24*3600*1000||px0<b.px*0.9) mem.base[id]={px:px0,t:now};
-        else if(px0<b.px){ b.px=px0; b.t=now; }
+      if(px0>0){
+        var b=mem.base[id], tp=mem.top[id];
+        if((r.lv==='green'||r.lv==='orange')&&(!b||now-(b.t||0)>24*3600*1000||px0<b.px*0.9)){ mem.base[id]={px:px0,t:now}; mem.top[id]={px:px0,t:now}; }
+        else if(b&&px0<b.px&&(r.lv==='green'||r.lv==='orange')){ b.px=px0; b.t=now; if(tp&&tp.px<b.px) tp.px=b.px; }
+        if(r.dir==='pump'&&(r.lv==='green'||r.lv==='orange'||r.lv==='red')){
+          if(!tp||now-(tp.t||0)>24*3600*1000) mem.top[id]={px:px0,t:now};
+          else if(px0>tp.px){ tp.px=px0; tp.t=now; }
+        }
       }
       if(r.lv==='green'&&(!mem.warned[id]||now-mem.warned[id]>COOL)){ mem.warned[id]=now; toast('🟢 '+(a.c.symbol||'').toUpperCase()+': تجميع حيتان — ستنفجر'); }
       if(r.lv==='orange'&&(!mem.warned[id+'o']||now-mem.warned[id+'o']>COOL)){ mem.warned[id+'o']=now; toast('🟠 '+(a.c.symbol||'').toUpperCase()+': تقترب من الانفجار'); }
@@ -4525,6 +4529,11 @@ function scan(){
       if(bb&&bb.px>0&&live0>0){
         var up=((live0-bb.px)/bb.px*100);
         botHtml='<div class="pex-flow">🐋 دخول الحيتان من القاع <b>'+money(bb.px)+'</b> • الآن '+(up>=0?'+':'')+up.toFixed(1)+'% فوقه</div>';
+      }
+      var tt=mem.top[c.id];
+      if(tt&&tt.px>0&&live0>0&&(r.dir==='dump'||live0<tt.px*0.985)){
+        var dn=((live0-tt.px)/tt.px*100);
+        botHtml+='<div class="pex-flow">📤 خروج الحيتان من القمة <b>'+money(tt.px)+'</b> • الآن '+dn.toFixed(1)+'% تحتها</div>';
       }
       var h='<div class="pex-card st-'+r.lv+'"><div class="pex-top"><span class="pex-dot"></span><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(c.current_price)+'</span></div>'
       +'<div class="pex-meta">🐋 سيولة حقيقية <b>'+fmtBig(vol)+'</b> • دوران <b>'+to.toFixed(1)+'%</b> • 1س '+((w.h1||0)>=0?'+':'')+(w.h1||0).toFixed(1)+'% • 24س '+(((c.price_change_percentage_24h_in_currency||0))>=0?'+':'')+(c.price_change_percentage_24h_in_currency||0).toFixed(1)+'%</div>'
