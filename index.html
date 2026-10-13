@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v191.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v192.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v191.0 الأول سريعة فقط)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v192.0 الأول سريعة فقط)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -5197,9 +5197,9 @@ window.MKthead={refresh:paint};
 "use strict";
 const $=id=>document.getElementById(id);
 const LS='ai_bot61_v1';
-const S2={enabled:false,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,trades:{},log:[],busy:false,lastScan:null,lastTick:0,guardT:0};
-function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','equity','equityStart','day','dayPnl','profit','closed','wins','trades','log','lastScan','lastTick'].forEach(k=>{ if(j[k]!==undefined) S2[k]=j[k]; }); }catch(e){} }
-function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S2.enabled,equity:S2.equity,equityStart:S2.equityStart,day:S2.day,dayPnl:S2.dayPnl,profit:S2.profit,closed:S2.closed,wins:S2.wins,trades:S2.trades,log:(S2.log||[]).slice(0,20),lastScan:S2.lastScan||null,lastTick:S2.lastTick||0})); }catch(e){} }
+const S2={enabled:false,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,trades:{},log:[],busy:false,lastScan:null,lastTick:0,guardT:0,closedList:[]};
+function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','equity','equityStart','day','dayPnl','profit','closed','wins','trades','log','lastScan','lastTick','closedList'].forEach(k=>{ if(j[k]!==undefined) S2[k]=j[k]; }); }catch(e){} }
+function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S2.enabled,equity:S2.equity,equityStart:S2.equityStart,day:S2.day,dayPnl:S2.dayPnl,profit:S2.profit,closed:S2.closed,wins:S2.wins,trades:S2.trades,log:(S2.log||[]).slice(0,20),lastScan:S2.lastScan||null,lastTick:S2.lastTick||0,closedList:(S2.closedList||[]).slice(0,10)})); }catch(e){} }
 function log(m){ S2.log=S2.log||[]; S2.log.unshift({t:Date.now(),m:String(m)}); S2.log=S2.log.slice(0,20); save(); }
 async function fetchJ(url,ms){ const c=new AbortController(); const to=setTimeout(()=>{ try{c.abort();}catch(e){} },ms||12000); try{ const r=await fetch(url,{signal:c.signal,cache:'no-store'}); if(!r.ok) return null; return await r.json(); }catch(e){ return null; } finally{ clearTimeout(to); } }
 function uni(){
@@ -5230,6 +5230,7 @@ async function catchUp2(){
           st.open=false; S2.profit+=pnl; S2.closed++; S2.dayPnl+=pnl; S2.equity+=pnl;
           if(pnl>=0) S2.wins++;
           S2.trades[st.id]=st; n++;
+          S2.closedList=S2.closedList||[]; S2.closedList.unshift({coin:st.coin,exit:hit.px,why:hit.why,pnl:pnl,t:Date.now()}); S2.closedList=S2.closedList.slice(0,10);
           log('🌙 الثاني لحق غيابك: '+st.coin+' لامس '+(hit.why==='STOP'?'الوقف 🛡':'الهدف 🎯')+' — أُغلق بسعر '+hit.px);
         }
       }catch(e){}
@@ -5295,6 +5296,7 @@ async function scan(){
           S2.profit+=pnl; S2.closed++; S2.dayPnl+=pnl; S2.equity+=pnl;
           if(pnl>=0) S2.wins++;
           S2.trades[st.id]=st;
+          S2.closedList=S2.closedList||[]; S2.closedList.unshift({coin:st.coin,exit:live,why:why,pnl:pnl,t:Date.now()}); S2.closedList=S2.closedList.slice(0,10);
           log((pnl>=0?'✅ ':'🔴 ')+'الثاني أغلق '+st.coin+' ('+why+') '+(pnl>=0?'+':'')+'$'+pnl.toFixed(2));
         }
       }catch(e){}
@@ -5359,17 +5361,34 @@ function paintTeam(){
       const eq=S2.equity||0;
       const age=S2.lastTick?Math.max(0,Math.round((Date.now()-S2.lastTick)/1000)):null;
       const blocked=(S2.dayPnl||0)<=-10||eq<20;
-      try{ bx.className='bot-team'+(hasOpen?(openUp>=0?' good':' bad'):(S2.enabled?' good':'')); }catch(e){}
-      bx.innerHTML='<b>🤖 الثاني — صفقات متوسطة من البطاقات (4H)</b> '+(S2.enabled?'🟢 يعمل':'⏸ متوقف')+(blocked?' ⛔ لا دخول جديد (حد الخسارة/رأس المال)':'')+' • 💰 $'+eq.toFixed(2)+' • ربح '+(p2>=0?'+':'')+'$'+p2.toFixed(2)+' ('+S2.wins+'/'+S2.closed+')'+(age==null?'':' • آخر فحص منذ '+age+' ث')+'<br>'+oline+'<br>'+ls+'<br><small>'+la+'</small>';
+      let unreal=0; try{ open.forEach(st=>{ let lv=st.entry; try{ if(S2.live&&Date.now()-S2.live.t<60000) lv=S2.live.px; }catch(e){} unreal+=(lv-st.entry)*st.qty; }); }catch(e){}
+      const tot=(S2.profit||0)+unreal, eqLive=eq+unreal, dp=S2.dayPnl||0;
+      const cl=(S2.closedList||[]).slice(0,5);
+      const closedHtml=cl.length?cl.map(h=>'<span>'+(h.pnl>=0?'✅ ':'🔴 ')+h.coin+' '+(h.pnl>=0?'+':'')+'$'+h.pnl.toFixed(2)+'</span>').join(' • '):'';
+      try{ bx.className='bot-team'+(hasOpen?(unreal>=0?' good':' bad'):(S2.enabled?' good':'')); }catch(e){}
+      bx.innerHTML='<b>🤖 الثاني — صفقات متوسطة من البطاقات (4H)</b> '+(S2.enabled?'🟢 يعمل • نبض حي':'⏸ متوقف')+(blocked?' ⛔ لا دخول جديد (حد الخسارة/رأس المال)':'')+'<br>🔗 <span>💰 الربح: '+(tot>=0?'+':'')+'$'+tot.toFixed(2)+' (محقق '+(p2>=0?'+':'')+'$'+p2.toFixed(2)+')</span> • <span>💰 الحي: $'+eqLive.toFixed(2)+' (البداية $'+(S2.equityStart||0).toFixed(2)+')</span> • 📊 اليوم '+(dp>=0?'+':'')+'$'+dp.toFixed(2)+' • ⚖️ '+S2.wins+'/'+S2.closed+(age==null?'':' • آخر فحص منذ '+age+' ث')+'<br>'+oline+(closedHtml?'<br>📜 المكتملة: '+closedHtml:'')+'<br>'+ls+'<br><small>'+la+'</small>';
     }
   }catch(e){}
 }
-function bind(){
-  const a=$('bot2Start'); if(a&&!a._b){ a._b=1; a.onclick=()=>{ S2.enabled=true; S2.day=S2.day||new Date().toISOString().slice(0,10); save(); paintTeam(); log('▶ الثاني يعمل — صفقات متوسطة (4H) من البطاقات'); (async()=>{ try{ await catchUp2(); }catch(e){} try{ scan(); }catch(e){} })(); }; }
+async function refreshLive2(){
+  try{
+    if(!S2.enabled||document.hidden) return;
+    const open=Object.values(S2.trades||{}).filter(x=>x&&x.open);
+    if(!open.length) return;
+    const st=open[0];
+    const kl=await fetchJ('https://api.binance.com/api/v3/klines?symbol='+st.sym+'&interval=1m&limit=2',10000);
+    if(!kl||!kl.length) return;
+    const live=parseFloat(kl[kl.length-1][4]);
+    if(!(live>0)) return;
+    S2.live={px:live,t:Date.now()};
+    paintTeam();
+  }catch(e){}
+}
+function bind(){ if(a&&!a._b){ a._b=1; a.onclick=()=>{ S2.enabled=true; S2.day=S2.day||new Date().toISOString().slice(0,10); save(); paintTeam(); log('▶ الثاني يعمل — صفقات متوسطة (4H) من البطاقات'); (async()=>{ try{ await catchUp2(); }catch(e){} try{ scan(); }catch(e){} })(); }; }
   const b=$('bot2Stop'); if(b&&!b._b){ b._b=1; b.onclick=()=>{ S2.enabled=false; save(); paintTeam(); log('⏸ الثاني متوقف — المفتوحة تبقى بلا إدارة، أغلقها يدوياً'); }; }
 }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ (async()=>{ try{ await catchUp2(); }catch(e){} try{ scan(); }catch(e){} })(); try{ paintTeam(); }catch(e){} } });
-document.addEventListener('DOMContentLoaded',()=>{ load(); bind(); paintTeam(); if(S2.enabled){ log('🔁 الثاني استأنف تلقائياً بعد الفتح — يواصل المراقبة'); (async()=>{ try{ await catchUp2(); }catch(e){} try{ scan(); }catch(e){} })(); } setInterval(()=>{ try{ scan(); }catch(e){} },15000); setInterval(()=>{ try{ if(S2.enabled&&!document.hidden&&Date.now()-(S2.lastTick||0)>90000){ S2.busy=false; log('💓 الثاني: إحياء النبض — استئناف الدورات'); scan(); } }catch(e){} },30000); setInterval(paintTeam,3000); });
+document.addEventListener('DOMContentLoaded',()=>{ load(); bind(); paintTeam(); if(S2.enabled){ log('🔁 الثاني استأنف تلقائياً بعد الفتح — يواصل المراقبة'); (async()=>{ try{ await catchUp2(); }catch(e){} try{ scan(); }catch(e){} })(); } setInterval(()=>{ try{ scan(); }catch(e){} },15000); setInterval(()=>{ try{ if(S2.enabled&&!document.hidden&&Date.now()-(S2.lastTick||0)>90000){ S2.busy=false; log('💓 الثاني: إحياء النبض — استئناف الدورات'); scan(); } }catch(e){} },30000); setInterval(paintTeam,3000); setInterval(()=>{ try{ refreshLive2(); }catch(e){} },10000); });
 window.BOT61={get S(){ return S2; },scan:scan,paint:paintTeam,migrateMedium:migrateMedium,catchUp2:catchUp2};
 })();
 </script>
