@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v181.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v182.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v181.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v182.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2426,7 +2426,7 @@ function cycle(){
       } else if(!(cur>p.entry*1.005)){ p.missN=0; p.missT0=0; }
     p.verdict=v; p.note=note;
     if((v==='T1'||v==='T2')&&prev!==v&&!p.singleCounted){ p.singleCounted=true; try{ doneCount(p.id,'single'); }catch(e){} }
-    if(prev!==v&&(v==='FINAL'||v==='STOP')){ try{ doneCount(p.id,v==='FINAL'?'done':'stop'); }catch(e){} }
+    if(prev!==v&&(v==='FINAL'||v==='STOP')){ try{ const dnN=doneCount(p.id,v==='FINAL'?'done':'stop'); try{ const box=document.getElementById('botToasts'); if(box){ const dd=document.createElement('div'); dd.textContent=(v==='FINAL'?'🏆 '+p.sym+' ضربت كل الأهداف — مكتملة #'+dnN:'🔴 '+p.sym+' ضرب الوقف #'+dnN); box.appendChild(dd); setTimeout(()=>{ try{dd.remove();}catch(e){} },6000); while(box.children.length>3) box.firstChild.remove(); } }catch(e){} }catch(e){} }
     if(prev!==v && (v==='EXIT_NOW'||v==='PULLBACK')){ beep(v==='EXIT_NOW'?[440,330,220]:[660,520,390],0.35,[0,0.35,0.7]); notify(v==='EXIT_NOW'?'🚨 اخرج الآن: '+p.sym:'📉 تراجع بعد الهدف الأول: '+p.sym, note); }
     else if(prev!==v && v==='DANGER'){ beep(660,0.35); notify('⚠️ خطر: '+p.sym, note); }
     p.updatedAt=Date.now();
@@ -5251,24 +5251,7 @@ async function fix(kind){
   const did=[];
   try{
     if(!B||!S) return {did:did,still:['الروبوت غير مهيأ']};
-    if(kind==='pulse'||kind==='all'){
-      S.busy=false; S.m5busy=false; S.cool={}; S.noBin={}; S.lastStop={}; S.m5last=0; S.lastTick=Date.now();
-      did.push('فك التجميد والتبريد والحظر');
-      try{ if(S.enabled&&B.tick) await B.tick(); }catch(e){}
-    }
-    if(kind==='rescan'||kind==='all'){ try{ if(window.AI_RESCAN) window.AI_RESCAN(); }catch(e){} did.push('إعادة فحص السوق'); }
-    if(kind==='mkt'||kind==='all'){ try{ if(window.MKthead) window.MKthead.refresh(); }catch(e){} did.push('تحديث الرئيس'); }
-    if(kind==='start'||kind==='all'){
-      try{ if(!S.enabled&&B.startBot) await B.startBot(true); else if(B.tick) await B.tick(); }catch(e){}
-      did.push('تشغيل الروبوت');
-    }
-    if(kind==='bot2'||kind==='all'){
-      try{
-        const B2=window.BOT61;
-        if(B2&&B2.S){ B2.S.busy=false; if(B2.S.enabled&&B2.scan) await B2.scan(); }
-        did.push('فك تعليق الثاني وإعادة مسحه');
-      }catch(e){}
-    }
+    did.push('فحص فقط — لا تنفيذ (أخبار)');
     try{ if(B.save) B.save(); }catch(e){}
   }catch(e){}
   await new Promise(r=>setTimeout(r,2500));
@@ -5279,10 +5262,8 @@ async function fix(kind){
 }
 async function fixAndVerify(kind){
   try{
-    mtoast('🔧 أُصحح فعلاً الآن...');
     const r=await fix(kind);
-    if(!r.still.length) mtoast('✅ تصحيح فعلي تم ('+(r.did.join(' + ')||'فحص')+') — تحقق بنفسك من المساعد');
-    else mtoast('❌ حاولت ('+(r.did.join(' + ')||'فحص')+') وما زال: '+r.still[0]);
+    mtoast('📰 فحص: '+(r.still.length?('ما زال: '+r.still[0]):'كل شيء سليم')+' — المساعد أخبار فقط');
   }catch(e){}
 }
 function paint(){
@@ -5297,9 +5278,8 @@ function paint(){
         lastSig=sg;
         if(c.issues.length&&Date.now()-lastAnn>120000){
           lastAnn=Date.now();
-          c.issues.forEach(x=>mtoast('⚠️ مشكلة الآن: '+x.t+' — أنا أصلحها'));
-          const kinds={}; c.issues.forEach(x=>{ if(x.f&&x.f!=='none') kinds[x.f]=1; });
-          Object.keys(kinds).forEach(k=>{ try{ fixAndVerify(k); }catch(e){} });
+          c.issues.forEach(x=>mtoast('📰 خبر: '+x.t));
+
 
         }
       }
@@ -5309,12 +5289,12 @@ function paint(){
     if(c.oks.length) h+=c.oks.map(x=>'✅ '+esc(x)).join(' • ')+'<br>';
     if(c.issues.length) h+=c.issues.map(x=>'⚠️ '+esc(x.t)).join('<br>')+'<br>';
     h+='🟢 ضربت الأهداف ('+st.green+'): <b>'+(st.gn.length?esc(st.gn.join(' • ')):'—')+'</b><br>🔴 ضربت الوقف ('+st.red+'): <b>'+(st.rn.length?esc(st.rn.join(' • ')):'—')+'</b>';
-    h+=' <button class="btn btn-sm" data-sysfix="all">🔧 إصلاح تلقائي</button></span>';
+    h+=' <button class="btn btn-sm" data-sysfix="news">📰 تحديث الأخبار</button></span>';
     el.className='one-decision '+cls;
     el.innerHTML=h;
   }catch(e){}
 }
-document.addEventListener('click',e=>{ try{ const b=e.target&&e.target.closest?e.target.closest('[data-sysfix]'):null; if(!b) return; fixAndVerify(b.dataset.sysfix||'all'); }catch(x){} });
+document.addEventListener('click',e=>{ try{ const b=e.target&&e.target.closest?e.target.closest('[data-sysfix]'):null; if(!b) return; try{ paint(); mtoast('📰 حدّثت الأخبار — المساعد مراقبة فقط ولا ينفذ'); }catch(x){} }catch(x){} });
 document.addEventListener('DOMContentLoaded',()=>{ paint(); setInterval(paint,10000); });
 window.addEventListener('error',()=>{ try{ setTimeout(paint,600); }catch(e){} });
 window.addEventListener('unhandledrejection',()=>{ try{ setTimeout(paint,600); }catch(e){} });
