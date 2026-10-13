@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v158.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v159.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v158.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v159.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3344,12 +3344,15 @@ function investWhale(a){
     const vol=c.total_volume||0, mc=c.market_cap||0;
     const to=mc>0?vol/mc:0;
     const h1=c.price_change_percentage_1h_in_currency||0;
+    const h24=c.price_change_percentage_24h_in_currency||0;
     const mom=(a.mom||0), score=a.score||0;
     const whale=(to>=0.15&&h1>-2)||(vol>=100000000&&h1>1.5&&(mom>=60||score>=70));
+    let exp=Math.round(Math.min(800,Math.max(50,to*500+Math.max(0,h1)*12+Math.max(0,h24)*3+mom*0.5)));
+    exp=Math.round(exp/10)*10;
     let txt='';
-    if(whale) txt='🐋 حوت دخل — سيولة $'+(vol/1e6).toFixed(1)+'M (دوران '+(to*100).toFixed(0)+'%) — سيفجرها';
-    return {whale:whale,txt:txt,to:to};
-  }catch(e){ return {whale:false,txt:'',to:0}; }
+    if(whale) txt='🐋 حوت دخل — متوقع +'+exp+'% — سيولة $'+(vol/1e6).toFixed(1)+'M (دوران '+(to*100).toFixed(0)+'%) — سيفجرها';
+    return {whale:whale,txt:txt,to:to,exp:exp};
+  }catch(e){ return {whale:false,txt:'',to:0,exp:50}; }
 }
 function confirmTrade(p){
   try{ if(window.RADAR&&window.RADAR.demo) return {ok:false,why:'⛔ وضع تجريبي — بيانات غير حقيقية، لا دخول حتى عودة البيانات الحية'}; }catch(e){}
@@ -3381,11 +3384,16 @@ function investTargetFor(a){
     const h1=c.price_change_percentage_1h_in_currency||0;
     const h24=c.price_change_percentage_24h_in_currency||0;
     const score=a.score||0, mom=(a.mom||0);
-    // حد العملة الحقيقي من حركتها: تقدير الصعود المتوقع — الأدنى 50% دائماً
-    let est=h24*4+h1*10+score*1.2+mom*0.8;
-    let pct=Math.max(50,Math.min(800,Math.round(est/10)*10));
+    // حد العملة الحقيقي: عند وجود حوت يُؤخذ توقعه، وإلا تقدير الحركة — الأدنى 50% دائماً
+    const wh0=investWhale(a);
+    let pct, why;
+    if(wh0.whale){ pct=wh0.exp; why='توقع الحيتان +'+pct+'% (دوران '+(wh0.to*100).toFixed(0)+'%)'; }
+    else{
+      let est=h24*4+h1*10+score*1.2+mom*0.8;
+      pct=Math.max(50,Math.min(800,Math.round(est/10)*10));
+      why=(pct>=300?'صعود حقيقي قوي':pct>=100?'صعود حقيقي':'حد أدنى آمن')+' (24س '+(h24>=0?'+':'')+h24.toFixed(1)+'%)';
+    }
     const mult=1+pct/100;
-    const why=(pct>=300?'صعود حقيقي قوي':pct>=100?'صعود حقيقي':'حد أدنى آمن')+' (24س '+(h24>=0?'+':'')+h24.toFixed(1)+'%)';
     return {mult:mult,pct:pct,why:why};
   }catch(e){ return {mult:2,pct:100,why:'صعود حقيقي'}; }
 }
@@ -3419,7 +3427,7 @@ function investLive(){
     ranked.sort((p,q)=>((q.w.whale?1:0)-(p.w.whale?1:0))||(q.w.to-p.w.to));
     const a=ranked[0].x, wh=ranked[0].w;
     const tg=investTargetFor(a);
-    return {a:a,mult:tg.mult,pct:tg.pct,why:tg.why,wh:wh.whale,wtxt:wh.txt};
+    return {a:a,mult:tg.mult,pct:tg.pct,why:tg.why,wh:wh.whale,wtxt:wh.txt,wexp:wh.exp};
   }catch(e){ return null; }
 }
 async function openInvest(ladId){
@@ -3522,7 +3530,7 @@ function paintInvest(){
           const tgt=entry*lv.mult, tot=Math.max(1e-9,tgt-entry);
           const prog=Math.max(0,Math.min(100,(live-entry)/tot*100));
           const h1=c0.price_change_percentage_1h_in_currency||0, h24=c0.price_change_percentage_24h_in_currency||0;
-          msg='✅ العلامة المختارة تلقائياً: +'+lv.pct+'% (×'+lv.mult+' — '+lv.why+' حسب الصعود المؤكد) — اضغط 🧠 تلقائي للدخول الجاهز'+(lv.wh?' • '+lv.wtxt:'')+'<br>💰 الدخول: <b>'+money(entry)+'</b> • 🎯 الهدف: <b>'+money(entry*lv.mult)+'</b><br>📌 الحالة الآن: '+investState(lv.a.c.id,live,entry,entry*lv.mult);
+          msg='✅ العلامة المختارة تلقائياً: +'+lv.pct+'% (×'+lv.mult+' — '+lv.why+' حسب الصعود المؤكد) — اضغط 🧠 تلقائي للدخول الجاهز'+(lv.wh?' • '+lv.wtxt:'')+(lv.wh?'<br>📈 متوقع الارتفاع الحقيقي من الحيتان: +'+lv.wexp+'%':'')+'<br>💰 الدخول: <b>'+money(entry)+'</b> • 🎯 الهدف: <b>'+money(entry*lv.mult)+'</b><br>📌 الحالة الآن: '+investState(lv.a.c.id,live,entry,entry*lv.mult);
           liveHtml=investCard(c0,live,entry,entry*lv.mult,lv.pct,(lv.wh?lv.wtxt:''),investState(lv.a.c.id,live,entry,entry*lv.mult));
         }
         else if(S.investMsg){ msg=S.investMsg; }
