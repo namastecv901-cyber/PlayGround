@@ -4472,8 +4472,8 @@ window.MKthead={refresh:paint};
 var $=function(id){ return document.getElementById(id); };
 var LS='ai_pex_v1', COOL=30*60*1000, MINV=10000000;
 var STABLES={usdt:1,usdc:1,dai:1,tusd:1,busd:1,usdd:1,fdusd:1,pyusd:1,usde:1,eurs:1,susd:1,usdb:1,usdx:1,usdy:1};
-var prev={}, mem={warned:{},fired:{},base:{},top:{}};
-try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m){ mem.warned=m.warned||{}; mem.fired=m.fired||{}; mem.base=m.base||{}; mem.top=m.top||{}; } }catch(e){}
+var prev={}, mem={warned:{},fired:{},base:{},top:{},dip:{}};
+try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m){ mem.warned=m.warned||{}; mem.fired=m.fired||{}; mem.base=m.base||{}; mem.top=m.top||{}; mem.dip=m.dip||{}; } }catch(e){}
 function save(){ try{ localStorage.setItem(LS,JSON.stringify(mem)); }catch(e){} }
 function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e){} if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
 function toast(m){ try{ if(window.toast) window.toast(m); }catch(e){} }
@@ -4521,6 +4521,24 @@ function pexRsi(cl){
     for(var i=cl.length-14;i<cl.length;i++){ var d=cl[i]-cl[i-1]; if(d>0) g+=d; else l-=d; }
     if(l===0) return 100;
     return 100-100/(1+g/l);
+  }catch(e){ return null; }
+}
+function pexDip(a){
+  try{
+    var sym=(window.binSym&&window.binSym(a.c))||null; if(!sym) return null;
+    var c=pexK[sym]; if(!c||!c.kl||c.kl.length<10) return null;
+    var kl=c.kl, n=kl.length;
+    var vs=[]; for(var i=n-8;i<n-2;i++) vs.push(parseFloat(kl[i][5])||0);
+    var avg=0; vs.forEach(function(v){ avg+=v; }); avg/=Math.max(1,vs.length);
+    if(!(avg>0)) return null;
+    var lastC=parseFloat(kl[n-1][4]);
+    for(var k=n-3;k<n;k++){
+      var o=parseFloat(kl[k][1]), h=parseFloat(kl[k][2]), l=parseFloat(kl[k][3]), cl=parseFloat(kl[k][4]), v=parseFloat(kl[k][5]);
+      var rg=h-l; if(!(rg>0)) continue;
+      var down=cl<o, bigV=v>=avg*1.6, wick=(Math.min(o,cl)-l)>=rg*0.4, held=lastC>=cl*0.999;
+      if(down&&bigV&&wick&&held) return {ago:n-1-k,depth:l>0?((lastC-l)/l*100):0,vol:v/avg};
+    }
+    return null;
   }catch(e){ return null; }
 }
 function pexSma(cl,n){ try{ if(!cl||cl.length<n) return 0; var s=0; for(var i=cl.length-n;i<cl.length;i++) s+=cl[i]; return s/n; }catch(e){ return 0; } }
@@ -4616,14 +4634,22 @@ async function scan(){
       var late=cd.ok&&(cd.up>=3||cd.rise>=4);
       var cfTag=(r.cf&&r.cf.confirmed)?' — ✅ صعود مؤكد حقيقي':'';
       var trapNow=!!(r.cf&&r.cf.trap)&&!exitNow&&r.dir!=='dump';
+      var dip=null;
+      if(!exitNow&&r.dir!=='dump'&&!trapNow&&!late&&(r.lv==='green'||r.lv==='orange')) dip=pexDip(r.a);
       var verdict='';
       if(exitNow) verdict='<div class="pex-state">🔴 اخرج الآن — الحيتان تخرج فعلاً (حقيقي)</div>';
       else if(r.dir==='dump') verdict='<div class="pex-state">🔴 دامب — لا دخول شراء أبداً</div>';
       else if(trapNow) verdict='<div class="pex-state">🪤 فخ — لا تدخل ('+(r.cf.why||'إشارة وهمية')+')</div>';
       else if(late&&(r.lv==='green'||r.lv==='orange'||r.lv==='red')) verdict='<div class="pex-state">⛔ طلعت '+cd.up+' شمعات (+'+cd.rise.toFixed(1)+'%) — خطير، لا تدخل الآن</div>';
+      else if(dip){
+        var dk=r.a.c.id;
+        if(!mem.dip[dk]||now-mem.dip[dk]>3*3600*1000){ mem.dip[dk]=now; save(); toast('🟢 '+((r.a.c.symbol||'').toUpperCase())+': شمعة دخول الحيتان — ادخل بدون خوف'); }
+        verdict='<div class="pex-state">🟢 شمعة دخول الحيتان تحت (قبل '+dip.ago+' شمعة) — ادخل الآن بدون خوف، الانفجار بعدها مباشرة'+cfTag+'</div>';
+      }
       else if(r.lv==='green') verdict='<div class="pex-state">✅ ادخل مع الحيتان الآن من القاع — حتى لا تخسر'+cfTag+'</div>';
       else if(r.lv==='orange') verdict='<div class="pex-state">✅ ادخل معهم قبل الانفجار — ما زال مبكراً'+cfTag+'</div>';
       else if(r.lv==='red'&&bb&&bb.px>0&&live0>bb.px*1.03) verdict='<div class="pex-state">⛔ لا تدخل وسط الانفجار — فاتك الدخول مع الحيتان</div>';
+      else if(r.lv==='red'&&(mem.dip[r.a.c.id]&&now-mem.dip[r.a.c.id]<3*3600*1000)) verdict='<div class="pex-state">🚀 انفجرت كما توقعت شمعة الحيتان — معهم من القاع'+cfTag+'</div>';
       else if(r.lv==='red') verdict='<div class="pex-state">✅ انفجار بدأ من القاع — دخول مع الحيتان'+cfTag+'</div>';
       else verdict='<div class="pex-state">🟢 ابقَ — الحيتان ما زالت داخل</div>';
       var h='<div class="pex-card st-'+r.lv+'"><div class="pex-top"><span class="pex-dot"></span><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(window.realPx(c,c.current_price))+'</span></div>'
