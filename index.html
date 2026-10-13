@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v154.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v155.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v154.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v155.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1555,7 +1555,7 @@ body.linkmode #masterFab{display:none!important}
       <div data-opane="errs" hidden><div style="margin-bottom:8px"><button class="btn btn-sm" id="errClear">🧹 مسح</button></div><ul class="log-list" id="errLog"></ul></div>
       <div data-opane="links" hidden>
         <p class="muted" style="font-size:.76rem">رابط واحد بيدك: انسخ للنشر، جدد لقتل القديم ونشر جديد، احذف للإيقاف الكامل. يتغير تلقائياً كل 24 ساعة. الأصل عندك فقط (بدون رابط + PIN).</p>
-        <div class="link-row"><b>🔗 رابط النشر</b><code id="todayLinkTxt">—</code><span class="ok" id="todayLinkSt">🟢 نشط</span><span style="margin-inline-start:auto;display:flex;gap:4px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" id="todayLinkCopy">📋 نسخ</button><button class="btn btn-sm" id="todayLinkNew">🆕 جديد</button><button class="btn btn-sm" id="todayLinkStop">⏸ إيقاف</button><button class="btn btn-sm" id="todayLinkDel">🗑 حذف</button></span></div>
+        <div class="link-row"><b>🔗 رابط النشر</b><code id="todayLinkTxt">—</code><span class="ok" id="todayLinkSt">🟢 نشط</span><span style="margin-inline-start:auto;display:flex;gap:4px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" id="todayLinkCopy">📋 نسخ</button><button class="btn btn-sm" id="todayLinkTest">🔍 تجربة</button><button class="btn btn-sm" id="todayLinkNew">🆕 جديد</button><button class="btn btn-sm" id="todayLinkStop">⏸ إيقاف</button><button class="btn btn-sm" id="todayLinkDel">🗑 حذف</button></span></div>
         <div class="muted" id="linkMsg" style="font-size:.74rem"></div>
         <div class="link-row"><b>📥 تحميلات التطبيق (تثبيتات فعلية من كل الأجهزة)</b><code id="dlCount">…</code><span style="margin-inline-start:auto"><button class="btn btn-sm" id="dlRefresh">🔄 تحديث</button></span></div>
         <div id="linksList"></div>
@@ -4763,6 +4763,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const s=e.target.closest('[data-link-stop]'); if(s){ try{ const L=getLinks(); const d=s.dataset.linkStop; if(L['stop:'+d]) delete L['stop:'+d]; else L['stop:'+d]=Date.now(); saveLinks(L); window.__paintLinks(); sess('المالك',(L['stop:'+d]?'إيقاف رابط ':'تشغيل رابط ')+d); }catch(err){} return; }
   }catch(err){} });
   const lc=$('todayLinkCopy'); if(lc&&!lc._b){ lc._b=1; lc.onclick=()=>{ try{ const tx=$('todayLinkTxt').textContent; if(!tx||tx.indexOf('guest=1')<0){ const m=$('linkMsg'); if(m){ m.textContent='⚠️ لا رابط — اضغط 🆕 جديد أولاً'; m.style.color='#ff9aa2'; } return; } copyTxt(tx,lc,'✅ نُسخ — انشره في قناتك الآن'); sess('المالك','نسخ رابط النشر'); }catch(e){} }; }
+  const lt=$('todayLinkTest'); if(lt&&!lt._b){ lt._b=1; lt.onclick=()=>{ try{ const tx=($('todayLinkTxt').textContent||'').trim(); const m=$('linkMsg'); if(!tx||tx.indexOf('guest=1')<0){ if(m){ m.textContent='⚠️ لا رابط — اضغط 🆕 جديد أولاً'; m.style.color='#ff9aa2'; } return; } if(m){ m.textContent='🔍 فُتح الرابط للتجربة — إن رأيت التطبيق يعمل فالرابط سليم وانشره'; m.style.color='#1fe196'; } sess('المالك','تجربة رابط النشر'); try{ window.open(tx,'_blank'); }catch(e){ location.href=tx; } }catch(e){} }; }
   const ln=$('todayLinkNew'); if(ln&&!ln._b){ ln._b=1; ln.onclick=()=>{ try{ newCurLink(); window.__paintLinks(); const m=$('linkMsg'); if(m){ m.textContent='🆕 رابط جديد جاهز — القديم مات. انسخه وانشره'; m.style.color='#1fe196'; } }catch(e){} }; }
   const ls=$('todayLinkStop'); if(ls&&!ls._b){ ls._b=1; ls.onclick=()=>{ try{ const L=getLinks(); const t=dayStr(0); if(!(L.cur&&L.cur.code)){ const m=$('linkMsg'); if(m){ m.textContent='⚠️ لا رابط — اضغط 🆕 جديد أولاً'; m.style.color='#ff9aa2'; } return; } if(L['stop:'+t]) delete L['stop:'+t]; else L['stop:'+t]=Date.now(); saveLinks(L); window.__paintLinks(); sess('المالك',(L['stop:'+t]?'إيقاف رابط النشر':'تشغيل رابط النشر')); }catch(e){} }; }
   const ld=$('todayLinkDel'); if(ld&&!ld._b){ ld._b=1; ld.onclick=()=>{ try{ delCurLink(); window.__paintLinks(); const m=$('linkMsg'); if(m){ m.textContent='🗑 حُذف — الرابط القديم لا يفتح. اضغط 🆕 لنشر رابط جديد'; m.style.color='#ff9aa2'; } }catch(e){} }; }
