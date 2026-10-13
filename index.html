@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v188.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v189.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v188.0 الأول للنهاية إلا بالوقف)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v189.0 الأول سريعة والثاني متوسطة)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1479,7 +1479,6 @@ body.linkmode #masterFab{display:none!important}
     <label class="chk"><input type="checkbox" id="botSoloFree" checked> 🤖 مستقل عن البطاقات — يصطاد البامب وحده (1m→15m)</label>
     <label>💰 رأس مال/صفقة $<input id="botCap" type="number" value="20" min="5" step="5"></label>
     <label>📦 صفقات قصوى<input id="botMax" type="number" value="3" min="1" max="10" step="1"></label>
-    <label class="chk"><input type="checkbox" id="botFast"> ⚡ سريعة فقط 15m</label>
     <label>🛡 حد الخسارة اليومية $<input id="botDay" type="number" value="10" min="5" step="5"></label>
     <label>🎯 هدف الربح اليومي $<input id="botGoal" type="number" value="10" min="1" step="5"></label>
     <label class="chk"><input type="checkbox" id="botRecOn" checked> 🔁 استرداد الخسارة</label>
@@ -3624,10 +3623,10 @@ async function openTrade(p){
   const id=p.id;
   if(S.trades[id]) return S.trades[id].skip?null:S.trades[id];
   if(S.brain==='solo') return null;
-  // ⚡ وضع الصفقات السريعة: فقط إشارات بفريم 15m المثبّت
-  if(S.fastOnly){
+  // ⚡ الأول: صفقات سريعة 15m فقط من البطاقات (المتوسطة 4H للروبوت الثاني)
+  {
     let tf=''; try{ tf=(((window.PLAN40&&window.PLAN40.get(id))||{}).tf)||''; }catch(e){}
-    if(tf.indexOf('15m')!==0){ if(coolOk(id)){ coolSet(id); log('⏱ '+p.sym+': ليست صفقة سريعة (15m) — تُتجاهل'); } return null; }
+    if(tf.indexOf('15m')!==0){ if(coolOk(id)){ coolSet(id); log('⏱ '+p.sym+': متوسطة (4H) — للروبوت الثاني، الأول للسريعة فقط'); } return null; }
   }
   const nOpen=Object.values(S.trades).filter(t=>t&&t.open).length;
   if(S.goalDone){ return null; }
@@ -5260,29 +5259,40 @@ async function scan(){
     if(Object.values(S2.trades).some(x=>x&&x.open)) return;
     if(S2.dayPnl<=-10||S2.equity<20){ if(Date.now()-(S2.guardT||0)>600000){ S2.guardT=Date.now(); log('⛔ الثاني: لا دخول جديد — '+(S2.dayPnl<=-10?('حد الخسارة اليومية ('+S2.dayPnl.toFixed(1)+'$)'):('رأس المال $'+(S2.equity||0).toFixed(2)+' تحت الحد'))+' — زد رأس المال أو انتظر الغد'); } return; }
     let best=null;
-    for(const u of uni()){
-      try{
-        const kl=await fetchJ('https://api.binance.com/api/v3/klines?symbol='+u.sym+'&interval=5m&limit=20',12000);
-        if(!kl||kl.length<12) continue;
-        const s=bs(kl);
-        if(s<65) continue;
-        const k1=await fetchJ('https://api.binance.com/api/v3/klines?symbol='+u.sym+'&interval=1m&limit=20',12000);
-        if(!k1||k1.length<12) continue;
-        const c=k1.map(k=>parseFloat(k[4])), o=k1.map(k=>parseFloat(k[1]));
-        if(!(c[c.length-1]>o[o.length-1]&&c[c.length-1]>c[c.length-2])) continue;
-        const entry=c[c.length-1];
-        if(!best||s>best.s) best={u:u,s:s,entry:entry};
-      }catch(e){}
-    }
-    if(best){ S2.lastScan={sym:best.u.s,s:best.s,t:Date.now()};
+    try{
+      const G=(window.GUARDIAN&&window.GUARDIAN.G)||{pos:[]};
+      const an=(window.RADAR&&window.RADAR.analyzed)||[];
+      for(const g of (G.pos||[])){
+        try{
+          if(!g||!g.open||!g.id) continue;
+          if(S2.trades['b61:'+g.id]) continue;
+          let tf=''; try{ tf=((window.PLAN40&&window.PLAN40.get(g.id))||{}).tf||''; }catch(e){}
+          if(tf.indexOf('15m')===0) continue;
+          const a=an.find(x=>x&&x.c&&x.c.id===g.id);
+          if(!a) continue;
+          let P=null; try{ P=window.DEALS.planOf(a); }catch(e){}
+          if(!P||!P.entry||!P.t3||!P.sl) continue;
+          const live0=a.c.current_price||P.entry;
+          if(Math.abs(live0-P.entry)/P.entry>0.005) continue;
+          let cf={ok:true}; try{ cf=window.BOT49.confirmTrade({id:g.id,sym:(a.c.symbol||g.id),entry:P.entry}); }catch(e){}
+          if(!cf.ok) continue;
+          const sc=a.score||0;
+          if(!best||sc>best.score) best={g:g,a:a,P:P,score:sc};
+        }catch(e){}
+      }
+    }catch(e){}
+    if(best){
+      const symU=String(best.a.c.symbol||best.g.id).toUpperCase();
+      S2.lastScan={sym:symU,s:Math.round(best.score),t:Date.now()};
       const stake=Math.min(20,S2.equity*0.2,S2.equity);
       if(stake>=5){
-        const qty=stake/best.entry;
-        S2.trades['b61:'+best.u.s]={id:'b61:'+best.u.s,sym:best.u.sym,coin:best.u.s,qty:qty,entry:best.entry,t1:best.entry*1.02,sl:best.entry*0.99,peak:best.entry,open:true,t0:Date.now()};
+        const qty=stake/best.P.entry;
+        S2.trades['b61:'+best.g.id]={id:'b61:'+best.g.id,sym:((best.g.sym||symU)+'').toUpperCase().replace(/[^A-Z0-9]/g,'')+'USDT',coin:symU,qty:qty,entry:best.P.entry,t1:best.P.t3,sl:best.P.sl,peak:best.P.entry,open:true,t0:Date.now(),src:'card4H'};
         save();
-        log('🤖 الثاني دخل '+best.u.s+' @ '+best.entry+' (قوة '+best.s+' — اختراق 5m + تأكيد 1m)');
+        log('🤖 الثاني دخل '+symU+' (متوسطة 4H من البطاقة) @ '+best.P.entry+' — هدف '+best.P.t3+' • وقف '+best.P.sl);
       }
     }
+    else if(!Object.values(S2.trades).some(x=>x&&x.open)){ if(Date.now()-(S2.idleT||0)>600000){ S2.idleT=Date.now(); log('🔍 الثاني: لا بطاقات متوسطة (4H) جاهزة الآن — أراقب البطاقات'); } }
   }catch(e){}
   finally{ S2.busy=false; }
   save(); paintTeam();
@@ -5299,19 +5309,19 @@ function paintTeam(){
       const open=Object.values(S2.trades).filter(x=>x&&x.open);
       let oline='لا صفقة مفتوحة';
       let openUp=0, hasOpen=open.length>0;
-      if(open.length){ const st=open[0]; let lv=st.entry, up=0; try{ if(S2.live&&Date.now()-S2.live.t<30000){ lv=S2.live.px; up=(lv-st.entry)*st.qty; } }catch(e){} openUp=up; oline='<span class="live-dot"></span>🟢 '+st.coin+' دخول '+st.entry+' • 💵 حي '+lv+' • ربح <span class="'+(up>=0?'up':'down')+'">'+(up>=0?'+':'')+'$'+up.toFixed(2)+'</span> • هدف '+st.t1+' • وقف '+st.sl; }
+      if(open.length){ const st=open[0]; let lv=st.entry, up=0; try{ if(S2.live&&Date.now()-S2.live.t<30000){ lv=S2.live.px; up=(lv-st.entry)*st.qty; } }catch(e){} openUp=up; oline='<span class="live-dot"></span>🟢 '+st.coin+' دخول '+st.entry+' • 💵 حي '+lv+' • ربح <span class="'+(up>=0?'up':'down')+'">'+(up>=0?'+':'')+'$'+up.toFixed(2)+'</span> • هدف '+st.t1+' • وقف '+st.sl+(st.src==='card4H'?' • 🧘 متوسطة 4H':''); }
       const ls=S2.lastScan?('🔍 آخر فحص: '+S2.lastScan.sym+' قوة '+S2.lastScan.s):'🔍 لم يفحص بعد';
       const la=(S2.log&&S2.log[0])?String(S2.log[0].m||'').slice(0,90):'—';
       const eq=S2.equity||0;
       const age=S2.lastTick?Math.max(0,Math.round((Date.now()-S2.lastTick)/1000)):null;
       const blocked=(S2.dayPnl||0)<=-10||eq<20;
       try{ bx.className='bot-team'+(hasOpen?(openUp>=0?' good':' bad'):(S2.enabled?' good':'')); }catch(e){}
-      bx.innerHTML='<b>🤖 الثاني — صياد الاختراق (يعمل وحده بتحليله)</b> '+(S2.enabled?'🟢 يعمل':'⏸ متوقف')+(blocked?' ⛔ لا دخول جديد (حد الخسارة/رأس المال)':'')+' • 💰 $'+eq.toFixed(2)+' • ربح '+(p2>=0?'+':'')+'$'+p2.toFixed(2)+' ('+S2.wins+'/'+S2.closed+')'+(age==null?'':' • آخر فحص منذ '+age+' ث')+'<br>'+oline+'<br>'+ls+'<br><small>'+la+'</small>';
+      bx.innerHTML='<b>🤖 الثاني — صفقات متوسطة من البطاقات (4H)</b> '+(S2.enabled?'🟢 يعمل':'⏸ متوقف')+(blocked?' ⛔ لا دخول جديد (حد الخسارة/رأس المال)':'')+' • 💰 $'+eq.toFixed(2)+' • ربح '+(p2>=0?'+':'')+'$'+p2.toFixed(2)+' ('+S2.wins+'/'+S2.closed+')'+(age==null?'':' • آخر فحص منذ '+age+' ث')+'<br>'+oline+'<br>'+ls+'<br><small>'+la+'</small>';
     }
   }catch(e){}
 }
 function bind(){
-  const a=$('bot2Start'); if(a&&!a._b){ a._b=1; a.onclick=()=>{ S2.enabled=true; S2.day=S2.day||new Date().toISOString().slice(0,10); save(); paintTeam(); log('▶ الثاني يعمل — صياد اختراق مستقل (صفقة واحدة، وقف متحرك)'); (async()=>{ try{ await catchUp2(); }catch(e){} try{ scan(); }catch(e){} })(); }; }
+  const a=$('bot2Start'); if(a&&!a._b){ a._b=1; a.onclick=()=>{ S2.enabled=true; S2.day=S2.day||new Date().toISOString().slice(0,10); save(); paintTeam(); log('▶ الثاني يعمل — صفقات متوسطة (4H) من البطاقات'); (async()=>{ try{ await catchUp2(); }catch(e){} try{ scan(); }catch(e){} })(); }; }
   const b=$('bot2Stop'); if(b&&!b._b){ b._b=1; b.onclick=()=>{ S2.enabled=false; save(); paintTeam(); log('⏸ الثاني متوقف — المفتوحة تبقى بلا إدارة، أغلقها يدوياً'); }; }
 }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ (async()=>{ try{ await catchUp2(); }catch(e){} try{ scan(); }catch(e){} })(); try{ paintTeam(); }catch(e){} } });
