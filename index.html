@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v156.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v157.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v156.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v157.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3812,9 +3812,29 @@ function m5setup(kl){
     const rising=lc[2]>lc[1]&&lc[1]>=lc[0]*0.999;
     const avgV=v.slice(-6,-1).reduce((a,b)=>a+b,0)/5;
     const volUp=v[v.length-1]>avgV;
-    if(green>=2&&rising&&lc[2]>sma&&volUp){ const w12=c.slice(-12); const rlo=Math.min.apply(null,w12), rhi=Math.max.apply(null,w12); if(rhi>rlo&&(lc[2]-rlo)/(rhi-rlo)>=0.85) return null; return {close:lc[2],closes:c.slice(-20),sma:sma}; }
+    if(green>=2&&rising&&lc[2]>sma&&volUp){ const w12=c.slice(-12); const rlo=Math.min.apply(null,w12), rhi=Math.max.apply(null,w12); if(rhi>rlo){ const pp=(lc[2]-rlo)/(rhi-rlo); if(pp>=0.85||pp<0.35) return null; } return {close:lc[2],closes:c.slice(-20),sma:sma,score:burstScore(kl)}; }
     return null;
   }catch(e){ return null; }
+}
+function burstScore(kl){
+  try{
+    if(!kl||kl.length<12) return 0;
+    const c=kl.map(k=>parseFloat(k[4])), o=kl.map(k=>parseFloat(k[1])), h=kl.map(k=>parseFloat(k[2])), l=kl.map(k=>parseFloat(k[3])), v=kl.map(k=>parseFloat(k[5]));
+    if(c.some(x=>!isFinite(x)||x<=0)) return 0;
+    const n=c.length, last=c[n-1];
+    let s=0;
+    const avgV=v.slice(-6,-1).reduce((a,b)=>a+b,0)/5;
+    const vr=v[n-1]/Math.max(1e-9,avgV);
+    s+=Math.min(35,Math.max(0,(vr-1)*25));
+    const w6c=c.slice(-6), rlo=Math.min.apply(null,w6c.concat(h.slice(-6))), rhi=Math.max.apply(null,w6c.concat(h.slice(-6)));
+    if(rhi>rlo){ const pos=(last-rlo)/(rhi-rlo); s+=pos>=0.7?25:(pos>=0.5?12:0); }
+    const rng=Math.max(1e-9,h[n-1]-l[n-1]), body=(last-o[n-1])/rng;
+    s+=body>0.6?20:(body>0?8:0);
+    let gr=0; for(let i=n-3;i<n;i++){ if(c[i]>o[i]) gr++; }
+    s+=gr>=3?15:(gr>=2?7:0);
+    if(last>h[n-2]&&last>h[n-3]) s+=5;
+    return Math.round(Math.min(100,s));
+  }catch(e){ return 0; }
 }
 function preburst(kl){
   try{
@@ -3834,8 +3854,12 @@ function preburst(kl){
     const near=(rg(n-1)+rg(n-2)+rg(n-3))/3, prev=(rg(n-4)+rg(n-5)+rg(n-6)+rg(n-7)+rg(n-8))/5;
     if(!(near<prev*0.95)) return null;
     const avgV=v.slice(-6,-1).reduce((a,b)=>a+b,0)/5;
-    if(!(v[n-1]>avgV*1.3)) return null;
-    return {close:last,closes:c.slice(-20),pre:true};
+    if(!(v[n-1]>avgV*1.5)) return null;
+    const w6=c.slice(-6), xlo=Math.min.apply(null,w6), xhi=Math.max.apply(null,h.slice(-6));
+    if(xhi>xlo&&(last-xlo)/(xhi-xlo)<0.6) return null;
+    const orng=Math.max(1e-9,h[n-1]-l[n-1]);
+    if((last-o[n-1])/orng<0.4) return null;
+    return {close:last,closes:c.slice(-20),pre:true,score:burstScore(kl)};
   }catch(e){ return null; }
 }
 function m5cands(){
@@ -3916,12 +3940,12 @@ async function m5scan(){
             else{
               const kl1=await r1.json(); okc++;
               const pb=preburst(kl1);
-              if(pb){
+              if(pb&&burstScore(kl1)>=60){
                 const fc=m5fullCheck(c);
                 if(!fc.ok){ if(coolOk('m5f'+c.a.c.id)){ coolSet('m5f'+c.a.c.id); log('🔍 '+c.s+': مرفوضة بالتحليل الشامل — '+fc.why); } }
                 else{
                   const t15=await tfConfirm(c.sym,'15m');
-                  if(t15.ok||t15.why==='net'){ preFound++; log('⚡ '+c.s+': ما قبل الانفجار — دخول مبكر قبل الثواني الأخيرة'); await openSolo(c,pb,'pre-1m'); }
+                  if(t15.ok||t15.why==='net'){ preFound++; log('💪 '+c.s+': انفجار حقيقي قوي (قوة '+burstScore(kl1)+') — دخول مبكر قبل الثواني الأخيرة'); await openSolo(c,pb,'pre-1m'); }
                   else if(coolOk('m5t'+c.a.c.id)){ coolSet('m5t'+c.a.c.id); log('⏳ '+c.s+': فريم 15m غير صاعد — انتظار'); }
                 }
               }
@@ -4135,7 +4159,7 @@ function showUpdBanner(url,ts){
     try{ toast('🎉 تحديث جديد متوفر'); }catch(e){}
   }catch(e){}
 }
-window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner,preburst,m5setup,manage,openTrade,mktRegime,holdOf,save,paintDecRes,paintDecStrip,applyRemoteUpdate,startInvest,paintInvest,catchUp,investTargetFor,investLive,investState,dipPos,investWhale};
+window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner,preburst,m5setup,manage,openTrade,mktRegime,holdOf,save,paintDecRes,paintDecStrip,applyRemoteUpdate,startInvest,paintInvest,catchUp,investTargetFor,investLive,investState,dipPos,investWhale,burstScore};
 })();
 </script>
 <script>// 🗂 SEC61 — الصعود الجديد وحده + الصعود المؤكد وحده (بدون خلط)
