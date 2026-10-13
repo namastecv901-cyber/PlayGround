@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v174.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v175.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v174.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v175.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1246,6 +1246,8 @@ body{max-width:680px;margin:0 auto;padding:12px}
 .inv-move{height:7px;background:#ffffff10;border-radius:99px;margin:0 0 8px;overflow:hidden}
 .inv-move i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1fe196,#f0b90b,#f472b6);transition:width 1s linear;animation:dsMove 3s ease-in-out infinite}
 .inv-state{text-align:center;font-size:.76rem;font-weight:900;color:#ffd3e8;margin:0 0 8px}
+.t8{display:inline-block;background:#ffffff08;border:1px solid var(--line);border-radius:8px;padding:1px 7px;margin:2px;font-size:.68rem;font-weight:800;color:var(--mut)}
+.t8.hit{border-color:#16c78466;color:#1fe196;background:#16c78414}
 .inv-card{background:linear-gradient(160deg,#121527e6,#0b0d15e6);border:2px solid #f0b90b66;border-radius:18px;padding:12px 14px;margin:0 0 8px;box-shadow:0 10px 30px #00000059}
 .inv-top{display:flex;gap:10px;align-items:center}
 .inv-top img{width:38px;height:38px;border-radius:50%;background:#ffffff10}
@@ -3420,6 +3422,7 @@ function confirmTrade(p){
 }
 // ---------- 💰 الاستثمار المضاعف: دخول دقيق + هدف صافي ×2..×9 + مراقبة أياماً ----------
 // ---------- 📈 صفقات المدى المتوسط والطويل: محلل خاص + أهداف ربح + سيولة ممتازة فقط ----------
+// ---------- 📈 صفقات المدى المتوسط والطويل: بطاقة مميزة بـ8 أهداف (الأدنى +50%) ----------
 function swingPick(){
   try{
     const an=(window.RADAR&&window.RADAR.analyzed)||[];
@@ -3437,10 +3440,14 @@ function swingPick(){
         if(h1>10||h1<-4) continue;
         const mom=(a.mom||0), trd=(a.trend&&a.trend.score)||0, tch=(a.tech&&a.tech.score)||0;
         if(!(mom>=55||trd>=55||tch>=55)) continue;
-        let P=null; try{ P=(window.DEALS&&window.DEALS.planOf)?window.DEALS.planOf(a):null; }catch(e){}
-        if(!P||!P.entry||!P.t3) continue;
+        let entry=0;
+        try{ const P0=(window.DEALS&&window.DEALS.planOf)?window.DEALS.planOf(a):null; if(P0&&P0.entry) entry=P0.entry; }catch(e){}
+        if(!entry) entry=c.current_price||0;
+        if(!entry) continue;
+        const T=[3,6,10,15,22,30,40,50].map(p=>entry*(1+p/100));
+        const sl=entry*0.92;
         const s=trust*0.4+(a.score||0)*0.3+Math.min((c.total_volume||0)/1e7,40)+Math.min(Math.max(h24,0),15)*2;
-        out.push({a:a,P:P,s:Math.round(s)});
+        out.push({a:a,entry:entry,T:T,sl:sl,s:Math.round(s)});
       }catch(e){}
     }
     out.sort((x,y)=>y.s-x.s);
@@ -3455,13 +3462,19 @@ function paintSwing(){
     if(!picks.length){ box.innerHTML='<div class="auto-why">⏳ لا صفقة متوسطة/طويلة ناضجة الآن — المحلل الخاص ينتظر سيولة ممتازة + اتجاه مؤكد</div>'; }
     else{
       box.innerHTML=picks.map(p=>{
-        const c=p.a.c, sym=(c.symbol||'').toUpperCase(), P=p.P;
-        const net=((P.t3-P.entry)/P.entry*100);
+        const c=p.a.c, sym=(c.symbol||'').toUpperCase();
+        let live=p.entry; try{ live=liveOf(c.id,p.entry)||live; }catch(e){}
+        let hit=0; for(const tg of p.T){ if(live>=tg) hit++; }
+        const prog=Math.round(hit/8*100);
+        const rows=p.T.map((tg,i)=>'<span class="t8'+(live>=tg?' hit':'')+'">'+(live>=tg?'✅':'○')+' هـ'+(i+1)+' '+money(tg)+'</span>').join('');
         return '<div class="inv-card"><div class="inv-top">'
         +'<img src="'+(c.image||'')+'" onerror="this.style.display=\'none\'">'
-        +'<div><b>'+sym+'</b><small>'+(c.name||sym)+' • 📈 متوسط/طويل</small></div><span class="inv-pulse"></span></div>'
-        +'<div class="inv-tline">💰 دخول <b>'+money(P.entry)+'</b> • 🎯 هـ1 <b>'+money(P.t1)+'</b> • هـ2 <b>'+money(P.t2)+'</b> • هـ3 <b>'+money(P.t3)+'</b></div>'
-        +'<div class="inv-tline">🛡 وقف <b>'+money(P.sl)+'</b> • 📈 متوقع <b>+'+net.toFixed(0)+'%</b> • 💧 سيولة $'+((c.total_volume||0)/1e6).toFixed(0)+'M</div>'
+        +'<div><b>'+sym+'</b><small>'+(c.name||sym)+' • 📈 متوسط/طويل • 8 أهداف</small></div><span class="inv-pulse"></span></div>'
+        +'<div class="inv-tline">💰 دخول <b>'+money(p.entry)+'</b> • 💵 حي <b>'+money(live)+'</b> • 🛡 وقف <b>'+money(p.sl)+'</b></div>'
+        +'<div class="inv-tline">🎯 محقق <b>'+hit+'/8</b> ('+prog+'%) • 📈 الهدف الأدنى <b>+50%</b></div>'
+        +'<div class="inv-move" style="margin-top:8px"><i style="width:'+prog+'%"></i></div>'
+        +'<div style="text-align:center">'+rows+'</div>'
+        +'<div class="inv-tline" style="text-align:center">💧 سيولة $'+((c.total_volume||0)/1e6).toFixed(0)+'M</div>'
         +'<div class="inv-state">🔬 المحلل الخاص: نقاط '+p.s+' — سيولة ممتازة + اتجاه مؤكد</div></div>';
       }).join('');
     }
