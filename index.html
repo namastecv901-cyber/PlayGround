@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v195.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v196.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v195.0 الثاني يعمل وحده)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v196.0 حالة حية لكل صفقة)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1474,6 +1474,8 @@ body.linkmode #masterFab{display:none!important}
   <div class="bot-link">🔗 <span id="botGuard">متصل بالبطاقات</span> • <span id="botProfit">💰 الربح: $0.00</span> • <span id="botRec"></span> • <span id="botEqLine"></span> • <span id="botDayN"></span> • <span id="botBuys"></span> • <span id="botConf"></span> • <span id="botDuel"></span> • <span id="botGoalLine"></span></div>
   <div class="bot-team" id="botTeam">⚖️ المقارنة: —</div>
   <div class="bot-team" id="bot2Box">🤖 الثاني: —</div>
+  <div class="bot-event" id="bot2Event">🔔 الثاني بانتظار أول عملية...</div>
+  <div class="dec-strip" id="bot2Strip" hidden></div>
   <div class="bot-grid">
     <label>الوضع<select id="botMode"><option value="paper">🧪 تجريبي (بدون مفاتيح)</option><option value="testnet">🧪 Testnet حقيقي</option><option value="live">🔴 حقيقي</option></select></label>
     <label>🧠 العقل<select id="botBrain"><option value="both">مربوط + وحده</option><option value="link">مربوط فقط</option><option value="solo">وحده فقط</option></select></label>
@@ -3377,6 +3379,16 @@ function paintRunner(){
 function paintEq(){ const el=$('botEqLine'); if(!el) return; let u=0; try{ Object.values(S.trades).forEach(st=>{ if(st&&st.open&&!st.skip){ const live=liveOf(st.id,st.entry); u+=(live-st.entry)*((st.qty||0)-(st.sold||0)); } }); }catch(e){} const e=(parseFloat(S.equity)||0)+u, s0=parseFloat(S.equityStart)||(parseFloat(S.equity)||0); el.textContent='💰 رأس المال الحي: $'+e.toFixed(2)+' (البداية $'+s0.toFixed(2)+')'; el.style.color=e>=s0?'#1fe196':'#ff7b85'; }
 function paintClosed(){ try{ const ul=$('botClosed'); if(!ul) return; const list=S.closedList||[]; ul.innerHTML=list.length?list.slice(0,10).map(h=>'<li><span>'+(h.pnl>=0?'✅ ':'🔴 ')+h.coin+' <small>'+h.why+' • '+new Date(h.t).toLocaleTimeString('ar')+'</small></span><b class="'+(h.pnl>=0?'win':'loss')+'">'+(h.pnl>=0?'+':'')+'$'+h.pnl.toFixed(2)+'</b></li>').join(''):'<li class="muted">لا صفقات مكتملة بعد — عند إغلاق أي صفقة تظهر هنا بربحها الصافي.</li>'; }catch(e){} }
 function setEv(side,coin,price,why,pnl){ S.lastEv={side:side,coin:coin,price:price,why:why||'',pnl:(pnl==null?null:pnl),t:Date.now()}; save(); paintEv(); try{ const el=$('botEvent'); if(el){ el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }catch(e){} }
+function tradeState1(st,live){
+  try{
+    if(live>=st.t1) return '✅ ضرب الهدف 1 — مستمر للنهاية';
+    const tot=Math.max(1e-9,st.t1-st.entry);
+    if((live-st.entry)/tot>=0.7) return '🎯 يقترب من هدف 1';
+    if(live<=(st.slEff||st.sl)) return '🔴 عند الوقف';
+    if(live<st.entry) return '⏳ تحت الدخول — متمسك';
+    return '🟢 تم الدخول — يراقب';
+  }catch(e){ return '🟢 تم الدخول'; }
+}
 function paintFastLine(){
   try{
     const el=$('botFastLine'); if(!el) return;
@@ -3386,7 +3398,7 @@ function paintFastLine(){
     el.innerHTML='<div class="ds-row">'+list.slice(0,5).map(st=>{
       let live=st.entry, pnl=0;
       try{ live=liveOf(st.id,st.entry); pnl=(st.rev||0)-(st.sold||0)*st.entry+(live-st.entry)*(st.qty-(st.sold||0)); }catch(e){}
-      return '<span>⚡ '+st.coin+' سريعة '+(pnl>=0?'+':'')+'$'+pnl.toFixed(2)+'</span>';
+      return '<span>⚡ '+st.coin+' سريعة '+(pnl>=0?'+':'')+'$'+pnl.toFixed(2)+' • '+tradeState1(st,live)+'</span>';
     }).join('')+'</div>';
   }catch(e){}
 }
@@ -5220,9 +5232,9 @@ window.MKthead={refresh:paint};
 "use strict";
 const $=id=>document.getElementById(id);
 const LS='ai_bot61_v1';
-const S2={enabled:false,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,trades:{},log:[],busy:false,lastScan:null,lastTick:0,guardT:0,closedList:[],netFail:0,manual:false};
-function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','equity','equityStart','day','dayPnl','profit','closed','wins','trades','log','lastScan','lastTick','closedList','manual'].forEach(k=>{ if(j[k]!==undefined) S2[k]=j[k]; }); if(!S2.manual) S2.enabled=true; }catch(e){} }
-function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S2.enabled,equity:S2.equity,equityStart:S2.equityStart,day:S2.day,dayPnl:S2.dayPnl,profit:S2.profit,closed:S2.closed,wins:S2.wins,trades:S2.trades,log:(S2.log||[]).slice(0,20),lastScan:S2.lastScan||null,lastTick:S2.lastTick||0,closedList:(S2.closedList||[]).slice(0,10),manual:!!S2.manual})); }catch(e){} }
+const S2={enabled:false,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,trades:{},log:[],busy:false,lastScan:null,lastTick:0,guardT:0,closedList:[],netFail:0,manual:false,lastEv2:null};
+function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','equity','equityStart','day','dayPnl','profit','closed','wins','trades','log','lastScan','lastTick','closedList','manual','lastEv2'].forEach(k=>{ if(j[k]!==undefined) S2[k]=j[k]; }); if(!S2.manual) S2.enabled=true; }catch(e){} }
+function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S2.enabled,equity:S2.equity,equityStart:S2.equityStart,day:S2.day,dayPnl:S2.dayPnl,profit:S2.profit,closed:S2.closed,wins:S2.wins,trades:S2.trades,log:(S2.log||[]).slice(0,20),lastScan:S2.lastScan||null,lastTick:S2.lastTick||0,closedList:(S2.closedList||[]).slice(0,10),manual:!!S2.manual,lastEv2:S2.lastEv2||null})); }catch(e){} }
 function log(m){ S2.log=S2.log||[]; S2.log.unshift({t:Date.now(),m:String(m)}); S2.log=S2.log.slice(0,20); save(); }
 async function fetchJ(url,ms){ const c=new AbortController(); const to=setTimeout(()=>{ try{c.abort();}catch(e){} },ms||12000); try{ const r=await fetch(url,{signal:c.signal,cache:'no-store'}); if(!r.ok){ S2.netFail=(S2.netFail||0)+1; return null; } const j=await r.json(); S2.netFail=0; return j; }catch(e){ S2.netFail=(S2.netFail||0)+1; return null; } finally{ clearTimeout(to); } }
 function uni(){
@@ -5255,6 +5267,7 @@ async function catchUp2(){
           S2.trades[st.id]=st; n++;
           S2.closedList=S2.closedList||[]; S2.closedList.unshift({coin:st.coin,exit:hit.px,why:hit.why,pnl:pnl,t:Date.now()}); S2.closedList=S2.closedList.slice(0,10);
           log('🌙 الثاني لحق غيابك: '+st.coin+' لامس '+(hit.why==='STOP'?'الوقف 🛡':'الهدف 🎯')+' — أُغلق بسعر '+hit.px);
+          setEv2('sell',st.coin,hit.px,hit.why,pnl);
         }
       }catch(e){}
     }
@@ -5281,6 +5294,7 @@ try{
         if(rem>0&&!S2.trades[nid]){
           S2.trades[nid]={id:nid,sym:st.sym,coin:st.coin,qty:rem,entry:st.entry,t1:st.t3,sl:(st.slEff||st.sl),peak:st.entry,open:true,t0:st.t0||Date.now(),src:'card4H'};
           log('🔀 '+st.coin+' متوسطة — انتقلت من الأول إلى الثاني، يكملها للهدف');
+          setEv2('buy',st.coin,st.entry,'استلام من الأول 🧘 متوسطة 4H',null);
           n++;
         }
         delete B.S.trades[k];
@@ -5321,6 +5335,7 @@ async function scan(){
           S2.trades[st.id]=st;
           S2.closedList=S2.closedList||[]; S2.closedList.unshift({coin:st.coin,exit:live,why:why,pnl:pnl,t:Date.now()}); S2.closedList=S2.closedList.slice(0,10);
           log((pnl>=0?'✅ ':'🔴 ')+'الثاني أغلق '+st.coin+' ('+why+') '+(pnl>=0?'+':'')+'$'+pnl.toFixed(2));
+          setEv2('sell',st.coin,live,why,pnl);
         }
       }catch(e){}
     }
@@ -5359,6 +5374,7 @@ async function scan(){
         S2.trades['b61:'+best.g.id]={id:'b61:'+best.g.id,sym:((best.g.sym||symU)+'').toUpperCase().replace(/[^A-Z0-9]/g,'')+'USDT',coin:symU,qty:qty,entry:best.P.entry,t1:best.P.t3,sl:best.P.sl,peak:best.P.entry,open:true,t0:Date.now(),src:'card4H'};
         save();
         log('🤖 الثاني دخل '+symU+' (متوسطة 4H من البطاقة) @ '+best.P.entry+' — هدف '+best.P.t3+' • وقف '+best.P.sl);
+        setEv2('buy',symU,best.P.entry,'متوسطة 4H',null);
       }
     }
     else if(!Object.values(S2.trades).some(x=>x&&x.open)){ if(Date.now()-(S2.idleT||0)>600000){ S2.idleT=Date.now(); log('🔍 الثاني: لا بطاقات متوسطة (4H) جاهزة الآن — أراقب البطاقات'); } }
@@ -5366,8 +5382,35 @@ async function scan(){
   finally{ S2.busy=false; }
   save(); paintTeam();
 }
-function paintTeam(){
+function setEv2(side,coin,price,why,pnl){ S2.lastEv2={side:side,coin:coin,price:price,why:why||'',pnl:(pnl==null?null:pnl),t:Date.now()}; save(); paintLive2(); try{ const el=$('bot2Event'); if(el){ el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }catch(e){} }
+function tradeState2(st,live){
   try{
+    if(live>=st.t1) return '✅ ضرب الهدف';
+    const tot=Math.max(1e-9,st.t1-st.entry);
+    if((live-st.entry)/tot>=0.7) return '🎯 يقترب من الهدف';
+    if(live<=st.sl) return '🔴 عند الوقف';
+    if(live<st.entry) return '⏳ تحت الدخول — متمسك';
+    return '🟢 تم الدخول — يراقب';
+  }catch(e){ return '🟢 تم الدخول'; }
+}
+function paintLive2(){
+  try{
+    const el=$('bot2Event');
+    if(el){
+      const e=S2.lastEv2;
+      if(!e){ el.className='bot-event'; el.innerHTML='<span class="ev-dot"></span>🔔 الثاني بانتظار أول عملية...'; }
+      else{ el.className='bot-event '+(e.side==='buy'?'ev-buy':'ev-sell'); el.innerHTML='<span class="ev-dot"></span>'+(e.side==='buy'?'🟢 تم الشراء هنا: ':'🔴 تم البيع هنا: ')+e.coin+' @ '+e.price+(e.why?' ('+e.why+')':'')+(e.pnl!=null?' ربح '+(e.pnl>=0?'+':'')+'$'+e.pnl.toFixed(2):'')+' • '+new Date(e.t).toLocaleTimeString('ar'); }
+    }
+    const sp=$('bot2Strip');
+    if(sp){
+      const open=Object.values(S2.trades||{}).filter(x=>x&&x.open);
+      if(!open.length){ sp.hidden=true; sp.innerHTML=''; }
+      else{ const st=open[0]; let live=st.entry; try{ if(S2.live&&Date.now()-S2.live.t<60000) live=S2.live.px; }catch(e){} sp.hidden=false; sp.innerHTML='<div class="ds-row"><span>🧘 '+st.coin+' متوسطة • '+tradeState2(st,live)+'</span></div>'; }
+    }
+  }catch(e){}
+}
+function paintTeam(){
+  try{ try{ paintLive2(); }catch(e){}
     const el=$('botTeam'); if(!el) return;
     let p1=0,best=false;
     try{ const B=window.BOT49; if(B&&B.S){ p1=B.S.profit||0; best=!!B.S.bestOf; } }catch(e){}
