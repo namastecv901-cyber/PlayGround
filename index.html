@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v160.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v161.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v160.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v161.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -4897,8 +4897,9 @@ async function fetchNews(){
   try{
     const st=rd();
     if(st.nt&&Date.now()-st.nt<30*60*1000&&st.news) return st.news;
-    const j=await jf('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent('https://www.coindesk.com/arc/outboundfeeds/rss/'),15000);
-    const items=((j&&j.items)||[]).slice(0,3).map(x=>({t:x.title,l:x.link}));
+    const ar=await jf('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent('https://ar.beincrypto.com/feed/'),15000).catch(()=>null);
+    let items=((ar&&ar.items)||[]).slice(0,3).map(x=>({t:x.title,l:x.link}));
+    if(items.length<2){ const en=await jf('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent('https://www.coindesk.com/arc/outboundfeeds/rss/'),15000).catch(()=>null); const more=((en&&en.items)||[]).map(x=>({t:x.title,l:x.link})); for(const m of more){ if(items.length>=3) break; items.push(m); } }
     if(items.length){ st.news=items; st.nt=Date.now(); wr(st); return items; }
     return st.news||[];
   }catch(e){ try{ return rd().news||[]; }catch(x){ return []; } }
@@ -4909,6 +4910,29 @@ function btc24(){
     const b=an.find(x=>x&&x.c&&(x.c.id==='bitcoin'||(x.c.symbol||'').toLowerCase()==='btc'));
     return b?b.c.price_change_percentage_24h_in_currency||0:null;
   }catch(e){ return null; }
+}
+const BINSTAB={USDT:1,USDC:1,FDUSD:1,USDE:1,TUSD:1,USDD:1,PYUSD:1,DAI:1,EURS:1,USD1:1,AEUR:1,XUSD:1,BFUSD:1,USDF:1};
+function binLev(sym,base){ try{ return /(UP|DOWN|BULL|BEAR)USDT$/.test(sym||'')&&String(base||'').length>4; }catch(e){ return false; } }
+async function fetchBinFlow(){
+  try{
+    const st=rd();
+    if(st.bt&&Date.now()-st.bt<10*60*1000&&st.bf) return st.bf;
+    let rows=null;
+    try{
+      const all=await jf('https://api.binance.com/api/v3/ticker/24hr',20000);
+      if(Array.isArray(all)&&all.length>100) rows=all.filter(x=>x&&typeof x.symbol==='string'&&x.symbol.endsWith('USDT')).map(x=>({s:x.symbol,base:x.symbol.slice(0,-4),v:parseFloat(x.quoteVolume||0)})).filter(x=>x.v>0&&!BINSTAB[x.base]&&!binLev(x.s,x.base));
+    }catch(e){ rows=null; }
+    if(!rows||!rows.length){
+      const g=await jf('https://api.coingecko.com/api/v3/exchanges/binance/tickers?page=1',20000);
+      const tk=(g&&g.tickers)||[];
+      rows=tk.filter(x=>x&&(x.target||'').toUpperCase()==='USDT').map(x=>({s:String(x.base||'').toUpperCase()+'USDT',base:String(x.base||'').toUpperCase(),v:(x.converted_volume&&x.converted_volume.usd)||0})).filter(x=>x.v>0&&!BINSTAB[x.base]&&!binLev(x.s,x.base));
+    }
+    if(!rows||!rows.length) return st.bf||null;
+    rows.sort((a,b)=>b.v-a.v);
+    const out={total:rows.reduce((a,b)=>a+b.v,0),top:rows.slice(0,3),t:Date.now()};
+    st.bf=out; st.bt=Date.now(); wr(st);
+    return out;
+  }catch(e){ try{ return rd().bf||null; }catch(x){ return null; } }
 }
 function inflows(){
   try{
@@ -4960,7 +4984,7 @@ async function paint(){
     let sub='';
     if(g) sub+='<span>💰 القمية: $'+fmtM(g.mc)+' ('+(g.mchg>=0?'+':'')+g.mchg.toFixed(1)+'%)</span> • <span>₿ بتكوين '+(b24==null?'—':((b24>=0?'+':'')+b24.toFixed(1)+'%'))+'</span> • <span>👑 الاستحواذ '+g.dom.toFixed(1)+'%</span> • <span>'+(g.fg!=null?('😨/🤑 الخوف والطمع '+g.fg):'المعنويات —')+'</span>';
     else sub+='<span>⏳ بانتظار البيانات العامة...</span>';
-    if(fl.length) sub+='<br><span>💰 دخول أموال حقيقية: '+fl.map(x=>x.s+' +$'+fmtM(x.m)).join(' • ')+'</span>';
+    try{ const bf=await fetchBinFlow(); if(bf&&bf.top&&bf.top.length) sub+='<br><span>🏦 سيولة دخلت بينانس اليوم: $'+fmtM(bf.total)+' • الأعلى دخولاً: '+bf.top.map(x=>x.s.replace(/USDT$/,'')+' $'+fmtM(x.v)).join(' • ')+'</span>'; else if(fl.length) sub+='<br><span>💰 دخول أموال حقيقية: '+fl.map(x=>x.s+' +$'+fmtM(x.m)).join(' • ')+'</span>'; }catch(e){ if(fl.length) sub+='<br><span>💰 دخول أموال حقيقية: '+fl.map(x=>x.s+' +$'+fmtM(x.m)).join(' • ')+'</span>'; }
     if(b24!=null&&Math.abs(b24)>=5) sub+='<br><span>🚨 حدث: بتكوين تتحرك '+(b24>=0?'+':'')+b24.toFixed(1)+'% خلال 24س</span>';
     if(g&&g.fg!=null&&(g.fg<=15||g.fg>=85)) sub+='<br><span>🚨 حدث: معنويات متطرفة ('+g.fg+') — تقلب قادم</span>';
     el.className='one-decision '+cls;
@@ -4972,7 +4996,7 @@ async function paint(){
     try{
       const nw=await fetchNews();
       const ne=$('mktNews');
-      if(ne&&nw.length) ne.innerHTML='<br><span>📰 أخبار العالم: '+nw.map(n=>'<a href="'+esc(n.l)+'" target="_blank" rel="noopener">'+esc(n.t)+'</a>').join(' • ')+'</span>';
+      if(ne&&nw.length) ne.innerHTML='<br><span>📰 أخبار العملات (عربي): '+nw.map(n=>'<a href="'+esc(n.l)+'" target="_blank" rel="noopener">'+esc(n.t)+'</a>').join(' • ')+'</span>';
     }catch(e){}
   }catch(e){}
 }
