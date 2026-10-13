@@ -1401,6 +1401,26 @@ body.linkmode #masterFab{display:none!important}
 .pex-liq.f-calm i{background:linear-gradient(90deg,#334155,#7c8db0)}
 @keyframes pexLiq{0%,100%{filter:brightness(.85)}50%{filter:brightness(1.3)}}
 .pex-flow{font-size:.7rem;font-weight:900;margin-top:3px}
+.blx-sec{margin:14px 0}
+.blx-head{display:flex;align-items:center;gap:8px}
+.blx-head h2{font-size:1rem;margin:0}
+.blx-count{background:#ea3943;color:#fff;border-radius:99px;font-weight:900;font-size:.75rem;padding:1px 10px}
+.blx-status{font-size:.78rem;font-weight:800;color:#ffd3e8;background:#ffffff06;border:1px solid var(--line);border-radius:10px;padding:7px 12px;margin:8px 0}
+.blx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.blx-card{background:#0b0d15;border:2px solid;border-radius:14px;padding:10px 12px;font-size:.78rem}
+.blx-card.t-vert{border-color:#ea3943;box-shadow:0 0 18px #ea394366;animation:pexRed 1.2s infinite}
+.blx-card.t-hot{border-color:#ff8a3d;box-shadow:0 0 14px #ff8a3d44}
+.blx-card.t-dump{border-color:#7c8db0}
+.blx-top{display:flex;align-items:center;gap:8px;font-weight:900}
+.blx-dot{width:11px;height:11px;border-radius:50%;flex:0 0 auto}
+.t-vert .blx-dot{background:#ea3943;animation:pexR .8s ease-in-out infinite}
+.t-hot .blx-dot{background:#ff8a3d;animation:pexO 1.4s ease-in-out infinite}
+.t-dump .blx-dot{background:#7c8db0}
+.blx-big{font-size:1rem}
+.blx-meta{color:var(--mut);font-size:.7rem;margin-top:2px}
+.blx-lv{font-weight:900;margin-top:5px}
+.t-vert .blx-lv{color:#ff7b85}.t-hot .blx-lv{color:#ffab6e}.t-dump .blx-lv{color:#8fa3c0}
+.blx-plan{margin-top:5px;line-height:1.9}
 .pex-chart{margin-top:6px;border:1px solid #8fd6ff44;border-radius:10px;overflow:hidden;background:#000}
 .pex-chart iframe{width:100%;height:220px;border:0;display:block}
 .pex-chart a{display:block;text-align:center;font-size:.66rem;font-weight:900;color:#8fd6ff;padding:3px}
@@ -1528,6 +1548,12 @@ body.linkmode #masterFab{display:none!important}
   <div class="pex-head"><h2>⚡ رادار ما قبل الانفجار — دخول الحيتان فقط</h2><span class="pex-count" id="pexCount">0</span></div>
   <div class="pex-status" id="pexStatus">🐋 يحلل 500 عملة بحثاً عن دخول الحيتان...</div>
   <div class="pex-grid" id="pexGrid"></div>
+</div>
+
+<div class="blx-sec" id="blxSec">
+  <div class="blx-head"><h2>🚀 انفجارات الفريم اليومي — الكبيرة فقط</h2><span class="blx-count" id="blxCount">0</span></div>
+  <div class="blx-status" id="blxStatus">🚀 يرصد الانفجارات الكبيرة على الفريم اليومي...</div>
+  <div class="blx-grid" id="blxGrid"></div>
 </div>
 
 <div class="section-head" style="margin:16px 0 6px"><h2>💎 كل شيء في بطاقة واحدة</h2>
@@ -4686,6 +4712,65 @@ document.addEventListener('click',function(e){ try{
   } else { box.hidden=true; b.textContent='📊 الشارت'; }
 }catch(x){} });
 window.PEX={scan:scan};
+})();
+</script>
+<script>/* 🚀 BLX v1 — قسم مستقل: يرصد الانفجارات الكبيرة على الفريم اليومي فقط (مراقبة فقط) تحت قسم الحيتان */
+(function(){
+"use strict";
+var $=function(id){ return document.getElementById(id); };
+var LS='ai_blx_v1', COOL=3600000, MINV=10000000;
+var STABLES={usdt:1,usdc:1,dai:1,tusd:1,busd:1,usdd:1,fdusd:1,pyusd:1,usde:1,eurs:1,susd:1,usdb:1,usdx:1,usdy:1};
+var mem={seen:{}};
+try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m) mem.seen=m.seen||{}; }catch(e){}
+function save(){ try{ localStorage.setItem(LS,JSON.stringify(mem)); }catch(e){} }
+function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e){} if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
+function big(n){ try{ n=Number(n)||0; var a=Math.abs(n); if(a>=1e9) return '$ '+(n/1e9).toFixed(2)+'B'; if(a>=1e6) return '$ '+(n/1e6).toFixed(2)+'M'; if(a>=1e3) return '$ '+(n/1e3).toFixed(1)+'K'; return '$ '+Math.round(n); }catch(e){ return '—'; } }
+function toast(m){ try{ if(window.toast) window.toast(m); }catch(e){} }
+function real(c,fb){ try{ if(window.realPx) return window.realPx(c,fb); }catch(e){} return (c&&c.current_price)||fb||0; }
+function isSt(c){ try{ var s=String(c.symbol||'').toLowerCase(); if(STABLES[s]) return true; return /stable|pegged|wrapped btc|steth/i.test(c.name||''); }catch(e){ return false; } }
+function scan(){
+  try{
+    var box=$('blxGrid'); if(!box) return;
+    var all=[]; try{ all=(window.RADAR&&window.RADAR.analyzed)||[]; }catch(e){}
+    var out=[], now=Date.now();
+    for(var i=0;i<all.length;i++){
+      var a=all[i]; if(!a||!a.c) continue;
+      var c=a.c;
+      if(isSt(c)) continue;
+      if((c.total_volume||0)<MINV) continue;
+      var h24=c.price_change_percentage_24h_in_currency||0;
+      var tier=h24>=90?'vert':(h24>=50?'hot':(h24<=-50?'dump':null));
+      if(!tier) continue;
+      var live=real(c,c.current_price), hi=c.high_24h||0;
+      out.push({a:a,tier:tier,h24:h24,live:live,hi:hi});
+      var id=c.id+tier;
+      if(!mem.seen[id]||now-mem.seen[id]>COOL){ mem.seen[id]=now;
+        if(tier==='vert') toast('🚀 '+((c.symbol||'').toUpperCase())+': انفجار عمودي +'+h24.toFixed(0)+'% (فريم يومي)');
+        else if(tier==='dump') toast('📉 '+((c.symbol||'').toUpperCase())+': انهيار '+h24.toFixed(0)+'% — مراقبة');
+        else toast('🔥 '+((c.symbol||'').toUpperCase())+': انفجار كبير +'+h24.toFixed(0)+'% (فريم يومي)');
+      }
+    }
+    save();
+    out.sort(function(x,y){ return y.h24-x.h24; });
+    out=out.slice(0,6);
+    var cnt=$('blxCount'); if(cnt) cnt.textContent=String(out.length);
+    var st=$('blxStatus');
+    if(st) st.textContent=out.length?('🚀 '+out.length+' انفجارات كبيرة على الفريم اليومي • آخر فحص '+new Date().toLocaleTimeString('ar')):('🚀 لا انفجارات كبيرة الآن — فحص '+all.length+' عملة • '+new Date().toLocaleTimeString('ar'));
+    box.innerHTML=out.length?out.map(function(r){
+      var c=r.a.c, vol=c.total_volume||0, mc=c.market_cap||0, to=mc>0?(vol/mc*100):0;
+      var lv=r.tier==='vert'?'🚀 انفجار عمودي — فريم يومي':(r.tier==='hot'?'🔴 انفجار كبير — فريم يومي':'📉 انهيار كبير — فريم يومي');
+      var h='<div class="blx-card t-'+r.tier+'"><div class="blx-top"><span class="blx-dot"></span><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(r.live)+'</span><span class="blx-big">'+(r.h24>=0?'+':'')+r.h24.toFixed(1)+'%</span></div>'
+      +'<div class="blx-meta">💧 حجم <b>'+big(vol)+'</b> • دوران <b>'+to.toFixed(1)+'%</b>'+(r.hi>0?(' • قمة اليوم <b>'+money(r.hi)+'</b>'):'')+'</div>'
+      +'<div class="blx-lv">'+lv+'</div>'
+      +'<div class="blx-meta">👁 مراقبة فقط — القسم يرصد ولا يوصي بدخول</div>';
+      var tvS=(window.binSym&&window.binSym(c))||null;
+      if(tvS) h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><div class="pex-chart" hidden></div></div>';
+      return h+'</div>';
+    }).join(''):'<div class="muted" style="font-size:.8rem">لا انفجارات كبيرة حالياً — القسم يراقب وحده</div>';
+  }catch(e){}
+}
+document.addEventListener('DOMContentLoaded',function(){ try{ scan(); }catch(e){} setInterval(scan,30000); setTimeout(scan,10000); });
+window.BLX={scan:scan};
 })();
 </script>
 </body>
