@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v161.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v162.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v161.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v162.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1376,6 +1376,7 @@ body.linkmode #masterFab{display:none!important}
 </div>
 
 <div class="one-decision od-wait" id="oneDecision">⏳ القرار الواحد: جارٍ التحليل...</div>
+<div class="one-decision od-wait" id="sysAid">🔧 مساعد النظام: يفحص...</div>
 <div class="one-decision od-wait" id="mktHead">🌍 رئيس النظام: يقرأ السوق العام...</div>
 <div class="member-bar" id="memberBar">
   <span class="mb-badge mb-guest" id="mbBadge">👤 زائر</span>
@@ -5002,6 +5003,84 @@ async function paint(){
 }
 document.addEventListener('DOMContentLoaded',()=>{ paint(); setInterval(paint,5*60*1000); });
 window.MKthead={refresh:paint};
+})();
+</script>
+<script>// 🔧 SYSAID v1 — مساعد النظام: يفحص كل شيء ويصلح (أمام الرئيس)
+(function(){
+"use strict";
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').slice(0,140); }
+function cardStates(){
+  const g={}, r={};
+  try{
+    const G=(window.GUARDIAN&&window.GUARDIAN.G)||{pos:[]};
+    for(const p of (G.pos||[])){
+      if(!p||!p.id) continue;
+      if(p.t1hit||p.t2hit||p.t3hit||p.verdict==='FINAL'){ g[p.id]=1; continue; }
+      const cw=String(p.closeWhy||'');
+      if(!p.open&&(cw.indexOf('STOP')>=0||cw.indexOf('وقف')>=0)) r[p.id]=1;
+    }
+  }catch(e){}
+  try{
+    const an=(window.RADAR&&window.RADAR.analyzed)||[];
+    for(const a of an){
+      try{ const pl=(window.PLAN40&&window.PLAN40.get(a.c.id))||null; if(pl&&pl.hits&&(pl.hits.t1||pl.hits.t2||pl.hits.t3)) g[a.c.id]=1; }catch(e){}
+    }
+  }catch(e){}
+  return {green:Object.keys(g).length,red:Object.keys(r).length};
+}
+function check(){
+  const issues=[], oks=[];
+  try{
+    const B=window.BOT49, S=B?B.S:null;
+    if(S){
+      if(S.enabled){ const age=Date.now()-(S.lastTick||0); if(age>120000) issues.push({t:'الروبوت يعمل لكن نبضه متجمد — يحتاج إصلاح',f:'pulse'}); else oks.push('الروبوت يعمل • نبض حي'); }
+      else if(S.wasEnabled&&!S.goalDone) issues.push({t:'الروبوت متوقف وسيعود تلقائياً',f:'start'});
+      else oks.push('الروبوت متوقف (طبيعي)');
+      if(S.busy&&Date.now()-(S.lastTick||0)>120000) issues.push({t:'قفل عالق في الروبوت',f:'pulse'});
+    } else issues.push({t:'الروبوت غير مهيأ بعد',f:'start'});
+  }catch(e){}
+  try{
+    const R=window.RADAR;
+    if(R&&R.demo) issues.push({t:'البيانات تجريبية — التداول متوقف للحماية',f:'rescan'});
+    else if(R&&(R.analyzed||[]).length) oks.push('البيانات حية ('+R.analyzed.length+' عملة)');
+    else issues.push({t:'لا بيانات محللة بعد',f:'rescan'});
+  }catch(e){}
+  try{
+    const G=(window.GUARDIAN&&window.GUARDIAN.G)||null;
+    if(G){ const n=(G.pos||[]).filter(p=>p&&p.open).length; oks.push('الحارس يحرس '+n+' صفقة'); }
+  }catch(e){}
+  return {issues:issues,oks:oks};
+}
+function fix(kind){
+  try{
+    const B=window.BOT49, S=B?B.S:null;
+    if(!B||!S) return;
+    if(kind==='pulse'||kind==='all'){ S.busy=false; S.m5busy=false; S.lastTick=Date.now(); }
+    if(kind==='rescan'||kind==='all'){ try{ if(window.AI_RESCAN) window.AI_RESCAN(); }catch(e){} }
+    if(kind==='start'||kind==='all'){ try{ if(!S.enabled&&B.startBot) B.startBot(true); else if(S.enabled&&B.tick) B.tick(); }catch(e){} }
+    try{ if(B.save) B.save(); }catch(e){}
+  }catch(e){}
+  setTimeout(paint,800);
+}
+function paint(){
+  try{
+    const el=$('sysAid'); if(!el) return;
+    const c=check(), st=cardStates();
+    const cls=c.issues.length?'od-avoid':(c.oks.length?'od-buy':'od-wait');
+    let h=esc(c.issues.length?('🔧 مساعد النظام: '+c.issues.length+' تحتاج إصلاح'):('🔧 مساعد النظام: كل شيء سليم ✅'));
+    h+='<span class="mkt-sub">';
+    if(c.oks.length) h+=c.oks.map(x=>'✅ '+esc(x)).join(' • ')+'<br>';
+    if(c.issues.length) h+=c.issues.map(x=>'⚠️ '+esc(x.t)).join('<br>')+'<br>';
+    h+='🟢 بطاقات ضربت الأهداف: <b>'+st.green+'</b> • 🔴 بطاقات ضربت الوقف: <b>'+st.red+'</b>';
+    h+=' <button class="btn btn-sm" data-sysfix="all">🔧 إصلاح تلقائي</button></span>';
+    el.className='one-decision '+cls;
+    el.innerHTML=h;
+  }catch(e){}
+}
+document.addEventListener('click',e=>{ try{ const b=e.target&&e.target.closest?e.target.closest('[data-sysfix]'):null; if(!b) return; fix(b.dataset.sysfix||'all'); }catch(x){} });
+document.addEventListener('DOMContentLoaded',()=>{ paint(); setInterval(paint,30000); });
+window.SYSAID={check:check,fix:fix,paint:paint,cardStates:cardStates};
 })();
 </script>
 </body>
