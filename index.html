@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v151.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v152.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v151.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v152.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1554,8 +1554,9 @@ body.linkmode #masterFab{display:none!important}
       <div data-opane="vis" hidden><p class="muted" style="font-size:.76rem">تحكم ماذا يرى الزوار (المشتركون يرون كل الإشارات دائماً)</p><div id="visList"></div></div>
       <div data-opane="errs" hidden><div style="margin-bottom:8px"><button class="btn btn-sm" id="errClear">🧹 مسح</button></div><ul class="log-list" id="errLog"></ul></div>
       <div data-opane="links" hidden>
-        <p class="muted" style="font-size:.76rem">رابط واحد يتغير كل 24 ساعة تلقائياً — القديم يتوقف وحده. الأصل عندك فقط (بدون رابط + PIN).</p>
-        <div class="link-row"><b>🔗 رابط اليوم</b><code id="todayLinkTxt">—</code><span class="ok" id="todayLinkSt">🟢 نشط</span><span style="margin-inline-start:auto;display:flex;gap:4px"><button class="btn btn-primary btn-sm" id="todayLinkCopy">📋 نسخ</button><button class="btn btn-sm" id="todayLinkStop">⛔ إيقاف</button></span></div>
+        <p class="muted" style="font-size:.76rem">رابط واحد بيدك: انسخ للنشر، جدد لقتل القديم ونشر جديد، احذف للإيقاف الكامل. يتغير تلقائياً كل 24 ساعة. الأصل عندك فقط (بدون رابط + PIN).</p>
+        <div class="link-row"><b>🔗 رابط النشر</b><code id="todayLinkTxt">—</code><span class="ok" id="todayLinkSt">🟢 نشط</span><span style="margin-inline-start:auto;display:flex;gap:4px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" id="todayLinkCopy">📋 نسخ</button><button class="btn btn-sm" id="todayLinkNew">🆕 جديد</button><button class="btn btn-sm" id="todayLinkStop">⏸ إيقاف</button><button class="btn btn-sm" id="todayLinkDel">🗑 حذف</button></span></div>
+        <div class="muted" id="linkMsg" style="font-size:.74rem"></div>
         <div class="link-row"><b>📥 تحميلات التطبيق (تثبيتات فعلية من كل الأجهزة)</b><code id="dlCount">…</code><span style="margin-inline-start:auto"><button class="btn btn-sm" id="dlRefresh">🔄 تحديث</button></span></div>
         <div id="linksList"></div>
       </div>
@@ -4395,7 +4396,53 @@ function ymd(d){ try{ return d.toISOString().slice(0,10); }catch(e){ return ''; 
 function dayStr(off){ try{ const d=new Date(); d.setDate(d.getDate()+(off||0)); return ymd(d); }catch(e){ return ''; } }
 function getLinks(){ try{ return JSON.parse(localStorage.getItem(K_LINKS)||'{}'); }catch(e){ return {}; } }
 function saveLinks(l){ try{ localStorage.setItem(K_LINKS,JSON.stringify(l)); }catch(e){} }
-function guestURL(day){ try{ let c=''; try{ const oo=getOwner()||{}; if(oo.contact) c+='&c='+encodeURIComponent(oo.contact); }catch(e){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) c+='&pick='+encodeURIComponent(pk.id); }catch(e){} return location.origin+location.pathname+'?guest=1&d='+day+c; }catch(e){ return '?guest=1&d='+day; } }
+function genLinkCode(){ try{ const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<6;i++) s+=c[Math.floor(Math.random()*c.length)]; return s; }catch(e){ return 'X'+Date.now().toString(36).toUpperCase(); } }
+function getCurLink(){ try{ const L=getLinks(); return (L.cur&&L.cur.code)?L.cur:null; }catch(e){ return null; } }
+function ensureCurLink(){
+  try{
+    const L=getLinks(), t=dayStr(0);
+    if(L.cur&&L.cur.code&&L.cur.d===t) return L.cur;
+    if(L['dead:'+t]) return null;
+    const code=genLinkCode();
+    L.cur={d:t,code:code,at:Date.now()};
+    L['code:'+t]=code;
+    saveLinks(L);
+    return L.cur;
+  }catch(e){ return null; }
+}
+function newCurLink(){
+  try{
+    const L=getLinks(), t=dayStr(0);
+    const code=genLinkCode();
+    L.cur={d:t,code:code,at:Date.now()};
+    L['code:'+t]=code;
+    if(L['stop:'+t]) delete L['stop:'+t];
+    if(L['dead:'+t]) delete L['dead:'+t];
+    saveLinks(L);
+    sess('المالك','رابط جديد (القديم مات)');
+    return L.cur;
+  }catch(e){ return null; }
+}
+function delCurLink(){
+  try{
+    const L=getLinks(), t=dayStr(0);
+    L.cur=null;
+    L['stop:'+t]=Date.now();
+    L['dead:'+t]=1;
+    saveLinks(L);
+    sess('المالك','حذف رابط النشر');
+  }catch(e){}
+}
+function linkCodeFor(d){ try{ const L=getLinks(); if(L.cur&&L.cur.code&&L.cur.d===d) return L.cur.code; return L['code:'+d]||''; }catch(e){ return ''; } }
+function copyTxt(txt,btn,okMsg){
+  try{
+    const done=()=>{ try{ if(btn){ const o=btn.textContent; btn.textContent='✅ تم'; setTimeout(()=>{ try{ btn.textContent=o; }catch(e){} },1500); } }catch(e){} const m=$('linkMsg'); if(m&&okMsg){ m.textContent=okMsg; m.style.color='#1fe196'; } };
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(()=>fallbackCopy(txt,done)); }
+    else fallbackCopy(txt,done);
+  }catch(e){}
+}
+function fallbackCopy(txt,done){ try{ const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(e){} ta.remove(); done(); }catch(e){} }
+function guestURL(day){ try{ let c=''; try{ const oo=getOwner()||{}; if(oo.contact) c+='&c='+encodeURIComponent(oo.contact); }catch(e){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) c+='&pick='+encodeURIComponent(pk.id); }catch(e){} try{ const r=linkCodeFor(day); if(r) c='&r='+encodeURIComponent(r)+c; }catch(e){} return location.origin+location.pathname+'?guest=1&d='+day+c; }catch(e){ return '?guest=1&d='+day; } }
 const K_SUBPICK_OWNER='ai_subpick_owner';
 const APP_SALT='T8V#prem1um$2026!app';
 function h53(str,seed){ let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed; str=String(str); for(let i=0;i<str.length;i++){ const ch=str.charCodeAt(i); h1=Math.imul(h1^ch,2654435761); h2=Math.imul(h2^ch,1597334677); } h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909); h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909); return (h2>>>0).toString(16).padStart(8,'0')+(h1>>>0).toString(16).padStart(8,'0'); }
@@ -4452,6 +4499,11 @@ function linkFresh(){
     if(d!==t&&d!==y) return {link:true,ok:false,day:d};
     const L=getLinks();
     if(L['stop:'+d]) return {link:true,ok:false,stopped:true,day:d};
+    try{
+      const cur=(L.cur&&L.cur.code)?L.cur:null;
+      if(cur){ const r=q.get('r')||''; if(r!==cur.code||d!==cur.d) return {link:true,ok:false,day:d,rotated:true}; }
+      else if(L['dead:'+d]) return {link:true,ok:false,day:d,deleted:true};
+    }catch(e){}
     return {link:true,ok:true,day:d};
   }catch(e){ return {link:false,ok:true}; }
 }
@@ -4485,10 +4537,13 @@ function paintDl(force){
 function paintLinks(){
     try{
       const tt=$('todayLinkTxt'); if(!tt) return;
+      try{ ensureCurLink(); }catch(e){}
       const t=dayStr(0), L=getLinks();
-      tt.textContent=guestURL(t);
+      const cur=(L.cur&&L.cur.code)?L.cur:null;
+      tt.textContent=cur?guestURL(t):'— محذوف — أنشئ رابطاً جديداً بزر 🆕';
       const st=$('todayLinkSt');
-      if(st){ if(L['stop:'+t]){ st.textContent='⛔ موقوف'; st.className='bad'; } else { st.textContent='🟢 نشط'; st.className='ok'; } }
+      if(st){ if(!cur){ st.textContent='🗑 محذوف'; st.className='bad'; } else if(L['stop:'+t]){ st.textContent='⏸ موقوف مؤقتاً'; st.className='bad'; } else { st.textContent='🟢 نشط'; st.className='ok'; } }
+      try{ const sb=$('todayLinkStop'); if(sb) sb.textContent=(L['stop:'+t]?'▶ تشغيل':'⏸ إيقاف'); }catch(e){}
       const box=$('linksList'); if(!box) return;
       try{ paintDl(false); }catch(e){}
       try{ const dr=$('dlRefresh'); if(dr&&!dr._b){ dr._b=1; dr.onclick=()=>paintDl(true); } }catch(e){}
@@ -4657,11 +4712,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   window.addEventListener('unhandledrejection',e=>{ try{ pushErr((e.reason&&e.reason.message)||String(e.reason),'promise'); }catch(err){} });
   setInterval(()=>{ try{ applyVis(); paintErrBadge(); }catch(err){} },5000);
   document.addEventListener('click',e=>{ try{
-    const c=e.target.closest('[data-link-copy]'); if(c){ try{ const L=getLinks(); const d=c.dataset.linkCopy; const base=location.origin+location.pathname; let cc=''; try{ const oo=getOwner()||{}; if(oo.contact) cc+='&c='+encodeURIComponent(oo.contact); }catch(err2){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) cc+='&pick='+encodeURIComponent(pk.id); }catch(err3){} navigator.clipboard.writeText(base+'?guest=1&d='+d+cc); sess('المالك','نسخ رابط '+d); }catch(err){} return; }
+    if(!e.target||!e.target.closest) return;
+    const c=e.target.closest('[data-link-copy]'); if(c){ try{ const L=getLinks(); const d=c.dataset.linkCopy; const base=location.origin+location.pathname; let cc=''; try{ const oo=getOwner()||{}; if(oo.contact) cc+='&c='+encodeURIComponent(oo.contact); }catch(err2){} try{ const pk=JSON.parse(localStorage.getItem(K_SUBPICK_OWNER)||'null'); if(pk&&pk.id) cc+='&pick='+encodeURIComponent(pk.id); }catch(err3){} try{ const rr=linkCodeFor(d); if(rr) cc='&r='+encodeURIComponent(rr)+cc; }catch(err4){} copyTxt(base+'?guest=1&d='+d+cc,null,'✅ نُسخ رابط '+d); sess('المالك','نسخ رابط '+d); }catch(err){} return; }
     const s=e.target.closest('[data-link-stop]'); if(s){ try{ const L=getLinks(); const d=s.dataset.linkStop; if(L['stop:'+d]) delete L['stop:'+d]; else L['stop:'+d]=Date.now(); saveLinks(L); window.__paintLinks(); sess('المالك',(L['stop:'+d]?'إيقاف رابط ':'تشغيل رابط ')+d); }catch(err){} return; }
   }catch(err){} });
-  $('todayLinkCopy').onclick=()=>{ try{ navigator.clipboard.writeText($('todayLinkTxt').textContent); sess('المالك','نسخ رابط اليوم'); }catch(e){} };
-  $('todayLinkStop').onclick=()=>{ try{ const L=getLinks(); const t=dayStr(0); if(L['stop:'+t]) delete L['stop:'+t]; else L['stop:'+t]=Date.now(); saveLinks(L); window.__paintLinks(); sess('المالك',(L['stop:'+t]?'إيقاف رابط اليوم':'تشغيل رابط اليوم')); }catch(e){} };
+  const lc=$('todayLinkCopy'); if(lc&&!lc._b){ lc._b=1; lc.onclick=()=>{ try{ const tx=$('todayLinkTxt').textContent; if(!tx||tx.indexOf('guest=1')<0){ const m=$('linkMsg'); if(m){ m.textContent='⚠️ لا رابط — اضغط 🆕 جديد أولاً'; m.style.color='#ff9aa2'; } return; } copyTxt(tx,lc,'✅ نُسخ — انشره في قناتك الآن'); sess('المالك','نسخ رابط النشر'); }catch(e){} }; }
+  const ln=$('todayLinkNew'); if(ln&&!ln._b){ ln._b=1; ln.onclick=()=>{ try{ newCurLink(); window.__paintLinks(); const m=$('linkMsg'); if(m){ m.textContent='🆕 رابط جديد جاهز — القديم مات. انسخه وانشره'; m.style.color='#1fe196'; } }catch(e){} }; }
+  const ls=$('todayLinkStop'); if(ls&&!ls._b){ ls._b=1; ls.onclick=()=>{ try{ const L=getLinks(); const t=dayStr(0); if(!(L.cur&&L.cur.code)){ const m=$('linkMsg'); if(m){ m.textContent='⚠️ لا رابط — اضغط 🆕 جديد أولاً'; m.style.color='#ff9aa2'; } return; } if(L['stop:'+t]) delete L['stop:'+t]; else L['stop:'+t]=Date.now(); saveLinks(L); window.__paintLinks(); sess('المالك',(L['stop:'+t]?'إيقاف رابط النشر':'تشغيل رابط النشر')); }catch(e){} }; }
+  const ld=$('todayLinkDel'); if(ld&&!ld._b){ ld._b=1; ld.onclick=()=>{ try{ delCurLink(); window.__paintLinks(); const m=$('linkMsg'); if(m){ m.textContent='🗑 حُذف — الرابط القديم لا يفتح. اضغط 🆕 لنشر رابط جديد'; m.style.color='#ff9aa2'; } }catch(e){} }; }
   try{ const sb=$('shareBtn'); if(sb) sb.onclick=async()=>{ const txt='🧠 TRAININGV8 Premium — إشارات عملات ذكية + روبوت تداول 🤖 جرب صفقة مجانية يومياً 🎁'; const url=location.href.split('?')[0]; try{ if(navigator.share){ await navigator.share({title:'TRAININGV8 Premium',text:txt,url:url}); sess('guest','مشاركة التطبيق'); } else { await navigator.clipboard.writeText(txt+' '+url); try{ toast('📣 تم نسخ رابط الدعوة — أرسله لأصدقاءك'); }catch(e){} sess('guest','نسخ رابط الدعوة'); } }catch(e){} }; }catch(e){}
   $('leadRenew').onclick=()=>{ try{ localStorage.removeItem(K_FREE); sess('المالك','تجديد الصفقة المجانية (واحدة جديدة)'); paint(); try{ toast('✅ تم التجديد — صفقة جديدة اليوم'); }catch(e){} }catch(e){} };
   $('leadTest').onclick=()=>{
