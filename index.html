@@ -4664,7 +4664,11 @@ async function scan(){
       else if(trapNow) h+='<div class="pex-plan">🪤 فخ — <b>لا دخول</b> ('+r.cf.why+')</div>';
       else if(r.lv==='red'&&r.dir==='pump') h+='<div class="pex-plan">💰 دخول <b>'+money(r.entry)+'</b> • 🎯 هدف <b>'+money(r.tp)+'</b> • 🛡 وقف <b>'+money(r.sl)+'</b></div>';
       var tvS=(window.binSym&&window.binSym(c))||null;
-      if(tvS) h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><div class="pex-chart" hidden></div></div>';
+      var autoChart=!!(tvS&&!exitNow&&!trapNow&&r.dir!=='dump'&&!late&&(dip||r.lv==='green'||r.lv==='orange'||r.lv==='red')&&!(r.lv==='red'&&bb&&bb.px>0&&live0>bb.px*1.03));
+      if(tvS){
+        if(autoChart){ var ue='https://www.tradingview.com/widgetembed/?symbol=BINANCE:'+tvS+'&interval=15&theme=dark&style=1&locale=ar&hide_side_toolbar=1&allow_symbol_change=0'; h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 إخفاء الشارت</button><div class="pex-chart" data-on="1"><iframe loading="lazy" src="'+ue+'"></iframe><a href="https://www.tradingview.com/chart/?symbol=BINANCE:'+tvS+'" target="_blank" rel="noopener">↗ فتح كامل</a></div></div>'; }
+        else h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><div class="pex-chart" hidden></div></div>';
+      }
       return h+'</div>';
     }).join(''):'<div class="muted" style="font-size:.8rem">لا إشارات حيتان حالياً — القسم يراقب وحده كل دورة</div>';
     for(var j=0;j<all.length;j++){ var cc=all[j].c, ww=all[j].whale||{}; prev[cc.id]={h1:ww.h1||0,vol:cc.total_volume||0,px:window.realPx(cc,cc.current_price)||0}; }
