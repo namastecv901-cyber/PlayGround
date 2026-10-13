@@ -4530,14 +4530,23 @@ function scan(){
         var up=((live0-bb.px)/bb.px*100);
         botHtml='<div class="pex-flow">🐋 دخول الحيتان من القاع <b>'+money(bb.px)+'</b> • الآن '+(up>=0?'+':'')+up.toFixed(1)+'% فوقه</div>';
       }
-      var tt=mem.top[c.id];
+      var tt=mem.top[c.id], exitNow=false;
       if(tt&&tt.px>0&&live0>0&&(r.dir==='dump'||live0<tt.px*0.985)){
         var dn=((live0-tt.px)/tt.px*100);
         botHtml+='<div class="pex-flow">📤 خروج الحيتان من القمة <b>'+money(tt.px)+'</b> • الآن '+dn.toFixed(1)+'% تحتها</div>';
+        exitNow=true;
       }
+      var verdict='';
+      if(exitNow) verdict='<div class="pex-state">🔴 اخرج الآن — الحيتان تخرج فعلاً (حقيقي)</div>';
+      else if(r.dir==='dump') verdict='<div class="pex-state">🔴 دامب — لا دخول شراء أبداً</div>';
+      else if(r.lv==='green') verdict='<div class="pex-state">✅ ادخل مع الحيتان الآن من القاع — حتى لا تخسر</div>';
+      else if(r.lv==='orange') verdict='<div class="pex-state">✅ ادخل معهم قبل الانفجار — ما زال مبكراً</div>';
+      else if(r.lv==='red'&&bb&&bb.px>0&&live0>bb.px*1.03) verdict='<div class="pex-state">⛔ لا تدخل وسط الانفجار — فاتك الدخول مع الحيتان</div>';
+      else if(r.lv==='red') verdict='<div class="pex-state">✅ انفجار بدأ من القاع — دخول مع الحيتان</div>';
+      else verdict='<div class="pex-state">🟢 ابقَ — الحيتان ما زالت داخل</div>';
       var h='<div class="pex-card st-'+r.lv+'"><div class="pex-top"><span class="pex-dot"></span><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(c.current_price)+'</span></div>'
       +'<div class="pex-meta">🐋 سيولة حقيقية <b>'+fmtBig(vol)+'</b> • دوران <b>'+to.toFixed(1)+'%</b> • 1س '+((w.h1||0)>=0?'+':'')+(w.h1||0).toFixed(1)+'% • 24س '+(((c.price_change_percentage_24h_in_currency||0))>=0?'+':'')+(c.price_change_percentage_24h_in_currency||0).toFixed(1)+'%</div>'
-      +'<div class="pex-liq '+fcls+'"><i style="width:'+wpx.toFixed(0)+'%"></i></div><div class="pex-flow">'+ftxt+'</div>'+botHtml
+      +'<div class="pex-liq '+fcls+'"><i style="width:'+wpx.toFixed(0)+'%"></i></div><div class="pex-flow">'+ftxt+'</div>'+botHtml+verdict
       +'<div class="pex-state">'+r.txt+'</div>';
       if(r.lv==='red'&&r.dir==='pump') h+='<div class="pex-plan">💰 دخول <b>'+money(r.entry)+'</b> • 🎯 هدف <b>'+money(r.tp)+'</b> • 🛡 وقف <b>'+money(r.sl)+'</b></div>';
       return h+'</div>';
