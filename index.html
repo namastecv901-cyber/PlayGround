@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v196.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v197.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v196.0 حالة حية لكل صفقة)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v197.0 انفجار مؤكد فقط)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3665,7 +3665,7 @@ async function openTrade(p){
   if((S.dayPnl||0)<0){ maxOpen=Math.min(maxOpen,1); stakeCut=0.5; }
   if((S.dayCount||0)>=100){ if(coolOk(id+'_d')){ coolSet(id+'_d'); log('🛑 بلغ 100 صفقة اليوم — لا فتح جديد حتى الغد (إدارة المفتوح مستمرة)'); } return null; }
   // 🔥 خطة الانفجار: دخول الصعود المؤكد المتفجر (strong) فقط
-  if(S.quick){ let g=''; try{ const ax=(window.RADAR.analyzed||[]).find(x=>x.c.id===id); g=ax?ax.grade:''; }catch(e){} if(g!=='strong'){ if(coolOk(id)){ coolSet(id); log('🔥 '+p.sym+': ليس انفجاراً مؤكداً — الروبوت ينتظر بطاقة الانفجار فقط'); } return null; } }
+  { let g=''; try{ const ax=(window.RADAR.analyzed||[]).find(x=>x.c.id===id); g=ax?ax.grade:''; }catch(e){} if(g!=='strong'){ if(coolOk(id)){ coolSet(id); log('🔥 '+p.sym+': ليس صعوداً مؤكداً متفجراً — الأول لا يدخل إلا الانفجار المؤكد'); } return null; } }
    // 💰 الدخول بسعر الدخول فقط: لا لحاق بالسعر البعيد — انتظار عودة السعر للدخول
    if(S.oneDecision!==false&&mktRegime()==='down'){ if(coolOk(id+'_dn')){ coolSet(id+'_dn'); log('📉 '+p.sym+': القرار الواحد — هبوط عام، لا دخول جديد (انتظار)'); } return null; }
    if(S.entryOnly!==false){ const lv=liveOf(id,p.entry); if(Math.abs(lv-p.entry)/p.entry>0.005){ if(coolOk(id+'_e')){ coolSet(id+'_e'); log('💰 '+p.sym+': السعر بعيد عن الدخول — انتظار سعر الدخول ('+money(p.entry)+') بدل اللحاق'); } return null; } }
@@ -5353,7 +5353,7 @@ async function scan(){
           let tf=''; try{ tf=((window.PLAN40&&window.PLAN40.get(g.id))||{}).tf||''; }catch(e){}
           if(tf.indexOf('15m')===0) continue;
           const a=an.find(x=>x&&x.c&&x.c.id===g.id);
-          if(!a) continue;
+          if(!a||a.grade!=='strong') continue;
           let P=null; try{ P=window.DEALS.planOf(a); }catch(e){}
           if(!P||!P.entry||!P.t3||!P.sl) continue;
           const live0=a.c.current_price||P.entry;
@@ -5373,7 +5373,7 @@ async function scan(){
         const qty=stake/best.P.entry;
         S2.trades['b61:'+best.g.id]={id:'b61:'+best.g.id,sym:((best.g.sym||symU)+'').toUpperCase().replace(/[^A-Z0-9]/g,'')+'USDT',coin:symU,qty:qty,entry:best.P.entry,t1:best.P.t3,sl:best.P.sl,peak:best.P.entry,open:true,t0:Date.now(),src:'card4H'};
         save();
-        log('🤖 الثاني دخل '+symU+' (متوسطة 4H من البطاقة) @ '+best.P.entry+' — هدف '+best.P.t3+' • وقف '+best.P.sl);
+          log('🤖 الثاني دخل '+symU+' (💥 صعود مؤكد متفجر • متوسطة 4H) @ '+best.P.entry+' — هدف '+best.P.t3+' • وقف '+best.P.sl);
         setEv2('buy',symU,best.P.entry,'متوسطة 4H',null);
       }
     }
