@@ -1401,6 +1401,9 @@ body.linkmode #masterFab{display:none!important}
 .pex-liq.f-calm i{background:linear-gradient(90deg,#334155,#7c8db0)}
 @keyframes pexLiq{0%,100%{filter:brightness(.85)}50%{filter:brightness(1.3)}}
 .pex-flow{font-size:.7rem;font-weight:900;margin-top:3px}
+.pex-chart{margin-top:6px;border:1px solid #8fd6ff44;border-radius:10px;overflow:hidden;background:#000}
+.pex-chart iframe{width:100%;height:220px;border:0;display:block}
+.pex-chart a{display:block;text-align:center;font-size:.66rem;font-weight:900;color:#8fd6ff;padding:3px}
 .pex-tv{font-family:inherit;font-size:.68rem;font-weight:900;color:#8fd6ff;background:#8fd6ff12;border:1px solid #8fd6ff55;border-radius:8px;padding:2px 10px;margin-top:6px;cursor:pointer}
 .f-buy .pex-flow{color:#1fe196}.f-surge .pex-flow{color:#ffab6e}.f-dump .pex-flow{color:#ff7b85}.f-calm .pex-flow{color:#8fa3c0}
 .stepper b{min-width:30px;text-align:center;font-size:1rem}
@@ -4661,7 +4664,7 @@ async function scan(){
       else if(trapNow) h+='<div class="pex-plan">🪤 فخ — <b>لا دخول</b> ('+r.cf.why+')</div>';
       else if(r.lv==='red'&&r.dir==='pump') h+='<div class="pex-plan">💰 دخول <b>'+money(r.entry)+'</b> • 🎯 هدف <b>'+money(r.tp)+'</b> • 🛡 وقف <b>'+money(r.sl)+'</b></div>';
       var tvS=(window.binSym&&window.binSym(c))||null;
-      if(tvS) h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 TradingView</button></div>';
+      if(tvS) h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><div class="pex-chart" hidden></div></div>';
       return h+'</div>';
     }).join(''):'<div class="muted" style="font-size:.8rem">لا إشارات حيتان حالياً — القسم يراقب وحده كل دورة</div>';
     for(var j=0;j<all.length;j++){ var cc=all[j].c, ww=all[j].whale||{}; prev[cc.id]={h1:ww.h1||0,vol:cc.total_volume||0,px:window.realPx(cc,cc.current_price)||0}; }
@@ -4669,7 +4672,15 @@ async function scan(){
   }catch(e){}
 }
 document.addEventListener('DOMContentLoaded',function(){ function run(){ try{ var p=scan(); if(p&&p.catch) p.catch(function(){}); }catch(e){} } try{ run(); }catch(e){} setInterval(run,20000); setTimeout(run,8000); });
-document.addEventListener('click',function(e){ try{ var b=e.target&&e.target.closest?e.target.closest('[data-tv]'):null; if(!b) return; var u='https://www.tradingview.com/chart/?symbol=BINANCE:'+b.dataset.tv; try{ window.open(u,'_blank'); }catch(x){ location.href=u; } }catch(x){} });
+document.addEventListener('click',function(e){ try{
+  var b=e.target&&e.target.closest?e.target.closest('[data-tv]'):null; if(!b) return;
+  var wrap=b.parentElement, box=wrap?wrap.querySelector('.pex-chart'):null;
+  if(!box){ box=document.createElement('div'); box.className='pex-chart'; box.hidden=true; wrap.appendChild(box); }
+  if(box.hidden){
+    if(!box.dataset.on){ var u='https://www.tradingview.com/widgetembed/?symbol=BINANCE:'+b.dataset.tv+'&interval=15&theme=dark&style=1&locale=ar&hide_side_toolbar=1&allow_symbol_change=0'; box.innerHTML='<iframe loading="lazy" src="'+u+'"></iframe><a href="https://www.tradingview.com/chart/?symbol=BINANCE:'+b.dataset.tv+'" target="_blank" rel="noopener">↗ فتح كامل</a>'; box.dataset.on='1'; }
+    box.hidden=false; b.textContent='📊 إخفاء الشارت';
+  } else { box.hidden=true; b.textContent='📊 الشارت'; }
+}catch(x){} });
 window.PEX={scan:scan};
 })();
 </script>
