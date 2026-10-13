@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v199.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v200.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v199.0 بوت واحد تلقائي)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v200.0 متصل بالمحلل)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3270,7 +3270,7 @@ document.addEventListener('DOMContentLoaded',()=>{ try{ paintSwing(); }catch(e){
 })();
 </script>
 
-<script>// 🤖 BOTONE — بوت تداول تلقائي واحد: سريعة ⚡ ومتوسطة 🧘 من البطاقات (انفجار مؤكد فقط)
+<script>// 🤖 BOTONE — بوت تداول تلقائي واحد: سريعة ⚡ ومتوسطة 🧘 من إشارات المحلل مباشرة
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
@@ -3290,7 +3290,7 @@ function confirmOne(p){
     if(window.RADAR&&window.RADAR.demo) return {ok:false,why:'⛔ وضع تجريبي — بيانات غير حقيقية'};
     let a=null; try{ a=(window.RADAR.analyzed||[]).find(x=>x.c.id===p.id); }catch(e){}
     if(!a) return {ok:false,why:'لا تحليل حديث للسوق'};
-    if(a.grade!=='strong') return {ok:false,why:'ليست صعوداً مؤكداً ('+a.grade+')'};
+    if(!a.isBuy) return {ok:false,why:'ليست إشارة شراء من المحلل ('+(a.grade||'?')+')'};
     const trust=(a.trust&&a.trust.score)||0;
     if(trust<55) return {ok:false,why:'مصداقية '+trust};
     const h1=a.c.price_change_percentage_1h_in_currency||0;
@@ -3445,7 +3445,7 @@ async function scan(){
           for(const a of an){
             try{
               if(!a||!a.c||!a.c.id) continue;
-              if(a.grade!=='strong') continue;
+              if(!a.isBuy) continue;
               if(S.trades[a.c.id]) continue;
               try{ if(S.lastStop&&S.lastStop[a.c.id]&&Date.now()-S.lastStop[a.c.id]<30*60*1000) continue; }catch(e){}
               let P=null; try{ P=window.DEALS.planOf(a); }catch(e){}
@@ -3469,8 +3469,8 @@ async function scan(){
             S.trades[c.a.c.id]={id:c.a.c.id,sym:symU.replace(/[^A-Z0-9]/g,'')+'USDT',coin:symU,qty:qty,entry:c.P.entry,t1:c.P.t1,t3:c.P.t3,sl:c.P.sl,peak:c.P.entry,open:true,t0:Date.now(),frame:frameOf(c.a.c.id),src:'card'};
             S.dayCount=(S.dayCount||0)+1; S.buyCount=(S.buyCount||0)+1;
             save();
-            log('🤖 دخل '+symU+' ('+frameTag(S.trades[c.a.c.id])+' صعود مؤكد 💥) @ '+c.P.entry+' — هدف '+c.P.t3+' • وقف '+c.P.sl);
-            setEv('buy',symU,c.P.entry,'صعود مؤكد 💥',null);
+            log('🤖 دخل '+symU+' ('+frameTag(S.trades[c.a.c.id])+' إشارة المحلل 📡) @ '+c.P.entry+' — هدف '+c.P.t3+' • وقف '+c.P.sl);
+            setEv('buy',symU,c.P.entry,'إشارة المحلل 📡',null);
           }catch(e){}
         }
         S.lastScan={n:cands.length,t:Date.now()};
@@ -3523,16 +3523,16 @@ function paint(){
         const cl=(S.closedList||[]).slice(0,5);
         const closedHtml=cl.length?cl.map(h=>'<span>'+(h.pnl>=0?'✅ ':'🔴 ')+h.coin+' '+(h.pnl>=0?'+':'')+'$'+h.pnl.toFixed(2)+'</span>').join(' • '):'';
         const age=S.lastTick?Math.max(0,Math.round((Date.now()-S.lastTick)/1000)):null;
-        let nS=0; try{ const an=(window.RADAR&&window.RADAR.analyzed)||[]; for(const a of an){ if(a&&a.grade==='strong') nS++; } }catch(e){}
+        let nS=0; try{ const an=(window.RADAR&&window.RADAR.analyzed)||[]; for(const a of an){ if(a&&a.isBuy) nS++; } }catch(e){}
         bx.innerHTML='<b>🤖 بوت التداول التلقائي</b> '+(S.enabled?'🟢 يعمل':'⏸ متوقف')
         +'<br>🔗 <span>💰 الربح: '+(tot>=0?'+':'')+'$'+tot.toFixed(2)+' (محقق '+(S.profit>=0?'+':'')+'$'+S.profit.toFixed(2)+')</span> • <span>💰 الحي: $'+eqLive.toFixed(2)+' (البداية $'+(S.equityStart||0).toFixed(2)+')</span> • 📊 اليوم '+(dp>=0?'+':'')+'$'+dp.toFixed(2)+' • ⚖️ '+S.wins+'/'+S.closed+(age==null?'':' • آخر فحص منذ '+age+' ث')
-        +'<br>🔥 صعود مؤكد الآن: <b>'+nS+'</b>'+(closedHtml?'<br>📜 المكتملة: '+closedHtml:'');
+        +'<br>📡 إشارات المحلل الآن: <b>'+nS+'</b>'+(closedHtml?'<br>📜 المكتملة: '+closedHtml:'');
       }
     }catch(e){}
     paintLog();
   }catch(e){}
 }
-function start(){ S.enabled=true; S.manual=false; S.day=S.day||new Date().toISOString().slice(0,10); save(); paint(); log('▶ البوت يعمل — سريعة ومتوسطة من البطاقات (انفجار مؤكد فقط)'); (async()=>{ try{ await catchUp(); }catch(e){} try{ scan(); }catch(e){} })(); }
+function start(){ S.enabled=true; S.manual=false; S.day=S.day||new Date().toISOString().slice(0,10); save(); paint(); log('▶ البوت يعمل — متصل بالمحلل مباشرة: أي بطاقة شراء يدخلها'); (async()=>{ try{ await catchUp(); }catch(e){} try{ scan(); }catch(e){} })(); }
 function stop(){ S.enabled=false; S.manual=true; save(); paint(); log('⏸ البوت متوقف — المفتوحة تبقى بلا إدارة، أغلقها يدوياً'); }
 function bind(){ const a=$('oneStart'); if(a&&!a._b){ a._b=1; a.onclick=()=>{ try{ start(); }catch(e){} }; } const b=$('oneStop'); if(b&&!b._b){ b._b=1; b.onclick=()=>{ try{ stop(); }catch(e){} }; } }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ (async()=>{ try{ await catchUp(); }catch(e){} try{ scan(); }catch(e){} })(); try{ paint(); }catch(e){} } });
