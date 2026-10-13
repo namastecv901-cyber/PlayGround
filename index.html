@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v204.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v205.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v204.0 حلال وحرام القناة)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v205.0 وسم كل البطاقات)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2512,7 +2512,7 @@ function render(){
     const dd=p.peak>0?((p.cur||p.entry)-p.peak)/p.peak*100:0;
     const peakLine=(p.cur||0)>=(p.peak||0)-1e-9?'🔥 عند القمة '+money(p.peak):'📉 القمة '+money(p.peak)+' • تراجع '+Math.abs(dd).toFixed(2)+'% عنها';
     return '<article class="guard-card'+(p.open?'':' closed')+'">'
-    +'<div class="gd-top"><img src="'+(p.img||'')+'" onerror="this.style.display=\'none\'"><div><b>'+p.sym+'</b><small>'+p.name+'</small></div>'
+    +'<div class="gd-top"><img src="'+(p.img||'')+'" onerror="this.style.display=\'none\'"><div><b>'+p.sym+'</b>'+(typeof halalTag==='function'?halalTag(p.id,p.sym):'')+'<small>'+p.name+'</small></div>'
     +'<div class="gd-pnl '+(up?'up':'down')+'">'+(up?'+':'')+pnl.toFixed(2)+'%</div></div>'
     +verdictBadge(p)
     +'<div class="gd-note">'+p.note+'</div>'
