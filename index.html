@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v189.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v190.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v189.0 الأول سريعة والثاني متوسطة)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v190.0 الأول سريعة فقط)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3626,7 +3626,7 @@ async function openTrade(p){
   // ⚡ الأول: صفقات سريعة 15m فقط من البطاقات (المتوسطة 4H للروبوت الثاني)
   {
     let tf=''; try{ tf=(((window.PLAN40&&window.PLAN40.get(id))||{}).tf)||''; }catch(e){}
-    if(tf.indexOf('15m')!==0){ if(coolOk(id)){ coolSet(id); log('⏱ '+p.sym+': متوسطة (4H) — للروبوت الثاني، الأول للسريعة فقط'); } return null; }
+    if(tf.indexOf('15m')!==0){ return null; }
   }
   const nOpen=Object.values(S.trades).filter(t=>t&&t.open).length;
   if(S.goalDone){ return null; }
@@ -5256,6 +5256,31 @@ async function scan(){
         }
       }catch(e){}
     }
+    if(Object.values(S2.trades).some(x=>x&&x.open)) return;
+    try{
+      const B=window.BOT49;
+      if(B&&B.S&&B.S.trades){
+        for(const k of Object.keys(B.S.trades)){
+          try{
+            const st=B.S.trades[k];
+            if(!st||!st.open||st.skip||st.invest) continue;
+            if(String(st.id||k).indexOf('m5:')===0||String(st.id||k).indexOf('b61:')===0) continue;
+            let fr=st.frame||'';
+            if(!fr){ try{ const tf=((window.PLAN40&&window.PLAN40.get(st.id))||{}).tf||''; fr=tf.indexOf('15m')===0?'15m':'4H'; }catch(e){ fr='4H'; } }
+            if(fr==='15m') continue;
+            const nid='b61:'+st.id;
+            const rem=(st.qty||0)-(st.sold||0);
+            if(rem>0&&!S2.trades[nid]){
+              S2.trades[nid]={id:nid,sym:st.sym,coin:st.coin,qty:rem,entry:st.entry,t1:st.t3,sl:(st.slEff||st.sl),peak:st.entry,open:true,t0:st.t0||Date.now(),src:'card4H'};
+              log('🔀 '+st.coin+' متوسطة — انتقلت من الأول إلى الثاني، يكملها للهدف');
+            }
+            delete B.S.trades[k];
+            try{ if(B.save) B.save(); }catch(e){}
+          }catch(e){}
+        }
+        save();
+      }
+    }catch(e){}
     if(Object.values(S2.trades).some(x=>x&&x.open)) return;
     if(S2.dayPnl<=-10||S2.equity<20){ if(Date.now()-(S2.guardT||0)>600000){ S2.guardT=Date.now(); log('⛔ الثاني: لا دخول جديد — '+(S2.dayPnl<=-10?('حد الخسارة اليومية ('+S2.dayPnl.toFixed(1)+'$)'):('رأس المال $'+(S2.equity||0).toFixed(2)+' تحت الحد'))+' — زد رأس المال أو انتظر الغد'); } return; }
     let best=null;
