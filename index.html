@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v185.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v186.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v185.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v186.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1535,6 +1535,7 @@ body.linkmode #masterFab{display:none!important}
 <div class="bot-panel" id="swingPanel">
   <div class="bot-head"><span>📈 صفقات المدى المتوسط والطويل <em>محلل خاص — سيولة ممتازة فقط</em></span><b id="swingStatus">📈 جاهز</b></div>
   <div class="bot-plans" id="swingList"></div>
+  <div style="text-align:center;margin-top:6px"><button class="auto-check" id="swingDeepBtn">🔍 تعميق التحليل (كل المنصات)</button></div>
 </div>
 </div>
 
@@ -3547,6 +3548,62 @@ function confirmTrade(p){
 // ---------- 💰 الاستثمار المضاعف: دخول دقيق + هدف صافي ×2..×9 + مراقبة أياماً ----------
 // ---------- 📈 صفقات المدى المتوسط والطويل: محلل خاص + أهداف ربح + سيولة ممتازة فقط ----------
 // ---------- 📈 صفقات المدى المتوسط والطويل: بطاقة مميزة بـ8 أهداف (الأدنى +50%) ----------
+function swingFlowGet(id){
+  try{
+    if(window.__swingFlow&&window.__swingFlow[id]) return window.__swingFlow[id];
+    const m=JSON.parse(localStorage.getItem('ai_swing_flow_v1')||'{}')||{};
+    return m[id]||null;
+  }catch(e){ return null; }
+}
+function swingTurn(a){
+  try{ const c=a.c, mc=c.market_cap||0, vol=c.total_volume||0; return mc>0?vol/mc:(c.qv?(c.qv/1000000000):0); }catch(e){ return 0; }
+}
+function swingPct(a){
+  try{
+    const c=a.c, h1=c.price_change_percentage_1h_in_currency||0, h24=c.price_change_percentage_24h_in_currency||0;
+    const mom=(a.mom||0);
+    const fl=swingFlowGet(c.id);
+    const exB=fl?Math.min(200,(fl.vol||0)/1e8*10):0;
+    const to=swingTurn(a);
+    let pct=Math.max(50,Math.min(800,Math.round((to*500+Math.max(0,h24)*4+Math.max(0,h1)*10+mom*0.8+exB)/10)*10));
+    return {pct:pct,fl:fl,to:to};
+  }catch(e){ return {pct:50,fl:null,to:0}; }
+}
+async function swingDeep(){
+  try{
+    if(window.__swingBusy) return; window.__swingBusy=true;
+    const an=(window.RADAR&&window.RADAR.analyzed)||[];
+    const cands=an.filter(a=>a&&a.c&&(a.grade==='strong'||a.grade==='buy'||a.grade==='watch')).slice(0,40);
+    const rank=cands.map(a=>({a:a,w:((a.c.total_volume||0)/1e6)+((a.score||0)*2)})).sort((x,y)=>y.w-x.w).slice(0,6);
+    const out={};
+    for(const r of rank){
+      try{
+        const id=r.a.c.id;
+        const resp=await fetch('https://api.coingecko.com/api/v3/coins/'+id+'/tickers',{cache:'no-store'});
+        if(!resp.ok) continue;
+        const j=await resp.json();
+        const tk=(j&&j.tickers)||[];
+        let vol=0; const ex={}; let whaleEx='';
+        for(const x of tk){
+          try{
+            const v=(x.converted_volume&&x.converted_volume.usd)||0;
+            const nm=(x.market&&x.market.name)||'?';
+            if(v>0){ vol+=v; ex[nm]=(ex[nm]||0)+v; }
+          }catch(e){}
+        }
+        const names=Object.keys(ex).sort((a,b)=>ex[b]-ex[a]);
+        if(names.length&&ex[names[0]]>vol*0.2) whaleEx=names[0];
+        if(names.length) out[id]={exN:names.length,vol:Math.round(vol),top:names[0],whaleEx:whaleEx,t:Date.now()};
+      }catch(e){}
+    }
+    if(Object.keys(out).length){
+      window.__swingFlow=out;
+      try{ localStorage.setItem('ai_swing_flow_v1',JSON.stringify(out)); }catch(e){}
+      try{ paintSwing(); }catch(e){}
+    }
+  }catch(e){}
+  window.__swingBusy=false;
+}
 function swingPick(){
   try{
     const an=(window.RADAR&&window.RADAR.analyzed)||[];
@@ -3555,7 +3612,10 @@ function swingPick(){
       try{
         if(!a||!a.c) continue;
         const c=a.c;
-        if(a.grade!=='strong'&&a.grade!=='buy') continue;
+        if(a.grade!=='strong'&&a.grade!=='buy'){
+          if(a.grade!=='watch') continue;
+          if(swingTurn(a)<0.25) continue;
+        }
         if((c.total_volume||0)<100000000) continue;
         const trust=(a.trust&&a.trust.score)||0; if(trust<60) continue;
         const h1=c.price_change_percentage_1h_in_currency||0;
@@ -3568,10 +3628,11 @@ function swingPick(){
         try{ const P0=(window.DEALS&&window.DEALS.planOf)?window.DEALS.planOf(a):null; if(P0&&P0.entry) entry=P0.entry; }catch(e){}
         if(!entry) entry=c.current_price||0;
         if(!entry) continue;
-        const T=[3,6,10,15,22,30,40,50].map(p=>entry*(1+p/100));
+        const pc=swingPct(a), pct=pc.pct;
+        const T=[0.06,0.12,0.2,0.3,0.44,0.6,0.8,1].map(f=>entry*(1+pct*f/100));
         const sl=entry*0.92;
-        const s=trust*0.4+(a.score||0)*0.3+Math.min((c.total_volume||0)/1e7,40)+Math.min(Math.max(h24,0),15)*2;
-        out.push({a:a,entry:entry,T:T,sl:sl,s:Math.round(s)});
+        const s=trust*0.4+(a.score||0)*0.3+Math.min((c.total_volume||0)/1e7,40)+Math.min(Math.max(h24,0),15)*2+(pc.fl?10:0);
+        out.push({a:a,entry:entry,T:T,sl:sl,s:Math.round(s),pct:pct,fl:pc.fl,to:pc.to});
       }catch(e){}
     }
     out.sort((x,y)=>y.s-x.s);
@@ -3595,14 +3656,15 @@ function paintSwing(){
         +'<img src="'+(c.image||'')+'" onerror="this.style.display=\'none\'">'
         +'<div><b>'+sym+'</b><small>'+(c.name||sym)+' • 📈 متوسط/طويل • 8 أهداف</small></div><span class="inv-pulse"></span></div>'
         +'<div class="inv-tline">💰 دخول <b>'+money(p.entry)+'</b> • 💵 حي <b>'+money(live)+'</b> • 🛡 وقف <b>'+money(p.sl)+'</b></div>'
-        +'<div class="inv-tline">🎯 محقق <b>'+hit+'/8</b> ('+prog+'%) • 📈 الهدف الأدنى <b>+50%</b></div>'
+        +'<div class="inv-tline">🎯 محقق <b>'+hit+'/8</b> ('+prog+'%) • 📈 متوقع <b>+'+p.pct+'%</b> من السيولة</div>'
         +'<div class="inv-move" style="margin-top:8px"><i style="width:'+prog+'%"></i></div>'
         +'<div style="text-align:center">'+rows+'</div>'
-        +'<div class="inv-tline" style="text-align:center">💧 سيولة $'+((c.total_volume||0)/1e6).toFixed(0)+'M</div>'
+        +'<div class="inv-tline" style="text-align:center">💧 سيولة $'+((c.total_volume||0)/1e6).toFixed(0)+'M'+(p.fl?(' • 🌊 عبر '+p.fl.exN+' منصات ($'+(p.fl.vol>=1e9?(p.fl.vol/1e9).toFixed(1)+'B':Math.round(p.fl.vol/1e6)+'M')+')'):'')+(p.fl&&p.fl.whaleEx?(' • 🐋 حوت في '+p.fl.whaleEx):'')+'</div>'
         +'<div class="inv-state">🔬 المحلل الخاص: نقاط '+p.s+' — سيولة ممتازة + اتجاه مؤكد</div></div>';
       }).join('');
     }
     try{ const st=$('swingStatus'); if(st) st.textContent='📈 '+picks.length+' ناضجة'; }catch(e){}
+    try{ if(!window.__swingT||Date.now()-window.__swingT>10*60*1000){ window.__swingT=Date.now(); setTimeout(()=>{ try{ swingDeep(); }catch(e){} },2000); } }catch(e){}
   }catch(e){}
 }
 // ---------- فتح صفقة من إشارة الحارس ----------
@@ -4273,6 +4335,7 @@ function bind(){
   window.addEventListener('pagehide',()=>{ try{ save(); }catch(e){} });
   window.addEventListener('beforeunload',()=>{ try{ save(); }catch(e){} });
   const rs=$('botReset'); if(rs) rs.onclick=()=>{ try{ S.busy=false; S.m5busy=false; S.cool={}; S.lastStop={}; S.noBin={}; S.m5last=0; S.lastTick=Date.now(); save(); setInputs(); paint(); log('🧹 مسح البوت: فككت أي تجميد ومسحت التبريد والحظر المؤقت — إعادة تشغيل نظيفة الآن'); }catch(e){} try{ if(S.enabled) tick(); else startBot(false); }catch(e){} };
+  const sd=$('swingDeepBtn'); if(sd&&!sd._b){ sd._b=1; sd.onclick=()=>{ try{ toast('🔍 أجمع السيولة من كل المنصات...'); swingDeep(); }catch(e){} }; }
   const ac=$('botAutoCheck'); if(ac&&!ac._b){ ac._b=1; ac.onclick=()=>{ try{ autoCheckNow(); }catch(e){} }; }
   const cl=$('botClear'); if(cl) cl.onclick=()=>{ S.key=''; S.sec=''; save(); setInputs(); log('🗑 تم مسح المفاتيح'); };
   const ch=$('botChal'); if(ch) ch.onclick=()=>{ applyGrowth('c5_30'); };
