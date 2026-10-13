@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v215.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v216.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v215.0 خطط اختبار)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v216.0 خطط اختبار)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1476,7 +1476,7 @@ body.linkmode #masterFab{display:none!important}
   <div class="bot-event" id="oneEvent">🔔 بانتظار أول عملية شراء/بيع...</div>
   <div class="dec-strip" id="oneStrip" hidden></div>
   <div class="bot-team" id="oneBox">🤖 البوت: —</div>
-  <div class="bot-plans-head">🧪 خطط الاختبار (اضغط للتجربة ✅)</div>
+  <div class="bot-plans-head">🟣 خطط البوت السابقة (اضغط للتجربة ✅)</div>
   <div class="bot-plans" id="onePlans"></div>
   <div class="bot-plans-head">🚀 خطة تكبير رأس المال (اضغط للتفعيل ✅)</div>
   <div class="bot-plans" id="oneGrows"></div>
@@ -3197,7 +3197,7 @@ document.addEventListener('DOMContentLoaded',()=>{ try{ holdWake(); }catch(e){} 
 "use strict";
 const $=id=>document.getElementById(id);
 const LS='ai_botone_v1';
-const S={enabled:false,manual:false,mode:'paper',max:3,tpCap:5,instantMin:2,goal:10,goalDone:false,dayLimit:10,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,buyCount:0,dayCount:0,chalId:null,planId:'t1',planStrict:true,trades:{},log:[],closedList:[],lastEv:null,busy:false,lastTick:0,lastScan:null,guardT:0,idleT:0,netFail:0,lastStop:{},key:'',sec:'',timeOffset:0,info:{}};
+const S={enabled:false,manual:false,mode:'paper',max:3,tpCap:5,instantMin:2,goal:10,goalDone:false,dayLimit:10,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,buyCount:0,dayCount:0,chalId:null,planId:'calm',planStrict:true,split:1,reinMax:0,reinDrop:0.01,frame:null,trades:{},log:[],closedList:[],lastEv:null,busy:false,lastTick:0,lastScan:null,guardT:0,idleT:0,netFail:0,lastStop:{},key:'',sec:'',timeOffset:0,info:{}};
 const livePx={};
 function sha256Bytes(m){
   const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
@@ -3290,8 +3290,8 @@ function readTable(el){
     save(); paint();
   }catch(e){}
 }
-function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','manual','mode','max','tpCap','instantMin','goal','goalDone','dayLimit','equity','equityStart','day','dayPnl','profit','closed','wins','buyCount','dayCount','chalId','planId','planStrict','trades','log','closedList','lastEv','lastTick','lastScan','lastStop','key','sec'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); if(!S.manual){ S.enabled=true; } }catch(e){} }
-function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S.enabled,manual:!!S.manual,mode:S.mode,max:S.max,tpCap:S.tpCap,instantMin:S.instantMin,goal:S.goal,goalDone:!!S.goalDone,dayLimit:S.dayLimit,equity:S.equity,equityStart:S.equityStart,day:S.day,dayPnl:S.dayPnl,profit:S.profit,closed:S.closed,wins:S.wins,buyCount:S.buyCount,dayCount:S.dayCount,chalId:S.chalId||null,planId:S.planId||'t1',planStrict:S.planStrict!==false,trades:S.trades,log:(S.log||[]).slice(0,30),closedList:(S.closedList||[]).slice(0,10),lastEv:S.lastEv||null,lastTick:S.lastTick||0,lastScan:S.lastScan||null,lastStop:S.lastStop||{},key:S.key||'',sec:S.sec||''})); }catch(e){} try{ const el=document.getElementById('oneSave'); if(el) el.textContent='💾 حفظ تلقائي '+new Date().toLocaleTimeString('ar'); }catch(e){} }
+function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','manual','mode','max','tpCap','instantMin','goal','goalDone','dayLimit','equity','equityStart','day','dayPnl','profit','closed','wins','buyCount','dayCount','chalId','planId','planStrict','split','reinMax','reinDrop','frame','trades','log','closedList','lastEv','lastTick','lastScan','lastStop','key','sec'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); if(!S.manual){ S.enabled=true; } }catch(e){} }
+function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S.enabled,manual:!!S.manual,mode:S.mode,max:S.max,tpCap:S.tpCap,instantMin:S.instantMin,goal:S.goal,goalDone:!!S.goalDone,dayLimit:S.dayLimit,equity:S.equity,equityStart:S.equityStart,day:S.day,dayPnl:S.dayPnl,profit:S.profit,closed:S.closed,wins:S.wins,buyCount:S.buyCount,dayCount:S.dayCount,chalId:S.chalId||null,planId:S.planId||'calm',planStrict:S.planStrict!==false,split:(S.split==null?1:S.split),reinMax:(S.reinMax||0),reinDrop:(S.reinDrop||0.01),frame:(S.frame||null),trades:S.trades,log:(S.log||[]).slice(0,30),closedList:(S.closedList||[]).slice(0,10),lastEv:S.lastEv||null,lastTick:S.lastTick||0,lastScan:S.lastScan||null,lastStop:S.lastStop||{},key:S.key||'',sec:S.sec||''})); }catch(e){} try{ const el=document.getElementById('oneSave'); if(el) el.textContent='💾 حفظ تلقائي '+new Date().toLocaleTimeString('ar'); }catch(e){} }
 function log(m){ S.log=S.log||[]; S.log.unshift({t:Date.now(),m:String(m)}); S.log=S.log.slice(0,30); save(); paintLog(); }
 function paintLog(){ try{ const ul=$('oneLog'); if(!ul) return; ul.innerHTML=(S.log.length?S.log.slice(0,8):[{t:Date.now(),m:'البوت متوقف — اضغط تشغيل.'}]).map(h=>'<li><span class="muted">'+new Date(h.t).toLocaleTimeString('ar')+'</span> '+h.m+'</li>').join(''); }catch(e){} }
 function toastF(m){ try{ window.toast(m); }catch(e){} }
@@ -3303,7 +3303,7 @@ function confirmOne(p){
     if(window.RADAR&&window.RADAR.demo) return {ok:false,why:'⛔ وضع تجريبي — بيانات غير حقيقية'};
     let a=null; try{ a=(window.RADAR.analyzed||[]).find(x=>x.c.id===p.id); }catch(e){}
     if(!a) return {ok:false,why:'لا تحليل حديث للسوق'};
-    if(!a.isBuy) return {ok:false,why:'ليست إشارة شراء من المحلل ('+(a.grade||'?')+')'};
+    if(a.grade!=='strong') return {ok:false,why:'البوت يختار القوية فقط — المحلل يعرض ('+(a.grade||'?')+')'};
     const trust=(a.trust&&a.trust.score)||0;
     if(trust<55) return {ok:false,why:'مصداقية '+trust};
     const h1=a.c.price_change_percentage_1h_in_currency||0;
@@ -3442,6 +3442,33 @@ async function scan(){
         if(!(live>0)) continue;
         st.peak=Math.max(st.peak||st.entry,live);
         livePx[st.id]={px:live,t:Date.now()};
+        try{
+          const maxAdds=Math.max(0,Math.min(3,parseInt(S.reinMax)||0));
+          if(maxAdds>0&&(st.adds||0)<maxAdds){
+            const drop=parseFloat(S.reinDrop)||0.01;
+            if(live<=st.entry*(1-drop)){
+              const planned=parseFloat(st.stakePlanned||0), init=parseFloat(st.splitInit||1)||1;
+              const rem=Math.max(0,planned*(1-init)-(st.added||0));
+              if(rem>0){
+                let addStake=rem/Math.max(1,maxAdds-(st.adds||0));
+                const eq=parseFloat(S.equity)||0; if(eq>0) addStake=Math.min(addStake,eq*0.5);
+                if(addStake>0){
+                  let addQty=addStake/live;
+                  if(S.mode!=='paper'){
+                    if(S.key&&S.sec){ try{ const info=await getInfo(st.sym); const o=await signed('POST','/api/v3/order',{symbol:st.sym,side:'BUY',type:'MARKET',quoteOrderQty:addStake}); let q=0; (o.fills||[]).forEach(f=>{ q+=parseFloat(f.qty||0); }); if(q>0) addQty=q; }catch(e){ addQty=0; } }
+                    else addQty=0;
+                  }
+                  if(addQty>0){
+                    const nq=st.qty+addQty; st.entry=(st.entry*st.qty+live*addQty)/nq; st.qty=nq;
+                    st.added=(st.added||0)+addStake; st.adds=(st.adds||0)+1;
+                    log('➕ '+st.coin+': تعزيز '+st.adds+' عند الهبوط — متوسط جديد '+st.entry.toFixed(4));
+                    save();
+                  }
+                }
+              }
+            }
+          }
+        }catch(e){}
         const pnl=(live-st.entry)*st.qty;
         let why='';
         if(live>=st.t3) why='T3';
@@ -3465,9 +3492,9 @@ async function scan(){
           for(const a of an){
             try{
               if(!a||!a.c||!a.c.id) continue;
-              if(!a.isBuy) continue;
-              if(S.planStrict&&a.grade!=='strong') continue;
+              if(!a.isBuy||a.grade!=='strong') continue;
               if(S.trades[a.c.id]) continue;
+              if(S.frame&&frameOf(a.c.id)!==S.frame) continue;
               try{ if(S.lastStop&&S.lastStop[a.c.id]&&Date.now()-S.lastStop[a.c.id]<30*60*1000) continue; }catch(e){}
               let P=null; try{ P=window.DEALS.planOf(a); }catch(e){}
               if(!P||!P.entry||!P.t1||!P.t3||!P.sl) continue;
@@ -3488,7 +3515,9 @@ async function scan(){
             if(stake<5) break;
             const symU=String(c.a.c.symbol||c.a.c.id).toUpperCase();
             const sym=symU.replace(/[^A-Z0-9]/g,'')+'USDT';
-            let qty=stake/c.P.entry, step=1;
+            const splitInit=Math.min(1,Math.max(0.2,parseFloat(S.split)||1));
+            const firstStake=stake*splitInit;
+            let qty=firstStake/c.P.entry, step=1;
             if(S.mode!=='paper'){
               if(!S.key||!S.sec){ log('🔑 أدخل مفاتيح Binance أولاً (جدول البوت)'); break; }
               let info=null;
@@ -3502,7 +3531,7 @@ async function scan(){
                 if(q>0) qty=q;
               }catch(e){ if(Date.now()-(S.ordT||0)>600000){ S.ordT=Date.now(); log('❌ شراء '+symU+' فشل: '+e.message); } continue; }
             }
-            S.trades[c.a.c.id]={id:c.a.c.id,sym:sym,coin:symU,qty:qty,entry:c.P.entry,t1:c.P.t1,t3:c.P.t3,sl:c.P.sl,step:step,peak:c.P.entry,open:true,t0:Date.now(),frame:frameOf(c.a.c.id),src:'card'};
+            S.trades[c.a.c.id]={id:c.a.c.id,sym:sym,coin:symU,qty:qty,entry:c.P.entry,t1:c.P.t1,t3:c.P.t3,sl:c.P.sl,step:step,peak:c.P.entry,open:true,t0:Date.now(),frame:frameOf(c.a.c.id),src:'card',stake:firstStake,stakePlanned:stake,splitInit:splitInit,adds:0,added:0};
             S.dayCount=(S.dayCount||0)+1; S.buyCount=(S.buyCount||0)+1;
             save();
             log('🤖 دخل '+symU+' ('+frameTag(S.trades[c.a.c.id])+' إشارة المحلل 📡) @ '+c.P.entry+' — هدف '+c.P.t3+' • وقف '+c.P.sl);
@@ -3572,16 +3601,23 @@ function paint(){
   }catch(e){}
 }
 const TPLANS=[
- {id:'t1',name:'🌱 هادئة — صفقات قوية قليلة',desc:'strong فقط • جني $5 • فوري $2 • صفقة واحدة • الأكثر أماناً',cfg:{tpCap:5,instantMin:2,max:1,strict:true}},
- {id:'t2',name:'⚡ سريعة — سكالبينج مكثف',desc:'buy وما فوق • جني $0.7 • فوري $0.3 • 5 صفقات • أرباح صغيرة متكررة',cfg:{tpCap:0.7,instantMin:0.3,max:5,strict:false}},
- {id:'t3',name:'👑 كبيرة — صيد الأهداف الكاملة',desc:'strong فقط • جني $10 • فوري $5 • 3 صفقات • يترك الرابحة تكبر',cfg:{tpCap:10,instantMin:5,max:3,strict:true}}
+ {id:'calm',name:'🌱 آمن — دخول واحد',desc:'strong فقط • خروج بأي ربح • صفقة واحدة • الأقل مخاطرة',cfg:{tpCap:0.7,instantMin:0.3,max:1,strict:true,split:1,rein:0,drop:0.01,frame:null}},
+ {id:'boom',name:'🔥 انفجار — هدف كبير',desc:'strong فقط • دخول كامل • 3 صفقات • يركب الانفجار',cfg:{tpCap:1.5,instantMin:0.5,max:3,strict:true,split:1,rein:0,drop:0.01,frame:null}},
+ {id:'split',name:'➗ تقسيم الدخول',desc:'الدخول 50% + تعزيز مرتين • متوسط أفضل',cfg:{tpCap:1,instantMin:0.5,max:3,strict:true,split:0.5,rein:2,drop:0.01,frame:null}},
+ {id:'boost',name:'🚀 تعزيز — ربح أو ضعف',desc:'الدخول 50% + تعزيز 3 مرات عند الهبوط',cfg:{tpCap:1,instantMin:0.5,max:3,strict:true,split:0.5,rein:3,drop:0.008,frame:null}},
+ {id:'beast',name:'👑 الوحش — انفجار + تعزيز',desc:'دخول 40% + تعزيز 3 مرات • الأقوى',cfg:{tpCap:2,instantMin:1,max:3,strict:true,split:0.4,rein:3,drop:0.008,frame:null}},
+ {id:'sniper',name:'🎯 قناص الفريم — 15m فقط',desc:'صفقات 15m السريعة فقط • دخول كامل',cfg:{tpCap:1,instantMin:0.5,max:3,strict:true,split:1,rein:0,drop:0.01,frame:'15m'}},
+ {id:'runner',name:'🐎 دع الربح يركض',desc:'يترك الرابحة حتى النهاية • 3 صفقات',cfg:{tpCap:10,instantMin:5,max:3,strict:true,split:1,rein:0,drop:0.01,frame:null}},
+ {id:'diamond',name:'💎 ماسي — صبر وتعزيز',desc:'دخول 50% + تعزيز مرتين • إكمال كبير',cfg:{tpCap:5,instantMin:2,max:3,strict:true,split:0.5,rein:2,drop:0.01,frame:null}},
+ {id:'hedge',name:'🦔 القنفذ — دفاع السوق الأحمر',desc:'أنصاف حصص • خروج سريع $0.5 • حماية',cfg:{tpCap:0.5,instantMin:0.3,max:3,strict:true,split:0.5,rein:0,drop:0.01,frame:null}},
+ {id:'allf',name:'🌐 الكل — سريعة ومتوسطة',desc:'كل الفريمات • دخول كامل • 5 صفقات',cfg:{tpCap:2,instantMin:1,max:5,strict:true,split:1,rein:0,drop:0.01,frame:null}}
 ];
 function applyPlan(id){
   const p=TPLANS.find(x=>x.id===id); if(!p) return false;
-  S.planId=id; S.tpCap=p.cfg.tpCap; S.instantMin=p.cfg.instantMin; S.max=p.cfg.max; S.planStrict=p.cfg.strict;
+  S.planId=id; S.tpCap=p.cfg.tpCap; S.instantMin=p.cfg.instantMin; S.max=p.cfg.max; S.planStrict=p.cfg.strict; S.split=p.cfg.split; S.reinMax=p.cfg.rein; S.reinDrop=p.cfg.drop; S.frame=p.cfg.frame;
   save(); paint(); paintPlans();
-  log('🧪 خطة الاختبار: '+p.name);
-  try{ window.toast('🧪 '+p.name); }catch(e){}
+  log('🟣 الخطة: '+p.name);
+  try{ window.toast('🟣 '+p.name); }catch(e){}
   return true;
 }
 function paintPlans(){
