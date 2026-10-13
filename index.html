@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v190.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v191.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v190.0 الأول سريعة فقط)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v191.0 الأول سريعة فقط)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -4177,6 +4177,7 @@ async function tick(){
     for(const p of guards){ try{ let st=S.trades[p.id]; if(st&&!st.open&&!st.skip){ delete S.trades[p.id]; st=null; } if(!st||st.skip) st=await openTrade(p); if(st) await manage(st); }catch(e){} }
     // إغلاق صفقات حارسها اختفى/أُغلق
     for(const id of Object.keys(S.trades)){ const st=S.trades[id]; if(st&&st.open&&!st.skip){ const gp=guardPos(id); if(!gp||!gp.open){ try{ await manage(st); }catch(e){} } } }
+    try{ if(window.BOT61&&window.BOT61.migrateMedium) await window.BOT61.migrateMedium(); }catch(e){}
     paint();
   }catch(e){}
   }catch(_e){}
@@ -4284,7 +4285,17 @@ function bind(){
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ holdWake(); try{ S.busy=false; S.m5busy=false; }catch(e){} if(S.enabled){ (async()=>{ try{ await catchUp(); }catch(e){} try{ tick(); }catch(e){} })(); } } else { try{ save(); }catch(e){} } });
   window.addEventListener('pagehide',()=>{ try{ save(); }catch(e){} });
   window.addEventListener('beforeunload',()=>{ try{ save(); }catch(e){} });
-  const rs=$('botReset'); if(rs) rs.onclick=()=>{ try{ S.busy=false; S.m5busy=false; S.cool={}; S.lastStop={}; S.noBin={}; S.m5last=0; S.lastTick=Date.now(); save(); setInputs(); paint(); log('🧹 مسح البوت: فككت أي تجميد ومسحت التبريد والحظر المؤقت — إعادة تشغيل نظيفة الآن'); }catch(e){} try{ if(S.enabled) tick(); else startBot(false); }catch(e){} };
+  const rs=$('botReset'); if(rs) rs.onclick=()=>{ (async()=>{ try{
+  S.busy=false; S.m5busy=false; S.pumpBusy=false; S.pumpLast=0; S.cool={}; S.lastStop={}; S.noBin={}; S.m5last=0; S.lastTick=Date.now();
+  try{ const B2=window.BOT61; if(B2&&B2.S){ B2.S.busy=false; B2.S.guardT=0; B2.S.idleT=0; B2.S.lastTick=0; } }catch(e){}
+  save(); setInputs(); paint();
+  let moved=0; try{ if(window.BOT61&&window.BOT61.migrateMedium) moved=await window.BOT61.migrateMedium(); }catch(e){}
+  try{ await catchUp(); }catch(e){}
+  try{ if(window.BOT61&&window.BOT61.catchUp2) await window.BOT61.catchUp2(); }catch(e){}
+  try{ if(window.BOT61&&window.BOT61.paint) window.BOT61.paint(); }catch(e){}
+  log('🧹 إعادة تشغيل من الصفر: فككت كل تجميد ومسحت المؤقتات'+(moved>0?' ونقلت '+moved+' متوسطة إلى الثاني':''+' — بداية نظيفة الآن'));
+  try{ toast('🧹 أُعيد التشغيل من الصفر ✅'); }catch(e){}
+  }catch(e){} try{ if(S.enabled) tick(); else startBot(false); }catch(e){} try{ if(window.BOT61&&window.BOT61.scan) window.BOT61.scan(); }catch(e){} })(); };
   const sd=$('swingDeepBtn'); if(sd&&!sd._b){ sd._b=1; sd.onclick=()=>{ try{ toast('🔍 أجمع السيولة من كل المنصات...'); swingDeep(); }catch(e){} }; }
   const ac=$('botAutoCheck'); if(ac&&!ac._b){ ac._b=1; ac.onclick=()=>{ try{ autoCheckNow(); }catch(e){} }; }
   const cl=$('botClear'); if(cl) cl.onclick=()=>{ S.key=''; S.sec=''; save(); setInputs(); log('🗑 تم مسح المفاتيح'); };
@@ -5227,9 +5238,41 @@ async function catchUp2(){
     return n;
   }catch(e){ return 0; }
 }
+async function migrateMedium(){
+  let n=0;
+
+try{
+  const B=window.BOT49;
+  if(B&&B.S&&B.S.trades){
+    for(const k of Object.keys(B.S.trades)){
+      try{
+        const st=B.S.trades[k];
+        if(!st||!st.open||st.skip||st.invest) continue;
+        if(String(st.id||k).indexOf('m5:')===0||String(st.id||k).indexOf('b61:')===0) continue;
+        let fr=st.frame||'';
+        if(!fr){ try{ const tf=((window.PLAN40&&window.PLAN40.get(st.id))||{}).tf||''; fr=tf.indexOf('15m')===0?'15m':'4H'; }catch(e){ fr='4H'; } }
+        if(fr==='15m') continue;
+        const nid='b61:'+st.id;
+        const rem=(st.qty||0)-(st.sold||0);
+        if(rem>0&&!S2.trades[nid]){
+          S2.trades[nid]={id:nid,sym:st.sym,coin:st.coin,qty:rem,entry:st.entry,t1:st.t3,sl:(st.slEff||st.sl),peak:st.entry,open:true,t0:st.t0||Date.now(),src:'card4H'};
+          log('🔀 '+st.coin+' متوسطة — انتقلت من الأول إلى الثاني، يكملها للهدف');
+          n++;
+        }
+        delete B.S.trades[k];
+        try{ if(B.save) B.save(); }catch(e){}
+      }catch(e){}
+    }
+    save();
+  }
+}catch(e){}
+
+  return n;
+}
 async function scan(){
   if(!S2.enabled||S2.busy||document.hidden) return;
-  S2.busy=true; S2.lastTick=Date.now();
+  S2.busy=true; const gap2=Date.now()-(S2.lastTick||0); S2.lastTick=Date.now();
+  if(gap2>5*60*1000){ try{ await catchUp2(); }catch(e){} } S2.lastTick=Date.now();
   try{
     const today=new Date().toISOString().slice(0,10);
     if(S2.day!==today){ S2.day=today; S2.dayPnl=0; }
@@ -5256,31 +5299,7 @@ async function scan(){
         }
       }catch(e){}
     }
-    if(Object.values(S2.trades).some(x=>x&&x.open)) return;
-    try{
-      const B=window.BOT49;
-      if(B&&B.S&&B.S.trades){
-        for(const k of Object.keys(B.S.trades)){
-          try{
-            const st=B.S.trades[k];
-            if(!st||!st.open||st.skip||st.invest) continue;
-            if(String(st.id||k).indexOf('m5:')===0||String(st.id||k).indexOf('b61:')===0) continue;
-            let fr=st.frame||'';
-            if(!fr){ try{ const tf=((window.PLAN40&&window.PLAN40.get(st.id))||{}).tf||''; fr=tf.indexOf('15m')===0?'15m':'4H'; }catch(e){ fr='4H'; } }
-            if(fr==='15m') continue;
-            const nid='b61:'+st.id;
-            const rem=(st.qty||0)-(st.sold||0);
-            if(rem>0&&!S2.trades[nid]){
-              S2.trades[nid]={id:nid,sym:st.sym,coin:st.coin,qty:rem,entry:st.entry,t1:st.t3,sl:(st.slEff||st.sl),peak:st.entry,open:true,t0:st.t0||Date.now(),src:'card4H'};
-              log('🔀 '+st.coin+' متوسطة — انتقلت من الأول إلى الثاني، يكملها للهدف');
-            }
-            delete B.S.trades[k];
-            try{ if(B.save) B.save(); }catch(e){}
-          }catch(e){}
-        }
-        save();
-      }
-    }catch(e){}
+    await migrateMedium();
     if(Object.values(S2.trades).some(x=>x&&x.open)) return;
     if(S2.dayPnl<=-10||S2.equity<20){ if(Date.now()-(S2.guardT||0)>600000){ S2.guardT=Date.now(); log('⛔ الثاني: لا دخول جديد — '+(S2.dayPnl<=-10?('حد الخسارة اليومية ('+S2.dayPnl.toFixed(1)+'$)'):('رأس المال $'+(S2.equity||0).toFixed(2)+' تحت الحد'))+' — زد رأس المال أو انتظر الغد'); } return; }
     let best=null;
@@ -5351,7 +5370,7 @@ function bind(){
 }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ (async()=>{ try{ await catchUp2(); }catch(e){} try{ scan(); }catch(e){} })(); try{ paintTeam(); }catch(e){} } });
 document.addEventListener('DOMContentLoaded',()=>{ load(); bind(); paintTeam(); if(S2.enabled){ log('🔁 الثاني استأنف تلقائياً بعد الفتح — يواصل المراقبة'); (async()=>{ try{ await catchUp2(); }catch(e){} try{ scan(); }catch(e){} })(); } setInterval(()=>{ try{ scan(); }catch(e){} },15000); setInterval(()=>{ try{ if(S2.enabled&&!document.hidden&&Date.now()-(S2.lastTick||0)>90000){ S2.busy=false; log('💓 الثاني: إحياء النبض — استئناف الدورات'); scan(); } }catch(e){} },30000); setInterval(paintTeam,3000); });
-window.BOT61={get S(){ return S2; },scan:scan,paint:paintTeam};
+window.BOT61={get S(){ return S2; },scan:scan,paint:paintTeam,migrateMedium:migrateMedium,catchUp2:catchUp2};
 })();
 </script>
 </body>
