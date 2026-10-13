@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v183.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v184.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v183.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v184.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -5195,6 +5195,7 @@ async function scan(){
         const live=parseFloat(kl[kl.length-1][4]);
         if(!(live>0)) continue;
         st.peak=Math.max(st.peak||st.entry,live);
+        S2.live={px:live,t:Date.now()};
         const pnl=(live-st.entry)*st.qty;
         let why='';
         if(live>=st.t1) why='TP';
@@ -5250,7 +5251,7 @@ function paintTeam(){
     if(bx){
       const open=Object.values(S2.trades).filter(x=>x&&x.open);
       let oline='لا صفقة مفتوحة';
-      if(open.length){ const st=open[0]; oline='🟢 '+st.coin+' دخول '+st.entry+' • هدف '+st.t1+' • وقف '+st.sl; }
+      if(open.length){ const st=open[0]; let lv=st.entry, up=0; try{ if(S2.live&&Date.now()-S2.live.t<30000){ lv=S2.live.px; up=(lv-st.entry)*st.qty; } }catch(e){} oline='🟢 '+st.coin+' دخول '+st.entry+' • 💵 حي '+lv+' • ربح '+(up>=0?'+':'')+'$'+up.toFixed(2)+' • هدف '+st.t1+' • وقف '+st.sl; }
       const ls=S2.lastScan?('🔍 آخر فحص: '+S2.lastScan.sym+' قوة '+S2.lastScan.s):'🔍 لم يفحص بعد';
       const la=(S2.log&&S2.log[0])?String(S2.log[0].m||'').slice(0,90):'—';
       const eq=S2.equity||0;
@@ -5262,7 +5263,8 @@ function bind(){
   const a=$('bot2Start'); if(a&&!a._b){ a._b=1; a.onclick=()=>{ S2.enabled=true; S2.day=S2.day||new Date().toISOString().slice(0,10); save(); paintTeam(); log('▶ الثاني يعمل — صياد اختراق مستقل (صفقة واحدة، وقف متحرك)'); scan(); }; }
   const b=$('bot2Stop'); if(b&&!b._b){ b._b=1; b.onclick=()=>{ S2.enabled=false; save(); paintTeam(); log('⏸ الثاني متوقف — المفتوحة تبقى بلا إدارة، أغلقها يدوياً'); }; }
 }
-document.addEventListener('DOMContentLoaded',()=>{ load(); bind(); paintTeam(); setInterval(()=>{ try{ scan(); }catch(e){} },15000); setInterval(paintTeam,10000); });
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ try{ scan(); }catch(e){} try{ paintTeam(); }catch(e){} } });
+document.addEventListener('DOMContentLoaded',()=>{ load(); bind(); paintTeam(); setInterval(()=>{ try{ scan(); }catch(e){} },15000); setInterval(paintTeam,3000); });
 window.BOT61={get S(){ return S2; },scan:scan,paint:paintTeam};
 })();
 </script>
