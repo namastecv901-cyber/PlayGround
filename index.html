@@ -4499,6 +4499,49 @@ function classify(a){
   if(h1>-0.5&&h1<2.5) return {lv:'green',dir:'pump',txt:'🟢 تجميع حيتان — ستنفجر، راقبها',entry:0,tp:0,sl:0};
   return null;
 }
+var pexK={};
+async function pexKlines(sym){
+  try{
+    var c=pexK[sym];
+    if(c&&Date.now()-c.t<60000) return c.kl;
+    var ctl=new AbortController(), to=setTimeout(function(){ try{ctl.abort();}catch(e){} },8000);
+    try{
+      var r=await fetch('https://api.binance.com/api/v3/klines?symbol='+sym+'&interval=15m&limit=30',{signal:ctl.signal,cache:'no-store'});
+      if(!r.ok) return null;
+      var kl=await r.json();
+      if(kl&&kl.length>=16){ pexK[sym]={kl:kl,t:Date.now()}; return kl; }
+    }finally{ clearTimeout(to); }
+  }catch(e){}
+  return null;
+}
+function pexRsi(cl){
+  try{
+    if(!cl||cl.length<15) return null;
+    var g=0,l=0;
+    for(var i=cl.length-14;i<cl.length;i++){ var d=cl[i]-cl[i-1]; if(d>0) g+=d; else l-=d; }
+    if(l===0) return 100;
+    return 100-100/(1+g/l);
+  }catch(e){ return null; }
+}
+function pexSma(cl,n){ try{ if(!cl||cl.length<n) return 0; var s=0; for(var i=cl.length-n;i<cl.length;i++) s+=cl[i]; return s/n; }catch(e){ return 0; } }
+async function pexConfirm(a){
+  try{
+    var sym=(window.binSym&&window.binSym(a.c))||null; if(!sym) return {trap:false,confirmed:false,why:'net'};
+    var kl=await pexKlines(sym); if(!kl) return {trap:false,confirmed:false,why:'net'};
+    var cl=kl.map(function(k){ return parseFloat(k[4]); });
+    var rsi=pexRsi(cl); if(rsi==null) return {trap:false,confirmed:false,why:'net'};
+    var last=cl[cl.length-1], s20=pexSma(cl,20);
+    var ext=s20>0?((last-s20)/s20*100):0;
+    var rising=last>cl[cl.length-2]&&cl[cl.length-2]>cl[cl.length-3];
+    var h24=(a.c&&a.c.price_change_percentage_24h_in_currency)||0;
+    var net14=(cl[0]>0?((last-cl[0])/cl[0]*100):0);
+    if(rsi>75&&net14>5) return {trap:true,confirmed:false,why:'RSI '+Math.round(rsi)+' +'+net14.toFixed(1)+'% — قمة منهكة (فخ)'};
+    if(ext>8) return {trap:true,confirmed:false,why:'ممتد +'+ext.toFixed(1)+'% فوق المتوسط — لحاق متأخر (فخ)'};
+    if(h24>40) return {trap:true,confirmed:false,why:'بامب مكتمل +'+h24.toFixed(0)+'% — متأخر (فخ)'};
+    if(rsi>=50&&rsi<=70&&s20>0&&last>s20&&rising) return {trap:false,confirmed:true,why:'RSI '+Math.round(rsi)+' + فوق المتوسط + صاعد حقيقي'};
+    return {trap:false,confirmed:false,why:''};
+  }catch(e){ return {trap:false,confirmed:false,why:'net'}; }
+}
 function pexCandles(c){
   try{
     var pr=(c.sparkline_in_7d&&c.sparkline_in_7d.price)||[];
@@ -4510,8 +4553,9 @@ function pexCandles(c){
     return {up:up,rise:runLow>0?((last-runLow)/runLow*100):0,ok:true};
   }catch(e){ return {up:0,rise:0,ok:false}; }
 }
-function scan(){
+async function scan(){
   try{
+    if(Date.now()-(scan._t||0)<15000) return; scan._t=Date.now();
     var box=$('pexGrid'); if(!box) return;
     var all=[]; try{ all=(window.RADAR&&window.RADAR.analyzed)||[]; }catch(e){}
     var out=[], now=Date.now();
@@ -4537,6 +4581,11 @@ function scan(){
     var rank={red:0,orange:1,green:2};
     out.sort(function(x,y){ if(rank[x.lv]!==rank[y.lv]) return rank[x.lv]-rank[y.lv]; return ((y.a.whale||{}).score||0)-((x.a.whale||{}).score||0); });
     out=out.slice(0,6);
+    try{
+      var cfMap={};
+      await Promise.all(out.map(async function(rr){ try{ cfMap[rr.a.c.id]=await pexConfirm(rr.a); }catch(e){ cfMap[rr.a.c.id]={trap:false,confirmed:false,why:'net'}; } }));
+      out.forEach(function(rr){ rr.cf=cfMap[rr.a.c.id]||{trap:false,confirmed:false,why:'net'}; });
+    }catch(e){}
     var cnt=$('pexCount'); if(cnt) cnt.textContent=String(out.length);
     var st=$('pexStatus');
     if(st) st.textContent=out.length?('🐋 دخول حيتان مرصود في '+out.length+' عملات • آخر فحص '+new Date().toLocaleTimeString('ar')):('🐋 لا دخول حيتان الآن — فحص '+all.length+' عملة • '+new Date().toLocaleTimeString('ar'));
@@ -4565,20 +4614,24 @@ function scan(){
       var cd=pexCandles(c);
       var cdHtml=cd.ok?('<div class="pex-flow">🕯 شمعات الصعود: <b>'+cd.up+'/3</b> • من بداية الموجة <b>+'+cd.rise.toFixed(1)+'%</b></div>'):'';
       var late=cd.ok&&(cd.up>=3||cd.rise>=4);
+      var cfTag=(r.cf&&r.cf.confirmed)?' — ✅ صعود مؤكد حقيقي':'';
+      var trapNow=!!(r.cf&&r.cf.trap)&&!exitNow&&r.dir!=='dump';
       var verdict='';
       if(exitNow) verdict='<div class="pex-state">🔴 اخرج الآن — الحيتان تخرج فعلاً (حقيقي)</div>';
       else if(r.dir==='dump') verdict='<div class="pex-state">🔴 دامب — لا دخول شراء أبداً</div>';
+      else if(trapNow) verdict='<div class="pex-state">🪤 فخ — لا تدخل ('+(r.cf.why||'إشارة وهمية')+')</div>';
       else if(late&&(r.lv==='green'||r.lv==='orange'||r.lv==='red')) verdict='<div class="pex-state">⛔ طلعت '+cd.up+' شمعات (+'+cd.rise.toFixed(1)+'%) — خطير، لا تدخل الآن</div>';
-      else if(r.lv==='green') verdict='<div class="pex-state">✅ ادخل مع الحيتان الآن من القاع — حتى لا تخسر</div>';
-      else if(r.lv==='orange') verdict='<div class="pex-state">✅ ادخل معهم قبل الانفجار — ما زال مبكراً</div>';
+      else if(r.lv==='green') verdict='<div class="pex-state">✅ ادخل مع الحيتان الآن من القاع — حتى لا تخسر'+cfTag+'</div>';
+      else if(r.lv==='orange') verdict='<div class="pex-state">✅ ادخل معهم قبل الانفجار — ما زال مبكراً'+cfTag+'</div>';
       else if(r.lv==='red'&&bb&&bb.px>0&&live0>bb.px*1.03) verdict='<div class="pex-state">⛔ لا تدخل وسط الانفجار — فاتك الدخول مع الحيتان</div>';
-      else if(r.lv==='red') verdict='<div class="pex-state">✅ انفجار بدأ من القاع — دخول مع الحيتان</div>';
+      else if(r.lv==='red') verdict='<div class="pex-state">✅ انفجار بدأ من القاع — دخول مع الحيتان'+cfTag+'</div>';
       else verdict='<div class="pex-state">🟢 ابقَ — الحيتان ما زالت داخل</div>';
       var h='<div class="pex-card st-'+r.lv+'"><div class="pex-top"><span class="pex-dot"></span><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(window.realPx(c,c.current_price))+'</span></div>'
       +'<div class="pex-meta">🐋 سيولة حقيقية <b>'+fmtBig(vol)+'</b> • دوران <b>'+to.toFixed(1)+'%</b> • 1س '+((w.h1||0)>=0?'+':'')+(w.h1||0).toFixed(1)+'% • 24س '+(((c.price_change_percentage_24h_in_currency||0))>=0?'+':'')+(c.price_change_percentage_24h_in_currency||0).toFixed(1)+'%</div>'
       +'<div class="pex-liq '+fcls+'"><i style="width:'+wpx.toFixed(0)+'%"></i></div><div class="pex-flow">'+ftxt+'</div>'+botHtml+cdHtml+verdict
-      +'<div class="pex-state">'+(exitNow?'🔴 خروج — الحيتان تبيع الآن، لا دخول':r.txt)+'</div>';
+      +'<div class="pex-state">'+(exitNow?'🔴 خروج — الحيتان تبيع الآن، لا دخول':(trapNow?('🪤 فخ — '+r.cf.why):r.txt))+'</div>';
       if(exitNow) h+='<div class="pex-plan">🔴 أمر واحد فقط: <b>اخرج الآن</b> — لا دخول مع الخروج</div>';
+      else if(trapNow) h+='<div class="pex-plan">🪤 فخ — <b>لا دخول</b> ('+r.cf.why+')</div>';
       else if(r.lv==='red'&&r.dir==='pump') h+='<div class="pex-plan">💰 دخول <b>'+money(r.entry)+'</b> • 🎯 هدف <b>'+money(r.tp)+'</b> • 🛡 وقف <b>'+money(r.sl)+'</b></div>';
       return h+'</div>';
     }).join(''):'<div class="muted" style="font-size:.8rem">لا إشارات حيتان حالياً — القسم يراقب وحده كل دورة</div>';
@@ -4586,7 +4639,7 @@ function scan(){
     var ks=Object.keys(prev); if(ks.length>600) ks.slice(0,ks.length-600).forEach(function(k){ delete prev[k]; });
   }catch(e){}
 }
-document.addEventListener('DOMContentLoaded',function(){ try{ scan(); }catch(e){} setInterval(scan,20000); setTimeout(scan,8000); });
+document.addEventListener('DOMContentLoaded',function(){ function run(){ try{ var p=scan(); if(p&&p.catch) p.catch(function(){}); }catch(e){} } try{ run(); }catch(e){} setInterval(run,20000); setTimeout(run,8000); });
 window.PEX={scan:scan};
 })();
 </script>
