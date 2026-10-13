@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v167.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v168.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v167.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v168.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3169,6 +3169,8 @@ const PLANS=[
  {id:'runner',name:'🐎 دع الربح يركض',desc:'خروج متدرج T1/T2/الأخير • سقف ربح $2 • يترك الرابحة تكبر',lvl:'أقوى',cfg:{quick:false,fastOnly:false,instant:false,full:true,tpCap:2.0,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
  {id:'diamond',name:'💎 ماسي — صبر وتعزيز',desc:'دخول 50% + تعزيز حتى مرتين + إكمال حتى الهدف الأخير',lvl:'الأقوى',cfg:{quick:false,fastOnly:false,instant:false,full:true,tpCap:1.5,noLoss:true,splitInit:0.5,reinforce:true,reinDrop:0.01,reinMax:2,dblWin:false}},
  {id:'m5',name:'🕯 مخصص فريم 5 دقائق',desc:'محرك الشموع 5m فقط • دخول وخروج سريع • مضاربة لحظية',lvl:'قوي',cfg:{brain:'solo',quick:false,fastOnly:false,instant:true,instantMin:0.3,tpCap:0.7,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
+ {id:'pump',name:'🏹 صياد البامب — كل الفريمات',desc:'يفحص 1m+5m+15m معاً • يعرف وقت البامب ويدخل أقوى انفجار حقيقي (70+) • خروج سريع',lvl:'الأقوى 🏹',cfg:{brain:'solo',quick:false,fastOnly:false,instant:true,instantMin:0.3,tpCap:1.0,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
+ {id:'magnet',name:'🧲 مغناطيس السيولة',desc:'يلتقط أعلى دوران سيولة (حيتان) مع قوة شمعية • دخول ثقيل وربح مكتمل',lvl:'الأقوى 🧲',cfg:{brain:'solo',quick:false,fastOnly:false,instant:false,full:true,tpCap:1.5,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}},
  {id:'pre',name:'⚡ قبل الانفجار — دخول مبكر',desc:'يلتقط ما قبل الانفجار بثوانٍ على فريم 1m • خروج سريع بأول ربح 0.30$+',lvl:'أقوى ⚡',cfg:{brain:'solo',quick:false,fastOnly:false,instant:true,instantMin:0.3,tpCap:0.7,full:false,noLoss:true,splitInit:1,reinforce:false,reinMax:0,dblWin:false}}
 ];
 function applyPlan(id,silent){
@@ -3946,6 +3948,52 @@ async function openSolo(c,setup,tf){
   toast('🤖 شراء '+c.s+' (وحده)');
   paint(); return st;
 }
+async function pumpScan(){
+  if(!S.enabled||S.busy||S.pumpBusy||S.brain==='link') return;
+  if(S.planId!=='pump'&&S.planId!=='magnet') return;
+  if(Date.now()-(S.pumpLast||0)<90000) return;
+  S.pumpBusy=true; S.pumpLast=Date.now();
+  let okc=0, netfail=0, best=null;
+  try{
+    const list=m5cands().slice(0,8);
+    for(const c of list){
+      if(!S.enabled) break;
+      try{
+        const openN=Object.values(S.trades).filter(t=>t&&t.open).length;
+        if(openN>=S.max) break;
+        const ex=S.trades['m5:'+c.a.c.id]; if(ex&&(ex.open||ex.skip)) continue;
+        const urls=['1m','5m','15m'].map(tf=>'https://api.binance.com/api/v3/klines?symbol='+c.sym+'&interval='+tf+'&limit=20');
+        const rs=await Promise.all(urls.map(u=>fetchT(u,12000)));
+        if(!rs[0].ok||!rs[1].ok||!rs[2].ok){ netfail++; if(netfail>=3&&okc===0) break; continue; }
+        const ks=await Promise.all(rs.map(r=>r.json()));
+        okc++;
+        let score=0, why='';
+        if(S.planId==='pump'){
+          const s1=burstScore(ks[0]), s5=burstScore(ks[1]), s15=burstScore(ks[2]);
+          const align=(tfRising(ks[0])?1:0)+(tfRising(ks[1])?1:0)+(tfRising(ks[2])?1:0);
+          score=Math.round(s1*0.4+s5*0.35+s15*0.25+align*8);
+          why='بامب على '+align+'/3 فريمات';
+        } else {
+          const w=investWhale(c.a), s5=burstScore(ks[1]);
+          score=Math.round(Math.min(110,w.to*200+s5*0.5));
+          why='دوران سيولة '+(w.to*100).toFixed(0)+'%';
+        }
+        if(!best||score>best.score) best={c:c,score:score,why:why,k5:ks[1]};
+      }catch(e){ netfail++; if(netfail>=3&&okc===0) break; }
+    }
+    if(best&&best.score>=70){
+      const setup=m5setup(best.k5);
+      if(setup){
+        const fc=m5fullCheck(best.c);
+        if(fc.ok){ log('🏹 '+best.c.s+': '+best.why+' (قوة '+best.score+') — دخول قوي'); await openSolo(best.c,setup,'pump-multi'); }
+        else if(coolOk('pmp'+best.c.a.c.id)){ coolSet('pmp'+best.c.a.c.id); log('🔍 '+best.c.s+': مرفوضة بالتحليل الشامل — '+fc.why); }
+      }
+    }
+    try{ S.m5reg=S.m5reg||{}; S.m5reg.pump=best?best.score:0; S.m5reg.t=Date.now(); }catch(e){}
+    save();
+  }catch(e){}
+  S.pumpBusy=false;
+}
 async function m5scan(){
   if(!S.enabled||S.m5busy||S.brain==='link') return;
   if(Date.now()-(S.m5last||0)<60000) return;
@@ -4019,6 +4067,7 @@ async function tick(){
   }catch(_e){}
   finally{ S.busy=false; }
   if(S.enabled&&S.brain!=='link'){ try{ m5scan().catch(()=>{}); }catch(e){} }
+  if(S.enabled&&(S.planId==='pump'||S.planId==='magnet')){ try{ pumpScan().catch(()=>{}); }catch(e){} }
    try{ autoPlanTick(); }catch(e){}
 }
 // ---------- ربط الواجهة ----------
@@ -4183,7 +4232,7 @@ function showUpdBanner(url,ts){
     try{ toast('🎉 تحديث جديد متوفر'); }catch(e){}
   }catch(e){}
 }
-window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner,preburst,m5setup,manage,openTrade,mktRegime,holdOf,save,paintDecRes,paintDecStrip,applyRemoteUpdate,startInvest,paintInvest,catchUp,investTargetFor,investLive,investState,dipPos,investWhale,burstScore,isDemo};
+window.BOT49={get S(){return S;},tick,hmacHex,stakeFor,confirmTrade,startBot,m5scan,tfRising,m5fullCheck,isDownturn,applyPlan,autoPlanTick,checkUpdate,showUpdBanner,preburst,m5setup,manage,openTrade,mktRegime,holdOf,save,paintDecRes,paintDecStrip,applyRemoteUpdate,startInvest,paintInvest,catchUp,investTargetFor,investLive,investState,dipPos,investWhale,burstScore,isDemo,pumpScan};
 })();
 </script>
 <script>// 🗂 SEC61 — الصعود الجديد وحده + الصعود المؤكد وحده (بدون خلط)
