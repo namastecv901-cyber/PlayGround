@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v214.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v215.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v214.0 غير محدود ∞)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v215.0 غير محدود ∞)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1476,6 +1476,8 @@ body.linkmode #masterFab{display:none!important}
   <div class="bot-event" id="oneEvent">🔔 بانتظار أول عملية شراء/بيع...</div>
   <div class="dec-strip" id="oneStrip" hidden></div>
   <div class="bot-team" id="oneBox">🤖 البوت: —</div>
+  <div class="bot-plans-head">🧪 خطط الاختبار (اضغط للتجربة ✅)</div>
+  <div class="bot-plans" id="onePlans"></div>
   <div class="bot-plans-head">🚀 خطة تكبير رأس المال (اضغط للتفعيل ✅)</div>
   <div class="bot-plans" id="oneGrows"></div>
   <div class="bot-chal-bar" id="oneGrowBar" hidden><i id="oneGrowFill" style="width:0%"></i></div>
@@ -3195,7 +3197,7 @@ document.addEventListener('DOMContentLoaded',()=>{ try{ holdWake(); }catch(e){} 
 "use strict";
 const $=id=>document.getElementById(id);
 const LS='ai_botone_v1';
-const S={enabled:false,manual:false,mode:'paper',max:3,tpCap:5,instantMin:2,goal:10,goalDone:false,dayLimit:10,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,buyCount:0,dayCount:0,chalId:null,trades:{},log:[],closedList:[],lastEv:null,busy:false,lastTick:0,lastScan:null,guardT:0,idleT:0,netFail:0,lastStop:{},key:'',sec:'',timeOffset:0,info:{}};
+const S={enabled:false,manual:false,mode:'paper',max:3,tpCap:5,instantMin:2,goal:10,goalDone:false,dayLimit:10,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,buyCount:0,dayCount:0,chalId:null,planId:'t1',planStrict:true,trades:{},log:[],closedList:[],lastEv:null,busy:false,lastTick:0,lastScan:null,guardT:0,idleT:0,netFail:0,lastStop:{},key:'',sec:'',timeOffset:0,info:{}};
 const livePx={};
 function sha256Bytes(m){
   const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
@@ -3288,8 +3290,8 @@ function readTable(el){
     save(); paint();
   }catch(e){}
 }
-function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','manual','mode','max','tpCap','instantMin','goal','goalDone','dayLimit','equity','equityStart','day','dayPnl','profit','closed','wins','buyCount','dayCount','chalId','trades','log','closedList','lastEv','lastTick','lastScan','lastStop','key','sec'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); if(!S.manual){ S.enabled=true; } }catch(e){} }
-function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S.enabled,manual:!!S.manual,mode:S.mode,max:S.max,tpCap:S.tpCap,instantMin:S.instantMin,goal:S.goal,goalDone:!!S.goalDone,dayLimit:S.dayLimit,equity:S.equity,equityStart:S.equityStart,day:S.day,dayPnl:S.dayPnl,profit:S.profit,closed:S.closed,wins:S.wins,buyCount:S.buyCount,dayCount:S.dayCount,chalId:S.chalId||null,trades:S.trades,log:(S.log||[]).slice(0,30),closedList:(S.closedList||[]).slice(0,10),lastEv:S.lastEv||null,lastTick:S.lastTick||0,lastScan:S.lastScan||null,lastStop:S.lastStop||{},key:S.key||'',sec:S.sec||''})); }catch(e){} try{ const el=document.getElementById('oneSave'); if(el) el.textContent='💾 حفظ تلقائي '+new Date().toLocaleTimeString('ar'); }catch(e){} }
+function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','manual','mode','max','tpCap','instantMin','goal','goalDone','dayLimit','equity','equityStart','day','dayPnl','profit','closed','wins','buyCount','dayCount','chalId','planId','planStrict','trades','log','closedList','lastEv','lastTick','lastScan','lastStop','key','sec'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); if(!S.manual){ S.enabled=true; } }catch(e){} }
+function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S.enabled,manual:!!S.manual,mode:S.mode,max:S.max,tpCap:S.tpCap,instantMin:S.instantMin,goal:S.goal,goalDone:!!S.goalDone,dayLimit:S.dayLimit,equity:S.equity,equityStart:S.equityStart,day:S.day,dayPnl:S.dayPnl,profit:S.profit,closed:S.closed,wins:S.wins,buyCount:S.buyCount,dayCount:S.dayCount,chalId:S.chalId||null,planId:S.planId||'t1',planStrict:S.planStrict!==false,trades:S.trades,log:(S.log||[]).slice(0,30),closedList:(S.closedList||[]).slice(0,10),lastEv:S.lastEv||null,lastTick:S.lastTick||0,lastScan:S.lastScan||null,lastStop:S.lastStop||{},key:S.key||'',sec:S.sec||''})); }catch(e){} try{ const el=document.getElementById('oneSave'); if(el) el.textContent='💾 حفظ تلقائي '+new Date().toLocaleTimeString('ar'); }catch(e){} }
 function log(m){ S.log=S.log||[]; S.log.unshift({t:Date.now(),m:String(m)}); S.log=S.log.slice(0,30); save(); paintLog(); }
 function paintLog(){ try{ const ul=$('oneLog'); if(!ul) return; ul.innerHTML=(S.log.length?S.log.slice(0,8):[{t:Date.now(),m:'البوت متوقف — اضغط تشغيل.'}]).map(h=>'<li><span class="muted">'+new Date(h.t).toLocaleTimeString('ar')+'</span> '+h.m+'</li>').join(''); }catch(e){} }
 function toastF(m){ try{ window.toast(m); }catch(e){} }
@@ -3464,6 +3466,7 @@ async function scan(){
             try{
               if(!a||!a.c||!a.c.id) continue;
               if(!a.isBuy) continue;
+              if(S.planStrict&&a.grade!=='strong') continue;
               if(S.trades[a.c.id]) continue;
               try{ if(S.lastStop&&S.lastStop[a.c.id]&&Date.now()-S.lastStop[a.c.id]<30*60*1000) continue; }catch(e){}
               let P=null; try{ P=window.DEALS.planOf(a); }catch(e){}
@@ -3563,8 +3566,28 @@ function paint(){
       }
     }catch(e){}
     try{ setTable(); }catch(e){}
+    try{ paintPlans(); }catch(e){}
     try{ paintGrows(); }catch(e){}
     paintLog();
+  }catch(e){}
+}
+const TPLANS=[
+ {id:'t1',name:'🌱 هادئة — صفقات قوية قليلة',desc:'strong فقط • جني $5 • فوري $2 • صفقة واحدة • الأكثر أماناً',cfg:{tpCap:5,instantMin:2,max:1,strict:true}},
+ {id:'t2',name:'⚡ سريعة — سكالبينج مكثف',desc:'buy وما فوق • جني $0.7 • فوري $0.3 • 5 صفقات • أرباح صغيرة متكررة',cfg:{tpCap:0.7,instantMin:0.3,max:5,strict:false}},
+ {id:'t3',name:'👑 كبيرة — صيد الأهداف الكاملة',desc:'strong فقط • جني $10 • فوري $5 • 3 صفقات • يترك الرابحة تكبر',cfg:{tpCap:10,instantMin:5,max:3,strict:true}}
+];
+function applyPlan(id){
+  const p=TPLANS.find(x=>x.id===id); if(!p) return false;
+  S.planId=id; S.tpCap=p.cfg.tpCap; S.instantMin=p.cfg.instantMin; S.max=p.cfg.max; S.planStrict=p.cfg.strict;
+  save(); paint(); paintPlans();
+  log('🧪 خطة الاختبار: '+p.name);
+  try{ window.toast('🧪 '+p.name); }catch(e){}
+  return true;
+}
+function paintPlans(){
+  try{
+    const box=$('onePlans'); if(!box) return;
+    box.innerHTML=TPLANS.map(p=>'<button class="bot-plan'+(S.planId===p.id?' sel':'')+'" data-tplan="'+p.id+'"><span class="pl-check">'+(S.planId===p.id?'✅':'○')+'</span><span><b>'+p.name+'</b><small>'+p.desc+'</small></span></button>').join('');
   }catch(e){}
 }
 const GROWS=[
@@ -3592,6 +3615,7 @@ function paintGrows(){
 function start(){ if(S.mode!=='paper'&&(!S.key||!S.sec)){ log('🔑 الوضع الحقيقي يحتاج API Key وSecret — أدخلهما في جدول البوت'); try{ window.toast('🔑 أدخل المفاتيح أولاً'); }catch(e){} return false; } S.enabled=true; S.manual=false; S.day=S.day||new Date().toISOString().slice(0,10); save(); paint(); log('▶ البوت يعمل — متصل بالمحلل مباشرة: أي بطاقة شراء يدخلها'); (async()=>{ try{ await catchUp(); }catch(e){} try{ scan(); }catch(e){} })(); }
 function stop(){ S.enabled=false; S.manual=true; save(); paint(); log('⏸ البوت متوقف — المفتوحة تبقى بلا إدارة، أغلقها يدوياً'); }
 if(!window.__oneCtlBound){ window.__oneCtlBound=1; document.addEventListener('input',e=>{ try{ const el=e.target; if(el&&(el.tagName==='INPUT'||el.tagName==='SELECT')&&el.id) readTable(el); }catch(x){} }); document.addEventListener('change',e=>{ try{ const el=e.target; if(el&&(el.tagName==='INPUT'||el.tagName==='SELECT')&&el.id) readTable(el); }catch(x){} }); }
+if(!window.__tplanBound){ window.__tplanBound=1; document.addEventListener('click',e=>{ try{ const b=e.target&&e.target.closest?e.target.closest('[data-tplan]'):null; if(b&&b.dataset.tplan) applyPlan(b.dataset.tplan); }catch(x){} }); }
 if(!window.__growBound){ window.__growBound=1; document.addEventListener('click',e=>{ try{ const b=e.target&&e.target.closest?e.target.closest('[data-grow]'):null; if(b&&b.dataset.grow) applyGrowth(b.dataset.grow); }catch(x){} }); }
 function bind(){ const a=$('oneStart'); if(a&&!a._b){ a._b=1; a.onclick=()=>{ try{ start(); }catch(e){} }; } const b=$('oneStop'); if(b&&!b._b){ b._b=1; b.onclick=()=>{ try{ stop(); }catch(e){} }; } }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ (async()=>{ try{ await catchUp(); }catch(e){} try{ scan(); }catch(e){} })(); try{ paint(); }catch(e){} } });
