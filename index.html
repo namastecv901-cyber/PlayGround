@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v179.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v180.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v179.0 تركيز القرار + تحديث فوري)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v180.0 تركيز القرار + تحديث فوري)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -582,6 +582,8 @@ footer,iframe,.tv-frame{border-radius:18px}
 .ai-top img{width:40px;height:40px;border-radius:50%}
 .ai-top b{font-size:1.2rem;display:block}
 .ai-top small{color:var(--mut)}
+.done-chips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:6px 0 2px}
+.done-chips span{font-size:.66rem;font-weight:900;background:#ffffff08;border:1px solid var(--line);border-radius:14px;padding:2px 10px;color:var(--mut)}
 .ai-ring{margin-inline-start:auto;width:64px;height:64px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:conic-gradient(var(--c) calc(var(--p)*1%),#ffffff12 0);position:relative;flex-shrink:0}
 .ai-ring::after{content:'';position:absolute;inset:6px;background:#0b1226;border-radius:50%}
 .ai-ring b,.ai-ring small{position:relative;z-index:1}
@@ -1466,6 +1468,7 @@ body.linkmode #masterFab{display:none!important}
   <div class="bot-event" id="botEvent">🔔 بانتظار أول عملية شراء/بيع...</div>
   <div class="bot-link">🔗 <span id="botGuard">متصل بالحارس</span> • <span id="botProfit">💰 الربح: $0.00</span> • <span id="botRec"></span> • <span id="botEqLine"></span> • <span id="botDayN"></span> • <span id="botBuys"></span> • <span id="botConf"></span> • <span id="botDuel"></span> • <span id="botGoalLine"></span></div>
   <div class="bot-team" id="botTeam">⚖️ المقارنة: —</div>
+  <div class="bot-team" id="bot2Box">🤖 الثاني: —</div>
   <div class="bot-grid">
     <label>الوضع<select id="botMode"><option value="paper">🧪 تجريبي (بدون مفاتيح)</option><option value="testnet">🧪 Testnet حقيقي</option><option value="live">🔴 حقيقي</option></select></label>
     <label>🧠 العقل<select id="botBrain"><option value="both">مربوط + وحده</option><option value="link">مربوط فقط</option><option value="solo">وحده فقط</option></select></label>
@@ -2134,6 +2137,17 @@ function lockCond(a){
     return s?' • '+s:'';
   }catch(e){ return ''; }
 }
+function doneChips(a){
+  try{
+    if(!window.DONE_N) return '';
+    const n=window.DONE_N.get(a.c.id);
+    if(!n||(!n.done&&!n.single&&!n.stop)) return '';
+    return '<div class="done-chips">'
+    +(n.done?'<span>🎯 كاملة #'+n.done+'</span>':'')
+    +(n.single?'<span>🥉 هدف #'+n.single+'</span>':'')
+    +(n.stop?'<span>🔴 وقف #'+n.stop+'</span>':'')+'</div>';
+  }catch(e){ return ''; }
+}
 function decisionBlock(a){
   const d=decisionOf(a);
   const watched=!!guardOf(a.c.id);
@@ -2183,6 +2197,7 @@ function card(a,i){
   +'<div class="ai-top"><img src="'+(c.image||'')+'" onerror="this.style.display=\'none\'">'
   +'<div><b>'+sym+'</b><small>'+(c.name||'')+' • <span class="'+fl.trim()+'">'+money(a.price)+'</span></small></div>'
   +'<div class="ai-ring" style="--p:'+a.score+';--c:'+ringC+'"><b>'+a.score+'</b><small>ثقة</small></div></div>'
+  + doneChips(a)
   + decisionBlock(a)
   + ticket
   + calcBox
@@ -2410,6 +2425,7 @@ function cycle(){
         }
       } else if(!(cur>p.entry*1.005)){ p.missN=0; p.missT0=0; }
     p.verdict=v; p.note=note;
+    if((v==='T1'||v==='T2')&&prev!==v&&!p.singleCounted){ p.singleCounted=true; try{ doneCount(p.id,'single'); }catch(e){} }
     if(prev!==v&&(v==='FINAL'||v==='STOP')){ try{ doneCount(p.id,v==='FINAL'?'done':'stop'); }catch(e){} }
     if(prev!==v && (v==='EXIT_NOW'||v==='PULLBACK')){ beep(v==='EXIT_NOW'?[440,330,220]:[660,520,390],0.35,[0,0.35,0.7]); notify(v==='EXIT_NOW'?'🚨 اخرج الآن: '+p.sym:'📉 تراجع بعد الهدف الأول: '+p.sym, note); }
     else if(prev!==v && v==='DANGER'){ beep(660,0.35); notify('⚠️ خطر: '+p.sym, note); }
@@ -2423,7 +2439,7 @@ function doneCount(id,kind){
   try{
     const K='ai_done_n_v1';
     let m={}; try{ m=JSON.parse(localStorage.getItem(K)||'{}')||{}; }catch(e){}
-    const e=m[id]||{done:0,stop:0};
+    const e=m[id]||{done:0,stop:0,single:0};
     e[kind]=(e[kind]||0)+1;
     m[id]=e;
     try{ localStorage.setItem(K,JSON.stringify(m)); }catch(x){}
@@ -2431,7 +2447,7 @@ function doneCount(id,kind){
   }catch(e){ return 0; }
 }
 function doneGet(id){
-  try{ const m=JSON.parse(localStorage.getItem('ai_done_n_v1')||'{}')||{}; return m[id]||{done:0,stop:0}; }catch(e){ return {done:0,stop:0}; }
+  try{ const m=JSON.parse(localStorage.getItem('ai_done_n_v1')||'{}')||{}; return m[id]||{done:0,stop:0,single:0}; }catch(e){ return {done:0,stop:0,single:0}; }
 }
 try{ window.DONE_N=window.DONE_N||{count:doneCount,get:doneGet}; }catch(e){}
 function verdictBadge(p){
@@ -5285,9 +5301,9 @@ window.SYSAID={check:check,fix:fix,paint:paint,cardStates:cardStates};
 "use strict";
 const $=id=>document.getElementById(id);
 const LS='ai_bot61_v1';
-const S2={enabled:false,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,trades:{},log:[],busy:false};
-function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','equity','equityStart','day','dayPnl','profit','closed','wins','trades','log'].forEach(k=>{ if(j[k]!==undefined) S2[k]=j[k]; }); }catch(e){} }
-function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S2.enabled,equity:S2.equity,equityStart:S2.equityStart,day:S2.day,dayPnl:S2.dayPnl,profit:S2.profit,closed:S2.closed,wins:S2.wins,trades:S2.trades,log:(S2.log||[]).slice(0,20)})); }catch(e){} }
+const S2={enabled:false,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,trades:{},log:[],busy:false,lastScan:null};
+function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','equity','equityStart','day','dayPnl','profit','closed','wins','trades','log','lastScan'].forEach(k=>{ if(j[k]!==undefined) S2[k]=j[k]; }); }catch(e){} }
+function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S2.enabled,equity:S2.equity,equityStart:S2.equityStart,day:S2.day,dayPnl:S2.dayPnl,profit:S2.profit,closed:S2.closed,wins:S2.wins,trades:S2.trades,log:(S2.log||[]).slice(0,20),lastScan:S2.lastScan||null})); }catch(e){} }
 function log(m){ S2.log=S2.log||[]; S2.log.unshift({t:Date.now(),m:String(m)}); S2.log=S2.log.slice(0,20); save(); }
 async function fetchJ(url,ms){ const c=new AbortController(); const to=setTimeout(()=>{ try{c.abort();}catch(e){} },ms||12000); try{ const r=await fetch(url,{signal:c.signal,cache:'no-store'}); if(!r.ok) return null; return await r.json(); }catch(e){ return null; } finally{ clearTimeout(to); } }
 function uni(){
@@ -5343,7 +5359,7 @@ async function scan(){
         if(!best||s>best.s) best={u:u,s:s,entry:entry};
       }catch(e){}
     }
-    if(best){
+    if(best){ S2.lastScan={sym:best.u.s,s:best.s,t:Date.now()};
       const stake=Math.min(20,S2.equity*0.2,S2.equity);
       if(stake>=5){
         const qty=stake/best.entry;
@@ -5360,9 +5376,18 @@ function paintTeam(){
     const el=$('botTeam'); if(!el) return;
     let p1=0,best=false;
     try{ const B=window.BOT49; if(B&&B.S){ p1=B.S.profit||0; best=!!B.S.bestOf; } }catch(e){}
-    const p2=S2.profit||0;
-    const win=p2>p1+1;
-    el.innerHTML='⚖️ المقارنة: <b>🤖 الأول '+(p1>=0?'+':'')+'$'+p1.toFixed(2)+'</b> • <b>🤖 الثاني '+(p2>=0?'+':'')+'$'+p2.toFixed(2)+'</b> • الأقوى الآن: <b>'+(win?'الثاني 🥇':'الأول 🥇')+'</b>'+(S2.enabled?' • الثاني يعمل 🟢':' • الثاني متوقف')+(best?' • وضع الأقوى فقط ⚖️':'');
+    const p2=S2.profit||0, diff=p2-p1;
+    if(el) el.innerHTML='⚖️ المقارنة: <b>🤖 الأول '+(p1>=0?'+':'')+'$'+p1.toFixed(2)+'</b> • <b>🤖 الثاني '+(p2>=0?'+':'')+'$'+p2.toFixed(2)+'</b> • الفرق: <b>'+(diff>=0?'+':'')+'$'+diff.toFixed(2)+'</b> • الأقوى الآن: <b>'+(diff>1?'الثاني 🥇':'الأول 🥇')+'</b>'+(best?' • وضع الأقوى فقط ⚖️':'');
+    const bx=$('bot2Box');
+    if(bx){
+      const open=Object.values(S2.trades).filter(x=>x&&x.open);
+      let oline='لا صفقة مفتوحة';
+      if(open.length){ const st=open[0]; oline='🟢 '+st.coin+' دخول '+st.entry+' • هدف '+st.t1+' • وقف '+st.sl; }
+      const ls=S2.lastScan?('🔍 آخر فحص: '+S2.lastScan.sym+' قوة '+S2.lastScan.s):'🔍 لم يفحص بعد';
+      const la=(S2.log&&S2.log[0])?String(S2.log[0].m||'').slice(0,90):'—';
+      const eq=S2.equity||0;
+      bx.innerHTML='<b>🤖 الثاني — صياد الاختراق (يعمل وحده بتحليله)</b> '+(S2.enabled?'🟢 يعمل':'⏸ متوقف')+' • 💰 $'+eq.toFixed(2)+' • ربح '+(p2>=0?'+':'')+'$'+p2.toFixed(2)+' ('+S2.wins+'/'+S2.closed+')<br>'+oline+'<br>'+ls+'<br><small>'+la+'</small>';
+    }
   }catch(e){}
 }
 function bind(){
