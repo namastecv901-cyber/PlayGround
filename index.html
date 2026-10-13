@@ -4457,8 +4457,8 @@ window.MKthead={refresh:paint};
 var $=function(id){ return document.getElementById(id); };
 var LS='ai_pex_v1', COOL=30*60*1000, MINV=10000000;
 var STABLES={usdt:1,usdc:1,dai:1,tusd:1,busd:1,usdd:1,fdusd:1,pyusd:1,usde:1,eurs:1,susd:1,usdb:1,usdx:1,usdy:1};
-var prev={}, mem={warned:{},fired:{}};
-try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m){ mem.warned=m.warned||{}; mem.fired=m.fired||{}; } }catch(e){}
+var prev={}, mem={warned:{},fired:{},base:{}};
+try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m){ mem.warned=m.warned||{}; mem.fired=m.fired||{}; mem.base=m.base||{}; } }catch(e){}
 function save(){ try{ localStorage.setItem(LS,JSON.stringify(mem)); }catch(e){} }
 function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e){} if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
 function toast(m){ try{ if(window.toast) window.toast(m); }catch(e){} }
@@ -4493,7 +4493,12 @@ function scan(){
       var a=all[i]; if(!a||!a.c) continue;
       var r=classify(a); if(!r) continue;
       r.a=a; out.push(r);
-      var id=a.c.id;
+      var id=a.c.id, px0=a.c.current_price||0;
+      if((r.lv==='green'||r.lv==='orange')&&px0>0){
+        var b=mem.base[id];
+        if(!b||now-(b.t||0)>24*3600*1000||px0<b.px*0.9) mem.base[id]={px:px0,t:now};
+        else if(px0<b.px){ b.px=px0; b.t=now; }
+      }
       if(r.lv==='green'&&(!mem.warned[id]||now-mem.warned[id]>COOL)){ mem.warned[id]=now; toast('🟢 '+(a.c.symbol||'').toUpperCase()+': تجميع حيتان — ستنفجر'); }
       if(r.lv==='orange'&&(!mem.warned[id+'o']||now-mem.warned[id+'o']>COOL)){ mem.warned[id+'o']=now; toast('🟠 '+(a.c.symbol||'').toUpperCase()+': تقترب من الانفجار'); }
       if(r.lv==='red'&&(!mem.fired[id]||now-mem.fired[id]>COOL)){ mem.fired[id]=now; toast(r.dir==='pump'?'🔴 '+(a.c.symbol||'').toUpperCase()+': انفجرت — دخول قوي':'🔴 '+(a.c.symbol||'').toUpperCase()+': تفريغ — دامب'); }
@@ -4516,9 +4521,14 @@ function scan(){
         else if(dv>0||dpx!==0){ fcls='f-surge'; ftxt='🟠 تسارع سيولة — حركة حقيقية'; }
       }
       var wpx=Math.max(4,Math.min(100,to*1.5));
+      var bb=mem.base[c.id], live0=c.current_price||0, botHtml='';
+      if(bb&&bb.px>0&&live0>0){
+        var up=((live0-bb.px)/bb.px*100);
+        botHtml='<div class="pex-flow">🐋 دخول الحيتان من القاع <b>'+money(bb.px)+'</b> • الآن '+(up>=0?'+':'')+up.toFixed(1)+'% فوقه</div>';
+      }
       var h='<div class="pex-card st-'+r.lv+'"><div class="pex-top"><span class="pex-dot"></span><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(c.current_price)+'</span></div>'
       +'<div class="pex-meta">🐋 سيولة حقيقية <b>'+fmtBig(vol)+'</b> • دوران <b>'+to.toFixed(1)+'%</b> • 1س '+((w.h1||0)>=0?'+':'')+(w.h1||0).toFixed(1)+'% • 24س '+(((c.price_change_percentage_24h_in_currency||0))>=0?'+':'')+(c.price_change_percentage_24h_in_currency||0).toFixed(1)+'%</div>'
-      +'<div class="pex-liq '+fcls+'"><i style="width:'+wpx.toFixed(0)+'%"></i></div><div class="pex-flow">'+ftxt+'</div>'
+      +'<div class="pex-liq '+fcls+'"><i style="width:'+wpx.toFixed(0)+'%"></i></div><div class="pex-flow">'+ftxt+'</div>'+botHtml
       +'<div class="pex-state">'+r.txt+'</div>';
       if(r.lv==='red'&&r.dir==='pump') h+='<div class="pex-plan">💰 دخول <b>'+money(r.entry)+'</b> • 🎯 هدف <b>'+money(r.tp)+'</b> • 🛡 وقف <b>'+money(r.sl)+'</b></div>';
       return h+'</div>';
