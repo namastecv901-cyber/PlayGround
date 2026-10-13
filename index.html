@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v205.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v206.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v205.0 وسم كل البطاقات)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v206.0 الوسم أمام الثقة)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -584,6 +584,8 @@ footer,iframe,.tv-frame{border-radius:18px}
 .hl-tag{display:inline-block;font-size:.62rem;font-weight:900;border-radius:8px;padding:1px 8px;margin-inline-start:6px;vertical-align:middle}
 .hl-tag.halal{background:#16c78422;border:1px solid #16c78466;color:#1fe196}
 .hl-tag.haram{background:#ea394322;border:1px solid #ea394366;color:#ff7b85}
+.hl-front{display:flex;align-items:center;margin:0 4px}
+.hl-front .hl-tag{font-size:.8rem;padding:4px 12px;border-width:2px;animation:blink 1.2s infinite}
 .ai-top small{color:var(--mut)}
 .done-chips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:6px 0 2px}
 .done-chips span{font-size:.66rem;font-weight:900;background:#ffffff08;border:1px solid var(--line);border-radius:14px;padding:2px 10px;color:var(--mut)}
@@ -1937,6 +1939,13 @@ window.halalTag=function(id,sym){
   }catch(e){}
   return '';
 };
+window.hlFront=function(id,sym){
+  try{
+    const h=window.halalTag?halalTag(id,sym):'';
+    if(!h) return '';
+    return '<div class="hl-front">'+h.replace(/^ /,'')+'</div>';
+  }catch(e){ return ''; }
+};
 </script>
 <script>// 💎 DEALS v35 — بطاقات الذكاء الفاخرة: شارة تحت العملة + كل التفاصيل بوضوح
 (function(){
@@ -2168,7 +2177,8 @@ function card(a,i){
 
   return '<article class="ai-card enter g-'+a.grade+(LOCKED?' card-locked':'')+'" data-id="'+c.id+'" style="animation-delay:'+Math.min((i||0)*60,600)+'ms">'
   +'<div class="ai-top"><img src="'+(c.image||'')+'" onerror="this.style.display=\'none\'">'
-  +'<div><b>'+sym+'</b>'+halalTag(c.id,sym)+'<small>'+(c.name||'')+' • <span class="'+fl.trim()+'">'+money(a.price)+'</span></small></div>'
+  +'<div><b>'+sym+'</b><small>'+(c.name||'')+' • <span class="'+fl.trim()+'">'+money(a.price)+'</span></small></div>'
+  +hlFront(c.id,sym)
   +'<div class="ai-ring" style="--p:'+a.score+';--c:'+ringC+'"><b>'+a.score+'</b><small>ثقة</small></div></div>'
   + doneChips(a)
   + decisionBlock(a)
