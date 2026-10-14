@@ -1200,6 +1200,8 @@ body{max-width:680px;margin:0 auto;padding:12px}
 .bot-chan{font-size:.76rem;font-weight:800;color:#8fd6ff;background:#8fd6ff0d;border:1px solid #8fd6ff44;border-radius:10px;padding:6px 12px;margin:0 0 8px;text-align:center}
 .bot-chan small{color:var(--mut);font-weight:600}
 .bot-chan .ok{color:#1fe196}.bot-chan .bad{color:#ff7b85}
+.bot-chan.live{animation:chanPulse 2s ease-in-out infinite}
+@keyframes chanPulse{0%,100%{box-shadow:0 0 6px #8fd6ff33}50%{box-shadow:0 0 18px #8fd6ff88}}
 .bot-team{font-size:.78rem;font-weight:900;color:#ffe9a8;background:#f0b90b0d;border:1px solid #f0b90b44;border-radius:10px;padding:7px 12px;margin:0 0 8px;text-align:center}
 .bot-team.good{background:#16c78414;border-color:#16c784aa;color:#d9ffe9;box-shadow:0 0 14px #16c78444}
 .bot-team.bad{background:#ea394314;border-color:#ea394366;color:#ffc9cd;box-shadow:0 0 14px #ea394344}
@@ -3378,7 +3380,7 @@ function tradeState(st,live){
     return '🟢 تم الدخول — يراقب';
   }catch(e){ return '🟢 تم الدخول'; }
 }
-function setEv(side,coin,price,why,pnl){ S.lastEv={side:side,coin:coin,price:price,why:why||'',pnl:(pnl==null?null:pnl),t:Date.now()}; save(); paintEv(); try{ var _m=(side==="buy"?"🟢 شراء ":"🔴 بيع ")+coin+" @ "+price; if(why) _m+=" ("+why+")"; if(pnl!=null) _m+=" "+(pnl>=0?"+":"")+"$"+pnl.toFixed(2); srvNotify(_m); }catch(e){} try{ const el=$('oneEvent'); if(el){ el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }catch(e){} }
+function setEv(side,coin,price,why,pnl){ S.lastEv={side:side,coin:coin,price:price,why:why||'',pnl:(pnl==null?null:pnl),t:Date.now()}; save(); paintEv(); try{ var _m=(side==="buy"?"🟢 شراء ":"🔴 بيع ")+coin+" @ "+price; if(why) _m+=" ("+why+")"; if(pnl!=null) _m+=" "+(pnl>=0?"+":"")+"$"+pnl.toFixed(2); (window.SRVAPI&&window.SRVAPI.notify(_m)); }catch(e){} try{ const el=$('oneEvent'); if(el){ el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }catch(e){} }
 function paintEv(){
   try{
     const el=$('oneEvent'); if(!el) return;
@@ -3592,7 +3594,7 @@ function paint(){
     else if((S.dayPnl||0)<=-(parseFloat(S.dayLimit)||10)||(parseFloat(S.equity)||0)<20) rs+=' ⛔ لا دخول جديد (حماية)';
     if(sb) sb.textContent=rs;
     paintEv();
-    try{ paintChan(); }catch(e){}
+    try{ if(window.SRVAPI) window.SRVAPI.paint(); }catch(e){}
     try{
       const sp=$('oneStrip');
       if(sp){
@@ -3749,11 +3751,12 @@ function srvFlush(){
     if(Date.now()-__srvLast<3500){ setTimeout(srvFlush,3600); return; }
     __srvBusy=true;
     var c=srvCfg();
-    if(!c.url){ __srvQ=[]; __srvBusy=false; return; }
+    var d=(!c.url)?chanDirect():null;
+    if(!c.url&&!d){ __srvQ=[]; __srvBusy=false; return; }
     var msg=__srvQ.shift(); __srvLast=Date.now();
     var p;
     if(c.url) p=fetch(c.url+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key||'',text:String(msg).slice(0,900)})});
-    else { var d=chanDirect(); p=d?fetch('https://api.telegram.org/bot'+d.bot+'/sendMessage?chat_id='+encodeURIComponent(d.chat)+'&text='+encodeURIComponent(String(msg).slice(0,900))):Promise.resolve(null); }
+    else p=fetch('https://api.telegram.org/bot'+d.bot+'/sendMessage?chat_id='+encodeURIComponent(d.chat)+'&text='+encodeURIComponent(String(msg).slice(0,900)));
     p.then(function(r){ try{ var BS=window.BOTONE&&window.BOTONE.S; if(BS){ BS.srvLog=BS.srvLog||[]; BS.srvLog.unshift({t:Date.now(),m:String(msg).slice(0,90),ok:!!(r&&r.ok)}); BS.srvLog=BS.srvLog.slice(0,5); BS.srvN=(BS.srvN||0)+1; if(window.BOTONE.save) window.BOTONE.save(); } }catch(e){} try{ paintChan(); }catch(e){} }).catch(function(){}).finally(function(){ __srvBusy=false; if(__srvQ.length) setTimeout(srvFlush,3600); });
   }catch(e){ __srvBusy=false; }
 }
@@ -3769,6 +3772,7 @@ function paintChan(){
       +(cfg&&cfg.url?' • <span class="ok">متصل عبر السيرفر</span>':(dc?' • <span class="ok">مباشر عبر بوتك</span>':' • <span class="bad">متوقف — أدخل القناة والتوكن من الإعدادات</span>'))
       +(__srvQ.length?(' • ⏳ بالانتظار '+__srvQ.length):'')
       +(last?('<br><small>'+(last.ok?'✅ ':'❌ ')+String(last.m||'').slice(0,90)+' • '+new Date(last.t).toLocaleTimeString('ar')+'</small>'):'<br><small>لا إرسال بعد — تُرسل أحداث البوت والأهداف هنا</small>');
+    try{ el.className='bot-chan'+(((cfg&&cfg.url)||dc)?' live':''); }catch(e){}
   }catch(e){}
 }
 function srvCfg(){ try{ var o=getOwner()||{}; var url=o.srvUrl||((window.SRV||{}).url||''); var key=o.srvKey||((window.SRV||{}).key||''); return {url:String(url||'').replace(/\/+$/,''),key:key}; }catch(e){ return {url:'',key:''}; } }
@@ -4384,6 +4388,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   ['setPay','setContact','setContactName','setSite','setLeadBot','setLeadChat','setSrvUrl','setSrvKey','setChannel'].forEach(function(id){ try{ var el=$(id); if(el) el.oninput=function(){ try{ var o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.site=$('setSite').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); }catch(e){} }; }catch(e){} });
   $('setSave').onclick=()=>{ const o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.site=$('setSite').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); o.srvUrl=$('setSrvUrl').value.trim(); o.srvKey=$('setSrvKey').value.trim(); o.channel=$('setChannel').value.trim(); saveOwner(o); paint(); sess('المالك','حفظ الإعدادات'); };
 });
+window.SRVAPI={notify:function(m){ try{ srvNotify(m); }catch(e){} },paint:function(){ try{ paintChan(); }catch(e){} }};
 window.MEMBER={get mode(){return M.mode;},unlockSub,paint,makeSubToken,verifySubToken};
 })();
 </script>
@@ -4557,7 +4562,7 @@ function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e)
 function big(n){ try{ n=Number(n)||0; var a=Math.abs(n); if(a>=1e9) return '$ '+(n/1e9).toFixed(2)+'B'; if(a>=1e6) return '$ '+(n/1e6).toFixed(2)+'M'; if(a>=1e3) return '$ '+(n/1e3).toFixed(1)+'K'; return '$ '+Math.round(n); }catch(e){ return '—'; } }
 function toast(m){ try{ if(window.toast) window.toast(m); }catch(e){} }
 function real(c,fb){ try{ if(window.realPx) return window.realPx(c,fb); }catch(e){} return (c&&c.current_price)||fb||0; }
-function blxNote(m){ try{ toast(m); }catch(e){} try{ srvNotify(m); }catch(e){} }
+function blxNote(m){ try{ toast(m); }catch(e){} try{ if(window.SRVAPI) window.SRVAPI.notify(m); }catch(e){} }
 function isSt(c){ try{ var s=String(c.symbol||'').toLowerCase(); if(STABLES[s]) return true; return /stable|pegged|wrapped btc|steth/i.test(c.name||''); }catch(e){ return false; } }
 function nearR(a,b,t){ try{ return b>0&&Math.abs(a-b)/b<=(t||0.02); }catch(e){ return false; } }
 function ptnPiv(pr,k){
