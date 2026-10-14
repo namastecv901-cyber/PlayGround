@@ -4899,7 +4899,7 @@ document.addEventListener('DOMContentLoaded',function(){ try{ run(); }catch(e){}
 window.pexChartHTML=function(sym,iv){
   iv=iv||'15';
   var u='https://www.tradingview.com/widgetembed/?symbol=BINANCE:'+sym+'&interval='+iv+'&theme=dark&style=1&locale=ar&hide_side_toolbar=1&allow_symbol_change=0';
-  var tfs=[['15','15\u062F'],['60','1\u0633'],['240','4\u0633'],['D','1\u064A'],['W','1\u0623']];
+  var tfs=[['15','15\u062F'],['60','1\u0633'],['120','2\u0633'],['240','4\u0633'],['D','1\u064A'],['W','1\u0623']];
   var row='<div class="pex-tfs">'+tfs.map(function(x){ return '<button data-tf="'+x[0]+'" data-sym="'+sym+'"'+(x[0]===iv?' class="on"':'')+'>'+x[1]+'</button>'; }).join('')+'</div>';
   return row+'<iframe loading="lazy" src="'+u+'"></iframe><a href="https://www.tradingview.com/chart/?symbol=BINANCE:'+sym+'" target="_blank" rel="noopener">\u2197 \u0641\u062A\u062D \u0643\u0627\u0645\u0644</a>';
 };
