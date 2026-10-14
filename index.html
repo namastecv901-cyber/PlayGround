@@ -4611,14 +4611,14 @@ function ptnDetect(pr,isKl){
       var p1=H[H.length-2], p2=H[H.length-1];
       if(p2.i-p1.i>=3&&nearR(p1.v,p2.v,0.02)){
         var tr=ptnMin(pr,p1.i,p2.i), dep=(Math.min(p1.v,p2.v)-tr)/tr;
-        if(dep>0.025) out.push({p:'قمتان مزدوجتان 🔻',d:'down',fam:'dbl',s:55+Math.min(20,dep*400)+(last<tr?15:5)+(p2.i>n-12?10:0),g:{dots:[[p1.i,p1.v],[p2.i,p2.v]],lines:[],hline:tr}});
+        if(dep>0.025) out.push({p:'قمتان مزدوجتان 🔻',d:'down',fam:'dbl',s:55+Math.min(20,dep*400)+(last<tr?15:5)+(p2.i>n-12?10:0),why:'قمتان '+money(p1.v)+' و '+money(p2.v)+' • هبوط لقاع '+money(tr)+' بعمق '+(dep*100).toFixed(1)+'%',g:{dots:[[p1.i,p1.v],[p2.i,p2.v]],lines:[],hline:tr}});
       }
     }
     if(L.length>=2){
       var q1=L[L.length-2], q2=L[L.length-1];
       if(q2.i-q1.i>=3&&nearR(q1.v,q2.v,0.02)){
         var pk=ptnMax(pr,q1.i,q2.i), mx=Math.max(q1.v,q2.v), dp=(pk-mx)/mx;
-        if(dp>0.025) out.push({p:'قاعان مزدوجان 🔺',d:'up',fam:'dbl',s:55+Math.min(20,dp*400)+(last>pk?15:5)+(q2.i>n-12?10:0),g:{dots:[[q1.i,q1.v],[q2.i,q2.v]],lines:[],hline:pk}});
+        if(dp>0.025) out.push({p:'قاعان مزدوجان 🔺',d:'up',fam:'dbl',s:55+Math.min(20,dp*400)+(last>pk?15:5)+(q2.i>n-12?10:0),why:'قاعان '+money(q1.v)+' و '+money(q2.v)+' • صعود لقمة '+money(pk)+' بارتفاع '+(dp*100).toFixed(1)+'%',g:{dots:[[q1.i,q1.v],[q2.i,q2.v]],lines:[],hline:pk}});
       }
     }
     if(H.length>=3){
@@ -4628,12 +4628,12 @@ function ptnDetect(pr,isKl){
         for(var _a=0;_a<2;_a++){ var A=_a===0?t1:t2, B=_a===0?t2:t3; trs.push(ptnMin(pr,A.i,B.i)); }
         var mtr=Math.min(trs[0],trs[1]);
         if((Math.min(t1.v,t2.v,t3.v)-mtr)/mtr>0.02&&last<=mtr*1.01)
-          out.push({p:'قمم ثلاثية 🔻',d:'down',fam:'tpl',s:60+(last<mtr?12:4),g:{dots:[[t1.i,t1.v],[t2.i,t2.v],[t3.i,t3.v]],lines:[],hline:mtr}});
+          out.push({p:'قمم ثلاثية 🔻',d:'down',fam:'tpl',s:60+(last<mtr?12:4),why:'3 قمم عند '+money(t1.v)+' • كسر دعم '+money(mtr),g:{dots:[[t1.i,t1.v],[t2.i,t2.v],[t3.i,t3.v]],lines:[],hline:mtr}});
       }
       var h1=H[H.length-3],h2=H[H.length-2],h3=H[H.length-1];
       if(h2.v>h1.v*1.03&&h2.v>h3.v*1.03&&nearR(h1.v,h3.v,0.03)){
         var nk=ptnMin(pr,h1.i,h3.i);
-        if(last<=nk*1.015) out.push({p:'رأس وكتفان 🔻',d:'down',fam:'hs',s:60+(last<nk?15:5)+(nearR(h1.v,h3.v,0.015)?10:0),g:{dots:[[h1.i,h1.v],[h2.i,h2.v],[h3.i,h3.v]],lines:[],hline:nk}});
+        if(last<=nk*1.015) out.push({p:'رأس وكتفان 🔻',d:'down',fam:'hs',s:60+(last<nk?15:5)+(nearR(h1.v,h3.v,0.015)?10:0),why:'كتفان '+money(h1.v)+' ورأس '+money(h2.v)+' • كسر خط العنق '+money(nk),g:{dots:[[h1.i,h1.v],[h2.i,h2.v],[h3.i,h3.v]],lines:[],hline:nk}});
       }
     }
     if(L.length>=3){
@@ -4643,12 +4643,12 @@ function ptnDetect(pr,isKl){
         for(var _b=0;_b<2;_b++){ var C=_b===0?b1:b2, D=_b===0?b2:b3; pks.push(ptnMax(pr,C.i,D.i)); }
         var mPk=Math.max(pks[0],pks[1]), mB=Math.max(b1.v,b2.v,b3.v);
         if((mPk-mB)/mB>0.02&&last>=mPk*0.99)
-          out.push({p:'قيعان ثلاثية 🔺',d:'up',fam:'tpl',s:60+(last>mPk?12:4),g:{dots:[[b1.i,b1.v],[b2.i,b2.v],[b3.i,b3.v]],lines:[],hline:mPk}});
+          out.push({p:'قيعان ثلاثية 🔺',d:'up',fam:'tpl',s:60+(last>mPk?12:4),why:'3 قيعان عند '+money(b1.v)+' • اختراق مقاومة '+money(mPk),g:{dots:[[b1.i,b1.v],[b2.i,b2.v],[b3.i,b3.v]],lines:[],hline:mPk}});
       }
       var l1=L[L.length-3],l2=L[L.length-2],l3=L[L.length-1];
       if(l2.v<l1.v*0.97&&l2.v<l3.v*0.97&&nearR(l1.v,l3.v,0.03)){
         var nc=ptnMax(pr,l1.i,l3.i);
-        if(last>=nc*0.985) out.push({p:'رأس وكتفان معكوس 🔺',d:'up',fam:'hs',s:60+(last>nc?15:5)+(nearR(l1.v,l3.v,0.015)?10:0),g:{dots:[[l1.i,l1.v],[l2.i,l2.v],[l3.i,l3.v]],lines:[],hline:nc}});
+        if(last>=nc*0.985) out.push({p:'رأس وكتفان معكوس 🔺',d:'up',fam:'hs',s:60+(last>nc?15:5)+(nearR(l1.v,l3.v,0.015)?10:0),why:'كتفان '+money(l1.v)+' ورأس معكوس '+money(l2.v)+' • اختراق خط العنق '+money(nc),g:{dots:[[l1.i,l1.v],[l2.i,l2.v],[l3.i,l3.v]],lines:[],hline:nc}});
       }
     }
     if(H.length>=3&&L.length>=3){
@@ -4658,22 +4658,22 @@ function ptnDetect(pr,isKl){
       var contracting=wOld>0&&wNew>0&&wNew<wOld*0.85;
       var gWL={dots:[[H3[0].i,H3[0].v],[H3[2].i,H3[2].v],[L3[0].i,L3[0].v],[L3[2].i,L3[2].v]],lines:[{a:[H3[0].i,H3[0].v],b:[H3[2].i,H3[2].v],dash:0},{a:[L3[0].i,L3[0].v],b:[L3[2].i,L3[2].v],dash:0}],hline:null};
       if(sH<-0.3&&sL<0.8&&sL>sH&&contracting&&last>L3[2].v*1.005)
-        out.push({p:'وتد هابط 🔺',d:'up',fam:'wedge',s:62+Math.min(20,(sH-sL)*2),g:gWL});
+        out.push({p:'وتد هابط 🔺',d:'up',fam:'wedge',s:62+Math.min(20,(sH-sL)*2),why:'انكماش '+money(wOld)+' ← '+money(wNew)+' • ميل علوي '+sH.toFixed(1)+'% وسفلي '+sL.toFixed(1)+'%',g:gWL});
       if(sH>0.3&&sL>-0.8&&sL<sH&&contracting&&last<H3[2].v*0.995)
-        out.push({p:'وتد صاعد 🔻',d:'down',fam:'wedge',s:62+Math.min(20,(sH-sL)*2),g:gWL});
+        out.push({p:'وتد صاعد 🔻',d:'down',fam:'wedge',s:62+Math.min(20,(sH-sL)*2),why:'انكماش '+money(wOld)+' ← '+money(wNew)+' • ميل علوي '+sH.toFixed(1)+'% وسفلي '+sL.toFixed(1)+'%',g:gWL});
       var flatTop=(Math.max(H3[0].v,H3[1].v,H3[2].v)-Math.min(H3[0].v,H3[1].v,H3[2].v))/H3[2].v;
       var flatBot=(Math.max(L3[0].v,L3[1].v,L3[2].v)-Math.min(L3[0].v,L3[1].v,L3[2].v))/L3[2].v;
       if(flatTop<0.015&&sL>0.5&&last>=H3[2].v*0.995)
-        out.push({p:'مثلث صاعد 🔺',d:'up',fam:'tri',s:60+Math.min(20,sL),g:gWL});
+        out.push({p:'مثلث صاعد 🔺',d:'up',fam:'tri',s:60+Math.min(20,sL),why:'قمة مسطحة '+money(H3[2].v)+' + قيعان صاعدة (ميل '+sL.toFixed(1)+'%)',g:gWL});
       if(flatBot<0.015&&sH<-0.5&&last<=L3[2].v*1.005)
-        out.push({p:'مثلث هابط 🔻',d:'down',fam:'tri',s:60+Math.min(20,-sH),g:gWL});
+        out.push({p:'مثلث هابط 🔻',d:'down',fam:'tri',s:60+Math.min(20,-sH),why:'قاع مسطح '+money(L3[2].v)+' + قمم هابطة (ميل '+sH.toFixed(1)+'%)',g:gWL});
       if(sH<-0.3&&sL>0.3&&contracting){
         var mid=(H3[2].v+L3[2].v)/2, rng=(H3[2].v-L3[2].v);
         if(rng>0&&Math.abs(last-mid)<rng*0.45)
-          out.push({p:'مثلث متماثل 🔀',d:'brk',fam:'tri',s:58+Math.min(20,(sL-sH)),g:gWL});
+          out.push({p:'مثلث متماثل 🔀',d:'brk',fam:'tri',s:58+Math.min(20,(sL-sH)),why:'انكماش متماثل (ميل '+sH.toFixed(1)+'% / '+sL.toFixed(1)+'%)',g:gWL});
       }
       if(H3[0].v<H3[1].v&&H3[1].v<H3[2].v&&L3[0].v<L3[1].v&&L3[1].v<L3[2].v&&(H3[2].v-L3[2].v)>(H3[0].v-L3[0].v)*1.25)
-        out.push({p:'وتد متسع (مكبر صوت) 🔊',d:(last>=(H3[2].v+L3[2].v)/2?'up':'down'),fam:'broad',s:56,g:gWL});
+        out.push({p:'وتد متسع (مكبر صوت) 🔊',d:(last>=(H3[2].v+L3[2].v)/2?'up':'down'),fam:'broad',s:56,why:'اتساع '+money(wOld)+' ← '+money(wNew),g:gWL});
     }
     (function(){
       var m0=n-22;
@@ -4695,7 +4695,7 @@ function ptnDetect(pr,isKl){
       var fmx=Math.max.apply(null,fl), fmn=Math.min.apply(null,fl);
       var rng=(fmx-fmn)/P.top;
       if(rng<=0.045&&last>=P.top*0.965&&last<=P.top*(isUp?1.005:1.03))
-        out.push({p:isUp?'علم صاعد 🚩🔺':'علم هابط 🚩🔻',d:isUp?'up':'down',fam:'flag',s:60+Math.min(18,(0.045-rng)*400),g:{dots:[[P.bi,P.bot],[P.i,P.top]],lines:[{a:[P.bi,P.bot],b:[P.i,P.top],dash:0},{a:[P.i,P.top],b:[n-1,last],dash:1}],hline:null}});
+        out.push({p:isUp?'علم صاعد 🚩🔺':'علم هابط 🚩🔻',d:isUp?'up':'down',fam:'flag',s:60+Math.min(18,(0.045-rng)*400),why:'سارية +'+(((P.top-P.bot)/P.bot)*100).toFixed(1)+'% ثم انحراف '+(rng*100).toFixed(1)+'%',g:{dots:[[P.bi,P.bot],[P.i,P.top]],lines:[{a:[P.bi,P.bot],b:[P.i,P.top],dash:0},{a:[P.i,P.top],b:[n-1,last],dash:1}],hline:null}});
     })();
     (function(){
       if(n<60) return;
@@ -4715,7 +4715,7 @@ function ptnDetect(pr,isKl){
       var hmx=Math.max.apply(null,hd);
       if(!((hmx-hmn)/rim<=0.06&&last>=rim*0.95&&last<=rim*1.005)) return;
       var dipAbs=segStart+rimI+hdi;
-      out.push({p:'كوب وعروة ☕🔺',d:'up',fam:'cup',s:62+Math.min(16,dep*60),g:{dots:[[segStart+li,left],[dipAbs,hmn],[segStart+rimI,rim]],lines:[],hline:left}});
+      out.push({p:'كوب وعروة ☕🔺',d:'up',fam:'cup',s:62+Math.min(16,dep*60),why:'عمق الكوب '+(dep*100).toFixed(1)+'% • مقاومة '+money(left)+' • مقبض متماسك',g:{dots:[[segStart+li,left],[dipAbs,hmn],[segStart+rimI,rim]],lines:[],hline:left}});
     })();
     (function(){
       if(n<40) return;
@@ -4735,7 +4735,7 @@ function ptnDetect(pr,isKl){
       if(!(w0>0&&w1>0&&w1<w0*0.7)) return;
       if(!(tail[tail.length-1]>=tri[0]*0.96)) return;
       var ax=base0+pe;
-      out.push({p:'راية (بينانت) 🚩',d:'up',fam:'pen',s:60+Math.min(18,pole*200),g:{dots:[[ax+A.i,A.v],[ax+B.i,B.v]],lines:[{a:[ax+A.i,A.v],b:[ax+B.i,B.v],dash:0},{a:[ax+C.i,C.v],b:[ax+D.i,D.v],dash:0}],hline:null}});
+      out.push({p:'راية (بينانت) 🚩',d:'up',fam:'pen',s:60+Math.min(18,pole*200),why:'سارية +'+(pole*100).toFixed(1)+'% ثم مثلث متقارب',g:{dots:[[ax+A.i,A.v],[ax+B.i,B.v]],lines:[{a:[ax+A.i,A.v],b:[ax+B.i,B.v],dash:0},{a:[ax+C.i,C.v],b:[ax+D.i,D.v],dash:0}],hline:null}});
     })();
     for(i=0;i<out.length;i++) out[i].s=Math.max(40,Math.min(98,Math.round(out[i].s)));
   }catch(e){}
@@ -4870,7 +4870,7 @@ async function scan(){
       var h='<div class="ptn-card d-'+r.best.d+'"><div class="ptn-top"><b>'+((c.symbol||'').toUpperCase())+'</b><span>'+money(live)+'</span><span>📐 '+r.best.p+'</span></div>'
       +'<div class="ptn-meta">الفريمات: '+fr+' • القوة <b>'+r.s+'</b> • سيولة <b>'+big(c.total_volume||0)+'</b></div>'
       +'<div class="ptn-bar"><i style="width:'+r.s+'%"></i></div>'
-      +'<div class="ptn-dir">'+dirT+'</div>'+(r.zone?('<div class="ptn-zone z-'+r.zone.cls+'">'+r.zone.txt+'</div>'):'')+ptnSVG(r.pr,(r.best||{}).g,(r.best||{}).d,r.off||0);
+      +'<div class="ptn-dir">'+dirT+'</div>'+(r.zone?('<div class="ptn-zone z-'+r.zone.cls+'">'+r.zone.txt+'</div>'):'')+(r.best&&r.best.why?('<div class="ptn-meta">🔍 السبب: '+r.best.why+'</div>'):'')+ptnSVG(r.pr,(r.best||{}).g,(r.best||{}).d,r.off||0);
       var tvS=(window.binSym&&window.binSym(c))||null;
       if(tvS) h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><div class="pex-chart" hidden></div></div>';
       return h+'</div>';
