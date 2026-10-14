@@ -1395,17 +1395,20 @@ body.linkmode #masterFab{display:none!important}
 .blx-card.t-hot{border-color:#ff8a3d;box-shadow:0 0 14px #ff8a3d44}
 .blx-card.t-dump{border-color:#7c8db0}
 .blx-card.t-fast{border-color:#ff8a3d;box-shadow:0 0 16px #ff8a3d55;animation:pexO 1.1s infinite}
+.blx-card.t-pre{border-color:#f0b90b;box-shadow:0 0 20px #f0b90b66;animation:prePulse .8s infinite}
+@keyframes prePulse{0%,100%{box-shadow:0 0 8px #f0b90b44;transform:scale(1)}50%{box-shadow:0 0 32px #f0b90bcc;transform:scale(1.015)}}
 .blx-top{display:flex;align-items:center;gap:8px;font-weight:900}
 .blx-dot{width:11px;height:11px;border-radius:50%;flex:0 0 auto}
 .t-vert .blx-dot{background:#ea3943;animation:pexR .8s ease-in-out infinite}
 .t-hot .blx-dot{background:#ff8a3d;animation:pexO 1.4s ease-in-out infinite}
 .t-dump .blx-dot{background:#7c8db0}
 .t-fast .blx-dot{background:#ff8a3d;animation:pexO 1s ease-in-out infinite}
+.t-pre .blx-dot{background:#f0b90b;animation:pexR .6s ease-in-out infinite}
 .blx-big{font-size:1rem}
 .blx-top small{font-size:.66rem;color:var(--mut);font-weight:700}
 .blx-meta{color:var(--mut);font-size:.7rem;margin-top:2px}
 .blx-lv{font-weight:900;margin-top:5px}
-.t-vert .blx-lv{color:#ff7b85}.t-hot .blx-lv{color:#ffab6e}.t-dump .blx-lv{color:#8fa3c0}.t-fast .blx-lv{color:#ffab6e}
+.t-vert .blx-lv{color:#ff7b85}.t-hot .blx-lv{color:#ffab6e}.t-dump .blx-lv{color:#8fa3c0}.t-fast .blx-lv{color:#ffab6e}.t-pre .blx-lv{color:#ffe27a}
 .blx-plan{margin-top:5px;line-height:1.9}
 .pex-chart{margin-top:6px;border:1px solid #8fd6ff44;border-radius:10px;overflow:hidden;background:#000}
 .pex-chart iframe{width:100%;height:220px;border:0;display:block}
@@ -5028,7 +5031,7 @@ async function scan(){
     }
     var pxks=Object.keys(blxPx); if(pxks.length>600){ for(var pxi=0;pxi<pxks.length-600;pxi++) delete blxPx[pxks[pxi]]; }
     try{
-      var fastC=[];
+      var fastC=[], preC=[];
       for(var fi=0;fi<ja.length;fi++){
         var FT=ja[fi]; if(!FT||!FT.symbol) continue;
         if(FT.symbol.slice(-4)!=='USDT') continue;
@@ -5037,27 +5040,38 @@ async function scan(){
         if(/(UP|DOWN|BULL|BEAR)$/.test(fb)) continue;
         if((parseFloat(FT.quoteVolume)||0)<MINV) continue;
         var vv=blxVel[fb]||0;
-        if(vv>=1.0) fastC.push({sym:fb,vel:vv,live:parseFloat(FT.lastPrice)||0,qv:parseFloat(FT.quoteVolume)||0,hi:parseFloat(FT.highPrice)||0,h24:parseFloat(FT.priceChangePercent)||0});
-        if(fastC.length>=10) break;
+        var h24f=parseFloat(FT.priceChangePercent)||0;
+        if(vv>=1.0) fastC.push({sym:fb,vel:vv,live:parseFloat(FT.lastPrice)||0,qv:parseFloat(FT.quoteVolume)||0,hi:parseFloat(FT.highPrice)||0,h24:h24f});
+        if(vv>=1.5&&h24f>=8&&h24f<30&&!have[fb]) preC.push({sym:fb,vel:vv,live:parseFloat(FT.lastPrice)||0,qv:parseFloat(FT.quoteVolume)||0,hi:parseFloat(FT.highPrice)||0,h24:h24f});
+        if(fastC.length>=10&&preC.length>=6) break;
       }
       await Promise.all(fastC.map(async function(fc){
         try{ if(await blxFast(fc.sym)){ out.push({sym:fc.sym,live:fc.live,h24:fc.h24,vol:fc.qv,hi:fc.hi,tier:'fast',src:'bin',a:null,vel:fc.vel}); have[fc.sym]=1; } }catch(e){}
       }));
+      await Promise.all(preC.map(async function(fc){
+        try{ if(!have[fc.sym]&&await blxFast(fc.sym)){ out.push({sym:fc.sym,live:fc.live,h24:fc.h24,vol:fc.qv,hi:fc.hi,tier:'pre',src:'bin',a:null,vel:fc.vel}); have[fc.sym]=1; } }catch(e){}
+      }));
     }catch(e){}
+    var preOut=out.filter(function(r){ return r.tier==='pre'; });
+    out=out.filter(function(r){ return r.tier!=='pre'; });
     out.sort(function(x,y){ return y.h24-x.h24; });
     out=out.slice(0,6);
+    preOut.sort(function(x,y){ return y.vel-x.vel; });
+    out=out.concat(preOut.slice(0,2));
     try{
       await Promise.all(out.map(async function(rr){ try{ rr.st=(rr.src==='bin')?await blastStart(rr.sym):0; }catch(e){ rr.st=0; } }));
     }catch(e){}
-    var rank={dump:0,fast:1,hot:1,vert:2};
+    var rank={dump:0,fast:1,hot:1,pre:2,vert:2};
     for(i=0;i<out.length;i++){
       var o=out[i], id=o.sym+o.tier;
       var oldR=mem.tier[o.sym], newR=rank[o.tier];
       mem.tier[o.sym]=o.tier;
       var esc=oldR!==undefined&&newR>rank[oldR];
       if(esc){ blxNote('🚀 '+o.sym+': تصعيد إلى '+o.tier+' +'+o.h24.toFixed(0)+'% — يُرسل فوراً'); }
-      if(esc||!mem.seen[id]||now-mem.seen[id]>COOL){ mem.seen[id]=now;
-        if(o.tier==='vert') blxNote('🚀 '+o.sym+': انفجار عمودي +'+o.h24.toFixed(0)+'% (بينانس حقيقي)');
+      var cd=(o.tier==='pre')?20*60*1000:COOL;
+      if(esc||!mem.seen[id]||now-mem.seen[id]>cd){ mem.seen[id]=now;
+        if(o.tier==='pre') blxNote('⚡ '+o.sym+': سينفجر — ادخل الآن (+'+(o.vel||0).toFixed(1)+'%/دقيقة)');
+        else if(o.tier==='vert') blxNote('🚀 '+o.sym+': انفجار عمودي +'+o.h24.toFixed(0)+'% (بينانس حقيقي)');
         else if(o.tier==='dump') blxNote('📉 '+o.sym+': انهيار '+o.h24.toFixed(0)+'% — مراقبة');
         else blxNote('🔥 '+o.sym+': انفجار كبير +'+o.h24.toFixed(0)+'% (بينانس حقيقي)');
       }
@@ -5067,7 +5081,7 @@ async function scan(){
     var st=$('blxStatus');
     if(st) st.textContent=out.length?('🚀 '+out.length+' انفجارات ('+(binOk?'بينانس حقيقي ✅':'احتياطي')+') • آخر فحص '+new Date().toLocaleTimeString('ar')):('🚀 لا انفجارات كبيرة الآن — فحص '+all.length+' عملة • '+new Date().toLocaleTimeString('ar'));
     box.innerHTML=out.length?out.map(function(r){
-      var lv=r.tier==='vert'?'🚀 انفجار عمودي — فريم يومي':(r.tier==='hot'?'🔴 انفجار كبير — فريم يومي':(r.tier==='fast'?('⚡ تتحرك بسرعة الآن +'+(r.vel||0).toFixed(1)+'%/دقيقة'):'📉 انهيار كبير — فريم يومي'));
+      var lv=r.tier==='pre'?('⚡ سينفجر — ادخل الآن (+'+(r.vel||0).toFixed(1)+'%/دقيقة)'):r.tier==='vert'?'🚀 انفجار عمودي — فريم يومي':(r.tier==='hot'?'🔴 انفجار كبير — فريم يومي':(r.tier==='fast'?('⚡ تتحرك بسرعة الآن +'+(r.vel||0).toFixed(1)+'%/دقيقة'):'📉 انهيار كبير — فريم يومي'));
       var h='<div class="blx-card t-'+r.tier+'+"><div class="blx-top"><span class="blx-dot"></span><b>'+r.sym+'</b><span>'+money(r.live)+'</span>'+(((r.a&&r.a.c&&r.a.c.name))?('<small>'+r.a.c.name+'</small>'):'')+'<span class="blx-big">'+(r.h24>=0?'+':'')+r.h24.toFixed(1)+'%</span></div>'
       +'<div class="blx-meta">💧 حجم حقيقي <b>'+big(r.vol)+'</b> • '+(r.src==='bin'?'✅ بينانس حقيقي':'كوين جيكو')+(r.hi>0?(' • قمة اليوم <b>'+money(r.hi)+'</b>'):'')+'</div>'
       +(r.st>0?('<div class="blx-meta">💥 بدأ الانفجار: <b>'+fmtT(r.st)+'</b></div>'):'')
