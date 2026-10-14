@@ -1197,6 +1197,9 @@ body{max-width:680px;margin:0 auto;padding:12px}
 #botChal{border:1px solid #ff8a3d66!important;color:#ffab6e!important}
 #botChal:hover{background:#ff8a3d22}
 .bot-link{font-size:.78rem;color:var(--mut);font-weight:800;margin:8px 0}
+.bot-chan{font-size:.76rem;font-weight:800;color:#8fd6ff;background:#8fd6ff0d;border:1px solid #8fd6ff44;border-radius:10px;padding:6px 12px;margin:0 0 8px;text-align:center}
+.bot-chan small{color:var(--mut);font-weight:600}
+.bot-chan .ok{color:#1fe196}.bot-chan .bad{color:#ff7b85}
 .bot-team{font-size:.78rem;font-weight:900;color:#ffe9a8;background:#f0b90b0d;border:1px solid #f0b90b44;border-radius:10px;padding:7px 12px;margin:0 0 8px;text-align:center}
 .bot-team.good{background:#16c78414;border-color:#16c784aa;color:#d9ffe9;box-shadow:0 0 14px #16c78444}
 .bot-team.bad{background:#ea394314;border-color:#ea394366;color:#ffc9cd;box-shadow:0 0 14px #ea394344}
@@ -1491,6 +1494,7 @@ body.linkmode #masterFab{display:none!important}
   <div class="bot-event" id="oneEvent">🔔 بانتظار أول عملية شراء/بيع...</div>
   <div class="dec-strip" id="oneStrip" hidden></div>
   <div class="bot-team" id="oneBox">🤖 البوت: —</div>
+  <div class="bot-chan" id="oneChan">📣 إرسال القناة: —</div>
   <div class="bot-plans-head">🚀 خطة تكبير رأس المال (اضغط للتفعيل ✅)</div>
   <div class="bot-plans" id="oneGrows"></div>
   <div class="bot-plans-head">🛠 خدمات البوت — تقسيم رأس المال (اختر ✅)</div>
@@ -3242,7 +3246,7 @@ document.addEventListener('DOMContentLoaded',()=>{ try{ holdWake(); }catch(e){} 
 "use strict";
 const $=id=>document.getElementById(id);
 const LS='ai_botone_v1';
-const S={enabled:false,manual:false,mode:'paper',max:3,splitN:4,tpCap:5,instantMin:2,goal:10,goalDone:false,dayLimit:10,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,buyCount:0,dayCount:0,chalId:null,trades:{},log:[],closedList:[],lastEv:null,busy:false,lastTick:0,lastScan:null,guardT:0,idleT:0,netFail:0,lastStop:{},key:'',sec:'',timeOffset:0,info:{}};
+const S={enabled:false,manual:false,mode:'paper',max:3,splitN:4,tpCap:5,instantMin:2,goal:10,goalDone:false,dayLimit:10,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,buyCount:0,dayCount:0,chalId:null,trades:{},log:[],closedList:[],lastEv:null,busy:false,lastTick:0,lastScan:null,guardT:0,idleT:0,netFail:0,srvLog:[],srvN:0,lastStop:{},key:'',sec:'',timeOffset:0,info:{}};
 const livePx={};
 function sha256Bytes(m){
   const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
@@ -3335,8 +3339,8 @@ function readTable(el){
     save(); paint();
   }catch(e){}
 }
-function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','manual','mode','max','splitN','tpCap','instantMin','goal','goalDone','dayLimit','equity','equityStart','day','dayPnl','profit','closed','wins','buyCount','dayCount','chalId','trades','log','closedList','lastEv','lastTick','lastScan','lastStop','key','sec'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); if(!S.manual){ S.enabled=true; } }catch(e){} }
-function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S.enabled,manual:!!S.manual,mode:S.mode,max:S.max,tpCap:S.tpCap,instantMin:S.instantMin,goal:S.goal,goalDone:!!S.goalDone,dayLimit:S.dayLimit,equity:S.equity,equityStart:S.equityStart,day:S.day,dayPnl:S.dayPnl,profit:S.profit,closed:S.closed,wins:S.wins,buyCount:S.buyCount,dayCount:S.dayCount,chalId:S.chalId||null,splitN:S.splitN||0,trades:S.trades,log:(S.log||[]).slice(0,30),closedList:(S.closedList||[]).slice(0,10),lastEv:S.lastEv||null,lastTick:S.lastTick||0,lastScan:S.lastScan||null,lastStop:S.lastStop||{},key:S.key||'',sec:S.sec||''})); }catch(e){} try{ const el=document.getElementById('oneSave'); if(el) el.textContent='💾 حفظ تلقائي '+new Date().toLocaleTimeString('ar'); }catch(e){} }
+function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','manual','mode','max','splitN','tpCap','instantMin','goal','goalDone','dayLimit','equity','equityStart','day','dayPnl','profit','closed','wins','buyCount','dayCount','chalId','trades','log','closedList','lastEv','lastTick','srvLog','srvN','lastScan','lastStop','key','sec'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); if(!S.manual){ S.enabled=true; } }catch(e){} }
+function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S.enabled,manual:!!S.manual,mode:S.mode,max:S.max,tpCap:S.tpCap,instantMin:S.instantMin,goal:S.goal,goalDone:!!S.goalDone,dayLimit:S.dayLimit,equity:S.equity,equityStart:S.equityStart,day:S.day,dayPnl:S.dayPnl,profit:S.profit,closed:S.closed,wins:S.wins,buyCount:S.buyCount,dayCount:S.dayCount,chalId:S.chalId||null,splitN:S.splitN||0,trades:S.trades,log:(S.log||[]).slice(0,30),closedList:(S.closedList||[]).slice(0,10),lastEv:S.lastEv||null,lastTick:S.lastTick||0,lastScan:S.lastScan||null,srvLog:(S.srvLog||[]).slice(0,5),srvN:S.srvN||0,lastStop:S.lastStop||{},key:S.key||'',sec:S.sec||''})); }catch(e){} try{ const el=document.getElementById('oneSave'); if(el) el.textContent='💾 حفظ تلقائي '+new Date().toLocaleTimeString('ar'); }catch(e){} }
 function log(m){ S.log=S.log||[]; S.log.unshift({t:Date.now(),m:String(m)}); S.log=S.log.slice(0,30); save(); paintLog(); }
 function paintLog(){ try{ const ul=$('oneLog'); if(!ul) return; ul.innerHTML=(S.log.length?S.log.slice(0,8):[{t:Date.now(),m:'البوت متوقف — اضغط تشغيل.'}]).map(h=>'<li><span class="muted">'+new Date(h.t).toLocaleTimeString('ar')+'</span> '+h.m+'</li>').join(''); }catch(e){} }
 function toastF(m){ try{ window.toast(m); }catch(e){} }
@@ -3588,6 +3592,7 @@ function paint(){
     else if((S.dayPnl||0)<=-(parseFloat(S.dayLimit)||10)||(parseFloat(S.equity)||0)<20) rs+=' ⛔ لا دخول جديد (حماية)';
     if(sb) sb.textContent=rs;
     paintEv();
+    try{ paintChan(); }catch(e){}
     try{
       const sp=$('oneStrip');
       if(sp){
@@ -3746,8 +3751,21 @@ function srvFlush(){
     var c=srvCfg();
     if(!c.url){ __srvQ=[]; __srvBusy=false; return; }
     var msg=__srvQ.shift(); __srvLast=Date.now();
-    fetch(c.url+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key||'',text:String(msg).slice(0,900)})}).catch(function(){}).finally(function(){ __srvBusy=false; if(__srvQ.length) setTimeout(srvFlush,3600); });
+    fetch(c.url+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key||'',text:String(msg).slice(0,900)})}).then(function(r){ try{ var BS=window.BOTONE&&window.BOTONE.S; if(BS){ BS.srvLog=BS.srvLog||[]; BS.srvLog.unshift({t:Date.now(),m:String(msg).slice(0,90),ok:!!(r&&r.ok)}); BS.srvLog=BS.srvLog.slice(0,5); BS.srvN=(BS.srvN||0)+1; if(window.BOTONE.save) window.BOTONE.save(); } }catch(e){} try{ paintChan(); }catch(e){} }).catch(function(){}).finally(function(){ __srvBusy=false; if(__srvQ.length) setTimeout(srvFlush,3600); });
   }catch(e){ __srvBusy=false; }
+}
+function paintChan(){
+  try{
+    var el=$('oneChan'); if(!el) return;
+    var BS=(window.BOTONE&&window.BOTONE.S)||null;
+    var lg=(BS&&BS.srvLog)||[], n=(BS&&BS.srvN)||0;
+    var cfg=null; try{ cfg=srvCfg(); }catch(e){}
+    var last=lg[0];
+    el.innerHTML='📣 إرسال القناة: <b>'+n+'</b> رسالة'
+      +(cfg&&cfg.url?' • <span class="ok">متصل</span>':' • <span class="bad">بدون سيرفر — أدخل رابطه من الإعدادات</span>')
+      +(__srvQ.length?(' • ⏳ بالانتظار '+__srvQ.length):'')
+      +(last?('<br><small>'+(last.ok?'✅ ':'❌ ')+String(last.m||'').slice(0,90)+' • '+new Date(last.t).toLocaleTimeString('ar')+'</small>'):'<br><small>لا إرسال بعد — تُرسل أحداث البوت والأهداف هنا</small>');
+  }catch(e){}
 }
 function srvCfg(){ try{ var o=getOwner()||{}; var url=o.srvUrl||((window.SRV||{}).url||''); var key=o.srvKey||((window.SRV||{}).key||''); return {url:String(url||'').replace(/\/+$/,''),key:key}; }catch(e){ return {url:'',key:''}; } }
 function srvNotify(msg){
