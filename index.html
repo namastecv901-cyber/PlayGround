@@ -1418,6 +1418,7 @@ body.linkmode #masterFab{display:none!important}
 .pex-tfs button.on{color:#8fd6ff;border-color:#8fd6ff;background:#8fd6ff1e}
 .pex-tfin{font-family:inherit;font-size:.64rem;font-weight:900;color:#8fd6ff;background:#00000040;border:1px solid #8fd6ff55;border-radius:8px;padding:2px 8px;width:58px;text-align:center}
 .pex-tv{font-family:inherit;font-size:.68rem;font-weight:900;color:#8fd6ff;background:#8fd6ff12;border:1px solid #8fd6ff55;border-radius:8px;padding:2px 10px;margin-top:6px;cursor:pointer}
+.pex-news{font-family:inherit;font-size:.68rem;font-weight:900;color:#f6e27a;background:#f0b90b12;border:1px solid #f0b90b55;border-radius:8px;padding:2px 10px;margin-top:6px;margin-inline-start:6px;cursor:pointer}
 .stepper b{min-width:30px;text-align:center;font-size:1rem}
 </style>
 </head>
@@ -5088,13 +5089,18 @@ async function scan(){
       +'<div class="blx-lv">'+lv+'</div>'
       +'<div class="blx-meta">👁 مراقبة فقط — القسم يرصد ولا يوصي بدخول</div>';
       var tvS=r.sym+'USDT';
-      h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><div class="pex-chart" hidden></div></div>';
+      h+='<div><button class="pex-tv" data-tv="'+tvS+'">📊 الشارت</button><button class="pex-news" data-news="'+r.sym+'">📰 أخبارها</button><div class="pex-chart" hidden></div></div>';
       return h+'</div>';
     }).join(''):'<div class="muted" style="font-size:.8rem">لا انفجارات كبيرة حالياً — القسم يراقب وحده</div>';
   }catch(e){}
 }
 function run(){ try{ var p=scan(); if(p&&p.catch) p.catch(function(){}); }catch(e){} }
 document.addEventListener('DOMContentLoaded',function(){ try{ run(); }catch(e){} setInterval(run,60000); setTimeout(run,10000); });
+document.addEventListener('click',function(e){ try{
+  var nb=e.target&&e.target.closest?e.target.closest('[data-news]'):null; if(!nb) return;
+  var u='https://news.google.com/search?q='+encodeURIComponent(nb.dataset.news+' crypto');
+  try{ window.open(u,'_blank'); }catch(x){ location.href=u; }
+}catch(x){} });
 window.BLX={scan:scan};
 })();
 </script>
