@@ -1493,6 +1493,8 @@ body.linkmode #masterFab{display:none!important}
   <div class="bot-team" id="oneBox">🤖 البوت: —</div>
   <div class="bot-plans-head">🚀 خطة تكبير رأس المال (اضغط للتفعيل ✅)</div>
   <div class="bot-plans" id="oneGrows"></div>
+  <div class="bot-plans-head">🛠 خدمات البوت — تقسيم رأس المال (اختر ✅)</div>
+  <div class="bot-plans" id="oneSplit"></div>
   <div class="bot-grid" id="oneCtl">
     <label>💰 رأس المال $<input id="tEq" type="number" min="10" step="10"></label>
     <label>🛡 حد الخسارة $<input id="tDay" type="number" min="1" step="1"></label>
@@ -1610,6 +1612,10 @@ body.linkmode #masterFab{display:none!important}
         <label>🌍 رابط الموقع العام (يُبنى عليه رابط النشر — فعّل GitHub Pages أو الصق رابط الاستضافة)</label><input id="setSite" type="text" dir="ltr" placeholder="https://namastecv901-cyber.github.io/PlayGround">
         <label>📩 تنبيه الزوار: توكن بوت تيليجرام (اختياري — ليصلك كل اسم وإيميل فوراً)</label><input id="setLeadBot" type="text" dir="ltr" placeholder="123456:ABC...">
         <label>📩 شات ID الذي تستلم عليه التنبيه</label><input id="setLeadChat" type="text" dir="ltr" placeholder="123456789">
+        <label>🌐 رابط السيرفر (الإرسال للقناة عبره فقط)</label><input id="setSrvUrl" type="text" dir="ltr" placeholder="https://....">
+        <label>🔑 مفتاح السيرفر</label><input id="setSrvKey" type="password" dir="ltr" placeholder="NOTIFY_SECRET">
+        <label>📣 قناتك (رابط يُعرض للمشتركين)</label><input id="setChannel" type="text" dir="ltr" placeholder="https://t.me/...">
+        <div style="margin:6px 0"><button class="btn btn-sm" id="srvTest">📤 تجربة إرسال القناة</button> <span class="muted" id="srvSt" style="font-size:.74rem"></span></div>
         <div style="margin-top:10px"><button class="btn btn-primary btn-sm" id="setSave">💾 حفظ</button></div>
         <p class="muted" style="font-size:.74rem">كيف تحصل عليهما: افتح @BotFather في تيليجرام ← /newbot ← انسخ التوكن هنا. ثم افتح @userinfobot لتعرف الشات ID. بعد الحفظ، كل زائر يدخل اسمه وإيميله يصلك فوراً في تيليجرام + يُحفظ في تبويب 📩 الزوار.</p>
       </div>
@@ -2468,7 +2474,7 @@ function cycle(){
       } else if(!(cur>p.entry*1.005)){ p.missN=0; p.missT0=0; }
     p.verdict=v; p.note=note;
     if((v==='T1'||v==='T2')&&prev!==v&&!p.singleCounted){ p.singleCounted=true; try{ doneCount(p.id,'single'); }catch(e){} }
-    if(prev!==v&&(v==='FINAL'||v==='STOP')){ try{ const dnN=doneCount(p.id,v==='FINAL'?'done':'stop'); try{ const box=document.getElementById('botToasts'); if(box){ const dd=document.createElement('div'); dd.textContent=(v==='FINAL'?'🏆 '+p.sym+' ضربت كل الأهداف — مكتملة #'+dnN:'🔴 '+p.sym+' ضرب الوقف #'+dnN); box.appendChild(dd); setTimeout(()=>{ try{dd.remove();}catch(e){} },6000); while(box.children.length>3) box.firstChild.remove(); } }catch(e){} }catch(e){} }
+    if(prev!==v&&(v==='FINAL'||v==='STOP')){ try{ const dnN=doneCount(p.id,v==='FINAL'?'done':'stop'); try{ const box=document.getElementById('botToasts'); if(box){ const dd=document.createElement('div'); dd.textContent=(v==='FINAL'?'🏆 '+p.sym+' ضربت كل الأهداف — مكتملة #'+dnN:'🔴 '+p.sym+' ضرب الوقف #'+dnN); try{ srvNotify(dd.textContent); }catch(e){} box.appendChild(dd); setTimeout(()=>{ try{dd.remove();}catch(e){} },6000); while(box.children.length>3) box.firstChild.remove(); } }catch(e){} }catch(e){} }
     if(prev!==v && (v==='EXIT_NOW'||v==='PULLBACK')){ beep(v==='EXIT_NOW'?[440,330,220]:[660,520,390],0.35,[0,0.35,0.7]); notify(v==='EXIT_NOW'?'🚨 اخرج الآن: '+p.sym:'📉 تراجع بعد الهدف الأول: '+p.sym, note); }
     else if(prev!==v && v==='DANGER'){ beep(660,0.35); notify('⚠️ خطر: '+p.sym, note); }
     p.updatedAt=Date.now();
@@ -3236,7 +3242,7 @@ document.addEventListener('DOMContentLoaded',()=>{ try{ holdWake(); }catch(e){} 
 "use strict";
 const $=id=>document.getElementById(id);
 const LS='ai_botone_v1';
-const S={enabled:false,manual:false,mode:'paper',max:3,tpCap:5,instantMin:2,goal:10,goalDone:false,dayLimit:10,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,buyCount:0,dayCount:0,chalId:null,trades:{},log:[],closedList:[],lastEv:null,busy:false,lastTick:0,lastScan:null,guardT:0,idleT:0,netFail:0,lastStop:{},key:'',sec:'',timeOffset:0,info:{}};
+const S={enabled:false,manual:false,mode:'paper',max:3,splitN:4,tpCap:5,instantMin:2,goal:10,goalDone:false,dayLimit:10,equity:100,equityStart:100,day:'',dayPnl:0,profit:0,closed:0,wins:0,buyCount:0,dayCount:0,chalId:null,trades:{},log:[],closedList:[],lastEv:null,busy:false,lastTick:0,lastScan:null,guardT:0,idleT:0,netFail:0,lastStop:{},key:'',sec:'',timeOffset:0,info:{}};
 const livePx={};
 function sha256Bytes(m){
   const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
@@ -3329,8 +3335,8 @@ function readTable(el){
     save(); paint();
   }catch(e){}
 }
-function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','manual','mode','max','tpCap','instantMin','goal','goalDone','dayLimit','equity','equityStart','day','dayPnl','profit','closed','wins','buyCount','dayCount','chalId','trades','log','closedList','lastEv','lastTick','lastScan','lastStop','key','sec'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); if(!S.manual){ S.enabled=true; } }catch(e){} }
-function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S.enabled,manual:!!S.manual,mode:S.mode,max:S.max,tpCap:S.tpCap,instantMin:S.instantMin,goal:S.goal,goalDone:!!S.goalDone,dayLimit:S.dayLimit,equity:S.equity,equityStart:S.equityStart,day:S.day,dayPnl:S.dayPnl,profit:S.profit,closed:S.closed,wins:S.wins,buyCount:S.buyCount,dayCount:S.dayCount,chalId:S.chalId||null,trades:S.trades,log:(S.log||[]).slice(0,30),closedList:(S.closedList||[]).slice(0,10),lastEv:S.lastEv||null,lastTick:S.lastTick||0,lastScan:S.lastScan||null,lastStop:S.lastStop||{},key:S.key||'',sec:S.sec||''})); }catch(e){} try{ const el=document.getElementById('oneSave'); if(el) el.textContent='💾 حفظ تلقائي '+new Date().toLocaleTimeString('ar'); }catch(e){} }
+function load(){ try{ const j=JSON.parse(localStorage.getItem(LS)||'{}'); ['enabled','manual','mode','max','splitN','tpCap','instantMin','goal','goalDone','dayLimit','equity','equityStart','day','dayPnl','profit','closed','wins','buyCount','dayCount','chalId','trades','log','closedList','lastEv','lastTick','lastScan','lastStop','key','sec'].forEach(k=>{ if(j[k]!==undefined) S[k]=j[k]; }); if(!S.manual){ S.enabled=true; } }catch(e){} }
+function save(){ try{ localStorage.setItem(LS,JSON.stringify({enabled:S.enabled,manual:!!S.manual,mode:S.mode,max:S.max,tpCap:S.tpCap,instantMin:S.instantMin,goal:S.goal,goalDone:!!S.goalDone,dayLimit:S.dayLimit,equity:S.equity,equityStart:S.equityStart,day:S.day,dayPnl:S.dayPnl,profit:S.profit,closed:S.closed,wins:S.wins,buyCount:S.buyCount,dayCount:S.dayCount,chalId:S.chalId||null,splitN:S.splitN||0,trades:S.trades,log:(S.log||[]).slice(0,30),closedList:(S.closedList||[]).slice(0,10),lastEv:S.lastEv||null,lastTick:S.lastTick||0,lastScan:S.lastScan||null,lastStop:S.lastStop||{},key:S.key||'',sec:S.sec||''})); }catch(e){} try{ const el=document.getElementById('oneSave'); if(el) el.textContent='💾 حفظ تلقائي '+new Date().toLocaleTimeString('ar'); }catch(e){} }
 function log(m){ S.log=S.log||[]; S.log.unshift({t:Date.now(),m:String(m)}); S.log=S.log.slice(0,30); save(); paintLog(); }
 function paintLog(){ try{ const ul=$('oneLog'); if(!ul) return; ul.innerHTML=(S.log.length?S.log.slice(0,8):[{t:Date.now(),m:'البوت متوقف — اضغط تشغيل.'}]).map(h=>'<li><span class="muted">'+new Date(h.t).toLocaleTimeString('ar')+'</span> '+h.m+'</li>').join(''); }catch(e){} }
 function toastF(m){ try{ window.toast(m); }catch(e){} }
@@ -3368,7 +3374,7 @@ function tradeState(st,live){
     return '🟢 تم الدخول — يراقب';
   }catch(e){ return '🟢 تم الدخول'; }
 }
-function setEv(side,coin,price,why,pnl){ S.lastEv={side:side,coin:coin,price:price,why:why||'',pnl:(pnl==null?null:pnl),t:Date.now()}; save(); paintEv(); try{ const el=$('oneEvent'); if(el){ el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }catch(e){} }
+function setEv(side,coin,price,why,pnl){ S.lastEv={side:side,coin:coin,price:price,why:why||'',pnl:(pnl==null?null:pnl),t:Date.now()}; save(); paintEv(); try{ var _m=(side==="buy"?"🟢 شراء ":"🔴 بيع ")+coin+" @ "+price; if(why) _m+=" ("+why+")"; if(pnl!=null) _m+=" "+(pnl>=0?"+":"")+"$"+pnl.toFixed(2); srvNotify(_m); }catch(e){} try{ const el=$('oneEvent'); if(el){ el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }catch(e){} }
 function paintEv(){
   try{
     const el=$('oneEvent'); if(!el) return;
@@ -3495,7 +3501,7 @@ async function scan(){
     if((S.dayPnl||0)<=-dl){ if(Date.now()-(S.guardT||0)>600000){ S.guardT=Date.now(); log('⛔ لا دخول جديد — حد الخسارة اليومية ('+S.dayPnl.toFixed(1)+'$)'); } }
     else if((parseFloat(S.equity)||0)<20){ if(Date.now()-(S.guardT||0)>600000){ S.guardT=Date.now(); log('⛔ لا دخول جديد — رأس المال $'+(S.equity||0).toFixed(2)+' تحت الحد'); } }
     else if(!S.goalDone&&(S.dayPnl||0)>=(parseFloat(S.goal)||10)){ S.goalDone=true; S.enabled=false; log('🏆 هدف اليوم تحقق (+$'+S.dayPnl.toFixed(2)+') — توقف محتفلاً'); toastF('🏆 هدف اليوم تحقق'); }
-    else if(openCount<(parseInt(S.max)||3)){
+    else if(openCount<((S.splitN>0)?S.splitN:(parseInt(S.max)||3))){
       if((S.dayCount||0)>=100){ if(Date.now()-(S.guardT||0)>600000){ S.guardT=Date.now(); log('🛑 بلغ 100 صفقة اليوم — لا فتح جديد حتى الغد'); } }
       else{
         let cands=[];
@@ -3521,8 +3527,8 @@ async function scan(){
         for(const c of cands){
           try{
             const n=Object.values(S.trades).filter(x=>x&&x.open&&!x.skip).length;
-            if(n>=(parseInt(S.max)||3)) break;
-            const stake=Math.min(20,(parseFloat(S.equity)||0)*0.2,parseFloat(S.equity)||0);
+            if(n>=((S.splitN>0)?S.splitN:(parseInt(S.max)||3))) break;
+            const stake=S.splitN>0?Math.max(5,(parseFloat(S.equity)||0)/S.splitN):Math.min(20,(parseFloat(S.equity)||0)*0.2,parseFloat(S.equity)||0);
             if(stake<5) break;
             const symU=String(c.a.c.symbol||c.a.c.id).toUpperCase();
             const sym=symU.replace(/[^A-Z0-9]/g,'')+'USDT';
@@ -3600,11 +3606,12 @@ function paint(){
         let nS=0; try{ const an=(window.RADAR&&window.RADAR.analyzed)||[]; for(const a of an){ if(a&&a.isBuy) nS++; } }catch(e){}
         bx.innerHTML='<b>🤖 بوت التداول التلقائي</b> '+(S.enabled?'🟢 يعمل':'⏸ متوقف')
         +'<br>🔗 <span>💰 الربح: '+(tot>=0?'+':'')+'$'+tot.toFixed(2)+' (محقق '+(S.profit>=0?'+':'')+'$'+S.profit.toFixed(2)+')</span> • <span>💰 الحي: $'+eqLive.toFixed(2)+' (البداية $'+(S.equityStart||0).toFixed(2)+')</span> • 📊 اليوم '+(dp>=0?'+':'')+'$'+dp.toFixed(2)+' • ⚖️ '+S.wins+'/'+S.closed+(age==null?'':' • آخر فحص منذ '+age+' ث')
-        +'<br>📡 إشارات المحلل الآن: <b>'+nS+'</b>'+(closedHtml?'<br>📜 المكتملة: '+closedHtml:'');
+        +'<br>➗ '+(S.splitN>0?('تقسيم $'+(parseFloat(S.equity)||0).toFixed(2)+' على '+S.splitN):'بدون تقسيم')+'<br>📡 إشارات المحلل الآن: <b>'+nS+'</b>'+(closedHtml?'<br>📜 المكتملة: '+closedHtml:'');
       }
     }catch(e){}
     try{ setTable(); }catch(e){}
     try{ paintGrows(); }catch(e){}
+    try{ paintSplit(); }catch(e){}
     paintLog();
   }catch(e){}
 }
@@ -3616,7 +3623,7 @@ const GROWS=[
 ];
 function applyGrowth(id){
   const c=GROWS.find(x=>x.id===id); if(!c) return false;
-  S.mode='paper'; S.equity=c.from; S.equityStart=c.from; S.dayPnl=0; S.dayCount=0; S.goalDone=false; S.goal=c.to; S.max=c.max; S.dayLimit=c.day; S.chalId=c.id;
+  S.mode='paper'; S.equity=c.from; S.equityStart=c.from; S.dayPnl=0; S.dayCount=0; S.goalDone=false; S.goal=c.to; S.max=c.max; S.dayLimit=c.day; S.chalId=c.id; S.splitN=0;
   save(); paint(); paintGrows();
   log('🚀 خطة تكبير $'+c.from+'→$'+c.to+': رأس مال $'+c.from+' • هدف $'+c.to+' • حد يومي $'+c.day+' • '+c.max+' صفقات — انطلقت ✅');
   try{ window.toast('🚀 خطة $'+c.from+'→$'+c.to+' بدأت'); }catch(e){}
@@ -3634,6 +3641,16 @@ function start(){ if(S.mode!=='paper'&&(!S.key||!S.sec)){ log('🔑 الوضع �
 function stop(){ S.enabled=false; S.manual=true; save(); paint(); log('⏸ البوت متوقف — المفتوحة تبقى بلا إدارة، أغلقها يدوياً'); }
 if(!window.__oneCtlBound){ window.__oneCtlBound=1; document.addEventListener('input',e=>{ try{ const el=e.target; if(el&&(el.tagName==='INPUT'||el.tagName==='SELECT')&&el.id) readTable(el); }catch(x){} }); document.addEventListener('change',e=>{ try{ const el=e.target; if(el&&(el.tagName==='INPUT'||el.tagName==='SELECT')&&el.id) readTable(el); }catch(x){} }); }
 if(!window.__growBound){ window.__growBound=1; document.addEventListener('click',e=>{ try{ const b=e.target&&e.target.closest?e.target.closest('[data-grow]'):null; if(b&&b.dataset.grow) applyGrowth(b.dataset.grow); }catch(x){} }); }
+const SPLITS=[{id:'s4',n:4},{id:'s6',n:6},{id:'s8',n:8}];
+function applySplit(n){ S.splitN=n; if(n>0){ S.max=n; S.chalId=null; } save(); paint(); paintSplit(); try{ paintGrows(); }catch(e){} const eq=parseFloat(S.equity)||0; log(n>0?('➗ تقسيم رأس المال ($'+eq.toFixed(2)+') على '+n+' عملات ($'+(eq/n).toFixed(2)+' لكل صفقة) — يدخل أي فرصة حقيقية'):'➗ التقسيم متوقف — تحكم يدوي'); }
+function paintSplit(){
+  try{
+    const box=$('oneSplit'); if(!box) return;
+    const eq=parseFloat(S.equity)||0;
+    box.innerHTML=SPLITS.map(o=>'<button class="bot-plan'+(S.splitN===o.n?' sel':'')+'" data-split="'+o.n+'"><span class="pl-check">'+(S.splitN===o.n?'✅':'○')+'</span><span><b>➗ تقسيم على '+o.n+' عملات</b><small>$'+(eq/o.n).toFixed(2)+' لكل صفقة • دخول أي فرصة حقيقية حتى اكتمال العدد</small></span><span class="pl-lvl">/'+o.n+'</span></button>').join('');
+  }catch(e){}
+}
+if(!window.__splitBound){ window.__splitBound=1; document.addEventListener('click',e=>{ try{ const b=e.target&&e.target.closest?e.target.closest('[data-split]'):null; if(b&&b.dataset.split) applySplit(parseInt(b.dataset.split)||0); }catch(x){} }); }
 function bind(){ const a=$('oneStart'); if(a&&!a._b){ a._b=1; a.onclick=()=>{ try{ start(); }catch(e){} }; } const b=$('oneStop'); if(b&&!b._b){ b._b=1; b.onclick=()=>{ try{ stop(); }catch(e){} }; } }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden){ (async()=>{ try{ await catchUp(); }catch(e){} try{ scan(); }catch(e){} })(); try{ paint(); }catch(e){} } });
 document.addEventListener('DOMContentLoaded',()=>{ load(); bind(); paint(); (async()=>{ try{ await migrateFrom49(); }catch(e){} })(); if(S.enabled){ log('🔁 البوت استأنف تلقائياً بعد الفتح — يواصل المراقبة'); (async()=>{ try{ await catchUp(); }catch(e){} try{ scan(); }catch(e){} })(); } setInterval(()=>{ try{ scan(); }catch(e){} },15000); setInterval(()=>{ try{ if(S.enabled&&!document.hidden&&Date.now()-(S.lastTick||0)>90000){ S.busy=false; log('💓 إحياء النبض — استئناف الدورات'); scan(); } }catch(e){} },30000); setInterval(()=>{ try{ paint(); }catch(e){} },3000); setInterval(()=>{ try{ refreshLive(); }catch(e){} },10000); });
@@ -3719,6 +3736,17 @@ window.AI_RESYNC=cycles;
 "use strict";
 const $=id=>document.getElementById(id);
 /*__OWNER_ALERT__*/window.OWNER_ALERT=null;
+/*__SRV__*/window.SRV=null;
+var __srvT=0;
+function srvCfg(){ try{ var o=getOwner()||{}; var url=o.srvUrl||((window.SRV||{}).url||''); var key=o.srvKey||((window.SRV||{}).key||''); return {url:String(url||'').replace(/\/+$/,''),key:key}; }catch(e){ return {url:'',key:''}; } }
+function srvNotify(msg){
+  try{
+    if(!msg) return;
+    var c=srvCfg(); if(!c.url) return;
+    var now=Date.now(); if(now-__srvT<5000) return; __srvT=now;
+    fetch(c.url+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key||'',text:String(msg).slice(0,900)})}).catch(function(){});
+  }catch(e){}
+}
 const K_OWNER='ai_owner_v1', K_SUBS='ai_subs_v1', K_SESS='ai_sess_v1', K_ME='ai_me_v1', K_LEAD='ai_lead_v1', K_LEADS='ai_leads_v1';
 const FREE_N=1, SUB_DAYS=30, PRICE=30;
 const M={mode:'guest',name:'',until:0,lead:null};
@@ -4151,7 +4179,7 @@ function openOwner(){
   const o=getOwner();
   $('ownerLogin').hidden=!!(M.mode==='owner');
   $('ownerDash').hidden=!(M.mode==='owner');
-  if(M.mode==='owner'){ paintSubs(); paintLog(); paintLeads(); paintLeadAuto(); paintLinks(); paintMaster(); const s=$('setPay'); if(s){ const oo=getOwner()||{}; s.value=oo.pay||''; $('setContact').value=oo.contact||''; $('setContactName').value=oo.contactName||''; $('setSite').value=oo.site||''; $('setLeadBot').value=oo.leadBot||''; $('setLeadChat').value=oo.leadChat||''; } }
+  if(M.mode==='owner'){ paintSubs(); paintLog(); paintLeads(); paintLeadAuto(); paintLinks(); paintMaster(); const s=$('setPay'); if(s){ const oo=getOwner()||{}; s.value=oo.pay||''; $('setContact').value=oo.contact||''; $('setContactName').value=oo.contactName||''; $('setSite').value=oo.site||''; $('setLeadBot').value=oo.leadBot||''; $('setLeadChat').value=oo.leadChat||''; $('setSrvUrl').value=oo.srvUrl||''; $('setSrvKey').value=oo.srvKey||''; $('setChannel').value=oo.channel||''; } }
   else { $('pinMsg').textContent=o?'أدخل PIN للدخول':'أنت المالك؟ اختر PIN جديداً الآن (يُحفظ في جهازك فقط)'; }
 }
 document.addEventListener('DOMContentLoaded',()=>{
@@ -4305,9 +4333,10 @@ document.addEventListener('DOMContentLoaded',()=>{
       fetch('https://api.telegram.org/bot'+o.leadBot+'/sendMessage?chat_id='+encodeURIComponent(o.leadChat)+'&text='+encodeURIComponent('🔔 تجربة التنبيه تعمل ✅ — ستصلك أسماء الزوار هنا')).then(()=>{ try{ toast('✅ أُرسلت التجربة — تحقق من تيليجرام'); }catch(e){} }).catch(()=>{ try{ toast('❌ فشل الإرسال — تحقق من التوكن'); }catch(e){} });
     }catch(e){}
   };
+  try{ const sb=$('srvTest'); if(sb&&!sb._b){ sb._b=1; sb.onclick=()=>{ try{ var c=srvCfg(); var st=$('srvSt'); if(!c.url){ if(st) st.textContent='❌ أدخل رابط السيرفر أولاً'; return; } if(st) st.textContent='⏳ إرسال...'; fetch(c.url+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key||'',text:'📣 تجربة قناة TRAININGV8 ✅ — السيرفر يرسل بنجاح'})}).then(function(r){ return r.json(); }).then(function(j){ if(st) st.textContent=(j&&j.ok)?'✅ وصلت — تحقق من القناة':'❌ رفض: '+((j&&j.error)||'?'); }).catch(function(){ if(st) st.textContent='❌ تعذر الوصول للسيرفر'; }); }catch(e){} }; } }catch(e){}
   $('subLink').onclick=()=>{ try{ const u=guestURL(dayStr(0)); navigator.clipboard.writeText(u); }catch(e){} sess('المالك','نسخ رابط المشتركين (رابط اليوم)'); };
-  ['setPay','setContact','setContactName','setSite','setLeadBot','setLeadChat'].forEach(function(id){ try{ var el=$(id); if(el) el.oninput=function(){ try{ var o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.site=$('setSite').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); }catch(e){} }; }catch(e){} });
-  $('setSave').onclick=()=>{ const o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.site=$('setSite').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); paint(); sess('المالك','حفظ الإعدادات'); };
+  ['setPay','setContact','setContactName','setSite','setLeadBot','setLeadChat','setSrvUrl','setSrvKey','setChannel'].forEach(function(id){ try{ var el=$(id); if(el) el.oninput=function(){ try{ var o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.site=$('setSite').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); }catch(e){} }; }catch(e){} });
+  $('setSave').onclick=()=>{ const o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.site=$('setSite').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); o.srvUrl=$('setSrvUrl').value.trim(); o.srvKey=$('setSrvKey').value.trim(); o.channel=$('setChannel').value.trim(); saveOwner(o); paint(); sess('المالك','حفظ الإعدادات'); };
 });
 window.MEMBER={get mode(){return M.mode;},unlockSub,paint,makeSubToken,verifySubToken};
 })();
@@ -4482,6 +4511,7 @@ function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e)
 function big(n){ try{ n=Number(n)||0; var a=Math.abs(n); if(a>=1e9) return '$ '+(n/1e9).toFixed(2)+'B'; if(a>=1e6) return '$ '+(n/1e6).toFixed(2)+'M'; if(a>=1e3) return '$ '+(n/1e3).toFixed(1)+'K'; return '$ '+Math.round(n); }catch(e){ return '—'; } }
 function toast(m){ try{ if(window.toast) window.toast(m); }catch(e){} }
 function real(c,fb){ try{ if(window.realPx) return window.realPx(c,fb); }catch(e){} return (c&&c.current_price)||fb||0; }
+function blxNote(m){ try{ toast(m); }catch(e){} try{ srvNotify(m); }catch(e){} }
 function isSt(c){ try{ var s=String(c.symbol||'').toLowerCase(); if(STABLES[s]) return true; return /stable|pegged|wrapped btc|steth/i.test(c.name||''); }catch(e){ return false; } }
 function nearR(a,b,t){ try{ return b>0&&Math.abs(a-b)/b<=(t||0.02); }catch(e){ return false; } }
 function ptnPiv(pr,k){
@@ -4855,9 +4885,9 @@ async function scan(){
     for(i=0;i<out.length;i++){
       var o=out[i], id=o.sym+o.tier;
       if(!mem.seen[id]||now-mem.seen[id]>COOL){ mem.seen[id]=now;
-        if(o.tier==='vert') toast('🚀 '+o.sym+': انفجار عمودي +'+o.h24.toFixed(0)+'% (بينانس حقيقي)');
-        else if(o.tier==='dump') toast('📉 '+o.sym+': انهيار '+o.h24.toFixed(0)+'% — مراقبة');
-        else toast('🔥 '+o.sym+': انفجار كبير +'+o.h24.toFixed(0)+'% (بينانس حقيقي)');
+        if(o.tier==='vert') blxNote('🚀 '+o.sym+': انفجار عمودي +'+o.h24.toFixed(0)+'% (بينانس حقيقي)');
+        else if(o.tier==='dump') blxNote('📉 '+o.sym+': انهيار '+o.h24.toFixed(0)+'% — مراقبة');
+        else blxNote('🔥 '+o.sym+': انفجار كبير +'+o.h24.toFixed(0)+'% (بينانس حقيقي)');
       }
     }
     save();

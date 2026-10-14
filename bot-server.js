@@ -8,6 +8,7 @@
  *  متغيرات (اختيارية): BASE_URL STAKE_USD TP_USD MAX_TRADES MIN_VOL_USD
  *    POLL_SEC TOP_N DAILY_MAX_LOSS DAILY_GOAL_USD EQUITY_START TG_BOT TG_CHAT STATE_FILE CYCLES
  *    REINFORCE SPLIT_INIT REIN_DROP REIN_MAX HEARTBEAT_CYCLES
+ *    SPLIT_N(4/6/8: تقسيم رأس المال) TG_CHANNEL(القناة) NOTIFY_SECRET(بوابة /notify) PORT(8787)
  *  فحص ذاتي: node bot-server.js --selftest
  */
 'use strict';
@@ -22,7 +23,8 @@ const CFG = {
   stake: parseFloat(process.env.STAKE_USD || '20'),
   tp: parseFloat(process.env.TP_USD || '0.7'),
   minTp: parseFloat(process.env.MIN_TP_USD || '0.3'),
-  max: parseInt(process.env.MAX_TRADES || '3', 10),
+  max: parseInt(process.env.MAX_TRADES || '4', 10),
+  splitN: Math.max(0, parseInt(process.env.SPLIT_N || '4', 10)),
   minVol: parseFloat(process.env.MIN_VOL_USD || '20000000'),
   poll: Math.max(15, parseInt(process.env.POLL_SEC || '60', 10)),
   topN: Math.max(3, parseInt(process.env.TOP_N || '15', 10)),
@@ -36,6 +38,9 @@ const CFG = {
   reinMax: Math.max(0, Math.min(3, parseInt(process.env.REIN_MAX || '2', 10))),
   tgBot: process.env.TG_BOT || '',
   tgChat: process.env.TG_CHAT || '',
+  tgChannel: process.env.TG_CHANNEL || '',
+  notifySecret: process.env.NOTIFY_SECRET || '',
+  port: parseInt(process.env.PORT || '8787', 10),
   stateFile: process.env.STATE_FILE || './bot-state.json',
   maxCycles: parseInt(process.env.CYCLES || '0', 10),
 };
@@ -77,6 +82,16 @@ async function signed(method, path, params) {
 async function tg(msg) {
   if (!CFG.tgBot || !CFG.tgChat) return;
   try { await jget('https://api.telegram.org/bot' + CFG.tgBot + '/sendMessage?chat_id=' + encodeURIComponent(CFG.tgChat) + '&text=' + encodeURIComponent(msg), null, 10000); } catch (e) {}
+  await tgCh(msg);
+}
+async function tgCh(msg) {
+  if (!CFG.tgBot || !CFG.tgChannel) return;
+  try { await jget('https://api.telegram.org/bot' + CFG.tgBot + '/sendMessage?chat_id=' + encodeURIComponent(CFG.tgChannel) + '&text=' + encodeURIComponent(msg), null, 10000); } catch (e) { log('channel-send-fail', e.message); }
+}
+// ➗ حصة الصفقة: تقسيم رأس المال على N عملات (4/6/8) أو حصة ثابتة
+function stakeFor() {
+  if (CFG.splitN > 1) return Math.max(5, S.equity / CFG.splitN);
+  return CFG.stake;
 }
 async function getInfo(sym) {
   if (S.info[sym] && Date.now() - S.info[sym].at < 3600000) return S.info[sym];
@@ -125,7 +140,7 @@ async function openTrade(sym, base, plan) {
   if (S.trades[id]) return;
   if (Object.values(S.trades).filter(t => t && t.open).length >= CFG.max) return;
   if (S.equity < Math.min(10, CFG.equityStart * 0.2)) { log('equity-depleted, pausing'); stop('equity'); return; }
-  const firstStake = CFG.stake * CFG.splitInit;
+  const firstStake = stakeFor() * CFG.splitInit;
   let qty = firstStake / plan.entry, step = 1;
   if (CFG.mode !== 'paper') {
     if (!CFG.key || !CFG.sec) { log('missing keys'); return; }
@@ -135,7 +150,7 @@ async function openTrade(sym, base, plan) {
     let q = 0; (o.fills || []).forEach(f => { q += parseFloat(f.qty || 0); });
     if (q > 0) qty = q;
   } else qty = floorStep(qty, 0.000001);
-  S.trades[id] = { id, sym, coin: base, qty, entry: plan.entry, t1: plan.t1, t2: plan.t2, t3: plan.t3, sl: plan.sl, step, open: true, s1: false, s2: false, sold: 0, rev: 0, t0: Date.now(), stake: firstStake, stakePlanned: CFG.stake, splitInit: CFG.splitInit, adds: 0, rT1: plan.t1 / plan.entry, rT2: plan.t2 / plan.entry, rT3: plan.t3 / plan.entry, rSl: plan.sl / plan.entry, peak: plan.entry };
+  S.trades[id] = { id, sym, coin: base, qty, entry: plan.entry, t1: plan.t1, t2: plan.t2, t3: plan.t3, sl: plan.sl, step, open: true, s1: false, s2: false, sold: 0, rev: 0, t0: Date.now(), stake: firstStake, stakePlanned: stakeFor(), splitInit: CFG.splitInit, adds: 0, rT1: plan.t1 / plan.entry, rT2: plan.t2 / plan.entry, rT3: plan.t3 / plan.entry, rSl: plan.sl / plan.entry, peak: plan.entry };
   S.buys++;
   saveState();
   log('BUY', base, 'x' + qty, '@' + plan.entry);
@@ -313,8 +328,38 @@ async function selftest() {
   S.trades['m5:G'] = st3;
   await manage(st3, 10.008);
   ok('DAILY-GOAL-stop', st3.open === false && running === false && S.dayPnl >= 10);
+  S.equity = 100; CFG.splitN = 4;
+  ok('split-4-stake', stakeFor() === 25);
+  CFG.splitN = 0;
+  ok('split-off-fixed', stakeFor() === CFG.stake);
+  CFG.splitN = 4;
   console.log(pass + ' passed, ' + fail + ' failed');
   process.exit(fail ? 1 : 0);
+}
+
+let lastPost = 0;
+// 📣 بوابة /notify: التطبيق يرسل أحداث البوت والبطاقات عبر السيرفر فقط (التوكن لا يخرج من السيرفر)
+function startNotify() {
+  if (!CFG.notifySecret) { log('notify OFF (no NOTIFY_SECRET)'); return; }
+  const http = require('http');
+  const srv = http.createServer((req, res) => {
+    if (req.method !== 'POST' || req.url !== '/notify') { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end('{}'); return; }
+    let b = '';
+    req.on('data', c => { b += c; if (b.length > 2000) { try { req.destroy(); } catch (e) {} } });
+    req.on('end', async () => {
+      try {
+        const j = JSON.parse(b || '{}');
+        if (j.key !== CFG.notifySecret) { res.writeHead(403, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"bad key"}'); return; }
+        const text = String(j.text || '').slice(0, 900);
+        if (!text) { res.writeHead(400, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"empty"}'); return; }
+        if (Date.now() - lastPost < 3000) { res.writeHead(429, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"slow down"}'); return; }
+        lastPost = Date.now();
+        await tgCh(text);
+        res.writeHead(200, { 'Content-Type': 'application/json' }); res.end('{"ok":true}');
+      } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end('{"ok":false}'); }
+    });
+  });
+  srv.listen(CFG.port, () => { log('notify listening :' + CFG.port); tgCh('🚀 سيرفر البوت يعمل — القناة مربوطة ✅'); });
 }
 
 async function main() {
@@ -323,6 +368,7 @@ async function main() {
   loadState();
   if (todayUTC() !== S.day) { S.day = todayUTC(); S.dayPnl = 0; }
   await syncTime();
+  startNotify();
   log('BOT SERVER start mode=' + CFG.mode + ' base=' + CFG.base + ' stake=$' + CFG.stake + ' tp=$' + CFG.tp + ' max=' + CFG.max + ' goal=$' + CFG.dailyGoal + ' equity=$' + S.equity.toFixed(2));
   let n = 0;
   process.on('SIGINT', () => { log('SIGINT, saving...'); saveState(); process.exit(0); });

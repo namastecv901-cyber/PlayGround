@@ -35,6 +35,29 @@ PYEOF
 else
   echo "alert skipped (no OWNER_BOT/OWNER_CHAT or apk/alert.conf)"
 fi
+# 📣 خبز سيرفر القناة: الأحداث تُرسل عبر السيرفر فقط (المفتاح لا يُرفع أبداً)
+# المصدر: apk/srv.conf (سطر URL=... و KEY=...) أو متغيرات البيئة SRV_URL / SRV_KEY — الملف مستثنى من git
+SRV_CONF="$ROOT/apk/srv.conf"
+SURL="${SRV_URL:-}"; SKEY="${SRV_KEY:-}"
+if [ -f "$SRV_CONF" ]; then
+  # shellcheck disable=SC1090
+  set -a; . "$SRV_CONF"; set +a
+  [ -z "${SURL:-}" ] && SURL="${URL:-}"; [ -z "${SKEY:-}" ] && SKEY="${KEY:-}"
+fi
+if [ -n "${SURL:-}" ] && [ -n "${SKEY:-}" ]; then
+  python3 - "$WORK/base/assets/www/index.html" "$SURL" "$SKEY" <<'PYEOF'
+import json,sys
+p,url,key=sys.argv[1],sys.argv[2],sys.argv[3]
+t=open(p,encoding='utf-8').read()
+mark='/*__SRV__*/window.SRV=null;'
+assert mark in t, 'srv marker missing'
+t=t.replace(mark,'/*__SRV__*/window.SRV='+json.dumps({'url':url,'key':key},ensure_ascii=False)+';',1)
+open(p,'w',encoding='utf-8').write(t)
+print('srv baked OK')
+PYEOF
+else
+  echo "srv skipped (no SRV_URL/SRV_KEY or apk/srv.conf)"
+fi
 [ -f "$ROOT/icon-192.png" ] && cp "$ROOT/icon-192.png" "$WORK/base/assets/www/icon-192.png"
 # اسم التطبيق المعروض
 APP_LABEL="${APP_LABEL:-TRAININGV8 Premium}"
