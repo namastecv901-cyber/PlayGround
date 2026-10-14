@@ -3751,7 +3751,10 @@ function srvFlush(){
     var c=srvCfg();
     if(!c.url){ __srvQ=[]; __srvBusy=false; return; }
     var msg=__srvQ.shift(); __srvLast=Date.now();
-    fetch(c.url+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key||'',text:String(msg).slice(0,900)})}).then(function(r){ try{ var BS=window.BOTONE&&window.BOTONE.S; if(BS){ BS.srvLog=BS.srvLog||[]; BS.srvLog.unshift({t:Date.now(),m:String(msg).slice(0,90),ok:!!(r&&r.ok)}); BS.srvLog=BS.srvLog.slice(0,5); BS.srvN=(BS.srvN||0)+1; if(window.BOTONE.save) window.BOTONE.save(); } }catch(e){} try{ paintChan(); }catch(e){} }).catch(function(){}).finally(function(){ __srvBusy=false; if(__srvQ.length) setTimeout(srvFlush,3600); });
+    var p;
+    if(c.url) p=fetch(c.url+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key||'',text:String(msg).slice(0,900)})});
+    else { var d=chanDirect(); p=d?fetch('https://api.telegram.org/bot'+d.bot+'/sendMessage?chat_id='+encodeURIComponent(d.chat)+'&text='+encodeURIComponent(String(msg).slice(0,900))):Promise.resolve(null); }
+    p.then(function(r){ try{ var BS=window.BOTONE&&window.BOTONE.S; if(BS){ BS.srvLog=BS.srvLog||[]; BS.srvLog.unshift({t:Date.now(),m:String(msg).slice(0,90),ok:!!(r&&r.ok)}); BS.srvLog=BS.srvLog.slice(0,5); BS.srvN=(BS.srvN||0)+1; if(window.BOTONE.save) window.BOTONE.save(); } }catch(e){} try{ paintChan(); }catch(e){} }).catch(function(){}).finally(function(){ __srvBusy=false; if(__srvQ.length) setTimeout(srvFlush,3600); });
   }catch(e){ __srvBusy=false; }
 }
 function paintChan(){
@@ -3761,13 +3764,25 @@ function paintChan(){
     var lg=(BS&&BS.srvLog)||[], n=(BS&&BS.srvN)||0;
     var cfg=null; try{ cfg=srvCfg(); }catch(e){}
     var last=lg[0];
+    var dc=null; try{ dc=chanDirect(); }catch(e){}
     el.innerHTML='📣 إرسال القناة: <b>'+n+'</b> رسالة'
-      +(cfg&&cfg.url?' • <span class="ok">متصل</span>':' • <span class="bad">بدون سيرفر — أدخل رابطه من الإعدادات</span>')
+      +(cfg&&cfg.url?' • <span class="ok">متصل عبر السيرفر</span>':(dc?' • <span class="ok">مباشر عبر بوتك</span>':' • <span class="bad">متوقف — أدخل القناة والتوكن من الإعدادات</span>'))
       +(__srvQ.length?(' • ⏳ بالانتظار '+__srvQ.length):'')
       +(last?('<br><small>'+(last.ok?'✅ ':'❌ ')+String(last.m||'').slice(0,90)+' • '+new Date(last.t).toLocaleTimeString('ar')+'</small>'):'<br><small>لا إرسال بعد — تُرسل أحداث البوت والأهداف هنا</small>');
   }catch(e){}
 }
 function srvCfg(){ try{ var o=getOwner()||{}; var url=o.srvUrl||((window.SRV||{}).url||''); var key=o.srvKey||((window.SRV||{}).key||''); return {url:String(url||'').replace(/\/+$/,''),key:key}; }catch(e){ return {url:'',key:''}; } }
+function chanDirect(){
+  try{
+    var o=getOwner()||{};
+    var bot=o.leadBot||((window.OWNER_ALERT||{}).bot||'');
+    var ch=o.channel||'';
+    var m=String(ch||'').match(/t\.me\/([A-Za-z0-9_]+)/); if(m) ch='@'+m[1];
+    ch=String(ch||'').trim();
+    if(!bot||!ch) return null;
+    return {bot:bot,chat:ch};
+  }catch(e){ return null; }
+}
 function srvNotify(msg){
   try{
     if(!msg) return;
@@ -4362,7 +4377,9 @@ document.addEventListener('DOMContentLoaded',()=>{
       fetch('https://api.telegram.org/bot'+o.leadBot+'/sendMessage?chat_id='+encodeURIComponent(o.leadChat)+'&text='+encodeURIComponent('🔔 تجربة التنبيه تعمل ✅ — ستصلك أسماء الزوار هنا')).then(()=>{ try{ toast('✅ أُرسلت التجربة — تحقق من تيليجرام'); }catch(e){} }).catch(()=>{ try{ toast('❌ فشل الإرسال — تحقق من التوكن'); }catch(e){} });
     }catch(e){}
   };
-  try{ const sb=$('srvTest'); if(sb&&!sb._b){ sb._b=1; sb.onclick=()=>{ try{ var c=srvCfg(); var st=$('srvSt'); if(!c.url){ if(st) st.textContent='❌ أدخل رابط السيرفر أولاً'; return; } if(st) st.textContent='⏳ إرسال...'; fetch(c.url+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key||'',text:'📣 تجربة قناة TRAININGV8 ✅ — السيرفر يرسل بنجاح'})}).then(function(r){ return r.json(); }).then(function(j){ if(st) st.textContent=(j&&j.ok)?'✅ وصلت — تحقق من القناة':'❌ رفض: '+((j&&j.error)||'?'); }).catch(function(){ if(st) st.textContent='❌ تعذر الوصول للسيرفر'; }); }catch(e){} }; } }catch(e){}
+  try{ const sb=$('srvTest'); if(sb&&!sb._b){ sb._b=1; sb.onclick=()=>{ try{ var c=srvCfg(); var st=$('srvSt'); var dc=chanDirect();
+      if(!c.url&&!dc){ if(st) st.textContent='❌ أدخل القناة والتوكن (أو رابط السيرفر) أولاً'; return; }
+      if(!c.url){ if(st) st.textContent='⏳ إرسال مباشر...'; fetch('https://api.telegram.org/bot'+dc.bot+'/sendMessage?chat_id='+encodeURIComponent(dc.chat)+'&text='+encodeURIComponent('📣 تجربة قناة TRAININGV8 ✅ — الإرسال المباشر يعمل')).then(function(r){ return r.json(); }).then(function(j){ if(st) st.textContent=(j&&j.ok)?'✅ وصلت — تحقق من القناة':'❌ رفض: '+((j&&j.description)||'?')+' (اجعل البوت مشرفاً)'; }).catch(function(){ if(st) st.textContent='❌ تعذر الإرسال'; }); return; } if(st) st.textContent='⏳ إرسال...'; fetch(c.url+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key||'',text:'📣 تجربة قناة TRAININGV8 ✅ — السيرفر يرسل بنجاح'})}).then(function(r){ return r.json(); }).then(function(j){ if(st) st.textContent=(j&&j.ok)?'✅ وصلت — تحقق من القناة':'❌ رفض: '+((j&&j.error)||'?'); }).catch(function(){ if(st) st.textContent='❌ تعذر الوصول للسيرفر'; }); }catch(e){} }; } }catch(e){}
   $('subLink').onclick=()=>{ try{ const u=guestURL(dayStr(0)); navigator.clipboard.writeText(u); }catch(e){} sess('المالك','نسخ رابط المشتركين (رابط اليوم)'); };
   ['setPay','setContact','setContactName','setSite','setLeadBot','setLeadChat','setSrvUrl','setSrvKey','setChannel'].forEach(function(id){ try{ var el=$(id); if(el) el.oninput=function(){ try{ var o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.site=$('setSite').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); saveOwner(o); }catch(e){} }; }catch(e){} });
   $('setSave').onclick=()=>{ const o=getOwner()||{}; o.pay=$('setPay').value.trim(); o.contact=$('setContact').value.trim(); o.contactName=$('setContactName').value.trim(); o.site=$('setSite').value.trim(); o.leadBot=$('setLeadBot').value.trim(); o.leadChat=$('setLeadChat').value.trim(); o.srvUrl=$('setSrvUrl').value.trim(); o.srvKey=$('setSrvKey').value.trim(); o.channel=$('setChannel').value.trim(); saveOwner(o); paint(); sess('المالك','حفظ الإعدادات'); };
