@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script>/*__BOOTV1__*/(function(){try{var LV='v214.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{var LV='v215.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v214.0 مراقب السيولة)</title>
+<title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v215.0 تحديث تلقائي للجميع)</title>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1019,6 +1019,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 #updBanner{position:sticky;top:0;z-index:9999;text-align:center;font-weight:900;font-size:.82rem;background:linear-gradient(135deg,#0d3325,#112233);border-bottom:2px solid #1fe196;color:#d9ffe9;padding:9px 10px;animation:updPulse 1.6s infinite}
 #updBanner button{font-family:inherit;font-weight:900;border-radius:10px;padding:4px 14px;margin-inline-start:8px;cursor:pointer}
 #updGo{background:#16c784;color:#04120a;border:none}
+#updBanner #updCount{margin-inline-start:6px;font-size:.72rem}
 #updX{background:transparent;color:#9fbfb0;border:1px solid #1fe19666}
 @keyframes updPulse{50%{box-shadow:0 0 18px #16c78488}}
 @media(display-mode:standalone){
@@ -3181,8 +3182,18 @@ window.toast=function(m){ try{ const box=document.getElementById('botToasts'); i
 let wlBot=null;
 async function holdWake(){ try{ if(navigator&&'wakeLock' in navigator){ try{ if(wlBot) await wlBot.release(); }catch(e){} wlBot=await navigator.wakeLock.request('screen'); } }catch(e){} }
 const APK_URL='https://github.com/namastecv901-cyber/PlayGround/releases/download/latest/bataqa-wahida.apk';
+function isUpdTarget(){
+  try{
+    if(window.MEMBER&&window.MEMBER.mode) return window.MEMBER.mode==='sub'||window.MEMBER.mode==='owner';
+  }catch(e){}
+  try{
+    const j=JSON.parse(localStorage.getItem('ai_me_v1')||'null');
+    return !!j&&(j.mode==='sub'||j.mode==='owner');
+  }catch(e){ return false; }
+}
 async function checkUpdate(){
   try{
+    if(!isUpdTarget()) return false;
     const r=await fetch('https://api.github.com/repos/namastecv901-cyber/PlayGround/releases/tags/latest',{cache:'no-store'});
     if(!r.ok) return false;
     const j=await r.json();
@@ -3197,18 +3208,23 @@ async function checkUpdate(){
   }catch(e){}
   return false;
 }
+let updTimer=null, updData=null;
+async function fetchRemoteHtml(){
+  const r=await fetch('https://raw.githubusercontent.com/namastecv901-cyber/PlayGround/main/index.html',{cache:'no-store'});
+  if(!r.ok) throw 0;
+  const html=await r.text();
+  if(html.length<100000||html.indexOf('TRAININGV8 Premium')<0||html.indexOf('__BOOTV1__')<0) throw 0;
+  const mt=html.match(/<title>([\s\S]*?)<\/title>/);
+  const vm=mt?mt[1].match(/\(v[\d.]+/):null;
+  const v=vm?vm[0].slice(1):'';
+  if(!v) throw 0;
+  return {v:v,html:html};
+}
 async function applyRemoteUpdate(btn,ts){
   try{
     if(btn){ btn.disabled=true; btn.textContent='\u23F3 \u062C\u0627\u0631\u0650 \u0627\u0644\u062A\u062D\u062F\u064A\u062B...'; }
-    const r=await fetch('https://raw.githubusercontent.com/namastecv901-cyber/PlayGround/main/index.html',{cache:'no-store'});
-    if(!r.ok) throw 0;
-    const html=await r.text();
-    if(html.length<100000||html.indexOf('TRAININGV8 Premium')<0||html.indexOf('__BOOTV1__')<0) throw 0;
-    const mt=html.match(/<title>([\s\S]*?)<\/title>/);
-    const vm=mt?mt[1].match(/\(v[\d.]+/):null;
-    const v=vm?vm[0].slice(1):'';
-    if(!v) throw 0;
-    try{ localStorage.setItem('ai_remote_html_v1',JSON.stringify({v:v,html:html,at:Date.now()})); }catch(e){ throw 0; }
+    const f=await fetchRemoteHtml();
+    try{ localStorage.setItem('ai_remote_html_v1',JSON.stringify({v:f.v,html:f.html,at:Date.now()})); }catch(e){ throw 0; }
     try{ localStorage.setItem('ai_seen_apk_v1',ts||''); }catch(e){}
     location.reload();
   }catch(e){
@@ -3218,14 +3234,33 @@ async function applyRemoteUpdate(btn,ts){
 function showUpdBanner(url,ts){
   try{
     if(document.getElementById('updBanner')) return;
+    try{ window.toast('🎉 تحديث جديد وصل — سيُطبق تلقائياً خلال ثوانٍ'); }catch(e){}
     const d=document.createElement('div');
     d.id='updBanner';
-    d.innerHTML='🎉 <b>تحديث جديد في النظام!</b><button id="updGo">🔄 تحديث فوري</button><button id="updX" aria-label="إغلاق">✖</button>';
+    d.innerHTML='🎉 <b>تحديث جديد في النظام!</b><span id="updCount"></span><button id="updGo">🔄 تحديث فوري</button><button id="updX" aria-label="إغلاق">✖</button>';
     document.body.prepend(d);
-    const done=()=>{ try{ localStorage.setItem('ai_seen_apk_v1',ts); }catch(e){} d.remove(); };
-    document.getElementById('updGo').onclick=function(){ applyRemoteUpdate(this,ts); };
+    const done=()=>{ try{ if(updTimer){ clearInterval(updTimer); updTimer=null; } }catch(e){} try{ localStorage.setItem('ai_seen_apk_v1',ts); }catch(e){} d.remove(); };
+    document.getElementById('updGo').onclick=function(){ try{ if(updTimer){ clearInterval(updTimer); updTimer=null; } }catch(e){} applyRemoteUpdate(this,ts); };
     document.getElementById('updX').onclick=done;
-    try{ window.toast('🎉 تحديث جديد متوفر'); }catch(e){}
+    updData=null;
+    (async()=>{ try{ updData=await fetchRemoteHtml(); }catch(e){ updData=null; } })();
+    let left=12;
+    const tick=()=>{ try{ const el=document.getElementById('updCount'); if(el) el.textContent=' (تلقائي خلال '+left+'ث)'; }catch(e){} };
+    tick();
+    updTimer=setInterval(async ()=>{
+      try{
+        left--; tick();
+        if(left>0) return;
+        clearInterval(updTimer); updTimer=null;
+        const go=document.getElementById('updGo'); if(go){ go.disabled=true; go.textContent='⏳ جارِ التحديث...'; }
+        if(!updData) updData=await fetchRemoteHtml();
+        try{ localStorage.setItem('ai_remote_html_v1',JSON.stringify({v:updData.v,html:updData.html,at:Date.now()})); }catch(e){}
+        try{ localStorage.setItem('ai_seen_apk_v1',ts||''); }catch(e){}
+        location.reload();
+      }catch(e){
+        try{ const go=document.getElementById('updGo'); if(go){ go.disabled=false; go.textContent='🔄 تحديث فوري'; } window.toast('❌ تعذر التحديث التلقائي — اضغط تحديث فوري'); }catch(x){}
+      }
+    },1000);
   }catch(e){}
 }
 document.addEventListener('DOMContentLoaded',()=>{ try{ holdWake(); }catch(e){} try{ checkUpdate(); }catch(e){} setInterval(()=>{ try{ checkUpdate(); }catch(e){} },3600000); });

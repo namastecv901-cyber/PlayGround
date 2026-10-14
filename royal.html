@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>👑 النسخة الملكية | Royal TradingMoja Gold</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;700;900&display=swap');
+:root{--gold1:#f6e27a;--gold:#d4af37;--gold2:#9a7b1e;--bg:#05060a;--card:#0e0f16;--txt:#f6f1df;--mut:#a89f83;--up:#22c55e;--down:#ef4444;--grad:linear-gradient(135deg,#f6e27a,#d4af37 55%,#9a7b1e)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#d4af3730,transparent),radial-gradient(800px 400px at 90% 20%,#3a2f1040,transparent),var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
+.crown{font-size:3rem;animation:float 3s ease-in-out infinite}@keyframes float{50%{transform:translateY(-8px)}}
+.gold-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.container{max-width:1100px;margin:auto;padding:0 18px}
+header{position:sticky;top:0;z-index:50;background:#05060ad9;backdrop-filter:blur(18px);border-bottom:1px solid #d4af3740}
+.hd{max-width:1100px;margin:auto;display:flex;align-items:center;gap:14px;padding:12px 18px}
+.logo{font-family:'Amiri',serif;font-size:1.5rem;font-weight:700}.logo span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn{background:var(--grad);border:none;color:#231b05;border-radius:12px;padding:11px 26px;font-weight:900;font-family:inherit;cursor:pointer;box-shadow:0 6px 20px #d4af3755;transition:.2s;text-decoration:none;display:inline-block}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px #d4af3788}
+.btn.ghost{background:transparent;border:1px solid #d4af3755;color:var(--gold);box-shadow:none}
+.hero{text-align:center;padding:50px 18px 20px;position:relative}
+.hero h1{font-family:'Amiri',serif;font-size:3.2rem;line-height:1.4}
+.hero p{color:var(--mut);max-width:60ch;margin:12px auto;line-height:2}
+.divider{width:120px;height:3px;background:var(--grad);margin:16px auto;border-radius:99px}
+.palace{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}
+.room{background:linear-gradient(160deg,#14161fee,#0a0b12ee);border:1px solid #d4af3733;border-radius:20px;padding:20px;text-align:center;box-shadow:0 14px 44px #00000066,inset 0 1px 0 #ffffff0d;transition:.25s}
+.room:hover{transform:translateY(-4px);border-color:#d4af3788;box-shadow:0 18px 55px #000,0 0 24px #d4af3733}
+.room b{font-size:1.7rem;display:block;margin-top:6px}.room small{color:var(--mut)}
+.throne{background:linear-gradient(160deg,#1a1408,#0a0b12 70%);border:2px solid #d4af3766;border-radius:24px;padding:28px;margin:18px 0;text-align:center;box-shadow:0 0 50px #d4af3722;position:relative;overflow:hidden}
+.throne::before{content:'👑';position:absolute;font-size:120px;opacity:.05;top:-20px;left:10px}
+.throne .big{font-size:2.6rem;font-weight:900;color:var(--gold1)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+.jewel{background:linear-gradient(180deg,#131728,#0a0c14);border:1px solid #d4af3733;border-radius:20px;padding:18px;transition:.2s}
+.jewel:hover{transform:translateY(-3px);border-color:#d4af37}
+.jewel.pump{border-color:#22c55e66;box-shadow:0 0 24px #22c55e18}
+.jewel.dump{border-color:#ef444466;box-shadow:0 0 24px #ef444418}
+.jewel .pnl{text-align:center;font-size:2rem;font-weight:900;margin:8px 0}
+.sec-title{text-align:center;font-family:'Amiri',serif;font-size:2rem;margin:34px 0 6px}
+.sec-sub{text-align:center;color:var(--mut);margin-bottom:18px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.plan{background:linear-gradient(160deg,#14161f,#0a0b12);border:1px solid #d4af3733;border-radius:22px;padding:26px;text-align:center}
+.plan.royal{border:2px solid var(--gold);box-shadow:0 0 40px #d4af3744;transform:scale(1.04)}
+.plan ul{list-style:none;color:var(--mut);line-height:2.4;margin:14px 0;font-size:.9rem}
+.revs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.rev{background:#10131c;border:1px solid #d4af3726;border-radius:18px;padding:18px;line-height:2;font-size:.88rem}
+.rev b{color:var(--gold1)}
+#mkt{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+#mkt span{background:#0d0f18;border:1px solid #d4af3733;border-radius:99px;padding:6px 16px;font-size:.82rem;font-weight:800}
+footer{text-align:center;color:var(--mut);padding:26px;font-size:.82rem;border-top:1px solid #d4af3726;margin-top:20px}
+.links{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.up{color:var(--up)}.down{color:var(--down)}
+@media(max-width:900px){.palace,.grid3,.plans,.revs{grid-template-columns:1fr 1fr}.hero h1{font-size:2.2rem}}
+@media(max-width:600px){.palace,.grid3,.plans,.revs{grid-template-columns:1fr}.hero h1{font-size:1.8rem}}
+</style>
+</head>
+<body>
+<header><div class="hd">
+<div class="logo">👑 Trading<span>Moja</span> <small style="font-size:.7rem;color:var(--mut)">ROYAL</small></div>
+<div style="margin-inline-start:auto;display:flex;gap:8px">
+<a href="tradingmoja.html" class="btn ghost">الرئيسية</a>
+<a href="my-system.html" class="btn">🔐 نظامي</a>
+</div></div></header>
+
+<div class="container">
+<div class="hero">
+<div class="crown">👑</div>
+<h1><span class="gold-text">القاعة الملكية</span> للتداول</h1>
+<div class="divider"></div>
+<p>تجربة ملكية فاخرة — ذهب × أسود — نفس قوة TradingMoja بهيبة الملوك. إشارات موثقة، سكانر مؤسسي، ونتائج شفافة.</p>
+<div class="links"><a href="#throne" class="btn">🏛 ادخل القاعة</a><a href="pump-dump-results.html" class="btn ghost">🎯 نتائج PUMP & DUMP</a></div>
+<div id="mkt"></div>
+</div>
+
+<div class="palace">
+<div class="room">💰<small>الخزينة الملكية</small><b class="up">+587%</b></div>
+<div class="room">🎯<small>دقة التاج</small><b style="color:var(--gold1)">43.6%</b></div>
+<div class="room">📜<small>مراسيم الشهر</small><b>357</b></div>
+<div class="room">⚔️<small>الحرس يعمل</small><b>24/7</b></div>
+</div>
+
+<div class="throne" id="throne">
+<small style="color:var(--mut)">👑 العرش — Track Record موثق</small>
+<div class="big">26,931.67 USDC</div>
+<small style="color:var(--mut)">رأس المال $15,000 • <span class="up">▲ +1,010 هذا الشهر</span> • آخر 3 انتصارات: ARKM +3.33% • SXT +4.51% • COS +9.09%</small>
+</div>
+
+<h2 class="sec-title">💎 جواهر <span class="gold-text">الإشارات الملكية</span></h2>
+<p class="sec-sub">مختارات التاج اليوم — PUMP & DUMP</p>
+<div class="grid3" id="grid"></div>
+
+<h2 class="sec-title">🏆 مراتب <span class="gold-text">النبلاء</span></h2>
+<p class="sec-sub">اختر مقامك في القصر</p>
+<div class="plans">
+<div class="plan"><h3>🛡 فارس</h3><div style="font-size:2rem;font-weight:900">$0</div><ul><li>✓ 5 إشارات/أسبوع</li><li>✓ القناة العامة</li><li>✗ السكانر الملكي</li></ul><a href="#" class="btn ghost" style="width:100%">ادخل فارساً</a></div>
+<div class="plan royal"><h3>👑 أمير — الأكثر تتويجاً</h3><div style="font-size:2rem;font-weight:900;color:var(--gold1)">$29</div><ul><li>✓ إشارات 24/7 غير محدودة</li><li>✓ السكانر الملكي</li><li>✓ TP1 TP2 SL دقيقة</li><li>✓ قاعة VIP</li></ul><a href="#" class="btn" style="width:100%">👑 توّج الآن</a></div>
+<div class="plan"><h3>🏛 ملك</h3><div style="font-size:2rem;font-weight:900">$79</div><ul><li>✓ كل مزايا الأمير</li><li>✓ الكورس الملكي + 1-1</li><li>✓ تنبيهات خاصة</li></ul><a href="#" class="btn ghost" style="width:100%">اعتَلِ العرش</a></div>
+</div>
+
+<h2 class="sec-title">📜 شهادات <span class="gold-text">البلاط</span></h2>
+<p class="sec-sub">4.9/5 من 2,847 نبيل</p>
+<div class="revs">
+<div class="rev"><b>Carlos M. 🇲🇽</b> ⭐⭐⭐⭐⭐<br>“استرجعت الاستثمار 4 مرات في 3 أشهر.”<br><span class="up">+$1,240</span></div>
+<div class="rev"><b>Laura R. 🇨🇴</b> ⭐⭐⭐⭐⭐<br>“من الصفر إلى دخل ثابت مع الكورس.”<br><span class="up">+$890</span></div>
+<div class="rev"><b>José A. 🇦🇷</b> ⭐⭐⭐⭐⭐<br>“نسبة فوزي 81% — السكانر سحر.”<br><span class="up">+$2,100</span></div>
+</div>
+
+<div class="links">
+<a href="tradingmoja.html" class="btn ghost">🏠 النسخة الكلاسيكية</a>
+<a href="pump-dump-results.html" class="btn ghost">🎯 النتائج</a>
+<a href="my-system.html" class="btn">🔐 نظامي الخاص</a>
+</div>
+</div>
+<footer>👑 النسخة الملكية — ذهب × أسود — التداول خطر • النتائج السابقة لا تضمن المستقبل</footer>
+<script>
+const S=[["BTC","PUMP",12.4],["ETH","PUMP",7.8],["SOL","DUMP",9.1],["BNB","PUMP",5.4],["XRP","PUMP",9.6],["LINK","PUMP",11.2]];
+document.getElementById("grid").innerHTML=S.map(s=>`<div class="jewel ${s[1]==="PUMP"?"pump":"dump"}"><b>${s[1]==="PUMP"?"🟢":"🔴"} ${s[0]}</b><br><small style="color:var(--mut)">${s[1]} • SPOT • ثقة عالية</small><div class="pnl ${s[2]>0?"up":"down"}">+${s[2]}%</div><div style="font-size:.8rem;color:var(--mut)">📍 دخول • 🎯 TP1 • 🎯 TP2 • 🛡 SL</div></div>`).join("");
+async function live(){try{const r=await fetch("https://api.binance.com/api/v3/ticker/price?symbols="+encodeURIComponent(JSON.stringify(["BTCUSDT","ETHUSDT","SOLUSDT"])));const j=await r.json();document.getElementById("mkt").innerHTML=j.map(o=>`<span>👑 ${o.symbol.replace("USDT","")} <b style="color:var(--gold1)">$${parseFloat(o.price)}</b></span>`).join("")}catch(e){}}
+live();setInterval(live,30000);
+</script>
+</body>
+</html>
