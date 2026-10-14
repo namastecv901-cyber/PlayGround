@@ -3737,14 +3737,25 @@ window.AI_RESYNC=cycles;
 const $=id=>document.getElementById(id);
 /*__OWNER_ALERT__*/window.OWNER_ALERT=null;
 /*__SRV__*/window.SRV=null;
-var __srvT=0;
+var __srvQ=[], __srvBusy=false, __srvLast=0;
+function srvFlush(){
+  try{
+    if(__srvBusy||!__srvQ.length) return;
+    if(Date.now()-__srvLast<3500){ setTimeout(srvFlush,3600); return; }
+    __srvBusy=true;
+    var c=srvCfg();
+    if(!c.url){ __srvQ=[]; __srvBusy=false; return; }
+    var msg=__srvQ.shift(); __srvLast=Date.now();
+    fetch(c.url+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key||'',text:String(msg).slice(0,900)})}).catch(function(){}).finally(function(){ __srvBusy=false; if(__srvQ.length) setTimeout(srvFlush,3600); });
+  }catch(e){ __srvBusy=false; }
+}
 function srvCfg(){ try{ var o=getOwner()||{}; var url=o.srvUrl||((window.SRV||{}).url||''); var key=o.srvKey||((window.SRV||{}).key||''); return {url:String(url||'').replace(/\/+$/,''),key:key}; }catch(e){ return {url:'',key:''}; } }
 function srvNotify(msg){
   try{
     if(!msg) return;
-    var c=srvCfg(); if(!c.url) return;
-    var now=Date.now(); if(now-__srvT<5000) return; __srvT=now;
-    fetch(c.url+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:c.key||'',text:String(msg).slice(0,900)})}).catch(function(){});
+    __srvQ.push(String(msg).slice(0,900));
+    if(__srvQ.length>10) __srvQ=__srvQ.slice(-10);
+    srvFlush();
   }catch(e){}
 }
 const K_OWNER='ai_owner_v1', K_SUBS='ai_subs_v1', K_SESS='ai_sess_v1', K_ME='ai_me_v1', K_LEAD='ai_lead_v1', K_LEADS='ai_leads_v1';
@@ -4804,9 +4815,9 @@ var $=function(id){ return document.getElementById(id); };
 var LS='ai_blx_v1', COOL=3600000, MINV=3000000;
 var STABLES={usdt:1,usdc:1,dai:1,tusd:1,busd:1,usdd:1,fdusd:1,pyusd:1,usde:1,eurs:1,susd:1,usdb:1,usdx:1,usdy:1};
 var blxK={};
-var mem={seen:{}};
-try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m) mem.seen=m.seen||{}; }catch(e){}
-function save(){ try{ localStorage.setItem(LS,JSON.stringify(mem)); }catch(e){} }
+var mem={seen:{},tier:{},pc:{}};
+try{ var m=JSON.parse(localStorage.getItem(LS)||'null'); if(m){ mem.seen=m.seen||{}; mem.tier=m.tier||{}; mem.pc=m.pc||{}; } }catch(e){}
+function save(){ try{ var ks=Object.keys(mem.pc||{}); if(ks.length>400){ for(var qi=0;qi<ks.length-400;qi++) delete mem.pc[ks[qi]]; } localStorage.setItem(LS,JSON.stringify(mem)); }catch(e){} }
 function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e){} if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
 function big(n){ try{ n=Number(n)||0; var a=Math.abs(n); if(a>=1e9) return '$ '+(n/1e9).toFixed(2)+'B'; if(a>=1e6) return '$ '+(n/1e6).toFixed(2)+'M'; if(a>=1e3) return '$ '+(n/1e3).toFixed(1)+'K'; return '$ '+Math.round(n); }catch(e){ return '—'; } }
 function toast(m){ try{ if(window.toast) window.toast(m); }catch(e){} }
@@ -4853,7 +4864,10 @@ async function scan(){
           if(/^(USDT|USDC|DAI|TUSD|FDUSD|USDE|EUR|USD|TRY|BRL|GBP|ARS)$/.test(base)) continue;
           if(/(UP|DOWN|BULL|BEAR)$/.test(base)) continue;
           var pc=parseFloat(T.priceChangePercent)||0;
-          var tier=pc>=90?'vert':(pc>=50?'hot':(pc<=-50?'dump':null));
+          var pv=mem.pc[base];
+          if(pc>=10) mem.pc[base]=pc; else if(mem.pc[base]!==undefined) delete mem.pc[base];
+          if(pv!=null&&pc-pv>=12&&pc>=15&&pc<50){ blxNote('🚀 '+base+': تتسارع الآن +'+(pc-pv).toFixed(0)+'% خلال دقيقة (بينانس حقيقي — انفجار يقترب)'); }
+          var tier=pc>=90?'vert':(pc>=30?'hot':(pc<=-30?'dump':null));
           if(!tier) continue;
           var qv=parseFloat(T.quoteVolume)||0;
           if(qv<MINV) continue;
@@ -4872,7 +4886,7 @@ async function scan(){
       if(isStSym(bs,c.name)) continue;
       if((c.total_volume||0)<MINV) continue;
       var h24=c.price_change_percentage_24h_in_currency||0;
-      var tr=h24>=90?'vert':(h24>=50?'hot':(h24<=-50?'dump':null));
+      var tr=h24>=90?'vert':(h24>=30?'hot':(h24<=-30?'dump':null));
       if(!tr) continue;
       var lv=0; try{ lv=window.realPx?window.realPx(c,c.current_price):(c.current_price||0); }catch(e){ lv=c.current_price||0; }
       out.push({sym:bs,live:lv,h24:h24,vol:c.total_volume||0,hi:c.high_24h||0,tier:tr,src:'cg',a:a});
@@ -4882,9 +4896,14 @@ async function scan(){
     try{
       await Promise.all(out.map(async function(rr){ try{ rr.st=(rr.src==='bin')?await blastStart(rr.sym):0; }catch(e){ rr.st=0; } }));
     }catch(e){}
+    var rank={dump:0,hot:1,vert:2};
     for(i=0;i<out.length;i++){
       var o=out[i], id=o.sym+o.tier;
-      if(!mem.seen[id]||now-mem.seen[id]>COOL){ mem.seen[id]=now;
+      var oldR=mem.tier[o.sym], newR=rank[o.tier];
+      mem.tier[o.sym]=o.tier;
+      var esc=oldR!==undefined&&newR>rank[oldR];
+      if(esc){ blxNote('🚀 '+o.sym+': تصعيد إلى '+o.tier+' +'+o.h24.toFixed(0)+'% — يُرسل فوراً'); }
+      if(esc||!mem.seen[id]||now-mem.seen[id]>COOL){ mem.seen[id]=now;
         if(o.tier==='vert') blxNote('🚀 '+o.sym+': انفجار عمودي +'+o.h24.toFixed(0)+'% (بينانس حقيقي)');
         else if(o.tier==='dump') blxNote('📉 '+o.sym+': انهيار '+o.h24.toFixed(0)+'% — مراقبة');
         else blxNote('🔥 '+o.sym+': انفجار كبير +'+o.h24.toFixed(0)+'% (بينانس حقيقي)');
