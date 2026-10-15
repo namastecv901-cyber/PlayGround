@@ -96,17 +96,26 @@ const STAB=new Set(['USDT','USDC','DAI','FDUSD','USDE','TUSD','USDD','PYUSD','EU
 function cfg(){
   return { minScore:+$('hqMin').value||85, riskPct:+$('hqRisk').value||1.5, equity:+$('hqCap').value||1000 };
 }
-function drawSpark(cv,pr){
+function drawSpark(cv,pr,lv){
   try{
     if(!cv||!pr||pr.length<2) return;
     const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
-    const mn=Math.min.apply(null,pr),mx=Math.max.apply(null,pr),sp=(mx-mn)||1;
+    let mn=Math.min.apply(null,pr),mx=Math.max.apply(null,pr);
+    (lv?Object.values(lv):[]).forEach(v=>{ if(isFinite(v)){ if(v<mn)mn=v; if(v>mx)mx=v; } });
+    const sp=(mx-mn)||1;
+    const Y=v=>Math.max(2,Math.min(H-2,H-4-((v-mn)/sp)*(H-10)));
     const up=pr[pr.length-1]>=pr[0],col=up?'#16c784':'#ea3943';
     ctx.clearRect(0,0,W,H); ctx.beginPath();
-    pr.forEach((v,i)=>{ const x=i/(pr.length-1)*W,y=H-4-((v-mn)/sp)*(H-10); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+    pr.forEach((v,i)=>{ const x=i/(pr.length-1)*W,y=Y(v); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
     ctx.strokeStyle=col; ctx.lineWidth=1.8; ctx.stroke();
-    const ly=H-4-((pr[pr.length-1]-mn)/sp)*(H-10);
+    const ly=Y(pr[pr.length-1]);
     ctx.beginPath(); ctx.arc(W-5,ly,3,0,7); ctx.fillStyle=col; ctx.fill();
+    if(lv){
+      ctx.setLineDash([4,3]); ctx.lineWidth=1.2;
+      const line=(v,c)=>{ if(!isFinite(v)) return; ctx.strokeStyle=c; ctx.beginPath(); ctx.moveTo(0,Y(v)); ctx.lineTo(W,Y(v)); ctx.stroke(); };
+      line(lv.tp,'#16c784'); line(lv.entry,'#f0b90b'); line(lv.sl,'#ea3943');
+      ctx.setLineDash([]);
+    }
   }catch(e){}
 }
 let J=[]; try{ J=JSON.parse(localStorage.getItem('hq_trades_v1')||'[]'); if(!Array.isArray(J)) J=[]; }catch(e){ J=[]; }
@@ -156,10 +165,10 @@ async function run(){
       +'<div><small>🎯 T1</small><b class="up">'+money(p.t1)+'</b></div><div><small>🎯 T2</small><b class="up">'+money(p.t2)+'</b></div>'
       +'<div><small>🎯 T3</small><b class="up">'+money(p.t3)+'</b></div><div><small>🛡 الوقف</small><b class="down">'+money(p.sl)+'</b></div></div>'
       +'<div class="kv"><div><small>⚖️ R:R</small><b>'+r.rr+'</b></div><div><small>📊 الفريمات</small><b style="font-size:.7rem">'+r.tf.d+'/'+r.tf.h4+'/'+r.tf.h1+'/'+r.tf.m15+'</b></div></div>'
-      +'<canvas class="spark" width="260" height="44" data-sym="'+r.sym+'"></canvas>'
+      +'<canvas class="spark" width="260" height="56" data-sym="'+r.sym+'" data-e="'+p.entry+'" data-t="'+p.t2+'" data-s="'+p.sl+'"></canvas>'
       +'<div class="trig">✅ شراء مؤهل '+r.score+'/100 • R:R '+r.rr+' — '+r.reasons.slice(0,2).join(' • ')+'</div></div>';
     }).join('');
-    grid.querySelectorAll('.spark').forEach(cv=>drawSpark(cv,PX[cv.dataset.sym]));
+    grid.querySelectorAll('.spark').forEach(cv=>drawSpark(cv,PX[cv.dataset.sym],{entry:+cv.dataset.e,tp:+cv.dataset.t,sl:+cv.dataset.s}));
   } finally { btn.disabled=false; }
 }
 function recordHQ(out){

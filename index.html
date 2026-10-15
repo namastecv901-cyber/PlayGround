@@ -6142,12 +6142,13 @@ function render(){
       +'<div class="sig-boxes"><div><small>🎯 TP1</small><b class="up">'+money(r.t1)+' (+'+p1+'%)</b></div><div><small>🎯 TP2</small><b class="up">'+money(r.t2)+' (+'+p2+'%)</b></div></div>'
       +'<div class="sig-boxes"><div><small>🎯 TP3 الهدف</small><b class="up">'+money(r.target)+' (+'+pct+'%)</b></div><div><small>🛡 الوقف</small><b class="down">'+money(r.stop)+' (-'+risk+'%)</b></div></div>'
       +'<div class="sig-boxes"><div><small>⚖️ R:R</small><b>1:'+rr+'</b></div><div><small>📋 التفاصيل</small><b style="font-size:.75rem">البطاقة الكاملة تحت 👇</b></div></div>'
-      +'<div class="live-row"><canvas class="ex-spark" width="220" height="40" data-sym="'+r.sym+'"></canvas></div>'
+      +'<div class="live-row"><canvas class="ex-spark" width="220" height="56" data-sym="'+r.sym+'" data-e="'+r.entry+'" data-t="'+r.target+'" data-s="'+r.stop+'"></canvas></div>'
       +'<div class="sig-trigger">✅ شراء ممتاز — وافق '+r.n+' محللين'+(gd.ok?'':' • ⚠️ السوق أحمر: نصف حجم')+'</div>'
       +'</article>';
     }).join('');
     try{
       const an=(window.RADAR&&window.RADAR.analyzed)||[];
+      const exLv={}; try{ g.querySelectorAll('.ex-spark').forEach(cv=>{ exLv[cv.dataset.sym]={entry:+cv.dataset.e, tp:+cv.dataset.t, sl:+cv.dataset.s}; }); }catch(e){}
       g.querySelectorAll('.ex-spark').forEach(cv=>{
         try{
           const s=cv.dataset.sym;
@@ -6155,14 +6156,22 @@ function render(){
           const pr=a&&a.pr?a.pr.slice(-60):null;
           if(!cv||!pr||pr.length<2) return;
           const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
-          const mn=Math.min.apply(null,pr), mx=Math.max.apply(null,pr), sp=(mx-mn)||1;
+          const lv=exLv[s]||{};
+          let mn=Math.min.apply(null,pr), mx=Math.max.apply(null,pr);
+          [lv.entry,lv.tp,lv.sl].forEach(v=>{ if(isFinite(v)){ if(v<mn)mn=v; if(v>mx)mx=v; } });
+          const sp=(mx-mn)||1;
+          const Y=v=>Math.max(2,Math.min(H-2,H-4-((v-mn)/sp)*(H-10)));
           const up=pr[pr.length-1]>=pr[0], col=up?'#16c784':'#ea3943';
           ctx.clearRect(0,0,W,H);
           ctx.beginPath();
-          pr.forEach((v,i)=>{ const x=i/(pr.length-1)*W, y=H-4-((v-mn)/sp)*(H-10); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+          pr.forEach((v,i)=>{ const x=i/(pr.length-1)*W, y=Y(v); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
           ctx.strokeStyle=col; ctx.lineWidth=1.8; ctx.stroke();
-          const ly=H-4-((pr[pr.length-1]-mn)/sp)*(H-10);
+          const ly=Y(pr[pr.length-1]);
           ctx.beginPath(); ctx.arc(W-5,ly,3,0,7); ctx.fillStyle=col; ctx.fill();
+          ctx.setLineDash([4,3]); ctx.lineWidth=1.2;
+          const line=(v,c)=>{ if(!isFinite(v)) return; ctx.strokeStyle=c; ctx.beginPath(); ctx.moveTo(0,Y(v)); ctx.lineTo(W,Y(v)); ctx.stroke(); };
+          line(lv.tp,'#16c784'); line(lv.entry,'#f0b90b'); line(lv.sl,'#ea3943');
+          ctx.setLineDash([]);
         }catch(e){}
       });
     }catch(e){}
@@ -6197,18 +6206,27 @@ async function fetchKlines(sym, interval, limit){
   return kl;
 }
 const PX={};
-function drawSpark(cv, pr){
+function drawSpark(cv, pr, lv){
   try{
     if(!cv||!pr||pr.length<2) return;
     const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
-    const mn=Math.min.apply(null,pr), mx=Math.max.apply(null,pr), sp=(mx-mn)||1;
+    let mn=Math.min.apply(null,pr), mx=Math.max.apply(null,pr);
+    (lv?Object.values(lv):[]).forEach(v=>{ if(isFinite(v)){ if(v<mn)mn=v; if(v>mx)mx=v; } });
+    const sp=(mx-mn)||1;
+    const Y=v=>Math.max(2,Math.min(H-2,H-4-((v-mn)/sp)*(H-10)));
     const up=pr[pr.length-1]>=pr[0], col=up?'#16c784':'#ea3943';
     ctx.clearRect(0,0,W,H);
     ctx.beginPath();
-    pr.forEach((v,i)=>{ const x=i/(pr.length-1)*W, y=H-4-((v-mn)/sp)*(H-10); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+    pr.forEach((v,i)=>{ const x=i/(pr.length-1)*W, y=Y(v); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
     ctx.strokeStyle=col; ctx.lineWidth=1.8; ctx.stroke();
-    const ly=H-4-((pr[pr.length-1]-mn)/sp)*(H-10);
+    const ly=Y(pr[pr.length-1]);
     ctx.beginPath(); ctx.arc(W-5,ly,3,0,7); ctx.fillStyle=col; ctx.fill();
+    if(lv){
+      ctx.setLineDash([4,3]); ctx.lineWidth=1.2; ctx.font='9px sans-serif';
+      const line=(v,c)=>{ if(!isFinite(v)) return; ctx.strokeStyle=c; ctx.beginPath(); ctx.moveTo(0,Y(v)); ctx.lineTo(W,Y(v)); ctx.stroke(); };
+      line(lv.tp,'#16c784'); line(lv.entry,'#f0b90b'); line(lv.sl,'#ea3943');
+      ctx.setLineDash([]);
+    }
   }catch(e){}
 }
 function cfg(){
@@ -6267,10 +6285,10 @@ async function run(){
       +'<div class="ob-meta">'+r.reasons.slice(0,3).join(' • ')+'</div>'
       +'<div class="ob-meta">📍 <b>'+money(p.entry)+'</b> • 🛡 <b>'+money(p.sl)+'</b> • 🎯 T1 <b>'+money(p.t1)+'</b> • T2 <b>'+money(p.t2)+'</b> • T3 <b>'+money(p.t3)+'</b></div>'
       +'<div class="ob-meta">⚖️ R:R <b>'+r.rr+'</b> • RSI '+r.rsi+' • حجم×'+r.vr+' • حصة $'+(r.stake?r.stake.toFixed(2):'—')+'</div>'
-      +'<div class="live-row"><canvas class="hq-spark" width="220" height="40" data-sym="'+r.sym+'"></canvas></div>'
+      +'<div class="live-row"><canvas class="hq-spark" width="220" height="56" data-sym="'+r.sym+'" data-e="'+p.entry+'" data-t="'+p.t2+'" data-s="'+p.sl+'"></canvas></div>'
       +'<div class="ob-dir">✅ دخول مؤهل — انسخ الخطة ونفذها في Binance</div></div>';
     }).join('');
-    try{ grid.querySelectorAll('.hq-spark').forEach(cv=>drawSpark(cv, PX[cv.dataset.sym])); }catch(e){}
+    try{ grid.querySelectorAll('.hq-spark').forEach(cv=>drawSpark(cv, PX[cv.dataset.sym], {entry:+cv.dataset.e, tp:+cv.dataset.t, sl:+cv.dataset.s})); }catch(e){}
   } finally { if(btn) btn.disabled=false; }
 }
 document.addEventListener('DOMContentLoaded',()=>{
