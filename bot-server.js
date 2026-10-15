@@ -9,7 +9,8 @@
  *    POLL_SEC TOP_N DAILY_MAX_LOSS DAILY_GOAL_USD EQUITY_START TG_BOT TG_CHAT STATE_FILE CYCLES
  *    REINFORCE SPLIT_INIT REIN_DROP REIN_MAX HEARTBEAT_CYCLES
  *    SPLIT_N(4/6/8: تقسيم رأس المال) TG_CHANNEL(القناة) NOTIFY_SECRET(بوابة /notify) PORT(8787)
- *  فحص ذاتي: node bot-server.js --selftest
+ *    HQ_MIN_SCORE(85: حد جودة الدخول) RISK_PCT(1.5: مخاطرة الصفقة%) HQ_COOLDOWN_H(4: منع تكرار الإشارة)
+ *  فحص ذاتي: node bot-server.js --selftest | القسم المنفرد وحده: node hq-entry.js --selftest
  */
 'use strict';
 const fs = require('fs');
@@ -135,12 +136,34 @@ function makePlan(entry, closes) {
   return { entry, t1: entry + risk * 1.5, t2: entry + risk * 2.5, t3: entry + risk * 4, sl: entry - risk };
 }
 
-async function openTrade(sym, base, plan) {
+/* HQ ENTRY FILTER — قسم منفرد يعمل وحده: المنطق الكامل في hq-entry.js
+ *  فحصه وحده: node hq-entry.js --selftest | بيئة: HQ_MIN_SCORE(85) RISK_PCT(1.5) HQ_COOLDOWN_H(4) */
+const HQE = require('./hq-entry');
+const HQCFG = {
+  minScore: Math.max(0, Math.min(100, parseInt(process.env.HQ_MIN_SCORE || '85', 10))),
+  riskPct: Math.min(5, Math.max(0.25, parseFloat(process.env.RISK_PCT || '1.5'))),
+  cooldownH: Math.max(0, parseFloat(process.env.HQ_COOLDOWN_H || '4')),
+};
+if (!S.lastClose) S.lastClose = {};
+const hqCache = {};
+async function hqIO(sym, interval, limit) {
+  const ttl = interval === '1d' ? 1800000 : interval === '4h' ? 300000 : 120000;
+  const k = sym + ':' + interval;
+  const c = hqCache[k];
+  if (c && Date.now() - c.t < ttl) return c.kl;
+  const kl = await jget(CFG.base + '/api/v3/klines?symbol=' + sym + '&interval=' + interval + '&limit=' + (limit || 100));
+  if (!kl || kl.length < 30) return null;
+  hqCache[k] = { kl, t: Date.now() };
+  return kl;
+}
+
+async function openTrade(sym, base, plan, stakeOpt, hqOpt) {
   const id = 'm5:' + sym;
   if (S.trades[id]) return;
+  if (S.lastClose[sym] && Date.now() - S.lastClose[sym] < HQCFG.cooldownH * 3600e3) return; // منع تكرار الدخول على نفس الإشارة
   if (Object.values(S.trades).filter(t => t && t.open).length >= CFG.max) return;
   if (S.equity < Math.min(10, CFG.equityStart * 0.2)) { log('equity-depleted, pausing'); stop('equity'); return; }
-  const firstStake = stakeFor() * CFG.splitInit;
+  const firstStake = stakeOpt > 0 ? stakeOpt : stakeFor() * CFG.splitInit;
   let qty = firstStake / plan.entry, step = 1;
   if (CFG.mode !== 'paper') {
     if (!CFG.key || !CFG.sec) { log('missing keys'); return; }
@@ -150,11 +173,11 @@ async function openTrade(sym, base, plan) {
     let q = 0; (o.fills || []).forEach(f => { q += parseFloat(f.qty || 0); });
     if (q > 0) qty = q;
   } else qty = floorStep(qty, 0.000001);
-  S.trades[id] = { id, sym, coin: base, qty, entry: plan.entry, t1: plan.t1, t2: plan.t2, t3: plan.t3, sl: plan.sl, step, open: true, s1: false, s2: false, sold: 0, rev: 0, t0: Date.now(), stake: firstStake, stakePlanned: stakeFor(), splitInit: CFG.splitInit, adds: 0, rT1: plan.t1 / plan.entry, rT2: plan.t2 / plan.entry, rT3: plan.t3 / plan.entry, rSl: plan.sl / plan.entry, peak: plan.entry };
+  S.trades[id] = { id, sym, coin: base, qty, entry: plan.entry, t1: plan.t1, t2: plan.t2, t3: plan.t3, sl: plan.sl, step, open: true, s1: false, s2: false, sold: 0, rev: 0, t0: Date.now(), stake: firstStake, stakePlanned: stakeFor(), splitInit: CFG.splitInit, adds: 0, rT1: plan.t1 / plan.entry, rT2: plan.t2 / plan.entry, rT3: plan.t3 / plan.entry, rSl: plan.sl / plan.entry, peak: plan.entry, hqScore: (hqOpt && hqOpt.score) || 0 };
   S.buys++;
   saveState();
-  log('BUY', base, 'x' + qty, '@' + plan.entry);
-  await tg('🟢 شراء ' + base + ' @ ' + plan.entry);
+  log('BUY', base, 'x' + qty, '@' + plan.entry, hqOpt ? ('HQscore=' + hqOpt.score + ' RR=' + hqOpt.rr) : '');
+  await tg(hqOpt ? HQE.formatAlert(Object.assign({}, hqOpt, { sym: base })) : ('🟢 شراء ' + base + ' @ ' + plan.entry));
 }
 async function sellPart(st, frac, why, live) {
   let q = st.qty * frac;
@@ -169,6 +192,7 @@ async function sellPart(st, frac, why, live) {
     st.open = false; st.closeWhy = why; st.closeAt = Date.now();
     const pnl = st.rev - st.qty * st.entry;
     S.profit += pnl; S.closed++; S.dayPnl += pnl; S.equity += pnl;
+    S.lastClose[st.sym] = Date.now(); // منع إعادة الدخول الفوري على نفس الإشارة
     saveState();
     log((pnl >= 0 ? 'CLOSE-WIN' : 'CLOSE-LOSS'), st.coin, '(' + why + ')', (pnl >= 0 ? '+' : '') + pnl.toFixed(2), 'equity=' + S.equity.toFixed(2));
     await tg((pnl >= 0 ? '✅ ' : '🔴 ') + st.coin + ' (' + why + ') ' + (pnl >= 0 ? '+' : '') + pnl.toFixed(2));
@@ -221,6 +245,8 @@ async function manage(st, live) {
   if (pnlNow >= CFG.minTp && down) { const rem = st.qty - (st.sold || 0); if (rem > 0) await sellPart(st, rem / st.qty, 'INST', live); return; }
   if (pnlNow >= CFG.tp) { const rem = st.qty - (st.sold || 0); if (rem > 0) await sellPart(st, rem / st.qty, 'TP', live); return; }
   if (live >= st.t1 && !st.s1) await sellPart(st, 0.30, 'T1', live);
+  // 🏆 عند TP1: نقل الوقف لنقطة الدخول + هامش رسوم — حماية رأس المال
+  if (st.s1 && st.open && st.sl < st.entry * 1.002) { st.sl = st.entry * 1.002; saveState(); log('BREAKEVEN', st.coin, 'stop→entry'); }
   if (st.open && live >= st.t2 && !st.s2) await sellPart(st, 0.50, 'T2', live);
   if (!st.open) return;
   // تراجع بعد هدف 1 والوقف مرفوع للدخول: إغلاق كامل بربح فوق القفل بدل انتظار العودة للتعادل
@@ -242,12 +268,16 @@ async function cycle(n) {
     .filter(t => parseFloat(t.quoteVolume || 0) >= CFG.minVol)
     .sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume))
     .slice(0, CFG.topN * 3);
-  let scanned = 0;
+  let scanned = 0, hqRuns = 0, hqBuys = 0;
+  const rej = {};
+  if (!S.lastClose) S.lastClose = {};
+  for (const k of Object.keys(S.lastClose)) { if (Date.now() - S.lastClose[k] > 24 * 3600e3) delete S.lastClose[k]; }
   for (const t of cands) {
     try {
       if (Object.values(S.trades).filter(x => x && x.open).length >= CFG.max) break;
       const sym = t.symbol;
       if (S.trades['m5:' + sym]) continue;
+      if (S.lastClose[sym] && Date.now() - S.lastClose[sym] < HQCFG.cooldownH * 3600e3) continue; // بلا تكرار على نفس الإشارة
       if (S.noBin[baseOf(sym)] && Date.now() - S.noBin[baseOf(sym)] < 3600000) continue;
       const kl = await jget(CFG.base + '/api/v3/klines?symbol=' + sym + '&interval=5m&limit=21');
       scanned++;
@@ -263,12 +293,24 @@ async function cycle(n) {
       const chg = parseFloat(t.priceChangePercent || 0);
       if (chg > 25 || chg < -8) continue;
       if (Math.abs(setup.close - parseFloat(t.lastPrice)) / parseFloat(t.lastPrice) > 0.005) continue;
-      await openTrade(sym, baseOf(sym), makePlan(setup.close, setup.closes));
+      // 🏆 بوابة الدخول الاحترافي: الفحص الكامل قبل أي شراء
+      let hq = null;
+      try { hq = await HQE.hqEvaluate(sym, t, hqIO, { minScore: HQCFG.minScore, riskPct: HQCFG.riskPct, equity: S.equity }); }
+      catch (e) { log('hq-eval-fail', sym, e.message); continue; }
+      hqRuns++;
+      if (!hq.ok) { const r0 = (hq.rejects && hq.rejects[0]) || 'reject'; rej[r0] = (rej[r0] || 0) + 1; continue; }
+      if (!(hq.stake > 0)) { rej['size-too-small'] = (rej['size-too-small'] || 0) + 1; continue; }
+      hqBuys++;
+      await openTrade(sym, baseOf(sym), hq.plan, hq.stake, hq);
     } catch (e) {
       if (/400|404|451|restricted/i.test(e.message)) S.noBin[baseOf(t.symbol)] = Date.now();
     }
   }
-  log('scanned-klines=' + scanned);
+  log('scanned-klines=' + scanned + ' hq-evaluated=' + hqRuns + ' hq-buys=' + hqBuys);
+  if (hqBuys === 0 && hqRuns > 0) {
+    const top = Object.keys(rej).sort((a, b) => rej[b] - rej[a]).slice(0, 3).map(k => k + '×' + rej[k]).join(', ');
+    log('NO TRADE — شروط الدخول غير مكتملة | مرفوضات: ' + (top || '—'));
+  }
   if (n % CFG.heartbeat === 0) log('heartbeat: alive, open=' + Object.values(S.trades).filter(t => t && t.open).length + ' equity=$' + S.equity.toFixed(2) + ' dayPnl=' + (S.dayPnl >= 0 ? '+' : '') + S.dayPnl.toFixed(2));
   try {
     const prices = {};
@@ -333,6 +375,15 @@ async function selftest() {
   CFG.splitN = 0;
   ok('split-off-fixed', stakeFor() === CFG.stake);
   CFG.splitN = 4;
+  const hqrs = await HQE.runSelftest();
+  hqrs.forEach(r => ok('hq-' + r.name, r.pass));
+  // وقف التعادل بعد TP1: يُرفع الوقف للدخول+هامش رسوم
+  const _tp2 = CFG.tp, _minTp2 = CFG.minTp; CFG.tp = 1e9; CFG.minTp = 1e9;
+  const stb = { id: 'm5:B', sym: 'BUSDT', coin: 'B', qty: 10, entry: 100, t1: 101.5, t2: 102.5, t3: 104, sl: 99, step: 1, open: true, s1: false, s2: false, sold: 0, rev: 0, mode: 'paper', t0: Date.now(), stake: 1000 };
+  S.trades['m5:B'] = stb;
+  await manage(stb, 101.6);
+  CFG.tp = _tp2; CFG.minTp = _minTp2;
+  ok('breakeven-after-T1', stb.s1 === true && stb.sl >= stb.entry, 'sl=' + stb.sl);
   console.log(pass + ' passed, ' + fail + ' failed');
   process.exit(fail ? 1 : 0);
 }
