@@ -43,6 +43,8 @@ footer{text-align:center;color:var(--mut);font-size:.78rem;padding:16px}
 <p>قسم مخصص: أقوى الصعود اليوم 🟢 والانهيارات 🔴 — بصور وشارت لكل بطاقة</p></header>
 <div class="row">
 <button class="btn" id="pdBtn">🔄 فحص الآن</button>
+<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.85rem"><input id="pdAuto" type="checkbox" checked> 🔁 تلقائي وحده كل 5 د</label>
+<span class="muted" id="pdNext" style="font-size:.76rem"></span>
 <a class="btn ghost" href="hq.html">🏆 قسم HQ</a>
 <a class="btn ghost" href="index.html">💎 التطبيق</a>
 </div>
@@ -118,11 +120,15 @@ async function run(){
     async function fill(list,gridId,isPump){
       const g=$(gridId);
       if(!list.length){ g.innerHTML='<div class="panel muted">لا يوجد '+(isPump?'بامب':'دامب')+' مؤهل الآن (سيولة $20M+)</div>'; return; }
-      g.innerHTML='<div class="panel muted">⏳ يرسم '+list.length+' بطاقات...</div>';
-      let html='';
-      for(const t of list){ try{ html+=await card(t,isPump); }catch(e){} }
-      g.innerHTML=html;
-      g.querySelectorAll('.spark').forEach(cv=>drawSpark(cv,PX[cv.dataset.sym],{entry:+cv.dataset.e,tp:+cv.dataset.t,sl:+cv.dataset.s}));
+      g.innerHTML='';
+      let n=0;
+      for(const t of list){
+        try{ g.insertAdjacentHTML('beforeend', await card(t,isPump)); }catch(e){}
+        n++;
+        const cv=g.querySelector('canvas[data-sym="'+t.symbol+'"]');
+        if(cv) drawSpark(cv,PX[t.symbol],{entry:+cv.dataset.e,tp:+cv.dataset.t,sl:+cv.dataset.s});
+        st.textContent='📈 يرسم '+(isPump?'البامب':'الدامب')+'... ('+n+'/'+list.length+')';
+      }
     }
     await fill(pumps,'pumpGrid',true);
     await fill(dumps,'dumpGrid',false);
@@ -131,6 +137,19 @@ async function run(){
   btn.disabled=false;
 }
 $('pdBtn').onclick=run;
+(function(){
+  // 🔁 يعمل وحده: فحص تلقائي كل 5 دقائق + فحص فوري عند الفتح — لا يعتمد على أي قسم آخر
+  const auto=$('pdAuto'), next=$('pdNext');
+  let busy=false, nextAt=Date.now();
+  setInterval(()=>{
+    if(!auto.checked){ if(next) next.textContent=''; return; }
+    if(busy||document.hidden||Date.now()<nextAt){
+      if(next&&auto.checked) next.textContent='⏳ بعد '+Math.max(0,Math.round((nextAt-Date.now())/1000))+' ث';
+      return;
+    }
+    busy=true; run().finally(()=>{ busy=false; nextAt=Date.now()+5*60*1000; });
+  },5000);
+})();
 run();
 })();
 </script>
