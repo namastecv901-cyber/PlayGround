@@ -1597,32 +1597,34 @@ body.linkmode #masterFab{display:none!important}
   <div class="ob-grid" id="brkGrid"></div>
 </div>
 
-<div class="ob-sec" id="momSec">
-  <div class="ob-head"><h2>✅ صعود مؤكد — ترند 4h حقيقي + تأكيد شمعة 1h بحجم (Spot فقط)</h2><span class="ob-count" id="momCount">0</span><button class="blink-btn" data-blink="mom">🔗 اربط بالبوت</button></div>
-  <div class="ob-status" id="momStatus">✅ يتحقق من الترند على شموع 4h الحقيقية ثم تأكيد الدخول بشمعة 1h...</div>
-  <div class="ob-grid" id="momGrid"></div>
+<div id="momSec" hidden><div id="momStatus"></div><div class="ob-grid" id="momGrid"></div><span id="momCount" hidden>0</span></div>
+
+<div class="ob-sec" id="riskSec">
+  <div class="ob-head"><h2>💰 حاسبة المخاطرة — حجم صفقتك الصحيح</h2></div>
+  <div class="ob-status">⚖️ أدخل رأس مالك ونسبة المخاطرة ليعطيك حجم الصفقة لكل بطاقة — بديل أنظف من قسم الترند المكرر</div>
+  <div class="ob-grid"><div class="panel">رأس المال $ <b id="riskCapView">1000</b> • المخاطرة <b id="riskPctView">1.5%</b> = <b id="riskVal">$15</b> للصفقة — تُطبق تلقائياً على كل البطاقات عبر شريط 🧪 رأس مال تجريبي بالأعلى</div></div>
 </div>
 
-<div class="ob-sec" id="patSec">
-  <div class="ob-head"><h2>🔷 نموذج صاعد مؤكد — مثلث صاعد / قاع مزدوج على شموع 4h + رسم تلقائي (Spot فقط)</h2><span class="ob-count" id="patCount">0</span><button class="blink-btn" data-blink="pat">🔗 اربط بالبوت</button></div>
-  <div class="ob-status" id="patStatus">🔷 يرسم شموع 4h الحقيقية ويبحث عن نموذج صعودي مكتمل...</div>
-  <div class="ob-grid" id="patGrid"></div>
+<div class="ob-sec" id="hqSec">
+  <div class="ob-head"><h2>🏆 فلتر الدخول الاحترافي HQ — قسم التشغيل</h2><span class="ob-count" id="hqCount">0</span><button class="blink-btn" id="hqRunBtn">🔍 فحص HQ الآن</button></div>
+  <div class="ob-status" id="hqStatus">⚙️ نفس محرك البوت (<b>hq-entry.js</b>) يعمل هنا في المتصفح: يومي → 4h → 1h → 15m + تقييم /100 — الدخول فقط 85+.</div>
+  <div class="min-profit">⭐ الحد <input id="hqMin" type="number" min="50" max="100" step="1" value="85" style="width:64px"> <span class="min-stake">• ⚖️ مخاطرة %<input id="hqRisk" type="number" min="0.25" max="5" step="0.25" value="1.5" style="width:64px"></span><span class="min-stake"> • 💰 رأس المال من شريط 🧪 بالأعلى</span></div>
+  <div class="min-profit">🔁 <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input id="hqAuto" type="checkbox"> فحص تلقائي وحده</label><span class="min-stake">كل <select id="hqEvery" style="width:86px"><option value="2">2 د</option><option value="3" selected>3 د</option><option value="5">5 د</option><option value="10">10 د</option></select></span><span class="min-stake">عدد <select id="hqNum" style="width:86px"><option value="8">8</option><option value="50">50</option><option value="100">100</option><option value="500" selected>500</option></select></span><span class="muted" id="hqNext" style="font-size:.76rem"></span></div>
+  <div class="ob-grid" id="hqGrid"><div class="muted" style="font-size:.82rem">اضغط «🔍 فحص HQ الآن» — يفحص أعلى 8 عملات سيولة بنفس شروط البوت ويعرض المؤهل أو NO TRADE.</div></div>
+  <div class="min-profit">📒 الوضع <select id="hqMode" style="width:130px"><option value="paper" selected>🧪 تجريبي</option><option value="live">🔴 حقيقي (يدوي)</option></select><span class="min-stake" id="hqStats">دخل 0 • ✅ 0 • 🔴 0 • نسبة 0% • صافي 0%</span><span style="margin-inline-start:auto"></span><button class="btn btn-sm" id="hqClear">🗑 مسح السجل</button></div>
+  <div class="table-wrap"><table><thead><tr><th>العملة</th><th>الوضع</th><th>الدخول</th><th>الخروج</th><th>النتيجة</th><th>الحالة</th></tr></thead><tbody id="hqRows"><tr><td colspan="6" class="muted">لا صفقات مسجلة بعد — شغّل الفحص</td></tr></tbody></table></div>
 </div>
+
+<div id="patSec" hidden><div id="patStatus"></div><div class="ob-grid" id="patGrid"></div><span id="patCount" hidden>0</span></div>
 
 <div class="ob-sec" id="powSec">
-  <div class="ob-head"><h2>💪 النموذج القوي — مثلث صاعد + ترند + سلم أهداف مثل الصورة (Spot فقط)</h2><span class="ob-count" id="powCount">0</span><button class="blink-btn" data-blink="pow">🔗 اربط بالبوت</button><button class="blink-btn" id="powSoloBtn">⛶ قسم وحدو</button></div>
+  <div class="ob-head"><h2>💪 النموذج القوي — مثلث صاعد + ترند + سلم أهداف مثل الصورة (Spot فقط)</h2><span class="ob-count" id="powCount">0</span><button class="blink-btn" data-blink="pow">🔗 اربط بالبوت</button></div>
   <div class="ob-status" id="powStatus">💪 يبحث عن أقوى مثلث صاعد على 4h (مقاومة أفقية + ترند صاعد + حجم) ويرسمه مثل الصورة...</div>
   <div class="ob-grid" id="powGrid"></div>
 </div>
-<div id="powModal"><div class="powSolo-box"><div class="powSolo-head"><span>💪 النموذج القوي — قسم وحدو</span><small>نافذة مستقلة • نفس الإشارات والربط بالبوت</small><span style="margin-inline-start:auto"></span><button class="btn btn-sm" id="powSoloX">✕ إغلاق</button></div><div class="powSolo-body" id="powSoloWrap"></div></div></div>
+<div id="powModal" hidden><div id="powSoloWrap"></div><button id="powSoloX" hidden>✕</button></div>
 
-<div class="ob-sec" id="minSec">
-  <div class="ob-head"><h2>⏱ فريم الدقيقة (1m) — دخول شراء فقط (بدون بيع)</h2><span class="ob-count" id="minCount">0</span><button class="blink-btn" data-blink="min">🔗 اربط بالبوت</button></div>
-  <div class="min-profit" id="minProfit">💰 الربح المحفوظ تلقائيًا: <b id="minProfitV">$0</b> <small id="minProfitN">(0 صفقة)</small><span class="min-stake"> • 💵 مبلغ الصفقة $<input id="minStake" type="number" min="1" step="1" value="10"></span></div>
-  <div class="min-hit" id="minHit" hidden></div>
-  <div class="ob-status" id="minStatus">⏱ يحلل فريم الدقيقة فقط (1m) — 🟢 دخول شراء فقط (بدون بيع)...</div>
-  <div class="ob-grid" id="minGrid"></div>
-</div>
+<div id="minSec" hidden><div id="minStatus"></div><div class="ob-grid" id="minGrid"></div><span id="minCount" hidden>0</span><div id="minProfit" hidden><b id="minProfitV">$0</b><small id="minProfitN"></small><input id="minStake" type="number" value="10" hidden><div id="minHit" hidden></div></div></div>
 
 <div class="section-head" style="margin:16px 0 6px"><h2>💎 كل شيء في بطاقة واحدة</h2>
 <button class="blink-btn" data-blink="cards">🔗 اربط بالبوت</button>
@@ -1635,22 +1637,21 @@ body.linkmode #masterFab{display:none!important}
 </div>
 <div class="hl-count" id="hlCount"></div>
 <p class="hint">🧠 الشارة = قرار واحد • 🎫 الخطة = دخول واحد و3 أهداف ووقف واحد • 🧮 حساب الصفقة = من رأس المال التجريبي • 🛡️ الحارس = مراقبتك الحيّة. كلها في بطاقة واحدة.</p>
-<div class="new-sec" id="newSec" hidden>
-  <div class="new-head"><h2>🆕 صعود جديد</h2><span class="new-count" id="newCount">0</span></div>
-  <div class="sig-grid cards-grid" id="newGrid" style="margin-top:8px"></div>
-</div>
-<div class="strong-sec" id="strongSec" hidden>
-  <div class="strong-head"><h2>🔥 الصعود المؤكد — القوية وحدها</h2><span class="strong-count" id="strongCount">0</span></div>
-  <div class="sig-grid cards-grid" id="strongGrid" style="margin-top:8px"></div>
+<div id="newSec" hidden><div id="newGrid"></div><span id="newCount" hidden>0</span></div>
+<div id="strongSec" hidden><div id="strongGrid"></div><span id="strongCount" hidden>0</span></div>
+
+<div class="strong-sec" id="top3Sec">
+  <div class="strong-head"><h2>🏆 الشراء الممتاز — إجماع الإشارات</h2><span class="muted" id="excelStatus" style="font-size:.78rem">يجمع السيولة + الاختراق + النموذج + البطاقات — عملة تظهر في مصدرين+ = شراء ممتاز</span></div>
+  <div class="sig-grid cards-grid" id="excelGrid" style="margin-top:8px"><div class="loading">🧠 يجمع إجماع الشراء...</div></div>
 </div>
 
 <div class="free-gate only-guest" id="freeGate">
-  <h3>🎁 صفقة مجانية يوميا؋ باسمك</h3>
-  <p>أدخل اسمك وإيميلك لفتح صفقتك المجانية اليوم — تتجدد غداً 🎁 هكذا تبدو الصفقة الحقيقية</p>
+  <h3>✈️ إشارات تيليجرام مجانية</h3>
+  <p>ادخل القناة واستقبل أقوى 3 فرص يومياً مباشرة — بدون فورم وبدون إيميل</p>
   <div class="fg-row">
-    <input id="leadName" type="text" placeholder="الاسم الكريم" maxlength="30">
-    <input id="leadEmail" type="text" inputmode="email" dir="ltr" placeholder="email@example.com" maxlength="60">
-    <button class="btn btn-primary btn-sm" id="leadGo">افتح هديتي 🎁</button>
+    <input id="leadName" type="text" hidden>
+    <input id="leadEmail" type="text" hidden>
+    <button class="btn btn-primary btn-sm" id="leadGo">✈️ دخول القناة المجانية</button>
   </div>
   <div class="muted" id="leadMsg" style="font-size:.76rem;margin-top:6px"></div>
   <div style="margin-top:8px"><button class="btn btn-sm" id="shareBtn">📣 شارك التطبيق وادعُ أصدقاءك</button></div>
@@ -2369,10 +2370,9 @@ function card(a,i){
   +'</div>'
   +'<ul class="ai-why">'+why+'</ul>'+warn
   +'</details>'
-  +'<details class="fold tv-fold"><summary>📈 الشارت و TradingView</summary>'
+  +'<details class="fold tv-fold"><summary>📊 الشارت</summary>'
   +'<div class="live-row"><canvas class="spark" width="260" height="46" data-spark="'+c.id+'"></canvas>'
-  +'<div class="tv-row"><a class="tv-btn" target="_blank" rel="noopener" href="https://www.tradingview.com/chart/?symbol='+tvSym(c)+'">📈 TradingView</a>'
-  +'<button class="tv-btn ghost" data-tv="'+c.id+'">🔍 شارت حي</button></div></div>'
+  +'<div class="tv-row"><button class="tv-btn" data-tv="'+c.id+'">📊 الشارت الحي</button></div></div>'
   +'</details>'
   +'<div class="ai-foot">اضغط البطاقة للنسخ • وقف إلزامي • ليست نصيحة مالية</div>'
   +((expT==='vert'||expT==='hot'||expT==='pre')?'<div class="exp-mini t-'+expT+'"><span class="dot"></span><span>'+expTxt+'</span></div>':'')
@@ -3383,7 +3383,12 @@ document.addEventListener('DOMContentLoaded',()=>{ try{ holdWake(); }catch(e){} 
   function rd(){ try{ return JSON.parse(localStorage.getItem(K)||'{}')||{}; }catch(e){ return {}; } }
   function wr(o){ try{ localStorage.setItem(K,JSON.stringify(o)); }catch(e){} }
   var S=rd(); S.sec=S.sec||{}; S.sigs=S.sigs||{};
-  var SECS=[['min','⏱ فريم الدقيقة'],['mom','✅ صعود مؤكد'],['brk','🚀 اختراق مؤكد'],['pat','🔷 نموذج صاعد'],['pow','💪 النموذج القوي'],['cards','💎 البطاقات']];
+  // تنظيف: الأقسام المحذوفة (الدقيقة/الترند/النموذج المكرر) تُفك تلقائياً ولا تغذي البوت بدون علمك
+  var DEAD=['min','mom','pat'];
+  var cleaned=false;
+  DEAD.forEach(function(k){ if(S.sec[k]){ S.sec[k]=false; cleaned=true; } if(S.sigs[k]){ delete S.sigs[k]; cleaned=true; } });
+  if(cleaned) save();
+  var SECS=[['brk','🚀 اختراق مؤكد'],['pow','💪 النموذج القوي'],['cards','💎 البطاقات'],['liq','💧 تدفق السيولة']];
   function label(sec){ for(var i=0;i<SECS.length;i++) if(SECS[i][0]===sec) return SECS[i][1]; return sec; }
   function save(){ wr(S); }
   function isOn(sec){ return S.sec[sec]===true; }
@@ -3924,7 +3929,7 @@ document.addEventListener('DOMContentLoaded',()=>{ load(); bind(); paint(); (asy
 window.BOTONE={get S(){ return S; },scan:scan,paint:paint,start:start,stop:stop,save:save,migrateFrom49:migrateFrom49};
 })();
 </script>
-<script>// 🗂 SEC61 — الصعود الجديد وحده + الصعود المؤكد وحده (بدون خلط)
+<script>// 🗂 SEC61 — معطّل: كل البطاقات تبقى في dealsGrid بدون تكرار (إصلاح التكرار)
 (function(){
 "use strict";
 function distribute(){
@@ -3932,41 +3937,18 @@ function distribute(){
     const mg=document.getElementById('dealsGrid');
     const ns=document.getElementById('newSec'), ng=document.getElementById('newGrid');
     const ss=document.getElementById('strongSec'), sg=document.getElementById('strongGrid');
-    if(!mg||!ng||!sg) return;
-    const buyMode=!window.DEALS||window.DEALS.filter==='buy';
-    if(!buyMode){
-    if(ng.children.length) ng.innerHTML='';
-    if(sg.children.length) sg.innerHTML='';
-    ns.hidden=true; ss.hidden=true; return;
-    }
-    [...ng.children].forEach(ch=>{ if(ch.classList&&ch.classList.contains('ai-card')) mg.appendChild(ch); });
-    [...sg.children].forEach(ch=>{ if(ch.classList&&ch.classList.contains('ai-card')) mg.appendChild(ch); });
-    const cards=[...mg.querySelectorAll('.ai-card')];
-    const strong=cards.filter(c=>c.classList.contains('g-strong'));
-    const sSet=new Set(strong.map(c=>c.dataset.id));
-    const fresh=cards.filter(c=>!sSet.has(c.dataset.id)&&c.classList.contains('is-new'));
-    strong.forEach(c=>sg.appendChild(c));
-    fresh.forEach(c=>ng.appendChild(c));
-    const nn=ng.querySelectorAll('.ai-card').length, sn=sg.querySelectorAll('.ai-card').length;
-    ns.hidden=nn===0; ss.hidden=sn===0;
-    const nc=document.getElementById('newCount'); if(nc) nc.textContent=String(nn);
-    const sc=document.getElementById('strongCount'); if(sc) sc.textContent=String(sn);
-    let rest=mg.querySelectorAll('.ai-card').length;
-    let info=mg.querySelector('.rest-note');
-    if(rest===0){ if(!info){ const d=document.createElement('div'); d.className='rest-note muted'; d.style.cssText='padding:14px;text-align:center;font-size:.85rem;font-weight:800'; d.textContent='لا إشارات أخرى — الجديد فوق والمؤكد فوق 👆'; mg.appendChild(d); } }
-    else if(info){ info.remove(); }
+    if(!mg) return;
+    // أرجع أي بطاقة تسربت للأقسام المحذوفة إلى الشبكة الرئيسية
+    if(ng) [...ng.children].forEach(ch=>{ if(ch.classList&&ch.classList.contains('ai-card')) mg.appendChild(ch); });
+    if(sg) [...sg.children].forEach(ch=>{ if(ch.classList&&ch.classList.contains('ai-card')) mg.appendChild(ch); });
+    if(ns) ns.hidden=true;
+    if(ss) ss.hidden=true;
+    const info=mg.querySelector('.rest-note'); if(info) info.remove();
   }catch(e){}
 }
-function hook(){
-  try{
-    if(!window.DEALS||!window.DEALS.render||window.DEALS.render._sec61) return;
-    const orig=window.DEALS.render;
-    const wrapped=function(){ try{ const ng=document.getElementById('newGrid'),sg=document.getElementById('strongGrid'); if(ng)ng.innerHTML=''; if(sg)sg.innerHTML=''; }catch(e){} const r=orig.apply(this,arguments); try{ distribute(); }catch(e){} return r; };
-    wrapped._sec61=true; wrapped._liveHook=orig._liveHook;
-    window.DEALS.render=wrapped;
-  }catch(e){}
-}
-document.addEventListener('DOMContentLoaded',()=>{ hook(); setTimeout(hook,3000); setTimeout(distribute,5000); setInterval(distribute,4000); });
+function hook(){ return; }
+document.addEventListener('DOMContentLoaded',()=>{ setTimeout(distribute,2000); setInterval(distribute,5000); });
+window.__noDupDistribute=distribute;
 })();
 </script>
 <script>// 📡 NET68 — الإنترنت ينقطع/يعود + إيقاف الشاشة: استئناف كما كان بدون توقف
@@ -4865,6 +4847,8 @@ function scan(){
       if(!st.seen[o.sym]||now-st.seen[o.sym]>COOL){ st.seen[o.sym]=now; toast('💧 دخول سيولة: '+o.sym+' ×'+o.mult.toFixed(1)+' (دوران '+(o.to*100).toFixed(0)+'%)'); }
     }
     wr(st);
+    // 💧 تدفق السيولة يغذي البوت الآن (إنذار مبكر، وقف أوسع 5%)
+    try{ if(window.BOT_LINK) window.BOT_LINK.push('liq', out.map(function(r){ var en=r.price||0; return {id:'liq-'+r.sym,sym:r.sym,coin:r.sym,entry:en,target:en*1.08,stop:en*0.95,price:en,score:r.score||60}; })); }catch(e){}
     var cnt=$('liqCount'); if(cnt) cnt.textContent=String(out.length);
     var sts=$('liqStatus');
     if(sts) sts.textContent=out.length?('💧 '+out.length+' عملات دخلتها سيولة غير معتادة • '+new Date().toLocaleTimeString('ar')):('💧 لا دخول سيولة غير معتاد الآن — فحص '+an.length+' عملة • '+new Date().toLocaleTimeString('ar'));
@@ -5991,6 +5975,401 @@ function bindStake(){ try{ if(window.__minBound) return; window.__minBound=1;
 function run(){ try{ bindStake(); var p=scan(); if(p&&p.catch) p.catch(function(){}); }catch(e){} }
 document.addEventListener('DOMContentLoaded',function(){ setTimeout(run,22000); setInterval(run,60000); });
 window.MIN={scan:scan,get S(){ return rd(); }};
+})();
+</script>
+<script>// 🧹 DEDUP — منع تكرار نفس العملة في أكثر من بطاقة/قسم
+(function(){
+"use strict";
+function symOf(el){
+  try{
+    const b=el.querySelector('b'); if(!b) return '';
+    return b.textContent.replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,12);
+  }catch(e){ return ''; }
+}
+function dedup(){
+  try{
+    const seen=new Set();
+    // الأولوية: البطاقات الرئيسية dealsGrid
+    document.querySelectorAll('#dealsGrid .ai-card').forEach(c=>{
+      const s=symOf(c)||c.dataset.id; if(!s) return;
+      if(seen.has(s)){ c.style.display='none'; c.setAttribute('data-dup','1'); }
+      else { seen.add(s); if(c.style.display==='none'&&c.getAttribute('data-dup')){ c.style.display=''; } c.removeAttribute('data-dup'); }
+    });
+    // الأقسام الفرعية: أخفِ أي عملة ظهرت فوق
+    document.querySelectorAll('#liqGrid .ob-card,#brkGrid .ob-card,#powGrid .ob-card,#patGrid .ob-card,#momGrid .ob-card,#minGrid .ob-card').forEach(c=>{
+      const s=symOf(c); if(!s) return;
+      if(seen.has(s)){ c.style.display='none'; }
+      else { c.style.display=''; seen.add(s); }
+    });
+  }catch(e){}
+}
+document.addEventListener('DOMContentLoaded',()=>{ setTimeout(dedup,3000); setInterval(dedup,5000); });
+window.__dedupCards=dedup;
+})();
+</script>
+<script>// 💰 RISK-LINK — ربط حاسبة المخاطرة بالأرقام الحية
+(function(){
+"use strict";
+function sync(){
+  try{
+    let cap=1000, risk=1.5;
+    const gc=document.getElementById('gCapital'), gr=document.getElementById('gRisk');
+    if(gc&&+gc.value>0) cap=+gc.value;
+    else if(window.CALC&&window.CALC.S) cap=+window.CALC.S.capital||cap;
+    if(gr&&+gr.value>0) risk=+gr.value;
+    else if(window.CALC&&window.CALC.S) risk=+window.CALC.S.risk||risk;
+    const cv=document.getElementById('riskCapView'), pv=document.getElementById('riskPctView'), rv=document.getElementById('riskVal');
+    if(cv) cv.textContent=cap.toLocaleString('en-US');
+    if(pv) pv.textContent=risk+'%';
+    if(rv) rv.textContent='$'+(cap*risk/100).toLocaleString('en-US',{maximumFractionDigits:2});
+  }catch(e){}
+}
+document.addEventListener('DOMContentLoaded',()=>{ setTimeout(sync,2000); setInterval(sync,4000); });
+window.__riskLink=sync;
+})();
+</script>
+<script>// 🏆 EXCELLENT BUY — نظام الشراء الممتاز: إجماع 4 مصادر + حارس BTC
+(function(){
+"use strict";
+function $(id){ return document.getElementById(id); }
+function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e){} if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
+function norm(s){ return String(s||'').replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,12); }
+function btcGuard(){
+  try{
+    const an=(window.RADAR&&window.RADAR.analyzed)||[];
+    const btc=an.find(a=>{ const s=norm(a.c.symbol||a.c.id); return s==='BTC'; });
+    if(!btc) return {ok:true,msg:''};
+    const h24=Number(btc.c.price_change_percentage_24h_in_currency||0);
+    if(h24<=-5) return {ok:false,msg:'🚨 بتكوين '+h24.toFixed(1)+'% — السوق أحمر: صفقات حذرة بنصف حجم'};
+    if(h24>=8) return {ok:true,msg:'🔥 بتكوين +'+h24.toFixed(1)+'% — موجة صاعدة: ركّز على الاختراقات'};
+    return {ok:true,msg:''};
+  }catch(e){ return {ok:true,msg:''}; }
+}
+function collect(){
+  const map={};
+  function add(sym,src,entry,target,stop,price,score){
+    try{
+      sym=norm(sym); if(!sym||sym.length<2||sym.length>10) return;
+      if(sym.indexOf('USD')>=0||sym.indexOf('USDT')>=0) return;
+      entry=+entry; target=+target; stop=+stop; price=+(price||entry); score=+score||65;
+      if(!(entry>0&&target>entry&&stop>0&&stop<entry)) return;
+      if(!(price>0)) price=entry;
+      if(Math.abs(price-entry)/entry>0.03) return; // السعر تحرك كثير — stale مرفوض
+      if(!map[sym]) map[sym]={sym:sym,srcs:{},entries:[],targets:[],stops:[],scores:[]};
+      if(map[sym].srcs[src]) return; // نفس المصدر لا يحسب مرتين
+      map[sym].srcs[src]=true;
+      map[sym].entries.push(entry); map[sym].targets.push(target); map[sym].stops.push(stop);
+      map[sym].scores.push(score);
+    }catch(e){}
+  }
+  function domGrid(gridId,src,defScore){
+    try{
+      const box=document.getElementById(gridId); if(!box) return;
+      box.querySelectorAll('.ob-card').forEach(function(c){
+        if(c.style.display==='none') return;
+        const b=c.querySelector('b'); if(!b) return;
+        const sym=norm(b.textContent); if(!sym) return;
+        const nums=(c.textContent.match(/\$ ?[0-9,]+\.?\d*/g)||[]).map(s=>parseFloat(s.replace(/[$ ,]/g,''))).filter(v=>v>0);
+        const price=nums[0]||0; if(!(price>0)) return;
+        add(sym,src,price,price*1.06,price*0.96,price,defScore||70);
+      });
+    }catch(e){}
+  }
+  try{
+    const an=(window.RADAR&&window.RADAR.analyzed)||[];
+    an.forEach(a=>{
+      if(!a||!a.c||!a.isBuy) return;
+      if((a.score||0)<60) return;
+      if((a.c.total_volume||0)<10000000) return;
+      const h24=Number(a.c.price_change_percentage_24h_in_currency||0);
+      if(h24>25||h24<-20) return; // متطرف مرفوض
+      let P=null; try{ P=(window.DEALS&&window.DEALS.planOf)?window.DEALS.planOf(a):null; }catch(e){}
+      if(!P||!(P.entry>0)) return;
+      const tgt=P.t3||P.t2||P.t1; if(!(tgt>P.entry)) return;
+      if(!(P.sl>0&&P.sl<P.entry)) return;
+      add(a.c.symbol||a.c.id,'cards',P.entry,tgt,P.sl,a.c.current_price||P.entry,a.score);
+    });
+  }catch(e){}
+  // قراءة مباشرة من الشبكات الظاهرة — لا تعتمد على ربط البوت
+  domGrid('liqGrid','liq',68);
+  domGrid('brkGrid','brk',78);
+  domGrid('powGrid','pow',76);
+  try{
+    const L=(window.BOT_LINK&&window.BOT_LINK.S&&window.BOT_LINK.S.sigs)||{};
+    ['liq','brk','pow','cards'].forEach(function(sec){
+      (L[sec]||[]).forEach(function(x){
+        try{ if(Date.now()-(x.at||0)>10*60*1000) return; }catch(e){}
+        add(x.coin||x.sym,sec,x.entry,x.target,x.stop,x.price,x.score);
+      });
+    });
+  }catch(e){}
+  let out=[];
+  try{
+    out=Object.values(map).map(function(m){
+      const n=Object.keys(m.srcs).length;
+      const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+      const entry=avg(m.entries), target=Math.min.apply(null,m.targets), stop=Math.max.apply(null,m.stops);
+      const maxScore=Math.max.apply(null,m.scores);
+      if(!(entry>0&&target>entry&&stop>0)) return null;
+      // سلم أهداف مشتق: TP1 = ثلث الطريق للهدف، TP2 = ثلثين، TP3 = الهدف
+      const t1=entry+(target-entry)*0.4, t2=entry+(target-entry)*0.7;
+      const excel=Math.round(maxScore*0.6+n*14);
+      return {sym:m.sym,n:n,srcs:Object.keys(m.srcs),entry:entry,t1:t1,t2:t2,target:target,stop:stop,
+        p1:((t1-entry)/entry*100),p2:((t2-entry)/entry*100),pct:((target-entry)/entry*100),risk:((entry-stop)/entry*100),score:Math.min(99,excel),maxScore:maxScore};
+    }).filter(function(r){ return r&&r.n>=2&&r.pct>0&&r.pct<40&&r.risk>0&&r.risk<10; });
+  }catch(e){ out=[]; }
+  out.sort(function(a,b){ return (b.n-a.n)||(b.score-a.score); });
+  return out.slice(0,3);
+}
+function render(){
+  try{
+    const g=$('excelGrid'), st=$('excelStatus'); if(!g) return;
+    const gd=btcGuard();
+    const list=collect();
+    if(st) st.textContent=(gd.msg?gd.msg+' • ':'')+(list.length?('🏆 '+list.length+' شراء ممتاز بإجماع '+list.map(r=>r.sym+'('+r.n+')').join(' • ')):'🧠 لا شراء ممتاز الآن — الإجماع يحميك من الدخول العشوائي (يحتاج مصدرين+)');
+    if(!list.length){ g.innerHTML='<div class="loading">🧠 لا إجماع شراء الآن — السيولة والاختراق والنموذج لم يتفقوا على عملة واحدة. انتظر الإجماع.</div>'; return; }
+    g.innerHTML=list.map(function(r,i){
+      const medal=i===0?'🥇':i===1?'🥈':'🥉';
+      const pct=isFinite(r.pct)?r.pct.toFixed(2):'—', risk=isFinite(r.risk)?r.risk.toFixed(2):'—';
+      const p1=isFinite(r.p1)?r.p1.toFixed(2):'—', p2=isFinite(r.p2)?r.p2.toFixed(2):'—';
+      const rr=(isFinite(r.pct)&&isFinite(r.risk)&&r.risk>0)?(r.pct/r.risk).toFixed(1):'—';
+      let cap=1000; try{ const gc=$('gCapital'); if(gc&&+gc.value>0) cap=+gc.value; }catch(e){}
+      const profitUsd=(cap*r.pct/100);
+      return '<article class="ai-card g-strong" data-excel="'+r.sym+'" style="border:2px solid #f0b90b">'
+      +'<div class="ai-top"><div><b>'+medal+' '+r.sym+'</b><small>إجماع '+r.n+' مصادر: '+r.srcs.join(' + ')+' • ثقة '+r.score+'</small></div>'
+      +'<div class="ai-ring" style="--p:'+r.score+';--c:#f0b90b"><b>'+r.score+'</b><small>ممتاز</small></div></div>'
+      +'<div class="sig-boxes"><div><small>📍 الدخول</small><b>'+money(r.entry)+'</b></div><div><small>💰 الربح المتوقع ($'+cap+')</small><b class="up">+$'+profitUsd.toFixed(2)+' (+'+pct+'%)</b></div></div>'
+      +'<div class="sig-boxes"><div><small>🎯 TP1</small><b class="up">'+money(r.t1)+' (+'+p1+'%)</b></div><div><small>🎯 TP2</small><b class="up">'+money(r.t2)+' (+'+p2+'%)</b></div></div>'
+      +'<div class="sig-boxes"><div><small>🎯 TP3 الهدف</small><b class="up">'+money(r.target)+' (+'+pct+'%)</b></div><div><small>🛡 الوقف</small><b class="down">'+money(r.stop)+' (-'+risk+'%)</b></div></div>'
+      +'<div class="sig-boxes"><div><small>⚖️ R:R</small><b>1:'+rr+'</b></div><div><small>📋 التفاصيل</small><b style="font-size:.75rem">البطاقة الكاملة تحت 👇</b></div></div>'
+      +'<div class="live-row"><canvas class="ex-spark" width="220" height="40" data-sym="'+r.sym+'"></canvas></div>'
+      +'<div class="sig-trigger">✅ شراء ممتاز — وافق '+r.n+' محللين'+(gd.ok?'':' • ⚠️ السوق أحمر: نصف حجم')+'</div>'
+      +'</article>';
+    }).join('');
+    try{
+      const an=(window.RADAR&&window.RADAR.analyzed)||[];
+      g.querySelectorAll('.ex-spark').forEach(cv=>{
+        try{
+          const s=cv.dataset.sym;
+          const a=an.find(x=>String(x.c.symbol||x.c.id||'').replace(/[^A-Za-z0-9]/g,'').toUpperCase()===s);
+          const pr=a&&a.pr?a.pr.slice(-60):null;
+          if(!cv||!pr||pr.length<2) return;
+          const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
+          const mn=Math.min.apply(null,pr), mx=Math.max.apply(null,pr), sp=(mx-mn)||1;
+          const up=pr[pr.length-1]>=pr[0], col=up?'#16c784':'#ea3943';
+          ctx.clearRect(0,0,W,H);
+          ctx.beginPath();
+          pr.forEach((v,i)=>{ const x=i/(pr.length-1)*W, y=H-4-((v-mn)/sp)*(H-10); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+          ctx.strokeStyle=col; ctx.lineWidth=1.8; ctx.stroke();
+          const ly=H-4-((pr[pr.length-1]-mn)/sp)*(H-10);
+          ctx.beginPath(); ctx.arc(W-5,ly,3,0,7); ctx.fillStyle=col; ctx.fill();
+        }catch(e){}
+      });
+    }catch(e){}
+  }catch(err){
+    try{ const g=$('excelGrid'); if(g) g.innerHTML='<div class="loading">⚠️ تعذر حساب الإجماع — حدث الصفحة</div>'; }catch(e){}
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>{ setTimeout(render,4000); setInterval(render,8000); });
+window.__excelBuy=render;
+})();
+</script>
+<script src="hq-entry.js"></script>
+<script>// 🏆 HQ-UI — تشغيل فلتر الدخول الاحترافي من المتصفح (نفس محرك hq-entry.js)
+(function(){
+"use strict";
+function $(id){ return document.getElementById(id); }
+function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e){} if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
+async function jget(url){
+  const ctl=new AbortController(), to=setTimeout(()=>{try{ctl.abort();}catch(e){}},15000);
+  try{
+    const r=await fetch(url,{signal:ctl.signal,cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return await r.json();
+  } finally { clearTimeout(to); }
+}
+async function fetchKlines(sym, interval, limit){
+  const q='symbol='+sym+'&interval='+interval+'&limit='+(limit||100);
+  let kl=null;
+  try { kl=await jget('https://api.binance.com/api/v3/klines?'+q); if(!(kl&&kl.length>=15)) throw new Error('short'); }
+  catch(e){ kl=await jget('https://data-api.binance.vision/api/v3/klines?'+q); if(!(kl&&kl.length>=15)) kl=null; }
+  try{ if(kl&&interval==='1h') PX[sym]=kl.slice(-60).map(k=>parseFloat(k[4])); }catch(e){}
+  return kl;
+}
+const PX={};
+function drawSpark(cv, pr){
+  try{
+    if(!cv||!pr||pr.length<2) return;
+    const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
+    const mn=Math.min.apply(null,pr), mx=Math.max.apply(null,pr), sp=(mx-mn)||1;
+    const up=pr[pr.length-1]>=pr[0], col=up?'#16c784':'#ea3943';
+    ctx.clearRect(0,0,W,H);
+    ctx.beginPath();
+    pr.forEach((v,i)=>{ const x=i/(pr.length-1)*W, y=H-4-((v-mn)/sp)*(H-10); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+    ctx.strokeStyle=col; ctx.lineWidth=1.8; ctx.stroke();
+    const ly=H-4-((pr[pr.length-1]-mn)/sp)*(H-10);
+    ctx.beginPath(); ctx.arc(W-5,ly,3,0,7); ctx.fillStyle=col; ctx.fill();
+  }catch(e){}
+}
+function cfg(){
+  let min=85, risk=1.5, equity=1000;
+  try{
+    const m=$('hqMin'); if(m&&+m.value>=50) min=+m.value;
+    const r=$('hqRisk'); if(r&&+r.value>0) risk=+r.value;
+    const gc=$('gCapital'); if(gc&&+gc.value>0) equity=+gc.value;
+    else if(window.CALC&&window.CALC.S) equity=+window.CALC.S.capital||equity;
+  }catch(e){}
+  return {minScore:min, riskPct:risk, equity:equity};
+}
+async function run(){
+  const grid=$('hqGrid'), st=$('hqStatus'), cnt=$('hqCount'), btn=$('hqRunBtn');
+  if(!grid||!window.HQE){ if(st) st.textContent='⚠️ محرك HQ لم يُحمّل (hq-entry.js) — حدث الصفحة'; return; }
+  if(btn) btn.disabled=true;
+  try{
+    const an=(window.RADAR&&window.RADAR.analyzed)||[];
+    let want=8; try{ const ns=$('hqNum'); if(ns&&+ns.value>0) want=+ns.value; }catch(e){}
+    const pool=an.filter(a=>a&&a.c&&window.binSym(a.c)).sort((x,y)=>(y.c.total_volume||0)-(x.c.total_volume||0)).slice(0,want);
+    if(!pool.length){ grid.innerHTML='<div class="loading">⏳ بانتظار بيانات السوق من الرادار...</div>'; return; }
+    if(st) st.textContent='🔍 يفحص '+pool.length+' عملة على 4 فريمات...';
+    grid.innerHTML='<div class="loading">🔍 فحص HQ جارٍ (يومي/4h/1h/15m)... <b id="hqProg">0/'+pool.length+'</b></div>';
+    const paintProg=n=>{ try{ const p=$('hqProg'); if(p) p.textContent=n+'/'+pool.length; if(st) st.textContent='🔍 يفحص '+pool.length+' عملة... ('+n+'/'+pool.length+')'; }catch(e){} };
+    const c=cfg(), out=[], rej={};
+    let idx=0, done=0;
+    const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+    async function worker(){
+      while(idx<pool.length){
+        const a=pool[idx++]; if(!a) break;
+        const sym=window.binSym(a.c);
+        try{
+          const r=await window.HQE.hqEvaluate(sym,{lastPrice:a.c.current_price},fetchKlines,c);
+          if(r.ok) out.push(r);
+          else rej[(r.rejects&&r.rejects[0])||'reject']=(rej[(r.rejects&&r.rejects[0])||'reject']||0)+1;
+        }catch(e){ rej['error']=(rej['error']||0)+1; }
+        done++; if(done%10===0||done===pool.length) paintProg(done);
+        await sleep(120); // مهلة خفيفة لحدود Binance
+      }
+    }
+    await Promise.all([worker(),worker(),worker(),worker(),worker(),worker()]);
+    out.sort((a,b)=>b.score-a.score);
+    try{ recordHQ(out); }catch(e){}
+    if(cnt) cnt.textContent=String(out.length);
+    if(!out.length){
+      const top=Object.keys(rej).sort((x,y)=>rej[y]-rej[x]).slice(0,3).map(k=>k+'×'+rej[k]).join('، ');
+      if(st) st.textContent='⛔ NO TRADE — شروط الدخول غير مكتملة';
+      grid.innerHTML='<div class="loading">⛔ NO TRADE — شروط الدخول غير مكتملة<br><small>أسباب الرفض: '+top+'</small></div>';
+      return;
+    }
+    if(st) st.textContent='🏆 '+out.length+' فرصة مؤهلة (الحد '+c.minScore+') — نفس حساب البوت الخلفي';
+    grid.innerHTML=out.map(r=>{
+      const p=r.plan;
+      return '<div class="ob-card d-up"><div class="ob-top"><b>'+r.sym.replace(/USDT$/,'')+'</b><span>'+money(p.entry)+'</span><span>⭐ '+r.score+'/100</span></div>'
+      +'<div class="ob-meta">📊 يومي:'+r.tf.d+' • 4h:'+r.tf.h4+' • 1h:'+r.tf.h1+' • 15m:'+r.tf.m15+'</div>'
+      +'<div class="ob-meta">'+r.reasons.slice(0,3).join(' • ')+'</div>'
+      +'<div class="ob-meta">📍 <b>'+money(p.entry)+'</b> • 🛡 <b>'+money(p.sl)+'</b> • 🎯 T1 <b>'+money(p.t1)+'</b> • T2 <b>'+money(p.t2)+'</b> • T3 <b>'+money(p.t3)+'</b></div>'
+      +'<div class="ob-meta">⚖️ R:R <b>'+r.rr+'</b> • RSI '+r.rsi+' • حجم×'+r.vr+' • حصة $'+(r.stake?r.stake.toFixed(2):'—')+'</div>'
+      +'<div class="live-row"><canvas class="hq-spark" width="220" height="40" data-sym="'+r.sym+'"></canvas></div>'
+      +'<div class="ob-dir">✅ دخول مؤهل — انسخ الخطة ونفذها في Binance</div></div>';
+    }).join('');
+    try{ grid.querySelectorAll('.hq-spark').forEach(cv=>drawSpark(cv, PX[cv.dataset.sym])); }catch(e){}
+  } finally { if(btn) btn.disabled=false; }
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const b=$('hqRunBtn'); if(b) b.onclick=()=>{ run(); };
+  try{
+    const gr=$('gRisk'), hr=$('hqRisk');
+    if(gr&&hr) gr.addEventListener('input',()=>{ if(+gr.value>0) hr.value=gr.value; });
+  }catch(e){}
+  try{ const cb=$('hqClear'); if(cb) cb.onclick=()=>{ if(confirm('مسح سجل صفقات HQ؟')){ J=[]; jsave(); paintJ(); } }; }catch(e){}
+  try{ paintJ(); trackHQ(); setInterval(trackHQ,30000); }catch(e){}
+  // 🔁 فحص تلقائي وحده: يعمل لحاله كل N دقائق (يتخطى إذا فحص جارٍ أو الصفحة مخفية)
+  try{
+    const auto=$('hqAuto'), every=$('hqEvery'), next=$('hqNext');
+    const K='hq_auto_v1';
+    let st={on:false,min:3,nextAt:0};
+    try{ st=Object.assign(st,JSON.parse(localStorage.getItem(K)||'{}')); }catch(e){}
+    if(auto) auto.checked=!!st.on;
+    if(every) every.value=String(st.min||3);
+    const save=()=>{ try{ localStorage.setItem(K,JSON.stringify({on:auto.checked,min:+every.value})); }catch(e){} };
+    if(auto) auto.onchange=()=>{ save(); if(auto.checked){ st.nextAt=Date.now(); } paintNext(); };
+    if(every) every.onchange=()=>{ save(); paintNext(); };
+    let busy=false;
+    function paintNext(){
+      if(!next) return;
+      if(!(auto&&auto.checked)){ next.textContent=''; return; }
+      const s=Math.max(0,Math.round((st.nextAt-Date.now())/1000));
+      next.textContent='⏳ الفحص القادم بعد '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+    }
+    setInterval(paintNext,1000);
+    setInterval(async ()=>{
+      if(!(auto&&auto.checked)||busy) return;
+      if(document.hidden) return; // الصفحة مخفية — ينتظر ظهورها
+      if(Date.now()<st.nextAt) return;
+      busy=true;
+      try{ await run(); }catch(e){}
+      busy=false;
+      st.nextAt=Date.now()+(+every.value||3)*60*1000;
+    },5000);
+    paintNext();
+  }catch(e){}
+});
+window.HQRUN=run;
+// 📒 سجل صفقات HQ: ربح وخسارة + تجريبي/حقيقي + إحصائيات (دخل/ربح/خسر)
+let J=[]; try{ J=JSON.parse(localStorage.getItem('hq_trades_v1')||'[]'); if(!Array.isArray(J)) J=[]; }catch(e){ J=[]; }
+function jsave(){ try{ localStorage.setItem('hq_trades_v1',JSON.stringify(J.slice(-100))); }catch(e){} }
+function hqModeNow(){ try{ const m=$('hqMode'); return (m&&m.value==='live')?'live':'paper'; }catch(e){ return 'paper'; } }
+function recordHQ(out){
+  const mode=hqModeNow();
+  (out||[]).forEach(r=>{
+    if(!r||!r.plan) return;
+    if(J.some(x=>x.sym===r.sym&&x.status==='open')) return; // بلا تكرار
+    J.push({sym:r.sym,entry:r.plan.entry,sl:r.plan.sl,t1:r.plan.t1,t2:r.plan.t2,t3:r.plan.t3,score:r.score,mode:mode,status:'open',hit1:false,live:r.plan.entry,t0:Date.now(),exit:null,pnl:null});
+  });
+  jsave(); paintJ();
+}
+async function trackHQ(){
+  try{
+    const open=J.filter(x=>x&&x.status==='open');
+    if(!open.length){ paintJ(); return; }
+    const syms=[...new Set(open.map(x=>x.sym+'USDT'))];
+    let px={};
+    try{
+      const r=await fetch('https://api.binance.com/api/v3/ticker/price?symbols='+encodeURIComponent(JSON.stringify(syms)));
+      const j=await r.json();
+      (Array.isArray(j)?j:[j]).forEach(o=>{ px[o.symbol]=parseFloat(o.price); });
+    }catch(e){ try{
+      const r2=await fetch('https://data-api.binance.vision/api/v3/ticker/price?symbols='+encodeURIComponent(JSON.stringify(syms)));
+      const j2=await r2.json();
+      (Array.isArray(j2)?j2:[j2]).forEach(o=>{ px[o.symbol]=parseFloat(o.price); });
+    }catch(e2){ return; } }
+    open.forEach(t=>{
+      const live=px[t.sym+'USDT']; if(!(live>0)) return;
+      t.live=live;
+      if(!t.hit1&&live>=t.t1){ t.hit1=true; t.sl=Math.max(t.sl,t.entry); } // TP1 → الوقف للدخول
+      if(live>=t.t2){ t.status='win'; t.exit=t.t2; t.pnl=(t.t2-t.entry)/t.entry*100; }
+      else if(live<=t.sl){ t.status=t.hit1?'win':'loss'; t.exit=t.sl; t.pnl=(t.sl-t.entry)/t.entry*100; }
+    });
+    jsave(); paintJ();
+  }catch(e){}
+}
+function paintJ(){
+  try{
+    const st=$('hqStats'), tb=$('hqRows');
+    const closed=J.filter(x=>x.status!=='open');
+    const wins=closed.filter(x=>(x.pnl||0)>=0).length, loss=closed.length-wins;
+    const net=closed.reduce((a,x)=>a+(x.pnl||0),0);
+    if(st) st.textContent='دخل '+J.length+' • ✅ '+wins+' • 🔴 '+loss+' • نسبة '+(closed.length?Math.round(wins/closed.length*100):0)+'% • صافي '+(net>=0?'+':'')+net.toFixed(2)+'%';
+    if(!tb) return;
+    if(!J.length){ tb.innerHTML='<tr><td colspan="6" class="muted">لا صفقات مسجلة بعد — شغّل الفحص</td></tr>'; return; }
+    tb.innerHTML=[...J].reverse().slice(0,20).map(t=>{
+      const liveP=t.status==='open'&&t.live?((t.live-t.entry)/t.entry*100):null;
+      const res=t.status==='open'?('<span class="muted">'+(liveP==null?'—':(liveP>=0?'+':'')+liveP.toFixed(2)+'% حي')+'</span>')
+        :('<b class="'+(t.pnl>=0?'up':'down')+'">'+(t.pnl>=0?'+':'')+t.pnl.toFixed(2)+'%</b>');
+      return '<tr><td><b>'+t.sym+'</b></td><td>'+(t.mode==='live'?'🔴 حقيقي':'🧪 تجريبي')+'</td>'
+      +'<td>$'+t.entry+'</td><td>'+(t.exit?'$'+Number(t.exit).toLocaleString('en-US',{maximumFractionDigits:4}):'—')+'</td>'
+      +'<td>'+res+'</td><td>'+(t.status==='open'?'🟢 مفتوحة':(t.pnl>=0?'✅ رابحة':'🔴 خاسرة'))+'</td></tr>';
+    }).join('');
+  }catch(e){}
+}
 })();
 </script>
 
