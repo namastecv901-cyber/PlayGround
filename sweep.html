@@ -48,7 +48,7 @@ td{padding:6px;border-bottom:1px solid #ffffff0a;text-align:center;font-variant-
 <body>
 <header>
 <h1>🧲 <span class="grad">سحب السيولة</span> — عودة فوق القاع بعد فشل الكسر <small style="background:#8fd6ff18;border:1px solid #8fd6ff55;color:#8fd6ff;border-radius:99px;padding:2px 10px;font-size:.7rem">Spot • فخ الهبوط</small></h1>
-<div class="sub"><span class="live"><span class="dot"></span> مباشر</span> • <span id="status">جاهز للفحص...</span></div>
+<div class="sub"><span class="live"><span class="dot"></span> مباشر</span> • <span id="status">جاهز للفحص...</span><br><small id="autoInfo" style="color:#8fd6ff;font-weight:800">🔄 الفحص التلقائي مفعّل</small></div>
 <div class="row"><button id="scan">🔍 فحص السحب الآن</button></div>
 </header>
 <main>
@@ -70,6 +70,7 @@ async function jget(url){
  finally{clearTimeout(to);}
 }
 function setProg(pct,txt,cnt){try{$('progWrap').style.display='block';$('progFill').style.width=pct+'%';if(txt!=null)$('progTxt').textContent=txt;if(cnt!=null)$('progCnt').textContent=cnt;}catch(e){}}
+function setAutoInfo(t){try{$('autoInfo').textContent=t;}catch(e){}}
 function ema(C,n){if(!C||C.length<n)return null;const k=2/(n+1);let e=C.slice(0,n).reduce((a,b)=>a+b,0)/n;for(let i=n;i<C.length;i++)e=C[i]*k+e*(1-k);return e;}
 function rsi(C,per){per=per||14;if(!C||C.length<per+1)return 50;let g=0,l=0;for(let i=C.length-per;i<C.length;i++){const d=C[i]-C[i-1];if(d>0)g+=d;else l-=d;}if(l===0)return 100;if(g===0)return 0;return 100-100/(1+(g/l));}
 // تقييم سحب سيولة واحد — حياً وتاريخياً بنفس القواعد
@@ -112,6 +113,7 @@ function evalSweep(H,L,C,V,bi){
  return {ok:true,sup,sweepLow,depth,HL,microBreak,vr,rNow,rPrev,sl,risk,entry:close};
 }
 let scanning=false;
+let autoMode=true;const AUTO_MS=60000;let nextAt=0;
 $('scan').onclick=()=>doScan();
 async function doScan(){
  if(scanning)return;scanning=true;$('scan').disabled=true;
@@ -122,29 +124,29 @@ async function doScan(){
  const px={};book.forEach(b=>{const bid=parseFloat(b.bidPrice),ask=parseFloat(b.askPrice);if(bid>0&&ask>0)px[b.symbol]={sp:(ask-bid)/((ask+bid)/2)};});
  let uni=ticks.filter(t=>{
   if(!t.symbol||!t.symbol.endsWith('USDT'))return false;
-  if(parseFloat(t.quoteVolume||0)<1000000)return false;
+  if(parseFloat(t.quoteVolume||0)<100000)return false;
   if(stb.has(t.symbol.slice(0,-4)))return false;
   if(/UPUSDT|DOWNUSDT|BEARUSDT|BULLUSDT/.test(t.symbol))return false;
   const q=px[t.symbol];if(!q||q.sp>0.002)return false;
   return true;
  });
- uni=uni.sort((a,b)=>parseFloat(b.quoteVolume)-parseFloat(a.quoteVolume)).slice(0,150);
+ uni=uni.sort((a,b)=>parseFloat(b.quoteVolume)-parseFloat(a.quoteVolume)).slice(0,500);
  if(!uni.length){render([]);$('status').textContent='❌ لا عملات تحقق فلتر السيولة';scanning=false;$('scan').disabled=false;try{$('progWrap').style.display='none';}catch(e){}return;}
  const t0=Date.now();
  setProg(5,'🧲 فحص 15m...','0/'+uni.length);
  const k15=new Array(uni.length).fill(null);
- const CONC=12;
+ const CONC=15;
  for(let s=0;s<uni.length;s+=CONC){
-  const slice=uni.slice(s,s+CONC).map(t=>()=>jget(BASE+'/api/v3/klines?symbol='+t.symbol+'&interval=15m&limit=200'));
+  const slice=uni.slice(s,s+CONC).map(t=>()=>jget(BASE+'/api/v3/klines?symbol='+t.symbol+'&interval=15m&limit=130'));
   const res=await Promise.all(slice.map(f=>f().catch(()=>null)));
   for(let k=0;k<res.length;k++)k15[s+k]=res[k];
   const done=Math.min(uni.length,s+CONC);
   setProg(Math.round(5+done/uni.length*55),'🧲 فحص 15m '+done+'/'+uni.length,((Date.now()-t0)/1000).toFixed(0)+'ث');
-  if(s+CONC<uni.length)await new Promise(r=>setTimeout(r,80));
+  if(s+CONC<uni.length)await new Promise(r=>setTimeout(r,60));
  }
  let cand=[];
  for(let i=0;i<uni.length;i++){
-  const kl=k15[i];if(!kl||kl.length<130)continue;
+  const kl=k15[i];if(!kl||kl.length<115)continue;
   const K=kl.slice(0,-1);
   const C=K.map(k=>parseFloat(k[4])),H=K.map(k=>parseFloat(k[2])),L=K.map(k=>parseFloat(k[3])),V=K.map(k=>parseFloat(k[5]));
   const live=parseFloat(uni[i].lastPrice);
@@ -203,6 +205,7 @@ async function doScan(){
  setTimeout(()=>{try{$('progWrap').style.display='none';}catch(e){}},4000);
  }catch(e){$('status').textContent='❌ تعذر الفحص — تحقق من الإنترنت وأعد المحاولة';try{$('progWrap').style.display='none';}catch(_){}}
  scanning=false;$('scan').disabled=false;
+ nextAt=Date.now()+AUTO_MS;
 }
 function render(list){
  const g=$('grid');
@@ -251,7 +254,15 @@ $('bt').onclick=async()=>{
  }catch(e){$('btOut').innerHTML='<div class="empty">❌ تعذر جلب بيانات '+sym+' — تحقق من الرمز.</div>';}
  $('bt').disabled=false;
 };
-setInterval(()=>{if(!document.hidden&&!scanning)doScan();},180000);
+setInterval(()=>{
+ if(!autoMode||scanning||!nextAt)return;
+ if(document.hidden)return;
+ const s=Math.max(0,Math.round((nextAt-Date.now())/1000));
+ if(s>0)setAutoInfo('🔄 فحص تلقائي بعد '+s+' ث — 500 عملة');
+ else doScan();
+},1000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&autoMode&&!scanning&&Date.now()>=nextAt-1000)doScan();});
+setTimeout(()=>{if(autoMode&&!scanning)doScan();},800);
 </script>
 </body>
 </html>
