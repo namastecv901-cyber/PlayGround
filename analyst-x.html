@@ -58,6 +58,12 @@ details summary{cursor:pointer;font-weight:900;color:#f0d675;padding:6px 0}
 .tools span{background:#ffffff08;border-radius:8px;padding:4px 8px;font-size:.7rem}
 .disc{background:#f0b90b14;border:1px solid #d4af3744;color:#f0d675;border-radius:14px;padding:10px;font-size:.75rem;margin-bottom:12px;line-height:1.9}
 .empty{text-align:center;color:#a89f83;padding:30px;border:1px dashed #d4af3733;border-radius:16px}
+#bottomRadar{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#06070bf2;border-top:2px solid #16c78466;backdrop-filter:blur(12px);padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center;overflow-x:auto}
+#bottomRadar .br-title{font-weight:900;font-size:.75rem;color:#4ade80;white-space:nowrap;display:flex;align-items:center;gap:6px}
+#bottomRadar .br-item{background:#04120a;border:1px solid #16c78444;border-radius:10px;padding:5px 10px;font-size:.72rem;font-weight:800;white-space:nowrap;cursor:pointer}
+#bottomRadar .br-item b{color:#f6e27a}
+#bottomRadar .br-item small{color:#a89f83}
+#bottomRadar .br-empty{color:#a89f83;font-size:.72rem}
 @media(min-width:700px){.plan{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
@@ -81,6 +87,7 @@ details summary{cursor:pointer;font-weight:900;color:#f0d675;padding:6px 0}
 <div class="roles" id="roles"><b>دور كل محلل:</b><br></div>
 <div id="grid"><div class="empty">اضغط 🔍 — العملة تمر: ترند → زخم → سيولة → حيتان → هيكل → شمعة انعكاسية → دعوم → تقلب → حارس الفخ → الرئيسي 👑</div></div>
 </main>
+<div id="bottomRadar"><span class="br-title"><span class="dot" id="pulse2"></span>📡 رادار القيعان</span><span class="br-empty" id="brList">⏳ بانتظار الفحص...</span></div>
 <script>
 const ROLES=[
 ['📈 الترند','هل السوق صاعد أم لا؟ يرفض الشراء عكس الاتجاه.'],
@@ -92,7 +99,7 @@ const ROLES=[
 ['🎯 الدعوم والمقاومة','هل يوجد مساحة ربح قبل المقاومة؟ RR≥2 إجباري.'],
 ['🌊 التقلب','هل الوقف منطقي مقابل ATR؟ يرفض الوقف الضيق الوهمي.'],
 ['🛡 الحارس','كشف البامب والقمم والشموع المتفجرة — له حق الفيتو.'],
-['🧬 المطور ذاتياً','يطور الأدوات القديمة بإجماع تكيفي + 5 أدوات ذكية (دايفرجنس/محاذاة/سيولة ذكية) ويرفع وزن المتفقة.'],
+['📡 رادار القاع','يصطاد القيعان: قرب الدعم + بعيد عن القمة + شمعة انعكاسية (مطرقة/ابتلاع) — دخول من القاع فقط.'],
 ['👑 الرئيسي','يجمع أصوات الـ10 ويصدر الصفقة الجاهزة أو الرفض.']];
 document.getElementById('roles').innerHTML='<b>دور كل محلل (العملة تُفحص من كل الجوانب + مطور ذاتي):</b><br>'+ROLES.map(r=>'<div>• <b>'+r[0]+'</b> — '+r[1]+'</div>').join('');
 const $=id=>document.getElementById(id);
@@ -168,7 +175,14 @@ function render(){
  +'<div style="font-size:.72rem;color:#a89f83">⛔ '+p.invalidate+' • دعم '+money(p.support)+' • مقاومة '+money(p.resistance)+'</div>'
  +'<div class="votes">'+a.analysts.map(v=>'<div class="vote"><span>'+v.name+'</span><b>'+v.verdict+' '+v.score+'</b></div>').join('')+'</div>'
  +'<details><summary>🔧 55 أداة (اضغط لعرضها)</summary><div class="tools">'+a.tools.map(t=>'<span>'+t.id+'. '+t.name+': <b>'+t.v+'</b></span>').join('')+'</div></details>'
- +'<details class="tv"><summary>📊 شارت TradingView (اضغط للتحميل)</summary><div class="tvbox" data-sym="'+sym.replace(/[^A-Z0-9]/g,'')+'"></div></details></div>';}).join('');
+  +'<details class="tv"><summary>📊 شارت TradingView (اضغط للتحميل)</summary><div class="tvbox" data-sym="'+sym.replace(/[^A-Z0-9]/g,'')+'"></div></details></div>';}).join('');
+ try{paintBottomRadar();}catch(e){}
+}
+function paintBottomRadar(){
+ const el=$('brList');if(!el)return;
+ const bots=(ALL||[]).filter(a=>a&&a.c&&!/usd|dai|tusd/i.test(a.c.symbol||'')).filter(a=>(a.topPos||100)<=20).filter(a=>{try{const t=(a.analysts||[]).find(v=>v.id==='trap');return(t?t.score:0)>=50;}catch(e){return true;}}).sort((a,b)=>b.score-a.score).slice(0,8);
+ if(!bots.length){el.outerHTML='<span class="br-empty" id="brList">📡 لا قاع آمن الآن — الحارس يرفض الصيد في السكين الساقط</span>';return;}
+ el.outerHTML='<span id="brList" style="display:contents">'+bots.map(a=>{const s=(a.c.symbol||'').toUpperCase();return '<span class="br-item" data-id="'+a.c.id+'">📡 <b>'+s+'</b> <small>قاع '+(a.topPos||0)+'% • '+a.score+'% • '+a.plan.candle+'</small></span>';}).join('')+'</span>';
 }
 $('flt').onchange=render;
 $('grid').addEventListener('toggle',e=>{const d=e.target;if(d&&d.tagName==='DETAILS'&&d.classList.contains('tv')&&d.open){const box=d.querySelector('.tvbox');if(box&&!box.dataset.done){box.dataset.done='1';box.innerHTML='<iframe loading="lazy" src="https://www.tradingview.com/widgetembed/?symbol=BINANCE:'+box.dataset.sym+'USDT&interval=60&theme=dark&style=1&locale=ar"></iframe>';}}},true);

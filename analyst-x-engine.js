@@ -99,7 +99,7 @@ function fiftyTools(c,pr){
  add(55,'زخم معدل بالتقلب',vam>0.5?75:vam>0?62:vam>-0.5?48:32,vam>0);
  return {tools:T,candle:engulf?'engulfing-bull':ct,lastCandle:lc};
 }
-/* ===== 11 محللاً (10 + المطور ذاتياً) + الرئيسي ===== */
+/* ===== 11 محللاً (9 + رادار القاع + الحارس) + الرئيسي ===== */
 const ANALYSTS=[
  {id:'trend',name:'📈 محلل الترند',tools:[1,2,3,4,5,6,7,8],w:0.14},
  {id:'momentum',name:'🚀 محلل الزخم',tools:[9,10,11,12,13,14,15,16,17,18],w:0.13},
@@ -110,8 +110,8 @@ const ANALYSTS=[
  {id:'candle',name:'🕯 محلل الشمعة الانعكاسية',tools:[43,44,45,46,47,48,49,50],w:0.09},
  {id:'levels',name:'🎯 محلل الدعم والمقاومة',tools:[37,38,39,40,42],w:0.07},
  {id:'trap',name:'🛡 محلل الفخاخ (الحارس)',tools:[34,42,41,9,28],w:0.09},
- {id:'evo',name:'🧬 المحلل المطور ذاتياً',tools:[51,52,53,54,55,9,35,27],w:0.10},
- {id:'chief',name:'👑 المحلل الرئيسي',tools:[1,9,23,27,35,38,44,42,51],w:0},
+ {id:'bottom',name:'📡 رادار القاع',tools:[37,42,39,43,44,46,49,9],w:0.10},
+ {id:'chief',name:'👑 المحلل الرئيسي',tools:[1,9,23,27,35,38,44,42,37],w:0},
 ];
 function evaluate(c){
   const pr=(c.sparkline_in_7d&&c.sparkline_in_7d.price&&c.sparkline_in_7d.price.length>10)?c.sparkline_in_7d.price.slice():[c.current_price*0.99,c.current_price];
