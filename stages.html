@@ -42,7 +42,11 @@ th{color:#a89f83;padding:6px;border-bottom:1px solid #ffffff14}
 td{padding:6px;border-bottom:1px solid #ffffff0a;text-align:center;font-variant-numeric:tabular-nums}
 .win{color:#4ade80;font-weight:900}.loss{color:#ff8d95;font-weight:900}
 .warn{background:#f6e27a0d;border:1px solid #f6e27a33;color:#f6e27a;border-radius:14px;padding:10px;font-size:.75rem;margin-bottom:12px;line-height:2}
-.lpnl{font-size:.78rem;font-weight:900;text-align:center;margin-top:8px;color:#a89f83}
+.lpnl{font-size:.78rem;font-weight:900;text-align:center;margin-top:8px;color:#a89f83;transition:color .3s}
+@keyframes pulseUp{0%{text-shadow:0 0 14px #16c784}100%{text-shadow:0 0 0 transparent}}
+@keyframes pulseDn{0%{text-shadow:0 0 14px #ea3943}100%{text-shadow:0 0 0 transparent}}
+.lpnl.up{color:#4ade80 !important;animation:pulseUp 1s}
+.lpnl.down{color:#ff8d95 !important;animation:pulseDn 1s}
 .tvbox{margin-top:8px;border:1px solid #ffffff12;border-radius:12px;overflow:hidden;background:#000}
 .tvbox iframe{width:100%;height:220px;border:0;display:block}
 </style>
@@ -250,6 +254,7 @@ setInterval(()=>{
  else doScan();
 },1000);
 let liveTimer=null;
+const lastPx={};
 async function tickLive(){
  try{
  const els=[...document.querySelectorAll('[data-live]')];if(!els.length)return;
@@ -264,11 +269,13 @@ async function tickLive(){
   const pnl=(live-e)/e*100;
   const m=(t,lb)=>live>=t?'✅ '+lb+' ضُرب':'🎯 '+lb;
   el.innerHTML='💰 حي '+money(live)+' ('+(pnl>=0?'+':'')+pnl.toFixed(2)+'%) • '+m(t1,'هـ1')+' • '+m(t2,'هـ2')+' • '+m(t3,'هـ3');
-  el.style.color=pnl>=0?'#4ade80':'#ff8d95';
+  const prev=lastPx[el.dataset.live];lastPx[el.dataset.live]=live;
+  el.classList.remove('up','down');void el.offsetWidth;
+  el.classList.add(prev==null?(pnl>=0?'up':'down'):(live>prev?'up':live<prev?'down':(pnl>=0?'up':'down')));
  });
  }catch(e){}
 }
-function startLive(){try{if(liveTimer)clearInterval(liveTimer);}catch(e){}tickLive();liveTimer=setInterval(()=>{if(!document.hidden)tickLive();},10000);}
+function startLive(){try{if(liveTimer)clearInterval(liveTimer);}catch(e){}tickLive();liveTimer=setInterval(()=>{if(!document.hidden)tickLive();},5000);}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&autoMode&&!scanning&&Date.now()>=nextAt-1000)doScan();});
 setTimeout(()=>{if(autoMode&&!scanning)doScan();},800);
 </script>
