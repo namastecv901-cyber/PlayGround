@@ -1458,6 +1458,8 @@ body.linkmode #masterFab{display:none!important}
 .pex-tv{font-family:inherit;font-size:.68rem;font-weight:900;color:#8fd6ff;background:#8fd6ff12;border:1px solid #8fd6ff55;border-radius:8px;padding:2px 10px;margin-top:6px;cursor:pointer}
 .pex-news{font-family:inherit;font-size:.68rem;font-weight:900;color:#f6e27a;background:#f0b90b12;border:1px solid #f0b90b55;border-radius:8px;padding:2px 10px;margin-top:6px;margin-inline-start:6px;cursor:pointer}
 .stepper b{min-width:30px;text-align:center;font-size:1rem}
+/* البوت محذوف — إخفاء أزرار الربط به */
+[data-blink]{display:none!important}
 </style>
 </head>
 <body class="guest">
@@ -1480,7 +1482,6 @@ body.linkmode #masterFab{display:none!important}
     <span>🛡️ محمية: <b id="guardCount2">0</b></span>
     <span class="muted" id="nextScan">⏳ 60</span>
   </div>
-  <a href="analyst-x.html" style="display:block;margin-top:10px;position:relative;z-index:1;background:linear-gradient(135deg,#f6e27a,#d4af37);color:#231b05;font-weight:900;text-align:center;border-radius:14px;padding:13px;text-decoration:none;box-shadow:0 6px 22px #d4af3755">🧠 🆕 تحديث ANALYST-X: 11 محللاً × 55 أداة — كل عملة تُفحص من كل الجوانب + صفقة جاهزة 👈 افتح النظام الجديد</a>
 </div>
 
 <div class="dash-strips">
@@ -1550,8 +1551,12 @@ body.linkmode #masterFab{display:none!important}
   <span class="cb-note">💡 الرقم ينطبق على كل البطاقات — اضغط الحقول أو ↺ لإعادة 1000</span>
 </div>
 
+<div class="radar-sec" id="radarSec" style="margin:12px 0;border:2px solid #16c78466;border-radius:20px;overflow:hidden;background:#0b0d15">
+<div style="display:flex;align-items:center;gap:8px;padding:12px 14px;font-weight:900">🎯 رادار القاع — مكان بوت التداول<span style="margin-inline-start:auto"></span><a href="analyst-x.html" style="color:#f0b90b;font-size:.8rem">فتح كاملاً ←</a></div>
+<iframe src="analyst-x.html" style="width:100%;height:1000px;border:0;display:block;background:#06070b" loading="lazy" title="رادار القاع"></iframe>
+</div>
 <div class="dash-panels">
-<div class="bot-panel" id="onePanel">
+<div class="bot-panel" id="onePanel" hidden>
   <div class="bot-head"><span>🤖 بوت التداول التلقائي <em>يعمل فقط عند ربطه بأي قسم 🔗</em></span><b id="oneStatus">⏸ متوقف</b></div>
   <div class="bot-event" id="oneEvent">🔔 بانتظار أول عملية شراء/بيع...</div>
   <div class="dec-strip" id="oneStrip" hidden></div>
@@ -2370,6 +2375,7 @@ function card(a,i){
   +'<div><span>🛡 مصداقية '+a.trust.score+'</span>'+bar(a.trust.score)+'</div>'
   +'</div>'
   +'<ul class="ai-why">'+why+'</ul>'+warn
+  +((a.x&&a.xVotes)?'<div class="analyst-box"><b>🧠 المحلل (ظاهر هنا — بدون دخول صفحة ثانية)</b><div>'+(a.candleX||'')+' • ثقة '+a.x.score+'%</div>'+a.xVotes.slice(0,11).map(v=>'<div>'+v+'</div>').join('')+'</div>':'')
   +'</details>'
   +'<details class="fold tv-fold"><summary>📊 الشارت</summary>'
   +'<div class="live-row"><canvas class="spark" width="260" height="46" data-spark="'+c.id+'"></canvas>'
@@ -5726,11 +5732,11 @@ async function scan(){
       pool.push(a);
     }
     pool.sort(function(x,y){ return (y.c.total_volume||0)-(x.c.total_volume||0); });
-    pool=pool.slice(0,14);
+    pool=pool.slice(0,500);
     var livePx={};
     for(i=0;i<all.length;i++){ try{ var cc=all[i].c; if(cc&&cc.id) livePx[cc.id]=cc.current_price; }catch(e){} }
     var out=[];
-    await Promise.all(pool.map(async function(a){
+    async function powOne(a){
       try{
         var c=a.c, sym=(window.binSym&&window.binSym(c))||null; if(!sym) return;
         var kl=await powKlines(sym); if(!kl) return;
@@ -5742,7 +5748,11 @@ async function scan(){
         out.push({id:c.id,sym:String(c.symbol||'').toUpperCase(),price:live,entry:live,sl:g.sl,rk:live-g.sl,
           meas:g.meas,sc:g.s,svg:svg,lad:g.lad,t1:g.t1,t2:g.t2,t3:g.t3,R:g.R,sup1:g.sup1,sup2:g.sup2,inval:g.inval,vr:g.vr,vol:c.total_volume,tv:sym});
       }catch(e){}
-    }));
+    }
+    for(var pi=0;pi<pool.length;pi+=20){
+      await Promise.all(pool.slice(pi,pi+20).map(powOne));
+      try{ var st0=$('powStatus'); if(st0) st0.textContent='💪 النموذج القوي يفحص '+pool.length+' عملة على 4h... ('+Math.min(pi+20,pool.length)+'/'+pool.length+')'; }catch(e){}
+    }
     out.sort(function(x,y){ return y.s-x.s; });
     out=out.slice(0,6);
     for(i=0;i<out.length;i++){
@@ -6185,8 +6195,8 @@ window.__excelBuy=render;
 })();
 </script>
 <script src="hq-entry.js"></script>
-<script src="analyst-x-engine.js"></script>
-<script>// 🧠 ANALYST-X BRIDGE — العملة تمر على 11 محللاً × 55 أداة داخل النظام نفسه
+<script src="analyst-x-engine.js?v=8x56rej"></script>
+<script>// 🧠 ANALYST-X BRIDGE — العملة تمر على 8 محللين × 56 أداة (قاع 15m فقط) داخل النظام نفسه
 (function(){
 "use strict";
 try{
@@ -6209,7 +6219,7 @@ try{
     }catch(e){}
     return a;
   };
-  try{ var s=document.getElementById('radarStatus'); if(s) s.textContent='🧠 ANALYST-X مفعّل: 11 محللاً × 55 أداة داخل الفحص'; }catch(e){}
+   try{ var s=document.getElementById('radarStatus'); if(s) s.textContent='🧠 ANALYST-X مفعّل: 8 محللين × 56 أداة (قاع 15m فقط)'; }catch(e){}
 }catch(e){}
 })();</script>
 <script>// 🏆 HQ-UI — تشغيل فلتر الدخول الاحترافي من المتصفح (نفس محرك hq-entry.js)
