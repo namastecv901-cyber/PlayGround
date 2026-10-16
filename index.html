@@ -1598,14 +1598,6 @@ body.linkmode #masterFab{display:none!important}
   <div class="ob-grid" id="brkGrid"></div>
 </div>
 
-<div id="momSec" hidden><div id="momStatus"></div><div class="ob-grid" id="momGrid"></div><span id="momCount" hidden>0</span></div>
-
-<div class="ob-sec" id="riskSec">
-  <div class="ob-head"><h2>💰 حاسبة المخاطرة — حجم صفقتك الصحيح</h2></div>
-  <div class="ob-status">⚖️ أدخل رأس مالك ونسبة المخاطرة ليعطيك حجم الصفقة لكل بطاقة — بديل أنظف من قسم الترند المكرر</div>
-  <div class="ob-grid"><div class="panel">رأس المال $ <b id="riskCapView">1000</b> • المخاطرة <b id="riskPctView">1.5%</b> = <b id="riskVal">$15</b> للصفقة — تُطبق تلقائياً على كل البطاقات عبر شريط 🧪 رأس مال تجريبي بالأعلى</div></div>
-</div>
-
 <div class="ob-sec" id="hqSec">
   <div class="ob-head"><h2>🏆 فلتر الدخول الاحترافي HQ — قسم التشغيل</h2><span class="ob-count" id="hqCount">0</span><button class="blink-btn" id="hqRunBtn">🔍 فحص HQ الآن</button></div>
   <div class="ob-status" id="hqStatus">⚙️ نفس محرك البوت (<b>hq-entry.js</b>) يعمل هنا في المتصفح: يومي → 4h → 1h → 15m + تقييم /100 — الدخول فقط 85+ • <a href="pump.html" style="color:var(--gold);font-weight:800">🎯 قسم البامب والدامب ←</a></div>
@@ -1616,7 +1608,11 @@ body.linkmode #masterFab{display:none!important}
   <div class="table-wrap"><table><thead><tr><th>العملة</th><th>الوضع</th><th>الدخول</th><th>الخروج</th><th>النتيجة</th><th>الحالة</th></tr></thead><tbody id="hqRows"><tr><td colspan="6" class="muted">لا صفقات مسجلة بعد — شغّل الفحص</td></tr></tbody></table></div>
 </div>
 
-<div id="patSec" hidden><div id="patStatus"></div><div class="ob-grid" id="patGrid"></div><span id="patCount" hidden>0</span></div>
+<div class="ob-sec" id="xSec">
+  <div class="ob-head"><h2>🧠 ANALYST-X — شراء القاع المرتد فقط (11 محللاً × 55 أداة)</h2><span class="ob-count" id="xCount">0</span></div>
+  <div class="ob-status" id="xStatus">🧠 الشراء من القاع نفسه فقط: ملاصق لقاع48 (≤3.5%) + أول شمعة انعكاسية من القاع (مطرقة/ابتلاع) + RSI صاعد — أي صعود متأخر فوق القاع مرفوض — الأهداف: هـ1 +3% • هـ2 +6% • هـ3 +10% • ستوب تحت القاع</div>
+  <div class="ob-grid" id="xGrid"><div class="muted" style="font-size:.82rem">يُبنى تلقائياً من نفس فحص الـ500 — أفضل 6 صفقات أجمع عليها المحللون.</div></div>
+</div>
 
 <div class="ob-sec" id="powSec">
   <div class="ob-head"><h2>💪 النموذج القوي — مثلث صاعد + ترند + سلم أهداف مثل الصورة (Spot فقط)</h2><span class="ob-count" id="powCount">0</span><button class="blink-btn" data-blink="pow">🔗 اربط بالبوت</button></div>
@@ -1624,8 +1620,6 @@ body.linkmode #masterFab{display:none!important}
   <div class="ob-grid" id="powGrid"></div>
 </div>
 <div id="powModal" hidden><div id="powSoloWrap"></div><button id="powSoloX" hidden>✕</button></div>
-
-<div id="minSec" hidden><div id="minStatus"></div><div class="ob-grid" id="minGrid"></div><span id="minCount" hidden>0</span><div id="minProfit" hidden><b id="minProfitV">$0</b><small id="minProfitN"></small><input id="minStake" type="number" value="10" hidden><div id="minHit" hidden></div></div></div>
 
 <div class="section-head" style="margin:16px 0 6px"><h2>💎 كل شيء في بطاقة واحدة</h2>
 <button class="blink-btn" data-blink="cards">🔗 اربط بالبوت</button>
@@ -1638,8 +1632,6 @@ body.linkmode #masterFab{display:none!important}
 </div>
 <div class="hl-count" id="hlCount"></div>
 <p class="hint">🧠 الشارة = قرار واحد • 🎫 الخطة = دخول واحد و3 أهداف ووقف واحد • 🧮 حساب الصفقة = من رأس المال التجريبي • 🛡️ الحارس = مراقبتك الحيّة. كلها في بطاقة واحدة.</p>
-<div id="newSec" hidden><div id="newGrid"></div><span id="newCount" hidden>0</span></div>
-<div id="strongSec" hidden><div id="strongGrid"></div><span id="strongCount" hidden>0</span></div>
 
 <div class="strong-sec" id="top3Sec">
   <div class="strong-head"><h2>🏆 الشراء الممتاز — إجماع الإشارات</h2><span class="muted" id="excelStatus" style="font-size:.78rem">يجمع السيولة + الاختراق + النموذج + البطاقات — عملة تظهر في مصدرين+ = شراء ممتاز</span></div>
@@ -4226,9 +4218,8 @@ const K_VIS='ai_vis_v1', K_ERR='ai_err_v1', K_ERRSEEN='ai_err_seen';
 const VIS_SECTIONS=[
  {id:'paywall',name:'💎 قسم الاشتراك',def:true},
  {id:'freeGate',name:'🎁 بوابة الهدية اليومية',def:true},
- {id:'newSec',name:'🆕 قسم الصعود الجديد',def:true},
- {id:'strongSec',name:'🔥 قسم الصعود المؤكد',def:true},
- {id:'dealsGrid',name:'💎 شبكة البطاقات الرئيسية',def:true},
+  {id:'xSec',name:'🧠 قسم ANALYST-X الموحد',def:true},
+  {id:'dealsGrid',name:'💎 شبكة البطاقات الرئيسية',def:true},
  {id:'calcBar',name:'🧮 شريط رأس المال التجريبي',def:true},
  {id:'onePanel',name:'🤖 البوت التلقائي',def:false}
 ];
@@ -6211,6 +6202,42 @@ try{
   };
   try{ var s=document.getElementById('radarStatus'); if(s) s.textContent='🧠 ANALYST-X مفعّل: 11 محللاً × 55 أداة داخل الفحص'; }catch(e){}
 }catch(e){}
+})();
+</script>
+<script>// 🧠 X-SEC — قسم ANALYST-X يعمل لوحده: يقرأ نفس فحص الـ500 ويعرض أفضل 6 صفقات بإجماع المحللين
+(function(){
+"use strict";
+function $(id){ return document.getElementById(id); }
+function money(n){ try{ if(window.AI_MONEY) return window.AI_MONEY(n); }catch(e){} if(n==null||isNaN(n)) return '—'; return '$ '+Number(n).toLocaleString('en-US',{maximumFractionDigits:4}); }
+function render(){
+  try{
+    const g=$('xGrid'), st=$('xStatus'), ct=$('xCount'); if(!g) return;
+    const all=(window.RADAR&&window.RADAR.analyzed)||[];
+    if(!all.length){ if(st) st.textContent='🧠 ينتظر أول فحص للـ500...'; return; }
+    // كل بطاقة فيها نتيجة X من الجسر (a.x) — القسم يعمل لوحده بقراءتها فقط
+    const pool=all.filter(a=>a&&a.c&&a.x&&a.x.isBuy).sort((x,y)=>(y.x.score||0)-(x.x.score||0)).slice(0,6);
+    if(ct) ct.textContent=String(pool.length);
+    if(!pool.length){ if(st) st.textContent='🧠 المحللون الـ11 رفضوا الكل — لا إجماع شراء الآن (حماية من الوهم) • حلل '+all.length+' عملة'; g.innerHTML='<div class="muted">🧠 لا إجماع — انتظر الفحص القادم.</div>'; return; }
+    if(st) st.textContent='✅ إجماع '+pool.length+' صفقات من '+all.length+' عملة — '+new Date().toLocaleTimeString('ar');
+    g.innerHTML=pool.map(a=>{
+      const c=a.c, x=a.x, p=x.plan, sym=String(c.symbol||'').toUpperCase();
+      const short={evo:'المطور 🧬',trap:'الحارس 🛡',chief:'الرئيسي 👑'};
+      const votes=(x.analysts||[]).filter(v=>short[v.id]).map(v=>short[v.id]+' '+v.verdict).join(' • ');
+      const pct=v=>(((v-p.entry)/p.entry)*100).toFixed(2)+'%';
+      return '<article class="ai-card g-buy" style="border:2px solid #16c784">'
+      +'<div class="ai-top"><div><b>🧠 '+sym+'</b><small>'+(c.name||'')+' • ثقة X '+x.score+'% • '+p.candle+'</small></div>'
+      +'<div class="ai-ring" style="--p:'+x.score+';--c:#16c784"><b>'+x.score+'</b><small>إجماع</small></div></div>'
+      +'<div class="sig-boxes"><div><small>📍 دخول</small><b>'+money(p.entry)+'</b></div><div><small>🛡 ستوب ('+p.riskPct+'%)</small><b class="down">'+money(p.sl)+'</b></div></div>'
+      +'<div class="sig-boxes"><div><small>🎯 هـ1 (+'+pct(p.t1)+')</small><b class="up">'+money(p.t1)+'</b></div><div><small>🎯 هـ2 (+'+pct(p.t2)+')</small><b class="up">'+money(p.t2)+'</b></div></div>'
+      +'<div class="sig-boxes"><div><small>🎯 هـ3 (+'+pct(p.t3)+')</small><b class="up">'+money(p.t3)+'</b></div><div><small>⚖️ RR</small><b>1:'+p.rr+'</b></div></div>'
+      +'<div class="sig-trigger">✅ '+x.plan.entryType+' • '+votes+'</div>'
+      +'<div style="font-size:.72rem;color:var(--mut)">⛔ '+p.invalidate+'</div>'
+      +'</article>';
+    }).join('');
+  }catch(e){}
+}
+document.addEventListener('DOMContentLoaded',()=>{ setTimeout(render,5000); setInterval(render,15000); });
+window.__xSecRender=render;
 })();</script>
 <script>// 🏆 HQ-UI — تشغيل فلتر الدخول الاحترافي من المتصفح (نفس محرك hq-entry.js)
 (function(){

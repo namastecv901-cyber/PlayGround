@@ -122,40 +122,56 @@ function evaluate(c){
     return {id:a.id,name:a.name,score:clamp(avg),bulls,total:a.tools.length,verdict,w:a.w}; });
   const v=id=>votes.find(x=>x.id===id);
   const price=c.current_price, atr=atrP(pr,14)||price*0.015;
-  const risk=Math.min(Math.max(atr*1.2,price*0.008),price*0.06);
-  const sl=price-risk, t1=price+risk*1.5, t2=price+risk*2.5, t3=price+risk*4;
-  const rec=pr.slice(-48), swingH=Math.max(...rec), swingL=Math.min(...rec);
-  const rr=(t2-price)/risk, roomPct=(swingH-price)/price*100, riskPct=risk/price*100;
   const h1=c.price_change_percentage_1h_in_currency||0, h24=c.price_change_percentage_24h_in_currency||0, to=(c.total_volume||0)/(c.market_cap||1);
-  const bullCandle=(candle==='engulfing-bull'||candle==='hammer'||candle==='marubozu-bull'||candle==='bull');
+  const rec=pr.slice(-48), swingL=Math.min(...rec);
+  const w90=pr.slice(-90), hi90=Math.max(...w90), lo90=Math.min(...w90);
+  const topPos=(hi90>lo90)?((price-lo90)/(hi90-lo90)):0.5;
+  // ===== استراتيجية القاع + الارتداد فقط =====
+  const rsiNow=rsi(pr,14), rsiPrev=rsi(pr.slice(0,-3),14);
+  const revCandle=(candle==='engulfing-bull'||candle==='hammer'||candle==='marubozu-bull');
+  const candleAr={hammer:'مطرقة انعكاسية 🔨','engulfing-bull':'ابتلاع صاعد 🔥','marubozu-bull':'زخم شرائي 💪',bull:'شمعة صاعدة 🟢',doji:'دوجي حيرة ➖','doji-dragon':'دوجي تنين 🐉','shooting-star':'شهاب هابط ⚠️','marubozu-bear':'ضغط بيعي 🔻',bear:'شمعة هابطة 🔻'}[candle]||candle;
+  const dipDepth=(price-swingL)/price*100; // البعد عن قاع 48
+  const isDip=(topPos<=0.35&&dipDepth<=3.5); // ملاصق للقاع تماماً
+  // أول ارتداد: قاع مجموعة الانعكاس هو أدنى قاع في آخر 24 نقطة (الارتداد بدأ من القاع نفسه)
+  const revGroup=pr.slice(-6), revLow=Math.min(...revGroup);
+  const firstBounce=(revLow<=Math.min(...pr.slice(-24)));
+  const bounced=(revCandle&&firstBounce&&rsiNow>=rsiPrev&&rsiNow>30); // شمعة انعكاسية أولى + RSI صاعد
+  // ===== أهداف ثابتة +10%: T1 +3% / T2 +6% / T3 +10% — ستوب تحت القاع =====
+  let sl0=swingL*0.997; if(!(sl0<price)) sl0=price-Math.max(atr*0.5,price*0.005);
+  let risk=price-sl0;
+  if(risk/price>0.06){ sl0=price*0.94; risk=price-sl0; }
+  const sl=sl0, t1=price*1.03, t2=price*1.06, t3=price*1.10;
+  const rr=(t3-price)/risk, roomPct=(hi90-price)/price*100, riskPct=risk/price*100;
   const reasons=[];
   votes.forEach(x=>{ if(x.id!=='chief') reasons.push(x.name+': '+x.verdict+' '+x.score); });
   let score=Math.round(votes.filter(x=>x.id!=='chief').reduce((s,x)=>s+x.score*x.w,0));
-  // بوابات صارمة — شبه مستحيل تمر عملة هابطة
+  // بوابات صارمة: الشراء من القاع مع ارتداد فقط
   const gates=[];
   const fail=(code,msg)=>gates.push({code,ok:false,msg});
   if(v('trap').score<50) fail('trap','فخ وهمي — مرفوض');
-  if(!(rr>=2)) fail('rr','عائد/مخاطرة ضعيف '+rr.toFixed(2));
-  if(!(roomPct>=riskPct)) fail('room','مقاومة ملاصقة — لا مساحة');
+  if(!(isDip&&bounced)) fail('dip-bounce','ليست قاعاً مرتداً — الشراء من القاع مع أول ارتداد فقط');
+  if(risk/price<0.003) fail('sl-tight','وقف ضيق غير واقعي');
+  if(!(rr>=1.5)) fail('rr','العائد لا يبرر المخاطرة R:R='+rr.toFixed(2));
+  if(!(roomPct>=6)) fail('room','لا مساحة لهدف +10% (المتاح '+roomPct.toFixed(1)+'%)');
   if((c.total_volume||0)<3000000) fail('liq','سيولة ضعيفة');
-  const topPos=(Math.max(...pr.slice(-90))-Math.min(...pr.slice(-90)))>0?((price-Math.min(...pr.slice(-90)))/(Math.max(...pr.slice(-90))-Math.min(...pr.slice(-90)))):0.5;
   if(topPos>0.97) fail('top','قرب قمة 90 — شراء قمة مرفوض');
   if(h1>12) fail('spike','شمعة متفجرة — فخ محتمل');
   if(h24>45&&to<0.05) fail('pump','بامب بلا سيولة');
-  if(!(v('structure').score>=55&&(bullCandle||v('candle').score>=58))) fail('confirm','لا تأكيد: لا BOS ولا شمعة انعكاسية');
   const hardFail=gates.filter(g=>!g.ok);
   let grade,action,isBuy=false;
   if(hardFail.length){ grade='avoid'; action='🔴 تجنب — '+hardFail[0].msg; score=Math.min(score,44); }
-  else if(score>=72&&v('trap').score>=60){ grade='strong'; action='⭐ شراء قوي'; isBuy=true; }
-  else if(score>=62&&v('trap').score>=55){ grade='buy'; action='🟢 شراء'; isBuy=true; }
-  else if(score>=52){ grade='watch'; action='👀 مراقبة'; }
-  else { grade='avoid'; action='🔴 تجنب'; }
+  else{
+    score=Math.min(95,score+15); reasons.push('مكافأة ارتداد القاع +15');
+    if(score>=72&&v('trap').score>=60){ grade='strong'; action='⭐ شراء قوي — قاع مرتد'; isBuy=true; }
+    else if(score>=55&&v('trap').score>=55){ grade='buy'; action='🟢 شراء — قاع مرتد'; isBuy=true; }
+    else if(score>=50){ grade='watch'; action='👀 مراقبة'; }
+    else { grade='avoid'; action='🔴 تجنب'; }
+  }
   const chief={id:'chief',name:'👑 المحلل الرئيسي',score,verdict:action,checks:gates.length?gates.map(g=>g.msg):['كل البوابات خضراء ✅'],w:0};
-  const candleAr={hammer:'🔨 مطرقة انعكاسية', 'engulfing-bull':'🔥 ابتلاع صاعد','marubozu-bull':'💪 زخم شرائي','bull':'🟢 شمعة صاعدة',doji:'➖ دوجي حيرة','doji-dragon':'🐉 دوجي تنين','shooting-star':'⚠️ شهاب هابط','marubozu-bear':'🔻 ضغط بيعي',bear:'🔻 شمعة هابطة'}[candle]||candle;
   const plan={entry:price,t1,t2,t3,sl,risk,rr:Math.round(rr*100)/100,riskPct:Math.round(riskPct*100)/100,roomPct:Math.round(roomPct*100)/100,
-    support:Math.min(swingL,sl),resistance:Math.max(swingH,price),
-    entryType:candle==='engulfing-bull'?'ابتلاع صاعد ⚡':candle==='hammer'?'ارتداد مطرقة 🔨':'دخول زخم 📈',
-    invalidate:'يُلغى بإغلاق ساعة تحت '+sl, tf:Math.abs(h1)>2?'15m سريعة':'4H متوسطة',
+    support:Math.min(swingL,sl),resistance:Math.max(hi90,price),
+    entryType:'شراء قاع + ارتداد ('+candleAr+')',
+    invalidate:'يُلغى بإغلاق ساعة تحت '+sl, tf:'1H ارتداد',
     candle:candleAr, stakePct:riskPct>3?1:riskPct>1.5?2:3};
   return {c,price,score,grade,action,isBuy,plan,analysts:votes.concat([chief]),tools,candle:candleAr,gates,topPos:Math.round(topPos*100),reasons};
 }
@@ -173,6 +189,20 @@ function runSelftest(){
   ok('thin-rejected',!r3.isBuy,'action='+r3.action);
   const hammerPx=Array.from({length:114},(_,i)=>100+i*0.05); const r4=fiftyTools(mk(106,1,3,5e7,1e9),hammerPx.concat([106,105.9,105.8,106.5,107.2,108]));
   ok('candle-detect',typeof r4.candle==='string'&&r4.candle.length>0,r4.candle);
+  // قاع حقيقي + أول مطرقة من القاع نفسه: هبوط 120→95 ثم مجموعة أخيرة (o=97,h=98,l=95,c=98) وقاعها هو الأدنى
+  const pre=[]; for(let i=0;i<114;i++) pre.push(120-i*0.22);
+  const dipPx=pre.concat([97,96,95,96.5,97.5,98]);
+  const dip={symbol:'D',current_price:98,price_change_percentage_1h_in_currency:1.5,price_change_percentage_24h_in_currency:-3,total_volume:3e7,market_cap:1e9,sparkline_in_7d:{price:dipPx}};
+  const r5=evaluate(dip);
+  ok('dip-bounce-buy',r5.isBuy&&r5.plan.t3===r5.plan.entry*1.10,'action='+r5.action+' score='+r5.score+' t3='+r5.plan.t3);
+  ok('dip-sl-under-low',r5.plan.sl<r5.plan.entry&&r5.plan.sl<=95,'sl='+r5.plan.sl);
+  const mid=mk(100,1,4,5e7,1e9); const r6=evaluate(mid); // صعود mid-trend: ليست قاعاً مرتداً
+  ok('midtrend-rejected',!r6.isBuy&&r6.gates.some(g=>g.code==='dip-bounce'),'action='+r6.action);
+  // ارتداد متأخر: السعر صعد 7% فوق القاع — مرفوض (نريد أول ارتداد فقط)
+  const latePx=pre.concat([99,99.5,100,100.5,101,102]);
+  const late={symbol:'L',current_price:102,price_change_percentage_1h_in_currency:2,price_change_percentage_24h_in_currency:1,total_volume:3e7,market_cap:1e9,sparkline_in_7d:{price:latePx}};
+  const r7=evaluate(late);
+  ok('late-bounce-rejected',!r7.isBuy,'action='+r7.action+' score='+r7.score);
   return out;
 }
 const API={sma,emaLast,rsi,fiftyTools,evaluate,runSelftest,ANALYSTS};
