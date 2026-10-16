@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🍑 اقتناص القاع والانعكاس الصعودي — Binance Spot</title>
+<meta name="theme-color" content="#06070b">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:system-ui,'Cairo',sans-serif;background:radial-gradient(900px 400px at 50% -10%,#16c78411,transparent),#06070b;color:#f6f1df;min-height:100dvh;padding-bottom:90px}
+header{position:sticky;top:0;z-index:20;background:#06070bee;backdrop-filter:blur(12px);border-bottom:1px solid #16c78433;padding:12px 14px}
+h1{font-size:1.05rem}.grad{background:linear-gradient(135deg,#7ef0c1,#16c784);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:#a89f83;font-size:.75rem;margin-top:2px}
+.live{display:inline-flex;align-items:center;gap:6px;font-weight:900;color:#4ade80}
+.dot{width:10px;height:10px;border-radius:50%;background:#4ade80;animation:pl 1.6s infinite}
+@keyframes pl{70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.row{display:flex;gap:8px;margin-top:10px}
+button{font-family:inherit;font-weight:900;border-radius:12px;border:none;cursor:pointer;padding:12px;font-size:.95rem}
+#scan{flex:1;background:linear-gradient(135deg,#7ef0c1,#16c784);color:#04120c}
+#scan:disabled{opacity:.5}
+#bt{flex:1;background:#16c78422;border:1px solid #16c78466;color:#4ade80}
+#bt:disabled{opacity:.5}
+main{padding:12px;max-width:900px;margin:0 auto}
+.card{background:linear-gradient(160deg,#101a17,#0b0d15);border:2px solid #16c78466;border-radius:20px;padding:14px;margin-bottom:12px}
+.top{display:flex;align-items:center;gap:8px}
+.top b{font-size:1.2rem}
+.badge{margin-inline-start:auto;font-weight:900;font-size:.8rem;background:#16c78422;border:1px solid #16c78466;color:#4ade80;border-radius:99px;padding:5px 12px;white-space:nowrap}
+.checks{margin:10px 0;font-size:.78rem;line-height:2}
+.ok{color:#4ade80}
+.nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0;text-align:center}
+.nums div{background:#00000066;border:1px solid #ffffff14;border-radius:12px;padding:8px}
+.nums small{display:block;color:#a89f83;font-size:.65rem;font-weight:800}
+.nums b{font-size:1.05rem;font-variant-numeric:tabular-nums}
+.en b{color:#f6e27a}.tp b{color:#4ade80}.sp b{color:#ff8d95}.u{color:#4ade80}
+.empty{text-align:center;color:#a89f83;padding:30px;border:1px dashed #16c78433;border-radius:16px;line-height:2}
+.secT{font-weight:900;font-size:.95rem;margin:14px 0 8px;color:#7ef0c1}
+.btrow{display:flex;gap:8px;margin-top:8px}
+.btrow input{flex:1;background:#00000066;border:1px solid #ffffff14;border-radius:12px;color:#f6f1df;padding:12px;font-family:inherit;font-weight:800;direction:ltr;text-align:center}
+table{width:100%;border-collapse:collapse;font-size:.75rem;margin-top:8px}
+th{color:#a89f83;padding:6px;border-bottom:1px solid #ffffff14}
+td{padding:6px;border-bottom:1px solid #ffffff0a;text-align:center;font-variant-numeric:tabular-nums}
+.win{color:#4ade80;font-weight:900}.loss{color:#ff8d95;font-weight:900}
+.warn{background:#16c78410;border:1px solid #16c78433;color:#7ef0c1;border-radius:14px;padding:10px;font-size:.75rem;margin-bottom:12px;line-height:2}
+</style>
+</head>
+<body>
+<header>
+<h1>🍑 <span class="grad">اقتناص القاع</span> — دخول بعد تأكيد الانعكاس <small style="background:#16c78422;border:1px solid #16c78466;color:#4ade80;border-radius:99px;padding:2px 10px;font-size:.7rem">Spot • انعكاس 15m</small></h1>
+<div class="sub"><span class="live"><span class="dot"></span> مباشر</span> • <span id="status">جاهز للفحص...</span></div>
+<div class="row"><button id="scan">🔍 فحص الانعكاس الآن</button></div>
+</header>
+<main>
+<div class="warn">🍑 هبوط ثم استقرار عند دعم → تجميع ضيق → قاع أعلى أو استعادة دعم → كسر قمة محلية بإغلاق 15m → حجم ×1.5+ → RSI يخرج من الضعف. الدخول بعد التأكيد فقط — القاع لا يُخمَّن مسبقاً. اختبر تاريخياً وتجريبياً أولاً.</div>
+<div class="prog" id="progWrap" style="display:none;margin-bottom:12px;background:#00000055;border:1px solid #16c78433;border-radius:12px;padding:8px"><div style="display:flex;justify-content:space-between;font-size:.75rem;font-weight:900;color:#7ef0c1"><span id="progTxt">0%</span><span id="progCnt"></span></div><div style="height:10px;background:#ffffff12;border-radius:99px;overflow:hidden;margin-top:6px"><div id="progFill" style="height:100%;width:0%;background:linear-gradient(90deg,#7ef0c1,#16c784);border-radius:99px;transition:width .2s"></div></div></div>
+<div class="secT">🍑 انعكاسات صعودية مؤكدة الآن</div>
+<div id="grid"><div class="empty">اضغط 🔍 — نبحث عن نهاية الهبوط وبداية الانعكاس.</div></div>
+<div class="secT">📊 الاختبار التاريخي — 1000 شمعة 15m (هدف 2R مقابل الوقف)</div>
+<div class="btrow"><input id="btSym" value="BTCUSDT" maxlength="14"><button id="bt">▶ اختبار تاريخي</button></div>
+<div id="btOut"><div class="empty">أدخل العملة واضغط اختبار — نحاكي نفس الشروط على الماضي.</div></div>
+</main>
+<script>
+const BASE='https://data-api.binance.vision';
+const $=id=>document.getElementById(id);
+const money=n=>n>=1000?n.toLocaleString('en',{maximumFractionDigits:1}):n>=1?n.toFixed(4):String(Number(n.toPrecision(3)));
+async function jget(url){
+ const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),15000);
+ try{const r=await fetch(url,{signal:ctl.signal,cache:'no-store'});if(!r.ok)throw 0;return await r.json();}
+ finally{clearTimeout(to);}
+}
+function setProg(pct,txt,cnt){try{$('progWrap').style.display='block';$('progFill').style.width=pct+'%';if(txt!=null)$('progTxt').textContent=txt;if(cnt!=null)$('progCnt').textContent=cnt;}catch(e){}}
+function ema(C,n){if(!C||C.length<n)return null;const k=2/(n+1);let e=C.slice(0,n).reduce((a,b)=>a+b,0)/n;for(let i=n;i<C.length;i++)e=C[i]*k+e*(1-k);return e;}
+function rsi(C,per){per=per||14;if(!C||C.length<per+1)return 50;let g=0,l=0;for(let i=C.length-per;i<C.length;i++){const d=C[i]-C[i-1];if(d>0)g+=d;else l-=d;}if(l===0)return 100;if(g===0)return 0;return 100-100/(1+(g/l));}
+function swingLows(L,from,to){const o=[];for(let i=Math.max(1,from);i<Math.min(L.length-1,to);i++){if(L[i]<=L[i-1]&&L[i]<=L[i+1])o.push({i,v:L[i]});}return o;}
+// تقييم انعكاس واحد — حياً وتاريخياً بنفس القواعد (12 شرطاً)
+function evalRev(H,L,C,V,bi){
+ if(bi<70||bi>=C.length)return null;
+ const C0=C.slice(0,bi+1),H0=H.slice(0,bi+1),L0=L.slice(0,bi+1),V0=V.slice(0,bi+1);
+ // ② هبوط سابق ثم استقرار: انخفاض ≥8% من قمة 3 أيام إلى أدنى 24h
+ const hi3=Math.max(...H0.slice(-288,-24)),lo1=Math.min(...L0.slice(-96));
+ if(!(hi3>lo1))return {ok:false,why:'لا هبوط واضح'};
+ const drop=(lo1-hi3)/hi3;
+ if(!(drop<=-0.08))return {ok:false,why:'الهبوط '+ (drop*100).toFixed(1)+'% أقل من 8% — ليس قاعاً'};
+ // ③ تجميع ضيق بعد الهبوط: آخر 20 شمعة نطاق ≤2.5%
+ const bH=H0.slice(-21,-1),bL=L0.slice(-21,-1),bV=V0.slice(-21,-1);
+ const res=Math.max(...bH),sup=Math.min(...bL);
+ const range=(res-sup)/C0[bi];
+ if(!(range>=0.002&&range<=0.030))return {ok:false,why:'لا تجميع ضيق ('+(range*100).toFixed(2)+'%)'};
+ // انخفاض ضغط البيع: متوسط حجم النصف الثاني ≤ الأول ×1.1
+ const v1=bV.slice(0,10).reduce((a,b)=>a+b,0)/10,v2=bV.slice(10).reduce((a,b)=>a+b,0)/10;
+ const calm=v1>0?v2/v1:9;
+ // ④ تأكيد القاع: قاع أعلى من السابق أو استعادة دعم بعد كسر مؤقت
+ const lows=swingLows(L0,L0.length-40,L0.length-1);
+ const HL=lows.length>=2&&lows[lows.length-1].v>=lows[lows.length-2].v*0.999;
+ const reclaim=!HL&&(()=>{const s=Math.min(...L0.slice(-40,-20));return Math.min(...L0.slice(-20))<s&&C0[bi]>s;})();
+ if(!(HL||reclaim))return {ok:false,why:'قيعان أدنى مستمرة — لا قاع مؤكد'};
+ // ⑤ كسر قمة محلية بإغلاق 15m
+ const close=C0[bi];
+ if(!(close>res))return {ok:false,why:'لا إغلاق فوق القمة المحلية'};
+ // ⑥ حجم ×1.5–1.8+
+ const avgV=bV.reduce((a,b)=>a+b,0)/bV.length,vr=avgV>0?V0[bi]/avgV:0;
+ if(!(vr>=1.5))return {ok:false,why:'حجم ضعيف ×'+vr.toFixed(2)};
+ // ⑦ RSI يخرج من الضعف: كان ضعيفاً أثناء التكوين ثم تحسن
+ const rNow=rsi(C0,14),rPrev=rsi(C0.slice(0,-4),14);
+ let rWeak=rPrev<40;
+ if(!rWeak){for(let k=8;k<=24&&!rWeak;k+=4){const rr=rsi(C0.slice(0,-k),14);if(rr<40)rWeak=true;}}
+ if(!(rNow>rPrev&&rWeak&&rNow>=35))return {ok:false,why:'RSI لم يخرج من الضعف ('+Math.round(rPrev)+'→'+Math.round(rNow)+')'};
+ const entry=close,sl=Math.min(L0[bi]*0.999,res*0.998);
+ const risk=entry-sl;
+ if(!(risk>0&&risk/entry<=0.03))return {ok:false,why:'وقف غير فني'};
+ return {ok:true,res,sup,vr,calm:calm<=1.1,HL,reclaim,rNow,rPrev,sl,risk,entry,range,drop};
+}
+let scanning=false;
+$('scan').onclick=()=>doScan();
+async function doScan(){
+ if(scanning)return;scanning=true;$('scan').disabled=true;
+ try{
+ $('status').textContent='⏳ جلب السيولة والسبريد...';setProg(2,'⏳ سيولة + سبريد...','');
+ const [ticks,book]=await Promise.all([jget(BASE+'/api/v3/ticker/24hr'),jget(BASE+'/api/v3/ticker/bookTicker')]);
+ const stb=new Set(['USDT','USDC','DAI','FDUSD','USDE','TUSD','USDD','PYUSD','EURS','SUSD','BFUSD','USD1','BTTC','XUSD','AUSD']);
+ const px={};book.forEach(b=>{const bid=parseFloat(b.bidPrice),ask=parseFloat(b.askPrice);if(bid>0&&ask>0)px[b.symbol]={sp:(ask-bid)/((ask+bid)/2)};});
+ let uni=ticks.filter(t=>{
+  if(!t.symbol||!t.symbol.endsWith('USDT'))return false;
+  if(parseFloat(t.quoteVolume||0)<1000000)return false;
+  if(stb.has(t.symbol.slice(0,-4)))return false;
+  if(/UPUSDT|DOWNUSDT|BEARUSDT|BULLUSDT/.test(t.symbol))return false;
+  const q=px[t.symbol];if(!q||q.sp>0.002)return false;
+  return true;
+ });
+ uni=uni.sort((a,b)=>parseFloat(b.quoteVolume)-parseFloat(a.quoteVolume)).slice(0,150);
+ if(!uni.length){render([]);$('status').textContent='❌ لا عملات تحقق فلتر السيولة';scanning=false;$('scan').disabled=false;try{$('progWrap').style.display='none';}catch(e){}return;}
+ const t0=Date.now();
+ setProg(5,'🍑 فحص 15m...','0/'+uni.length);
+ const k15=new Array(uni.length).fill(null);
+ const CONC=12;
+ for(let s=0;s<uni.length;s+=CONC){
+  const slice=uni.slice(s,s+CONC).map(t=>()=>jget(BASE+'/api/v3/klines?symbol='+t.symbol+'&interval=15m&limit=200'));
+  const res=await Promise.all(slice.map(f=>f().catch(()=>null)));
+  for(let k=0;k<res.length;k++)k15[s+k]=res[k];
+  const done=Math.min(uni.length,s+CONC);
+  setProg(Math.round(5+done/uni.length*55),'🍑 فحص 15m '+done+'/'+uni.length,((Date.now()-t0)/1000).toFixed(0)+'ث');
+  if(s+CONC<uni.length)await new Promise(r=>setTimeout(r,80));
+ }
+ let cand=[];
+ for(let i=0;i<uni.length;i++){
+  const kl=k15[i];if(!kl||kl.length<120)continue;
+  const K=kl.slice(0,-1);
+  const C=K.map(k=>parseFloat(k[4])),H=K.map(k=>parseFloat(k[2])),L=K.map(k=>parseFloat(k[3])),V=K.map(k=>parseFloat(k[5]));
+  const live=parseFloat(uni[i].lastPrice);
+  const ev=evalRev(H,L,C,V,C.length-1);
+  if(!ev||!ev.ok)continue;
+  if(!(live>=ev.res*0.999))continue; // رفض: كسر قاع الانعكاس دون استعادة
+  if((live-ev.entry)/ev.entry>0.015)continue; // منع الدخول المتأخر: ارتفاع ممتد — انتظر إعادة اختبار
+  cand.push({sym:uni[i].symbol,live,ev,sp:px[uni[i].symbol].sp});
+ }
+ cand=cand.sort((a,b)=>b.ev.vr-a.ev.vr).slice(0,15);
+ if(!cand.length){render([]);$('status').textContent='✅ فحصنا '+uni.length+' عملة — لا انعكاس مؤكد الآن — '+new Date().toLocaleTimeString('ar');scanning=false;$('scan').disabled=false;try{$('progWrap').style.display='none';}catch(e){}return;}
+ $('status').textContent='⏳ تأكيد الدعم 4h ويومي لـ '+cand.length+' مرشح...';setProg(65,'⏳ دعم 4h/1d...',cand.length+' مرشح');
+ const deep=await Promise.all(cand.map(async p=>{
+  try{
+   const[h4,hd]=await Promise.all([jget(BASE+'/api/v3/klines?symbol='+p.sym+'&interval=4h&limit=60'),jget(BASE+'/api/v3/klines?symbol='+p.sym+'&interval=1d&limit=60')]);
+   return {p,h4:h4?h4.slice(0,-1):null,hd:hd?hd.slice(0,-1):null};
+  }catch(e){return null;}
+ }));
+ let out=[];
+ for(const d of deep){
+  if(!d||!d.h4||!d.hd||d.h4.length<30||d.hd.length<20)continue;
+  const L4=d.h4.map(k=>parseFloat(k[3])),C4=d.h4.map(k=>parseFloat(k[4])),Cd=d.hd.map(k=>parseFloat(k[4]));
+  const p=d.p,ev=p.ev;
+  // ① دعم 4h: لا قيعان جديدة + السعر قرب الدعم + فوق متوسط 20
+  const s4=Math.min(...L4.slice(-10)),ps4=Math.min(...L4.slice(-20,-10));
+  const noNewLow=s4>=ps4*0.995;
+  const nearSup=p.live<=s4*1.08;
+  const e20=ema(C4,20),aboveE20=e20!=null&&C4[C4.length-1]>=e20;
+  const dRSI=rsi(Cd,14);
+  if(!(noNewLow&&nearSup))continue; // رفض: بعيد عن الدعم أو قيعان أدنى مستمرة
+  const entry=p.live,sl=Math.min(ev.sl,entry*0.99),risk=entry-sl;
+  if(!(risk>0))continue;
+  // ⑫ أهداف عند المقاومة: أعلى 15m الأخيرة + مضاعفات R
+  const H15=d.p.H||null;
+  const t1=entry+risk,t2=entry+risk*2,t3=entry+risk*3;
+  const score=(noNewLow?2:0)+(aboveE20?2:0)+(ev.HL?2:0)+(ev.reclaim?2:0)+(ev.calm?1:0)+(ev.vr>=1.8?1:0)+(dRSI>=45?1:0);
+  const cond=[
+   ['① دعم 4h ثابت + قرب الدعم ('+(((p.live-s4)/s4)*100).toFixed(1)+'%)'+(aboveE20?' + فوق EMA20':''),true],
+   ['② هبوط '+(ev.drop*100).toFixed(1)+'% ثم استقرار',true],
+   ['③ تجميع '+(ev.range*100).toFixed(2)+'%'+(ev.calm?' + بيع هادئ':'') ,true],
+   ['④ '+(ev.HL?'قاع أعلى من السابق ✅':'استعادة دعم بعد كسر ✅'),true],
+   ['⑤ إغلاق 15m فوق القمة '+money(ev.res),true],
+   ['⑥ حجم ×'+ev.vr.toFixed(2)+' (≥1.5)',true],
+   ['⑦ RSI '+Math.round(ev.rPrev)+'→'+Math.round(ev.rNow)+' (خروج من الضعف)',true],
+   ['⑧ سيولة + سبريد '+(p.sp*100).toFixed(3)+'% ✅',true]
+  ];
+  out.push({sym:p.sym,entry,sl,t1,t2,t3,riskPct:risk/entry*100,p1:(t1-entry)/entry*100,p2:(t2-entry)/entry*100,p3:(t3-entry)/entry*100,score,vr:ev.vr,cond});
+ }
+ out=out.sort((a,b)=>b.score-a.score||b.vr-a.vr);
+ render(out);
+ setProg(100,'✅ اكتمل',uni.length+' عملة');
+ $('status').textContent='✅ فحصنا '+uni.length+' عملة — '+out.length+' انعكاس مؤكد — '+new Date().toLocaleTimeString('ar');
+ setTimeout(()=>{try{$('progWrap').style.display='none';}catch(e){}},4000);
+ }catch(e){$('status').textContent='❌ تعذر الفحص — تحقق من الإنترنت وأعد المحاولة';try{$('progWrap').style.display='none';}catch(_){}}
+ scanning=false;$('scan').disabled=false;
+}
+function render(list){
+ const g=$('grid');
+ if(!list.length){g.innerHTML='<div class="empty">لا انعكاس مؤكد الآن — نبحث عن نهاية الهبوط لا تخمين القاع.<br><small>اختبر تجريبياً أولاً.</small></div>';return;}
+ g.innerHTML=list.slice(0,6).map(a=>{
+ const s=a.sym.replace('USDT','');
+ return '<div class="card">'
+ +'<div class="top"><b>'+s+'/USDT</b><span class="badge">🍑 قوة '+a.score+' • حجم ×'+a.vr.toFixed(1)+'</span></div>'
+ +'<div class="checks">'+a.cond.map(c=>'<div class="ok">✅ '+c[0]+'</div>').join('')+'</div>'
+ +'<div class="nums"><div class="en"><small>📍 الدخول</small><b>'+money(a.entry)+'</b></div><div class="tp"><small>🎯 3R +'+a.p3.toFixed(1)+'%</small><b>'+money(a.t3)+'</b></div><div class="sp"><small>🛡 الوقف -'+a.riskPct.toFixed(1)+'%</small><b>'+money(a.sl)+'</b></div></div>'
+ +'<div class="nums"><div><small>🎯 1R +'+a.p1.toFixed(1)+'%</small><b class="u">'+money(a.t1)+'</b></div><div><small>🎯 2R +'+a.p2.toFixed(1)+'%</small><b class="u">'+money(a.t2)+'</b></div><div><small>⚖️ مخاطرة</small><b>'+a.riskPct.toFixed(1)+'%</b></div></div>'
+ +'</div>';}).join('');
+}
+$('bt').onclick=async()=>{
+ const sym=($('btSym').value||'').trim().toUpperCase();
+ if(!sym){$('btOut').innerHTML='<div class="empty">أدخل رمز العملة أولاً.</div>';return;}
+ $('bt').disabled=true;
+ $('btOut').innerHTML='<div class="empty">⏳ جلب 1000 شمعة 15m لـ '+sym+'...</div>';
+ try{
+ const kl=await jget(BASE+'/api/v3/klines?symbol='+sym+'&interval=15m&limit=1000');
+ if(!kl||kl.length<150)throw 0;
+ const H=kl.map(k=>parseFloat(k[2])),L=kl.map(k=>parseFloat(k[3])),C=kl.map(k=>parseFloat(k[4])),V=kl.map(k=>parseFloat(k[5]));
+ let wins=0,loss=0,sumR=0;const trades=[];
+ for(let i=100;i<C.length-30;i++){
+  const ev=evalRev(H,L,C,V,i);
+  if(!ev||!ev.ok)continue;
+  const entry=C[i],sl=ev.sl,risk=entry-sl;
+  if(!(risk>0))continue;
+  const t2=entry+risk*2;
+  let r=0,done=false;
+  for(let j=i+1;j<Math.min(C.length,i+25);j++){
+   if(L[j]<=sl){r=-1;done=true;break;}
+   if(H[j]>=t2){r=2;done=true;break;}
+  }
+  if(!done)r=(C[Math.min(C.length-1,i+24)]-entry)/risk;
+  if(r>0)wins++;else loss++;
+  sumR+=r;trades.push({i,r:r,entry:entry});
+ }
+ const n=wins+loss,wr=n?wins/n*100:0,exp=n?sumR/n:0;
+ const last=trades.slice(-10).reverse().map(t=>'<tr><td>#'+t.i+'</td><td>'+money(t.entry)+'</td><td class="'+(t.r>0?'win':'loss')+'">'+(t.r>0?'+':'')+t.r.toFixed(2)+'R</td></tr>').join('');
+ $('btOut').innerHTML='<div class="card"><div class="top"><b>'+sym+'</b><span class="badge">📊 '+n+' صفقة</span></div>'
+ +'<div class="nums"><div><small>✅ فوز</small><b class="u">'+wr.toFixed(0)+'%</b></div><div><small>📈 توقع</small><b class="u">'+(exp>=0?'+':'')+exp.toFixed(2)+'R</b></div><div><small>📊 صفقات</small><b>'+n+' ('+wins+'✅/'+loss+'🔴)</b></div></div>'
+ +(n?'<table><tr><th>الشمعة</th><th>الدخول</th><th>النتيجة</th></tr>'+last+'</table>':'<div class="empty">لا إشارات مطابقة في الفترة.</div>')
+ +'<div style="font-size:.72rem;color:#a89f83;margin-top:6px">الدخول بسعر إغلاق شمعة التأكيد، الخروج عند الوقف أو 2R خلال 24 شمعة. التوقع الموجب لا يضمن المستقبل.</div></div>';
+ }catch(e){$('btOut').innerHTML='<div class="empty">❌ تعذر جلب بيانات '+sym+' — تحقق من الرمز.</div>';}
+ $('bt').disabled=false;
+};
+setInterval(()=>{if(!document.hidden&&!scanning)doScan();},180000);
+</script>
+</body>
+</html>
