@@ -40,6 +40,7 @@ table{width:100%;border-collapse:collapse;font-size:.75rem;margin-top:8px}
 th{color:#a89f83;padding:6px;border-bottom:1px solid #ffffff14}
 td{padding:6px;border-bottom:1px solid #ffffff0a;text-align:center;font-variant-numeric:tabular-nums}
 .win{color:#4ade80;font-weight:900}.loss{color:#ff8d95;font-weight:900}
+.lpnl{font-size:.78rem;font-weight:900;text-align:center;margin-top:8px;color:#a89f83}
 .tvbox{margin-top:8px;border:1px solid #ffffff12;border-radius:12px;overflow:hidden;background:#000}
 .tvbox iframe{width:100%;height:220px;border:0;display:block}
 .warn{background:#8fd6ff0d;border:1px solid #8fd6ff33;color:#8fd6ff;border-radius:14px;padding:10px;font-size:.75rem;margin-bottom:12px;line-height:2}
@@ -219,8 +220,10 @@ function render(list){
  +'<div class="checks">'+a.cond.map(c=>'<div class="ok">✅ '+c[0]+'</div>').join('')+'</div>'
  +'<div class="nums"><div class="en"><small>📍 الدخول</small><b>'+money(a.entry)+'</b></div><div class="tp"><small>🎯 3R +'+a.p3.toFixed(1)+'%</small><b>'+money(a.t3)+'</b></div><div class="sp"><small>🛡 الوقف -'+a.riskPct.toFixed(1)+'%</small><b>'+money(a.sl)+'</b></div></div>'
  +'<div class="nums"><div><small>🎯 مقاومة +'+a.p1.toFixed(1)+'%</small><b class="u">'+money(a.t1)+'</b></div><div><small>🎯 تالية +'+a.p2.toFixed(1)+'%</small><b class="u">'+money(a.t2)+'</b></div><div><small>⚖️ مخاطرة</small><b>'+a.riskPct.toFixed(1)+'%</b></div></div>'
+ +'<div class="lpnl" data-live="'+a.sym+'" data-e="'+a.entry+'" data-t1="'+a.t1+'" data-t2="'+a.t2+'" data-t3="'+a.t3+'">⏳ بانتظار السعر الحي...</div>'
  +'<div class="tvbox"><iframe loading="lazy" referrerpolicy="no-referrer" src="https://www.tradingview.com/widgetembed/?symbol=BINANCE:'+a.sym+'&interval=15&theme=dark&style=1&locale=ar"></iframe></div>'
  +'</div>';}).join('');
+ startLive();
 }
 $('bt').onclick=async()=>{
  const sym=($('btSym').value||'').trim().toUpperCase();
@@ -263,6 +266,26 @@ setInterval(()=>{
  if(s>0)setAutoInfo('🔄 فحص تلقائي بعد '+s+' ث — 500 عملة');
  else doScan();
 },1000);
+let liveTimer=null;
+async function tickLive(){
+ try{
+ const els=[...document.querySelectorAll('[data-live]')];if(!els.length)return;
+ const syms=[...new Set(els.map(e=>e.dataset.live))];
+ const r=await fetch(BASE+'/api/v3/ticker/price?symbols='+encodeURIComponent(JSON.stringify(syms)),{cache:'no-store'});
+ if(!r.ok)return;
+ const arr=await r.json(),px={};
+ (Array.isArray(arr)?arr:[arr]).forEach(x=>{px[x.symbol]=parseFloat(x.price);});
+ els.forEach(el=>{
+  const live=px[el.dataset.live];if(!(live>0))return;
+  const e=+el.dataset.e,t1=+el.dataset.t1,t2=+el.dataset.t2,t3=+el.dataset.t3;
+  const pnl=(live-e)/e*100;
+  const m=(t,lb)=>live>=t?'✅ '+lb+' ضُرب':'🎯 '+lb;
+  el.innerHTML='💰 حي '+money(live)+' ('+(pnl>=0?'+':'')+pnl.toFixed(2)+'%) • '+m(t1,'هـ1')+' • '+m(t2,'هـ2')+' • '+m(t3,'هـ3');
+  el.style.color=pnl>=0?'#4ade80':'#ff8d95';
+ });
+ }catch(e){}
+}
+function startLive(){try{if(liveTimer)clearInterval(liveTimer);}catch(e){}tickLive();liveTimer=setInterval(()=>{if(!document.hidden)tickLive();},10000);}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&autoMode&&!scanning&&Date.now()>=nextAt-1000)doScan();});
 setTimeout(()=>{if(autoMode&&!scanning)doScan();},800);
 </script>
