@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>لعبة SOL اليومية 3D - للجوال والتابلت</title>
+<meta name="theme-color" content="#0a0e1a">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:system-ui,'Cairo',sans-serif;background:#06070b;color:#f6f1df;overflow:hidden;height:100dvh;display:flex;flex-direction:column}
+#game{flex:1;position:relative;touch-action:none}
+#game canvas{display:block;width:100%!important;height:100%!important}
+.hud{position:absolute;top:0;left:0;right:0;display:flex;gap:8px;padding:10px;justify-content:center;flex-wrap:wrap;pointer-events:none;z-index:5}
+.pill{background:#10131fee;border:1px solid #d4af3766;border-radius:99px;padding:7px 14px;font-weight:900;font-size:.85rem;backdrop-filter:blur(8px)}
+.pill b{color:#f6e27a}
+#toast{position:absolute;top:60px;left:50%;transform:translateX(-50%);background:#16c784;color:#04120a;font-weight:900;padding:8px 18px;border-radius:99px;display:none;z-index:9}
+.panel{background:#0c0e16f2;border-top:1px solid #d4af3744;padding:12px 14px calc(12px + env(safe-area-inset-bottom));z-index:6}
+.row{display:flex;gap:10px;align-items:center}
+.balance{flex:1}
+.balance small{color:#a89f83;display:block;font-size:.72rem}
+.balance b{font-size:1.4rem;color:#f6e27a}
+button{font-family:inherit;font-weight:900;border-radius:14px;border:none;cursor:pointer;padding:14px 16px;font-size:1rem;touch-action:manipulation}
+.btn-daily{flex:1;background:linear-gradient(135deg,#f6e27a,#d4af37);color:#231b05;box-shadow:0 6px 20px #d4af3755}
+.btn-daily:disabled{opacity:.4;filter:grayscale(1)}
+.btn-tap{background:#16c78422;border:1px solid #16c78466;color:#4ade80;min-width:90px}
+.hint{text-align:center;color:#a89f83;font-size:.78rem;margin-top:8px;line-height:1.8}
+.disclaimer{text-align:center;font-size:.7rem;color:#7a744f;margin-top:6px}
+#tapFx{position:absolute;pointer-events:none;font-weight:900;color:#f6e27a;z-index:8;animation:up 0.8s ease forwards}
+@keyframes up{to{transform:translateY(-60px);opacity:0}}
+.cross{position:absolute;bottom:110px;left:14px;display:grid;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px);gap:4px;z-index:5;opacity:.9}
+.cross button{background:#ffffff14;border:1px solid #ffffff22;color:#fff;padding:0;font-size:1.3rem;border-radius:12px;backdrop-filter:blur(6px)}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+</head>
+<body>
+<div id="game">
+<div class="hud">
+<div class="pill">💰 رصيدك: <b id="bal">0.00</b> SOL تجريبي</div>
+<div class="pill">🔥 سلسلة: <b id="streak">0</b> يوم</div>
+<div class="pill">🎯 اليوم: <b id="today">0.00</b></div>
+</div>
+<div id="toast"></div>
+<div class="cross">
+<div></div><button data-m="f">▲</button><div></div>
+<button data-m="l">◀</button><button data-m="b">▼</button><button data-m="r">▶</button>
+<div></div><button id="jumpBtn">⤒</button><div></div>
+</div>
+</div>
+<div class="panel">
+<div class="row">
+<div class="balance"><small>مكافأة يومية 0.5 أو 1.0 (نقاط لعب فقط)</small><b id="bal2">0.00 SOL</b></div>
+<button class="btn-tap" id="collectBtn">⚡ اجمع</button>
+<button class="btn-daily" id="dailyBtn">🎁 مكافأة اليوم</button>
+</div>
+<div class="hint">📱 اسحب للتدوير • اضغط العملة لجمعها • الأسهم للتحرك • زر ⚡ يجذب أقرب عملة<br>العب كل يوم لزيادة السلسلة والحصول على 0.5 → 1.0</div>
+<div class="disclaimer">⚠️ هذه نقاط تجريبية للعب فقط وليست عملة SOL حقيقية. لا يوجد سحب حقيقي بدون محفظة وتمويل. لا ترسل أموالاً لأي شخص يعدك بـ SOL مجاني.</div>
+</div>
+<script type="module">
+import * as THREE from 'three';
+const balEl=document.getElementById('bal'),bal2=document.getElementById('bal2'),todayEl=document.getElementById('today'),streakEl=document.getElementById('streak'),dailyBtn=document.getElementById('dailyBtn'),toast=document.getElementById('toast'),gameDiv=document.getElementById('game');
+let S=JSON.parse(localStorage.getItem('sol3d_v1')||'{"bal":0,"last":"", "streak":0,"today":0,"todayDate":""}');
+const todayStr=new Date().toDateString();
+if(S.todayDate!==todayStr){S.today=0;S.todayDate=todayStr;}
+function save(){localStorage.setItem('sol3d_v1',JSON.stringify(S));render();}
+function render(){balEl.textContent=S.bal.toFixed(2);bal2.textContent=S.bal.toFixed(2)+' SOL';todayEl.textContent=S.today.toFixed(2);streakEl.textContent=S.streak;
+const can=S.last!==todayStr;dailyBtn.disabled=!can;dailyBtn.textContent=can?'🎁 مكافأة اليوم':'✅ تم الاستلام غداً';}
+function showT(t){toast.textContent=t;toast.style.display='block';clearTimeout(showT._t);showT._t=setTimeout(()=>toast.style.display='none',2000);}
+dailyBtn.onclick=()=>{if(S.last===todayStr)return;const y=new Date();y.setDate(y.getDate()-1);
+S.streak=(S.last===y.toDateString())?S.streak+1:1;const reward=S.streak>=3?1.0:0.5;S.bal+=reward;S.today+=reward;S.last=todayStr;save();popFx('+'+reward+' SOL 🎁');showT('مكافأة يوم '+S.streak+': +'+reward);};
+function addCoin(v){S.bal+=v;S.today+=v;save();}
+// --- THREE scene (mobile optimized) ---
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x06070b);scene.fog=new THREE.Fog(0x06070b,18,55);
+const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,200);
+const renderer=new THREE.WebGLRenderer({antialias:false});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));gameDiv.prepend(renderer.domElement);
+scene.add(new THREE.AmbientLight(0xffffff,.7));
+const sun=new THREE.DirectionalLight(0xf6e27a,1.2);sun.position.set(5,10,5);scene.add(sun);
+const ground=new THREE.Mesh(new THREE.CylinderGeometry(16,16,1,32),new THREE.MeshStandardMaterial({color:0x0d1424}));ground.position.y=-1;scene.add(ground);
+const ring=new THREE.Mesh(new THREE.TorusGeometry(15,0.15,8,64),new THREE.MeshBasicMaterial({color:0xd4af37}));ring.rotation.x=Math.PI/2;ring.position.y=-0.4;scene.add(ring);
+// player
+const player=new THREE.Group();
+const body=new THREE.Mesh(new THREE.SphereGeometry(.5,16,16),new THREE.MeshStandardMaterial({color:0x4f7cff}));body.position.y=.6;player.add(body);
+const eye1=new THREE.Mesh(new THREE.SphereGeometry(.1,8,8),new THREE.MeshBasicMaterial({color:0xffffff}));eye1.position.set(.15,.75,.4);player.add(eye1);
+const eye2=eye1.clone();eye2.position.x=-.15;player.add(eye2);
+scene.add(player);
+// coins
+const coins=[];
+const coinGeo=new THREE.CylinderGeometry(.45,.45,.12,24);coinGeo.rotateX(Math.PI/2);
+function spawnCoin(){const m=new THREE.MeshStandardMaterial({color:0xf6e27a,metalness:.7,roughness:.25,emissive:0x6b5515,emissiveIntensity:.5});
+const c=new THREE.Mesh(coinGeo,m);const a=Math.random()*Math.PI*2,r=3+Math.random()*10;
+c.position.set(Math.cos(a)*r,.6+Math.random()*1.5,Math.sin(a)*r);c.userData.spin=Math.random()*2+1;scene.add(c);coins.push(c);}
+for(let i=0;i<14;i++)spawnCoin();
+// controls: orbit + move
+let ang=0,dist=9,px=0,pz=0;
+function updateCam(){cam.position.set(px+Math.sin(ang)*dist,5,pz+Math.cos(ang)*dist);cam.lookAt(px,1,pz);player.position.set(px,0,pz);player.rotation.y=ang+Math.PI;}
+let dragging=false,lx=0;
+renderer.domElement.addEventListener('pointerdown',e=>{dragging=true;lx=e.clientX;});
+addEventListener('pointerup',()=>dragging=false);
+addEventListener('pointermove',e=>{if(dragging){ang+=(e.clientX-lx)*0.01;lx=e.clientX;}});
+const keys={};addEventListener('keydown',e=>keys[e.key]=true);addEventListener('keyup',e=>keys[e.key]=false);
+document.querySelectorAll('.cross button[data-m]').forEach(b=>{
+const m=b.dataset.m;b.addEventListener('pointerdown',()=>keys[m]=true);b.addEventListener('pointerup',()=>keys[m]=false);b.addEventListener('pointerleave',()=>keys[m]=false);});
+function move(dt){const sp=5*dt;let fx=0,fz=0;
+if(keys['f']||keys['ArrowUp']){fx-=Math.sin(ang+Math.PI)*sp;fz-=Math.cos(ang+Math.PI)*sp;}
+if(keys['b']||keys['ArrowDown']){fx+=Math.sin(ang+Math.PI)*sp;fz+=Math.cos(ang+Math.PI)*sp;}
+if(keys['l']||keys['ArrowLeft']){ang+=1.8*dt;}if(keys['r']||keys['ArrowRight']){ang-=1.8*dt;}
+px=Math.max(-13,Math.min(13,px+fx));pz=Math.max(-13,Math.min(13,pz+fz));}
+// raycast tap
+const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();
+renderer.domElement.addEventListener('pointerup',e=>{
+if(Math.abs(e.clientX-lx)>8)return;
+ptr.x=(e.clientX/innerWidth)*2-1;ptr.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(ptr,cam);
+const hit=ray.intersectObjects(coins)[0];
+if(hit)collect(hit.object);});
+function collect(c){scene.remove(c);coins.splice(coins.indexOf(c),1);addCoin(0.05);popFx('+0.05');spawnCoin();navigator.vibrate&&navigator.vibrate(20);}
+document.getElementById('collectBtn').onclick=()=>{let best=null,bd=99;coins.forEach(c=>{const d=c.position.distanceTo(player.position);if(d<bd){bd=d;best=c;}});if(best&&bd<6)collect(best);else showT('اقترب من العملة!');};
+document.getElementById('jumpBtn').onclick=()=>{body.position.y=1.2;setTimeout(()=>body.position.y=.6,200);};
+function popFx(t){const d=document.createElement('div');d.id='tapFx';d.textContent=t;d.style.left='50%';d.style.top='40%';gameDiv.appendChild(d);setTimeout(()=>d.remove(),800);}
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();renderer.setSize(innerWidth,gameDiv.clientHeight);});
+let last=performance.now();
+(function loop(t){requestAnimationFrame(loop);const dt=Math.min(.05,(t-last)/1000);last=t;move(dt);
+coins.forEach(c=>{c.rotation.y+=c.userData.spin*dt;c.position.y+=Math.sin(t/500+c.position.x)*0.003;
+if(c.position.distanceTo(player.position)<0.9)collect(c);});
+updateCam();renderer.render(scene,cam);})(last);
+render();
+</script>
+</body>
+</html>

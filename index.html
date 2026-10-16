@@ -1480,6 +1480,7 @@ body.linkmode #masterFab{display:none!important}
     <span>🛡️ محمية: <b id="guardCount2">0</b></span>
     <span class="muted" id="nextScan">⏳ 60</span>
   </div>
+  <a href="analyst-x.html" style="display:block;margin-top:10px;position:relative;z-index:1;background:linear-gradient(135deg,#f6e27a,#d4af37);color:#231b05;font-weight:900;text-align:center;border-radius:14px;padding:13px;text-decoration:none;box-shadow:0 6px 22px #d4af3755">🧠 🆕 تحديث ANALYST-X: 11 محللاً × 55 أداة — كل عملة تُفحص من كل الجوانب + صفقة جاهزة 👈 افتح النظام الجديد</a>
 </div>
 
 <div class="dash-strips">
@@ -6184,6 +6185,33 @@ window.__excelBuy=render;
 })();
 </script>
 <script src="hq-entry.js"></script>
+<script src="analyst-x-engine.js"></script>
+<script>// 🧠 ANALYST-X BRIDGE — العملة تمر على 11 محللاً × 55 أداة داخل النظام نفسه
+(function(){
+"use strict";
+try{
+  if(typeof analyzeCoin!=='function'||!window.ANALYSTX) return;
+  const base=analyzeCoin;
+  analyzeCoin=function(c){
+    const a=base(c);
+    try{
+      const x=window.ANALYSTX.evaluate(c);
+      a.x=x;
+      // دمج: الرئيسي يوافق فقط — الحارس له فيتو
+      const xFail=(x.gates||[]).filter(g=>!g.ok).map(g=>g.msg);
+      if(xFail.length&&(a.grade==='strong'||a.grade==='buy')){
+        a.grade='avoid'; a.action='🔴 تجنب — '+xFail[0]; a.isBuy=false; a.score=Math.min(a.score||0,44);
+      } else if(x.isBuy&&a.grade==='watch'){ a.grade='buy'; a.action='🟢 شراء (X👑)'; a.isBuy=true; a.score=Math.max(a.score||0,65); }
+      else { a.score=Math.round(((a.score||0)+x.score)/2); }
+      a.candleX=x.plan.candle+' • '+x.plan.entryType;
+      a.xVotes=(x.analysts||[]).map(v=>v.name+': '+v.verdict+' '+v.score);
+      (a.reasons=a.reasons||[]).push('🧠 X:'+x.score+' — '+x.plan.candle);
+    }catch(e){}
+    return a;
+  };
+  try{ var s=document.getElementById('radarStatus'); if(s) s.textContent='🧠 ANALYST-X مفعّل: 11 محللاً × 55 أداة داخل الفحص'; }catch(e){}
+}catch(e){}
+})();</script>
 <script>// 🏆 HQ-UI — تشغيل فلتر الدخول الاحترافي من المتصفح (نفس محرك hq-entry.js)
 (function(){
 "use strict";
