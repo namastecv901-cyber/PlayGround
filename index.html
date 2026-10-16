@@ -1060,6 +1060,14 @@ body{max-width:680px;margin:0 auto;padding:12px}
 .lr-fill.s3{background:linear-gradient(90deg,#f0b90b,#ff8a3d)}
 .lr-fill.done{background:linear-gradient(90deg,#1fe196,#f0b90b,#ff8a3d);animation:fillGlow 1.6s infinite}
 @keyframes fillGlow{50%{filter:brightness(1.35)}}
+.lr-fill{overflow:hidden}
+.lr-fill::after{content:'';position:absolute;inset:0;border-radius:99px;background:repeating-linear-gradient(115deg,#ffffff30 0 10px,transparent 10px 20px);animation:barSlide 1s linear infinite}
+@keyframes barSlide{to{background-position:28px 0}}
+.gd-prog i,.cl-prog i{position:relative;overflow:hidden}
+.cf-badge{display:inline-block;background:#16c78422;border:1px solid #16c78466;color:#1fe196;border-radius:99px;padding:2px 10px;font-size:.68rem;font-weight:900;animation:fillGlow 1.6s infinite;white-space:nowrap}
+.mvbar{height:8px;background:#ffffff10;border-radius:99px;overflow:hidden;margin:8px 0}
+.mvbar i{display:block;height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#16c784,#f0b90b);position:relative;transition:width .8s ease}
+.mvbar i::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(115deg,#ffffff30 0 10px,transparent 10px 20px);animation:barSlide 1s linear infinite}
 .lr-t.hit{background:#1fe196!important;box-shadow:0 0 12px #1fe196;animation:tHitPop .6s ease}
 @keyframes tHitPop{0%{transform:scale(1)}40%{transform:scale(1.6)}100%{transform:scale(1)}}
 .lr-pct{font-size:.66rem;color:#1fe196;font-weight:900}
@@ -1814,7 +1822,7 @@ function analyzeCoin(c){
   const risk=Math.max(atr*1.2, entry*0.008);
   const riskC=Math.min(risk, entry*0.06);
   const sl=entry-riskC;
-  const t1=entry+riskC*1.5, t2=entry+riskC*2.5, t3=entry+riskC*4;
+  const t2=entry+riskC*2.5, t1=t2, t3=t2; // 🎯 هدف واحد 2.5R مع الربح
   const riskPct=riskC/entry*100;
   const nearHigh=(swingH-entry)/entry*100;
   const entryType=nearHigh<=2?'اختراق قمة ⚡':(entry<=swingL*1.03?'ارتداد من دعم 🔄':'دخول زخم 📈');
@@ -1839,7 +1847,7 @@ function radarItem(a,time){
   const c=a.c, sym=(c.symbol||'').toUpperCase();
   return `<img src="${c.image||''}" onerror="this.style.display='none'">`
     +`<div class="rf-main"><span class="rf-buy">${a.action} ${a.score}%</span> <b>${sym}</b><small>${c.name||''} · ${a.whaleLabel} · ثقة ${a.score}%</small></div>`
-    +`<div class="rf-plan"><span>دخول <b>${money(a.entry)}</b></span><span class="up">هـ1 ${money(a.t1)} (+${pctOf(a,a.t1)})</span><span class="up">هـ2 ${money(a.t2)} (+${pctOf(a,a.t2)})</span><span class="up">هـ3 ${money(a.t3)} (+${pctOf(a,a.t3)})</span><span class="down">ستوب ${money(a.sl)}</span></div>`
+    +`<div class="rf-plan"><span>دخول <b>${money(a.entry)}</b></span><span class="up">🎯 هدف ${money(a.t2)} (+${pctOf(a,a.t2)} 💰)</span><span class="down">ستوب ${money(a.sl)}</span></div>`
     +`<div class="rf-pnl up">AI ${a.score}</div><time>${time}</time>`;
 }
 function countUp(el,to){ try{ const from=parseInt(el.textContent)||0; if(from===to){ el.textContent=String(to); return; } const t0=performance.now(),D=700;
@@ -1868,7 +1876,7 @@ function paintRadar(){ return;
     const f=$('alertsFeed'); if(!f) return;
     const sig=all.filter(a=>a.isBuy||(a.grade==='trap'||a.grade==='avoid')).slice(0,10);
     f.innerHTML=sig.map(a=>{ const buy=a.isBuy; const sym=(a.c.symbol||'').toUpperCase();
-      return '<li class="'+(buy?'buy':'sell')+'"><img src="'+(a.c.image||'')+'" onerror="this.style.display=\'none\'"><span>'+(buy?'🟢 شراء':'🔴 بيع')+' <b>'+sym+'</b> — دخول '+money(a.entry)+' • هدف '+money(a.t1)+' • وقف '+money(a.sl)+'</span><time>'+new Date().toLocaleTimeString('ar')+'</time></li>'; }).join('');
+      return '<li class="'+(buy?'buy':'sell')+'"><img src="'+(a.c.image||'')+'" onerror="this.style.display=\'none\'"><span>'+(buy?'🟢 شراء':'🔴 بيع')+' <b>'+sym+'</b> — دخول '+money(a.entry)+' • هدف '+money(a.t2)+' • وقف '+money(a.sl)+'</span><time>'+new Date().toLocaleTimeString('ar')+'</time></li>'; }).join('');
   }catch(e){}
 }
 function bindSections(){}
@@ -2033,13 +2041,13 @@ function money(n){ if(window.AI_MONEY) return window.AI_MONEY(n); if(n==null||is
 function bar(v){ v=Math.max(0,Math.min(100,Math.round(v))); const cls=v>=65?'b-g':v>=50?'b-y':'b-r'; return '<div class="ai-bar"><i class="'+cls+'" style="width:'+v+'%"></i></div>'; }
 function guardOf(id){ const G=(window.GUARDIAN&&window.GUARDIAN.G)||{pos:[]}; return G.pos.find(x=>x.id===id); }
 const LIVE={
-  EXIT_NOW:['exit','g-exit','🚨 اخرج الآن','بيع قوي مكتشف — لا تنتظر الهدف الأخير، أغلق الآن'],
+  EXIT_NOW:['exit','g-exit','🚨 اخرج الآن','بيع قوي مكتشف — لا تنتظر الهدف، أغلق الآن'],
   PULLBACK:['pull','g-pull','📉 اخرج جزئياً','تحقّق الهدف الأول ثم تراجع — اجنِ 50% وارفع الوقف للدخول'],
   DANGER:['danger','g-danger','⚠️ لا تُضِف','إشارات بيع — جهّز الخروج من أقرب ارتداد'],
   T2:['t2','g-t2','✅ اجنِ نصف الكمية','فوق الهدف الثاني — ارفع الوقف للدخول واترك الباقي'],
   T1:['t1','g-t1','💰 اجنِ 30%','فوق الهدف الأول — خفّف والوقف على الدخول'],
   HOLD_RISK:['risk','g-risk','⏳ تحت الدخول — لا تُضِف','الحارس يحرس الوقف حتى لا تكبر الخسارة'],
-  HOLD:['hold','g-hold','🟢 استمر','الباقي مؤمّن بوقف التعادل — نحو الهدف الأخير']
+  HOLD:['hold','g-hold','🟢 استمر','نحو الهدف الواحد 💰']
 };
 const GRADE={
   strong:['strong','ai-badge strong','⭐ شراء قوي','صعود حقيقي مؤكد بكل الفلاتر — ادخل الآن'],
@@ -2104,8 +2112,8 @@ function entryState(a){
   const p=guardOf(a.c.id);
   if(p){
     // 🔓 قفل ذكي بآمان: عودة + صعود أخضر → يُفتح، عودة هابطة أو بعيد → مقفل
-    if(p.entryBlocked && !p.t1hit && !p.t2hit && !p.t3hit){ if(nearEntry(a)&&safeRise(a.c.id)){ const P=planOf(a); const cur=a.c.current_price||P.entry; return cur>=P.entry*0.999?'open':'wait'; } return 'void'; }
-    if(p.t1hit||p.t2hit||p.t3hit||p.verdict==='FINAL') return 'done';
+    if(p.entryBlocked && !p.t2hit){ if(nearEntry(a)&&safeRise(a.c.id)){ const P=planOf(a); const cur=a.c.current_price||P.entry; return cur>=P.entry*0.999?'open':'wait'; } return 'void'; }
+    if(p.t2hit||p.verdict==='FINAL') return 'done';
   }
   const P=planOf(a);
   const cur=a.c.current_price||P.entry;
@@ -2132,15 +2140,15 @@ function decisionOf(a){
   const st=entryState(a);
   if(st==='confirm'){ const Pc=planOf(a); const cuc=a.c.current_price||Pc.entry; return ['wait','g-risk','🔍 اختراق يحتاج تأكيد','السعر '+money(cuc)+' فوق الدخول '+money(Pc.entry)+' • نتحقق من الثبات قبل القرار — لا تدخل الآن']; }
   if(st==='void'||st==='miss') return ['void','g-void','🟠 الدخول مغلق — فاتتك هذه الصفقة','قفز السعر فوق نقطة الدخول '+money(p?p.entry:a.entry)+' • أُلغيت نهائياً ولن تدخلها مجدداً • صفقة جديدة فقط عند ارتداع حقيقي + setup نظيف'];
-  if(st==='done') return ['done','g-t2','🔒 الدخول مغلق — صفقتك داخل','تحقّق الهدف ف-'+(p.t2hit?'2':'1')+' • لا دخول جديد • '+p.note.slice(0,80)];
+  if(st==='done') return ['done','g-t2','🔒 الدخول مغلق — صفقتك داخل','تحقّق الهدف 💰 • لا دخول جديد • '+p.note.slice(0,80)];
   if(st==='gone') return ['wait','g-risk','⏳ فاتتك نقطة الدخول المثبتة','قرار واحد ثابت عند '+money((planOf(a)).entry)+' • السعر الآن '+money(a.c.current_price)+' • لا تدخل بسعر أعلى — قرار جديد بعد ارتداع'];
   if(st==='wait'){ const P=planOf(a); const cur=a.c.current_price||P.entry; const near=Math.abs(cur-P.entry)/P.entry<=0.004; if(near&&!safeRise(a.c.id)) return ['wait','g-risk','🔒 مقفل بأمان — عودة هابطة','عاد السعر قرب الدخول '+money(P.entry)+' لكن الاتجاه أحمر هابط — القفل يبقى حتى تأكيد صعود أخضر']; return ['wait','g-risk','⏳ لا تدخل بعد — السعر تحت نقطة الدخول','نقطة الدخول '+money(p?p.entry:a.entry)+' والسعر الحالي '+money(a.c.current_price)+' • انتظر عودة السعر لها ولا تدخل بسعر أعلى']; }
   if(p){
     if(!p.open){
       try{ if(window.ENTRY_ACCEPT&&window.ENTRY_ACCEPT.has(a.c.id)) return ['fresh','g-hold','🟢 مفتوحة بموافقتك — الدخول الآن','فتحت هذه الصفقة بموافقتك • الدخول المتأخر على مسؤوليتك • نقطة الدخول '+money((planOf(a)).entry)]; }catch(e){}
-      if((p.verdict==='MISSED'||p.entryBlocked)&&!p.t1hit&&!p.t2hit&&nearEntry(a)&&safeRise(a.c.id)){ const P=planOf(a); const cur=a.c.current_price||P.entry; if(cur>=P.entry*0.999) return ['fresh','g-hold','🟢 عاد صاعد بأمان — فُك القفل: الدخول الآن','عاد السعر لنقطة الدخول '+money(P.entry)+' والاتجاه أخضر صاعد • القفل الذكي فُتح • ادخل الآن بسعر السوق']; return ['wait','g-risk','🔓 عاد صاعد — القفل سيُفتح عند اللمسة','السعر '+money(cur)+' قريب من الدخول '+money(P.entry)+' وصاعد • انتظر اللمسة ثم ادخل']; }
+      if((p.verdict==='MISSED'||p.entryBlocked)&&!p.t2hit&&nearEntry(a)&&safeRise(a.c.id)){ const P=planOf(a); const cur=a.c.current_price||P.entry; if(cur>=P.entry*0.999) return ['fresh','g-hold','🟢 عاد صاعد بأمان — فُك القفل: الدخول الآن','عاد السعر لنقطة الدخول '+money(P.entry)+' والاتجاه أخضر صاعد • القفل الذكي فُتح • ادخل الآن بسعر السوق']; return ['wait','g-risk','🔓 عاد صاعد — القفل سيُفتح عند اللمسة','السعر '+money(cur)+' قريب من الدخول '+money(P.entry)+' وصاعد • انتظر اللمسة ثم ادخل']; }
       if(p.verdict==='MISSED'||p.entryBlocked) return ['void','g-void','🟠 الدخول مغلق — فاتتك هذه الصفقة','قفز السعر فوق نقطة الدخول '+money(p.entry)+' • أُلغيت نهائياً ولن تدخلها مجدداً • ستُفتح صفقة جديدة فقط عند ارتداع حقيقي + setup نظيف من الذكاء'];
-      if(p.verdict==='FINAL'){ const dn=window.DONE_N?window.DONE_N.get(a.c.id).done:0; return ['done','g-final','🏆 اكتملت — صفقة رابحة'+(dn>0?' #'+dn:''),'الهدف الأخير تحقق'+(dn>0?' • هذه المكتملة رقم '+dn:'')+' • أرشفة، لا إعادة دخول الآن']; }
+      if(p.verdict==='FINAL'){ const dn=window.DONE_N?window.DONE_N.get(a.c.id).done:0; return ['done','g-final','🏆 اكتملت — صفقة رابحة'+(dn>0?' #'+dn:''),'الهدف تحقق 💰'+(dn>0?' • هذه المكتملة رقم '+dn:'')+' • أرشفة، لا إعادة دخول الآن']; }
       const cw0=p.closeWhy||''; const isStop0=cw0.indexOf('وقف')>=0||cw0.indexOf('STOP')>=0; const sn0=isStop0&&window.DONE_N?window.DONE_N.get(a.c.id).stop:0; return ['closed','g-stop','🔴 '+(isStop0?'ضرب الوقف'+(sn0>0?' #'+sn0:''):'أُغلقت')+' — لا تدخل','توقّف/إغلاق: '+(p.closeWhy||'الصفقة مغلقة')+(sn0>0?' • وقف رقم '+sn0:'')+' • صفقة جديدة ستظهر عند إشارة جديدة'];
     }
     const v=LIVE[p.verdict]||LIVE.HOLD;
@@ -2235,12 +2243,10 @@ function card(a,i){
   +tfBadge
   +'<div class="st-plan">'
   +'<div class="pl-row pl-entry '+ENTRY[entryState(a)][2]+((entryState(a)==='open'||entryState(a)==='fresh')?'':' no-enter')+'"><span>'+ENTRY[entryState(a)][0]+' '+ENTRY[entryState(a)][1]+'</span><b>'+money(P.entry)+acceptTag(a)+'</b></div>'
-  +'<div class="pl-row"><span>🎯 هدف 1 <em>R1.5 · اجنِ 30%</em></span><b class="up">+'+pct(P.t1)+'</b><small>'+money(P.t1)+'</small></div>'
-  +'<div class="pl-row"><span>🎯 هدف 2 <em>R2.5 · اجنِ 50%</em></span><b class="up">+'+pct(P.t2)+'</b><small>'+money(P.t2)+'</small></div>'
-  +'<div class="pl-row"><span>🎯 هدف 3 <em>R4 · خروج كامل</em></span><b class="up">+'+pct(P.t3)+'</b><small>'+money(P.t3)+'</small></div>'
+  +'<div class="pl-row"><span>🎯 هدف واحد <em>R2.5 · خروج كامل 💰</em></span><b class="up">+'+pct(P.t2)+'</b><small>'+money(P.t2)+'</small></div>'
   +'<div class="pl-row pl-stop"><span>🛡 الوقف <em>مخاطرة</em></span><b class="down">-'+rp+'%</b><small>'+money(P.sl)+'</small></div>'
   +'</div>'
-  +'<div class="st-meta"><span>🔴 مخاطرة -'+rp+'%</span><span>🟢 ربح كامل +'+pct(P.t3)+'</span><span>العائد 1:4</span><span>دعم '+money(pl.support)+'</span><span>مقاومة '+money(pl.resistance)+'</span></div>'
+  +'<div class="st-meta"><span>🔴 مخاطرة -'+rp+'%</span><span>🟢 ربح +'+pct(P.t2)+' 💰</span><span>العائد 1:2.5</span><span>دعم '+money(pl.support)+'</span><span>مقاومة '+money(pl.resistance)+'</span></div>'
   +'<div class="st-warn">⛔ '+ (pl.invalidate||'') +' — 🎓 خاطر بـ1-2% فقط</div>'
   +'</section>';
   const pv=PREV[c.id]; const fl=pv==null?'':(a.price>pv?' flash-up':a.price<pv?' flash-down':'');
@@ -2259,7 +2265,7 @@ function card(a,i){
   + ticket
   +'<section class="strip strip-guard"><div class="st-head"><span>🛡️ الحارس الذكي — مراقبة حيّة</span>'
   +'<button class="track-btn inline" data-track="'+c.id+'">🛡️ ابدأ المراقبة</button></div>'
-  +'<div class="card-mon" data-mon="'+c.id+'"><div class="mon-empty">اضغط «ابدأ المراقبة» — يتابعها حتى 🎯 الأخير أو 🛡 الوقف</div></div></section>'
+  +'<div class="card-mon" data-mon="'+c.id+'"><div class="mon-empty">اضغط «ابدأ المراقبة» — يتابعها حتى 🎯 الهدف أو 🛡 الوقف</div></div></section>'
   +'<details class="fold"><summary>📊 تحليل الذكاء — 6 ركائز ولماذا</summary>'
   +'<div class="ai-changes"><span class="'+(ch1>=0?'up':'down')+'">1س '+ch1.toFixed(2)+'%</span><span class="'+(ch24>=0?'up':'down')+'">24س '+ch24.toFixed(2)+'%</span><span>RSI '+a.tech.rsi.toFixed(0)+'</span><span>'+a.whaleLabel.split(' ').slice(0,2).join(' ')+'</span></div>'
   +'<div class="ai-factors">'
@@ -2311,7 +2317,7 @@ function render(){
     el.onclick=(ev)=>{
       if(ev && ev.target && (ev.target.tagName==='INPUT'||ev.target.tagName==='BUTTON')) return;
       const id=el.dataset.id; const a=all.find(x=>x.c.id===id); if(!a) return;
-      const txt=(a.c.symbol||'').toUpperCase()+' | دخول '+money(a.entry)+' | هـ1 '+money(a.t1)+' | هـ2 '+money(a.t2)+' | هـ3 '+money(a.t3)+' | وقف '+money(a.sl)+' | ثقة '+a.score+'%';
+      const txt=(a.c.symbol||'').toUpperCase()+' | دخول '+money(a.entry)+' | هدف '+money(a.t2)+' (+'+pctOf(a,a.t2)+') | وقف '+money(a.sl)+' | ثقة '+a.score+'%';
       try{ navigator.clipboard.writeText(txt); }catch(e){}
       el.style.outline='2px solid #16c784'; setTimeout(()=>el.style.outline='',900);
     };
@@ -2365,7 +2371,7 @@ function bindCards(g,all){
   g.querySelectorAll('[data-accept]').forEach(b=>{ b.onclick=(e)=>{ e.stopPropagation(); try{
     const id=b.dataset.accept;
     if(window.ENTRY_ACCEPT) window.ENTRY_ACCEPT.add(id);
-    try{ const ax=all.find(x=>x.c.id===id); if(ax){ const txt=(ax.c.symbol||'').toUpperCase()+' | دخول '+money(ax.entry)+' | هـ1 '+money(ax.t1)+' | هـ2 '+money(ax.t2)+' | هـ3 '+money(ax.t3)+' | وقف '+money(ax.sl)+' | ثقة '+ax.score+'%'; navigator.clipboard.writeText(txt); } }catch(_){}
+    try{ const ax=all.find(x=>x.c.id===id); if(ax){ const txt=(ax.c.symbol||'').toUpperCase()+' | دخول '+money(ax.entry)+' | هدف '+money(ax.t2)+' | وقف '+money(ax.sl)+' | ثقة '+ax.score+'%'; navigator.clipboard.writeText(txt); } }catch(_){}
     try{ const lg=JSON.parse(localStorage.getItem('ai_sess_v1')||'[]'); lg.unshift({t:Date.now(),who:'مستخدم',action:'موافقة دخول '+id}); localStorage.setItem('ai_sess_v1',JSON.stringify(lg.slice(0,200))); }catch(_){}
     if(window.DEALS&&window.DEALS.render) window.DEALS.render();
     try{ const el2=g.querySelector('.ai-card[data-id="'+id+'"]'); if(el2){ el2.style.outline='2px solid #16c784'; setTimeout(()=>{ el2.style.outline=''; },1200); } }catch(_){}
@@ -2376,7 +2382,7 @@ function bindCards(g,all){
 }
 
 </script>
-<script>// 🛡️ GUARDIAN v35.1 — الحارس الذكي: يراقب كل صفقة حتى الهدف الأخير ويحمي الربح/يمنع الخسارة
+<script>// 🛡️ GUARDIAN v35.1 — الحارس الذكي: يراقب كل صفقة حتى الهدف الواحد 💰 ويحمي الربح/يمنع الخسارة
 (function(){
 "use strict";
 const $ = id => document.getElementById(id);
@@ -2443,26 +2449,22 @@ function cycle(){
     const cur=a.c.current_price||p.entry;
     p.cur=cur; p.peak=Math.max(p.peak||p.entry, cur);
     const pnl=(cur-p.entry)/p.entry*100; p.pnl=pnl;
-    if(cur>=p.t1 && !p.t1hit){ p.t1hit=true; p.t1at=cur; p.t1time=Date.now(); p.entryClosed=true; p.entryBlocked=true; p.history.unshift({t:Date.now(),type:'T1',price:cur,note:'🎯 هدف1 تحقق — أُغلق الدخول نهائياً (صفقتك داخل) • اجنِ 30% وارفع الوقف للدخول'}); changed=true; beep(880,0.3); notify('💰 هدف1 تحقق: '+p.sym, 'اجنِ 30% وانقل الوقف للدخول — ربح '+pnl.toFixed(2)+'%'); }
-    if(cur>=p.t2 && !p.t2hit){ p.t2hit=true; p.t2at=cur; p.t2time=Date.now(); p.entryClosed=true; p.history.unshift({t:Date.now(),type:'T2',price:cur,note:'✅ هدف2 تحقق — الدخول مغلق تماماً • اجنِ 50% وارفع الوقف'}); changed=true; beep(990,0.35); notify('✅ هدف2 تحقق: '+p.sym, 'اجنِ 50% — ربح '+pnl.toFixed(2)+'%'); }
-    let eff=p.sl;
-    if(p.t1hit) eff=Math.max(eff, p.entry);
+    let eff=p.sl; // 🎯 هدف واحد: خروج كامل عند الهدف أو الوقف
+    const cfRise=!!(a.tech&&a.tech.macdUp&&a.trend&&a.trend.slope>0&&(a.mom||0)>=55);
+    if(cfRise&&cur>=p.entry){ eff=Math.max(eff,p.entry); if(!p.profitLocked){ p.profitLocked=true; p.history.unshift({t:Date.now(),type:'LOCK',price:cur,note:'✅ صعود مؤكد — ثُبّت الربح بوقف التعادل '+money(p.entry)+' 💰'}); changed=true; } }
     if(pnl>=4){ const trail=p.peak-p.atr*1.2; eff=Math.max(eff, trail); p.trailing=true; } else p.trailing=false;
     p.effSL=eff;
     const dg=dangerOf(a, cur, p.peak, pnl); p.danger=dg.d; p.dnotes=dg.notes;
     const prev=p.verdict; let v, note;
     if(cur<=eff){ v='STOP'; note=cur<=p.sl?'🔴 ضرب الوقف الأصلي — اخرج فوراً ('+pnl.toFixed(2)+'%)':'🔴 ضرب الوقف المتحرك/التعادل — اخرج لحماية رأس المال ('+pnl.toFixed(2)+'%)'; p.open=false; p.closeWhy=note; p.closeAt=Date.now(); p.history.unshift({t:Date.now(),type:'STOP',price:cur,note:note}); beep([330,220],0.35,[0,0.4]); notify('🔴 وقف: '+p.sym, note); }
-    else if(cur>=p.t3){ v='FINAL'; note='🏆 الهدف الأخير تحقق — اخرج كاملاً وبارك الربح '+pnl.toFixed(2)+'%'; p.open=false; p.closeWhy=note; p.closeAt=Date.now(); p.t3at=cur; p.t3time=Date.now(); p.history.unshift({t:Date.now(),type:'FINAL',price:cur,note:note}); beep([880,1100,1320],0.3,[0,0.3,0.6]); notify('🏆 اكتملت: '+p.sym, note); }
-    else if(dg.d>=60 && prev!=='EXIT_NOW'){ v='EXIT_NOW'; note='🚨 بيع قوي مكتشف ('+dg.notes.slice(0,2).join(' • ')+') — اخرج من الهدف الأول/السوق الآن ولا تنتظر الأخير'; p.history.unshift({t:Date.now(),type:'EXIT',price:cur,note:note}); }
-    else if(p.t1hit && cur<p.t1 && (cur<p.peak*0.99||dg.d>=40) && prev!=='PULLBACK'){ v='PULLBACK'; note='📉 ضربت الهدف الأول ثم تراجعت — ① الوقف مرفوع للدخول '+money(eff)+' ② اخرج نصف الكمية فوراً ③ لا تنتظر الصعود — احمِ الربح الآن'; p.history.unshift({t:Date.now(),type:'PULLBACK',price:cur,note:note}); }
-    else if(cur>=p.t2){ v='T2'; note='✅ فوق الهدف الثاني — اجنِ نصف الكمية وارفع الوقف للدخول'; }
-    else if(cur>=p.t1){ v='T1'; note='💰 فوق الهدف الأول — اجنِ 30% وضع الوقف على الدخول، ودع الباقي للأخير'; }
+    else if(cur>=p.t2){ v='FINAL'; note='🏆 الهدف تحقق +'+((p.t2-p.entry)/p.entry*100).toFixed(2)+'% 💰 — اخرج كاملاً وبارك الربح '+pnl.toFixed(2)+'%'; p.open=false; p.closeWhy=note; p.closeAt=Date.now(); p.t1hit=true; p.t2hit=true; p.t3at=cur; p.t3time=Date.now(); p.history.unshift({t:Date.now(),type:'FINAL',price:cur,note:note}); beep([880,1100,1320],0.3,[0,0.3,0.6]); notify('🏆 اكتملت: '+p.sym, note); }
+    else if(dg.d>=60 && prev!=='EXIT_NOW'){ v='EXIT_NOW'; note='🚨 بيع قوي مكتشف ('+dg.notes.slice(0,2).join(' • ')+') — اخرج من السوق الآن ولا تنتظر الهدف'; p.history.unshift({t:Date.now(),type:'EXIT',price:cur,note:note}); }
     else if(dg.d>=38||(pnl<0&&dg.d>=30)){ v='DANGER'; note='⚠️ إشارات بيع ('+dg.notes.slice(0,2).join(' • ')+') — جهّز الخروج من أقرب ارتداد'; }
     else if(p.entryBlocked && !p.t1hit){ v='ENTRY_LOCKED'; note='🔒 الدخول مغلق — قفز السعر فوق نقطة الدخول '+money(p.entry)+'، لن يُفتح إلا عند عودته لها (الآن '+money(cur)+')'; }
     else if(cur<p.entry){ v='HOLD_RISK'; note='⏳ تحت الدخول '+pnl.toFixed(2)+'% — الحارس يراقب الوقف '+money(eff)+' ويحميك من خسارة كبيرة'; }
-    else { v='HOLD'; note=p.t1hit?'🟢 بعد التخفيف — الباقي مؤمّن بوقف التعادل، مستمر نحو الأخير':'🟢 الوضع سليم — مستمر نحو الأهداف والوقف يحميك'; }
+    else { v='HOLD'; note=p.profitLocked?'✅ صعود مؤكد — الربح مثبّت بوقف التعادل، مستمر نحو الهدف 💰':'🟢 الوضع سليم — مستمر نحو الهدف الواحد والوقف يحميك'; }
     // missed entry: لا إلغاء من ومضة واحدة — يلزم الثبات عبر عينتين مختلفتين (أو قفزة كبيرة >1.5% أو 90 ثانية)
-      if(!p.t1hit && !p.entryBlocked && cur>p.entry*1.005){
+      if(!p.t2hit && !p.entryBlocked && cur>p.entry*1.005){
         if(cur!==p.missLast){ p.missLast=cur; p.missN=(p.missN||0)+1; if(!p.missT0) p.missT0=Date.now(); }
         if(p.missN>=2 || cur>p.entry*1.015 || (Date.now()-(p.missT0||Date.now())>90000)){
           p.entryBlocked=true; p.entryHit=true; p.voidAt=cur;
@@ -2515,9 +2517,9 @@ function backfillDone(){
       for(const p of (G.pos||[])){
         if(!p||!p.id) continue;
         const e=m[p.id]||{done:0,stop:0,single:0};
-        if(p.verdict==='FINAL'||p.t3hit) e.done++;
+        if(p.verdict==='FINAL'||p.t2hit) e.done++;
         else if(!p.open){ const cw=String(p.closeWhy||''); if(cw.indexOf('وقف')>=0||cw.indexOf('STOP')>=0) e.stop++; }
-        if(p.t1hit||p.t2hit) e.single++;
+        if(p.t2hit) e.single++;
         if(e.done||e.stop||e.single) m[p.id]=e;
       }
     }catch(e){}
@@ -2526,7 +2528,7 @@ function backfillDone(){
 }
 try{ window.addEventListener('load',()=>{ try{ setTimeout(backfillDone,2000); }catch(e){} }); }catch(e){}
 function verdictBadge(p){
-  const m={ HOLD:['g-hold','🟢 استمر — الحارس يحرس'], HOLD_RISK:['g-risk','⏳ تحت الدخول — مراقبة لصيقة'], ENTRY_LOCKED:['g-risk','🔒 الدخول مغلق — انتظر عودة السعر'], T1:['g-t1','💰 هدف1 — اجنِ جزء'], T2:['g-t2','✅ هدف2 — اجنِ نصف'], DANGER:['g-danger','⚠️ خطر بيع — استعد'], EXIT_NOW:['g-exit','🚨 اخرج الآن — بيع قوي'], PULLBACK:['g-pull','📉 تراجع بعد هدف1 — اخرج جزئياً فوراً'], STOP:['g-stop','🔴 وقف — مغلقة'], FINAL:['g-final','🏆 مكتملة — مغلقة'], MISSED:['g-void','🟠 الدخول مغلق — أُلغيت نهائياً'] };
+  const m={ HOLD:['g-hold','🟢 استمر — الحارس يحرس'], HOLD_RISK:['g-risk','⏳ تحت الدخول — مراقبة لصيقة'], ENTRY_LOCKED:['g-risk','🔒 الدخول مغلق — انتظر عودة السعر'], T1:['g-t1','🎯 الهدف — قريب'], T2:['g-t2','🎯 الهدف — قريب'], DANGER:['g-danger','⚠️ خطر بيع — استعد'], EXIT_NOW:['g-exit','🚨 اخرج الآن — بيع قوي'], PULLBACK:['g-pull','📉 تراجع — احمِ الربح'], STOP:['g-stop','🔴 وقف — مغلقة'], FINAL:['g-final','🏆 الهدف تحقق 💰 — مغلقة'], MISSED:['g-void','🟠 الدخول مغلق — أُلغيت نهائياً'] };
   const x=m[p.verdict]||m.HOLD;
   return '<div class="guard-badge '+x[0]+'">'+x[1]+'</div>';
 }
@@ -2534,20 +2536,20 @@ function verdictBadge(p){
 function monCard(p){
   const pnl=p.pnl||0, up=pnl>=0;
   if(!p.peak||p.peak<p.entry) p.peak=Math.max(p.entry,p.cur||p.entry);
-  const span=(p.t3-p.entry)||1;
+  const span=(p.t2-p.entry)||1;
   const pc=Math.max(0,Math.min(100,((p.cur||p.entry)-p.entry)/span*100));
-  const m1=Math.max(0,Math.min(100,(p.t1-p.entry)/span*100)), m2=Math.max(0,Math.min(100,(p.t2-p.entry)/span*100));
+  const m1=Math.max(0,Math.min(100,(p.t2-p.entry)/span*100)), m2=m1;
   const tPct=x=>(((x-p.entry)/p.entry)*100).toFixed(2)+'%';
   const chip=(hit,x,lbl)=>'<span class="gt '+(hit?'hit':'')+'">'+(hit?'✅ ':'🎯 ')+lbl+' <b>'+money(x)+'</b> <em> +'+tPct(x)+'</em></span>';
   const dg=p.danger||0;
   const head='<div class="mon-top"><span class="gd-pnl '+(up?'up':'down')+'">'+(up?'+':'')+pnl.toFixed(2)+'%</span>'
-    +((p.t1hit||p.t2hit)?'<span class="lock-tag blue">🔒 الدخول مغلق — صفقتك داخل</span>':(p.entryBlocked?'<span class="lock-tag">🟠 الدخول مغلق — لا تُعاد</span>':''))
+    +((p.t2hit)?'<span class="lock-tag blue">🔒 الدخول مغلق — صفقتك داخل</span>':(p.entryBlocked?'<span class="lock-tag">🟠 الدخول مغلق — لا تُعاد</span>':''))
     +'<span class="muted">'+(p.open?'مفتوحة':'مغلقة • '+(p.closeWhy||''))+'</span></div>';
   return head
   +'<div class="gd-note"><b>ما يجب تنفيذه الآن:</b> '+p.note+'</div>'
   +'<div class="gd-prog"><i style="width:'+pc.toFixed(1)+'%"></i><em style="left:'+m1.toFixed(1)+'%"></em><em style="left:'+m2.toFixed(1)+'%"></em></div>'
-  +'<div class="gd-targets">'+chip(p.t1hit||(p.cur||0)>=p.t1,p.t1,'هـ1')+chip(p.t2hit||(p.cur||0)>=p.t2,p.t2,'هـ2')+chip((p.cur||0)>=p.t3,p.t3,'هـ3')+'</div>'
-  +'<div class="gd-prices"><span>🟢 اشتريت <b>'+money(p.entry)+'</b></span><span>🎯 هدف بيع <b class="up">'+money(p.t1)+'</b></span><span>💵 حالي <b>'+money(p.cur||p.entry)+'</b></span><span>🛡 وقف <b class="down">'+money(p.effSL||p.sl)+'</b></span><span>🎯 ربح <b class="'+(pnl>=0?'up':'down')+'">'+(pnl>=0?'+':'')+pnl.toFixed(2)+'%</b></span></div>'
+  +'<div class="gd-targets">'+chip(p.t2hit||(p.cur||0)>=p.t2,p.t2,'🎯 هدف')+'</div>'
+  +'<div class="gd-prices"><span>🟢 اشتريت <b>'+money(p.entry)+'</b></span><span>🎯 هدف بيع <b class="up">'+money(p.t2)+'</b></span><span>💵 حالي <b>'+money(p.cur||p.entry)+'</b></span><span>🛡 وقف <b class="down">'+money(p.effSL||p.sl)+'</b></span><span>🎯 ربح <b class="'+(pnl>=0?'up':'down')+'">'+(pnl>=0?'+':'')+pnl.toFixed(2)+'%</b></span></div>'
   +(p.stale?'<div class="gd-stale">📡 بانتظار البيانات — الصفقة محفوظة ولن تُنسى</div>':'')
   +'<div class="dg-meter"><i class="'+(dg>=60?'m-r':dg>=38?'m-y':'m-g')+'" style="width:'+dg+'%"></i><span>خطر البيع '+dg+'%</span></div>'
   +(p.dnotes&&p.dnotes.length?'<div class="mon-notes">'+p.dnotes.slice(0,3).map(n=>'⚠ '+n).join(' • ')+'</div>':'')
@@ -2561,7 +2563,7 @@ function renderInto(){
   boxes.forEach(box=>{
     const id=box.dataset.mon;
     const p=G.pos.find(x=>x.id===id);
-    if(!p){ box.innerHTML='<div class="mon-empty">اضغط «ابدأ المراقبة» — الحارس يتابعها حتى 🎯 الأخير أو 🛡 الوقف</div>'; return; }
+    if(!p){ box.innerHTML='<div class="mon-empty">اضغط «ابدأ المراقبة» — الحارس يتابعها حتى 🎯 الهدف أو 🛡 الوقف</div>'; return; }
     box.innerHTML=monCard(p);
   });
   boxes.forEach(box=>{
@@ -2584,8 +2586,8 @@ function render(){
   const gc=$('guardCount'); if(gc) gc.textContent=String(open.length);
   const gs=$('guardStatus');
   if(gs) gs.textContent=open.length?('🛡️ يحرس '+open.length+' صفقة مفتوحة — أقصى خسارة محدودة بالوقف'):'🛡️ لا صفقات مفتوحة — سيتتبع فرص الشراء تلقائياً';
-  if(!G.pos.length){ g.innerHTML='<div class="loading">🛡️ الحارس جاهز — عند ظهور فرصة شراء حقيقية سيتتبعها تلقائياً حتى الهدف الأخير.</div>'; return; }
-  const pct=(p)=>{ const span=(p.t3-p.entry)||1; return Math.max(0,Math.min(100,((p.cur||p.entry)-p.entry)/span*100)); };
+  if(!G.pos.length){ g.innerHTML='<div class="loading">🛡️ الحارس جاهز — عند ظهور فرصة شراء حقيقية سيتتبعها تلقائياً حتى الهدف الواحد 💰.</div>'; return; }
+  const pct=(p)=>{ const span=(p.t2-p.entry)||1; return Math.max(0,Math.min(100,((p.cur||p.entry)-p.entry)/span*100)); };
   const card=(p)=>{
     const pnl=p.pnl||0, up=pnl>=0;
     if(!p.peak||p.peak<p.entry) p.peak=Math.max(p.entry,p.cur||p.entry);
@@ -2600,8 +2602,8 @@ function render(){
     +verdictBadge(p)
     +'<div class="gd-note">'+p.note+'</div>'
     +'<div class="gd-prog"><i style="width:'+pct(p).toFixed(1)+'%"></i><em class="mk1" style="left:'+m1.toFixed(1)+'%"></em><em class="mk2" style="left:'+m2.toFixed(1)+'%"></em></div>'
-    +'<div class="gd-targets">'+chip(p.t1hit||(p.cur||0)>=p.t1,p.t1,'هـ1')+chip(p.t2hit||(p.cur||0)>=p.t2,p.t2,'هـ2')+chip((p.cur||0)>=p.t3,p.t3,'هـ3')+'</div>'
-  +'<div class="gd-prices"><span>🟢 اشتريت <b>'+money(p.entry)+'</b></span><span>🎯 هدف بيع <b class="up">'+money(p.t1)+'</b></span><span>💵 حالي <b>'+money(p.cur||p.entry)+'</b></span><span>🛡 وقف <b class="down">'+money(p.effSL||p.sl)+'</b></span><span>🎯 ربح <b class="'+(pnl>=0?'up':'down')+'">'+(pnl>=0?'+':'')+pnl.toFixed(2)+'%</b></span></div>'
+    +'<div class="gd-targets">'+chip(p.t2hit||(p.cur||0)>=p.t2,p.t2,'🎯 هدف')+'</div>'
+  +'<div class="gd-prices"><span>🟢 اشتريت <b>'+money(p.entry)+'</b></span><span>🎯 هدف بيع <b class="up">'+money(p.t2)+'</b></span><span>💵 حالي <b>'+money(p.cur||p.entry)+'</b></span><span>🛡 وقف <b class="down">'+money(p.effSL||p.sl)+'</b></span><span>🎯 ربح <b class="'+(pnl>=0?'up':'down')+'">'+(pnl>=0?'+':'')+pnl.toFixed(2)+'%</b></span></div>'
     +(p.stale?'<div class="gd-stale">📡 بانتظار البيانات — الصفقة محفوظة ولن تُنسى</div>':'')
     +'<div class="dg-meter"><i class="'+((p.danger||0)>=60?'m-r':(p.danger||0)>=38?'m-y':'m-g')+'" style="width:'+(p.danger||0)+'%"></i><span>خطر البيع '+(p.danger||0)+'%</span></div>'
     +(p.history.length?'<details class="gd-hist"><summary>📜 سجل الأحداث ('+p.history.length+')</summary><div class="hist-list">'+p.history.map(h=>'<div class="hist-item '+h.type.toLowerCase()+'"><span class="hist-time">'+new Date(h.t).toLocaleTimeString('ar')+'</span><span class="hist-badge">'+h.type+'</span><span class="hist-note">'+h.note+'</span></div>').join('')+'</div></details>':'')
@@ -2612,9 +2614,9 @@ function render(){
   const cmd=G.pos.find(p=>p.open&&p.verdict==='EXIT_NOW')||G.pos.find(p=>p.open&&p.verdict==='PULLBACK')||G.pos.find(p=>p.open&&p.verdict==='DANGER');
   const wins=G.pos.find(p=>!p.open&&(p.verdict==='FINAL'));
   const buys=(window.RADAR&&window.RADAR.analyzed||[]).filter(a=>a.isBuy);
-  if(cmd) setCmd((cmd.verdict==='EXIT_NOW'?'🚨 اخرج الآن من ':cmd.verdict==='PULLBACK'?'📉 تراجعت بعد هدف1 — اخرج جزئياً من ':'⚠️ انتبه لـ ')+cmd.sym+' — '+cmd.note.slice(0,90));
-  else if(open.length) setCmd('🟢 نراقب '+open.length+' صفقة لحظة بلحظة ('+open.slice(0,3).map(p=>p.sym).join(' • ')+') — استمر، الوقف يحميك حتى 🎯 الأخير');
-  else if(buys.length) setCmd('🧠 ادخل: '+buys.slice(0,3).map(a=>(a.c.symbol||'').toUpperCase()+' '+a.score+'%').join(' • ')+' — أتابعها معك حتى 🎯 الأخير');
+  if(cmd) setCmd((cmd.verdict==='EXIT_NOW'?'🚨 اخرج الآن من ':cmd.verdict==='PULLBACK'?'📉 تراجع — اخرج جزئياً من ':'⚠️ انتبه لـ ')+cmd.sym+' — '+cmd.note.slice(0,90));
+  else if(open.length) setCmd('🟢 نراقب '+open.length+' صفقة لحظة بلحظة ('+open.slice(0,3).map(p=>p.sym).join(' • ')+') — استمر، الوقف يحميك حتى 🎯 الهدف');
+  else if(buys.length) setCmd('🧠 ادخل: '+buys.slice(0,3).map(a=>(a.c.symbol||'').toUpperCase()+' '+a.score+'%').join(' • ')+' — أتابعها معك حتى 🎯 الهدف');
   else setCmd('🧠 أفحص 500 عملة... لا دخول عشوائي — الدخول فقط عند صعود حقيقي');
   g.innerHTML=open.map(card).join('')+(closed.length?'<div class="gd-sep">الأرشيف — صفقات مغلقة بحماية الحارس</div>'+closed.map(card).join(''):'');
   g.querySelectorAll('[data-close]').forEach(b=>b.onclick=(e)=>{ e.stopPropagation(); close(b.dataset.close,'إغلاق يدوي من المستخدم'); });
@@ -2701,25 +2703,24 @@ function ensureRail(card, a, P, live){
   const sl = P.sl, entry = P.entry;
   const pos = getPos(a.c.id);
   const effSL = pos && pos.effSL ? pos.effSL : sl;
-  const t1hit = (pos && pos.t1hit) || live >= P.t1 || LIVE.stopMoved[a.c.id];
+  const t1hit = (pos && pos.t2hit) || live >= P.t2; // 🎯 هدف واحد
   const t2hit = (pos && pos.t2hit) || live >= P.t2;
-  const dot = pctPos(sl, sl, P.t3, live);
-  const stopP = pctPos(sl, sl, P.t3, effSL);
-  const t1P = pctPos(sl, sl, P.t3, P.t1), t2P = pctPos(sl, sl, P.t3, P.t2);
+  const dot = pctPos(sl, sl, P.t2, live);
+  const stopP = pctPos(sl, sl, P.t2, effSL);
+  const t1P = pctPos(sl, sl, P.t2, P.t2), t2P = t1P;
+  var cf=false; try{ cf=(typeof safeRise==='function'?safeRise(a.c.id):true)&&live>=P.entry; }catch(e){ cf=live>=P.entry; }
   const secs = (LIVE.tick % 60);
-  // مرحلة التعبئة التدريجية حتى الأخير
-  const stage = live>=P.t3?'done':live>=P.t2?'s3':live>=P.t1?'s2':'s1';
+  // 🎯 هدف واحد
+  const stage = live>=P.t2?'done':'s1';
   const progSpan = Math.max(P.t3-sl,1e-9);
   const progPct = Math.max(0,Math.min(100,(live-sl)/progSpan*100));
   rail.innerHTML =
-    '<div class="lr-head"><span><span class="live-pill"><i></i>شراء حي • نبض</span></span>'
-    +'<span class="lr-timer">⏱ نبض <b class="live-price">'+money(live)+'</b> • <span class="lr-pct">ممتلىء '+progPct.toFixed(0)+'% نحو الأخير</span></span></div>'
+    '<div class="lr-head"><span><span class="live-pill"><i></i>شراء حي • نبض</span>'+(cf?' <span class="cf-badge">✅ صعود مؤكد — ثبت الربح 💰</span>':'')+'</span>'
+    +'<span class="lr-timer">⏱ نبض <b class="live-price">'+money(live)+'</b> • <span class="lr-pct">ممتلىء '+progPct.toFixed(0)+'% نحو الهدف 💰</span></span></div>'
     +'<div class="lr-track">'
     +'<div class="lr-fill '+stage+'" style="width:'+dot.toFixed(1)+'%"></div>'
     +'<div class="lr-stop'+(t1hit?' moved':'')+'" style="left:'+stopP.toFixed(1)+'%"></div>'
-    +'<div class="lr-t'+(t1hit?' hit':'')+'" data-l="هـ1" style="left:'+t1P.toFixed(1)+'%"></div>'
-    +'<div class="lr-t'+(t2hit?' hit':'')+'" data-l="هـ2" style="left:'+t2P.toFixed(1)+'%"></div>'
-    +'<div class="lr-t" data-l="هـ3" style="left:99%"></div>'
+    +'<div class="lr-t'+(t1hit?' hit':'')+'" data-l="🎯 هدف" style="left:99%"></div>'
     +'<div class="lr-dot" style="left:'+dot.toFixed(1)+'%"></div>'
     +'</div>'
     +'<div class="lr-scale"><span>🛡 <b>'+money(effSL)+'</b></span><span>🎯 <b>'+money(P.t3)+'</b></span></div>';
@@ -2736,18 +2737,18 @@ function ensureGuardBanner(card, a, P, live, t1hit){
     if(planSec) planSec.appendChild(b);
     else return;
   }
-  if(live >= P.t1){
+  if(live >= P.t2){ // 🎯 هدف واحد
     b.className = 'guard-move secured';
-    b.innerHTML = '🛡️ الحارس نقل الوقف → <b>'+money(P.entry)+'</b> (تعادل) • السعر الحي <b>'+money(live)+'</b> فوق هدف 1 • صفقتك محمية من الخسارة';
+    b.innerHTML = '🏆 الهدف تحقق 💰 • السعر الحي <b>'+money(live)+'</b> فوق الهدف • اخرج كاملاً';
   } else {
-    const dist = ((P.t1-live)/live*100);
+    const dist = ((P.t2-live)/live*100);
     b.className = 'guard-move moving';
-    b.innerHTML = '🛡️ الحارس يحرس الوقف <b>'+money(effSL)+'</b> • ينتظر هدف 1 <b>'+money(P.t1)+'</b> • متبقي <b>'+dist.toFixed(2)+'%</b> لينقل الستوب للدخول تلقائياً';
+    b.innerHTML = '🛡️ الحارس يحرس الوقف <b>'+money(effSL)+'</b> • ينتظر الهدف <b>'+money(P.t2)+'</b> • متبقي <b>'+dist.toFixed(2)+'%</b> للربح 💰';
   }
 }
 function moveStopInstant(a, P, live){
-  // النقل الفوري: لحظة ضرب هدف 1 → الستوب = الدخول، ويُكتب في الحارس مباشرة
-  if(live < P.t1) return false;
+  // 🎯 هدف واحد: لا نقل — خروج كامل عند الهدف
+  if(live < P.t2) return false;
   if(LIVE.stopMoved[a.c.id]) return false;
   LIVE.stopMoved[a.c.id] = true;
   try{
@@ -2756,13 +2757,13 @@ function moveStopInstant(a, P, live){
       let p = G.pos.find(x=>x.id===a.c.id);
       if(!p && window.GUARDIAN.track){ try{ window.GUARDIAN.track(a.c.id); p = G.pos.find(x=>x.id===a.c.id); }catch(e){} }
       if(p){
-        p.t1hit = true;
+        p.t2hit = true; p.t1hit = true;
         p.effSL = Math.max(p.effSL||p.sl, p.entry);
         p.entryBlocked = true;
         p.verdict = p.verdict==='FINAL' ? p.verdict : 'T1';
         p.note = '💰 فوق الهدف الأول — الحارس نقل الوقف للدخول '+money(p.entry)+' لحظياً داخل البطاقة';
         p.history = p.history||[];
-        p.history.unshift({t:Date.now(),type:'T1',price:live,note:'🎯 هدف1 تحقق بالسعر الحي — نقل الستوب للدخول '+money(p.entry)+' (حركة مرئية داخل البطاقة)'});
+        p.history.unshift({t:Date.now(),type:'T1',price:live,note:'🎯 الهدف تحقق بالسعر الحي — نقل الستوب للدخول '+money(p.entry)+' (حركة مرئية داخل البطاقة)'});
         try{ if(window.GUARDIAN.renderInto) window.GUARDIAN.renderInto(); }catch(e){}
       }
     }
@@ -2790,12 +2791,12 @@ function paintCard(card, a){
   }
   // 2) مسار التحرك المرئي (النقطة البيضاء + 🛡 المتحرك)
   const info = ensureRail(card, a, P, live);
-  // 3) نقل فوري للستوب عند هدف 1 + وميض صف الوقف
+  // 3) 🎯 هدف واحد + وميض صف الهدف
   const justMoved = moveStopInstant(a, P, live);
   ensureGuardBanner(card, a, P, live, info.t1hit);
   const stopRow = card.querySelector('.pl-stop');
   if(stopRow){
-    if(live >= P.t1){
+    if(live >= P.t2){ // 🎯 هدف واحد
       stopRow.classList.add('stop-flash');
       const sm = stopRow.querySelector('small');
       if(sm && !sm.dataset.moved){
@@ -2806,18 +2807,17 @@ function paintCard(card, a){
       if(sb) sb.textContent = 'تعادل 0%';
     }
   }
-  // 4) شطب فوري لكل هدف + تعبئة مرحلية + حفظ دائم
+  // 4) شطب فوري للهدف الواحد + تعبئة مرحلية + حفظ دائم
   const rows = card.querySelectorAll('.st-plan .pl-row');
-  if(rows.length >= 5){
-    rows[1].dataset.t='t1'; rows[2].dataset.t='t2'; rows[3].dataset.t='t3';
-    const hits={t1:live>=P.t1,t2:live>=P.t2,t3:live>=P.t3};
-    try{ if(window.PLAN40&&window.PLAN40.hit){ if(hits.t1)window.PLAN40.hit(a.c.id,'t1'); if(hits.t2)window.PLAN40.hit(a.c.id,'t2'); if(hits.t3)window.PLAN40.hit(a.c.id,'t3'); } }catch(e){}
-    [['t1',rows[1]],['t2',rows[2]],['t3',rows[3]]].forEach(([lv,row])=>{
+  if(rows.length >= 3){
+    rows[1].dataset.t='t2';
+    const hits={t2:live>=P.t2};
+    try{ if(window.PLAN40&&window.PLAN40.hit){ if(hits.t2)window.PLAN40.hit(a.c.id,'t2'); } }catch(e){}
+    [['t2',rows[1]]].forEach(([lv,row])=>{
       const isHit=hits[lv];
       if(isHit && !row.classList.contains('t-hit')){ row.classList.add('t-hit'); row.style.animation='tHitPop .6s ease'; setTimeout(()=>row.style.animation='',650); }
       else if(!isHit) row.classList.remove('t-hit');
-      const next=!hits.t1?'t1':!hits.t2?'t2':!hits.t3?'t3':null;
-      row.classList.toggle('t-next',(lv===next)&&!isHit);
+      row.classList.toggle('t-next',!isHit);
     });
   }
   // 5) 🔓 قفل ذكي حي بآمان: عودة + صعود أخضر → فك، عودة هابطة/بعيد → مقفل أحمر (بطاقة المكتملة تبقى مقفلة 🔒)
@@ -2901,7 +2901,7 @@ function load(){
     const old=JSON.parse(localStorage.getItem('ai_decisions_v1')||'{}');
     Object.keys(old).forEach(id=>{
       if(!S[id] && old[id] && old[id].e){
-        S[id]={entry:old[id].e,t1:old[id].t1,t2:old[id].t2,t3:old[id].t3,sl:old[id].s,at:old[id].at||Date.now(),hits:{},score:old[id].sc||0};
+        S[id]={entry:old[id].e,t1:old[id].t2,t2:old[id].t2,t3:old[id].t2,sl:old[id].s,at:old[id].at||Date.now(),hits:{},score:old[id].sc||0};
       }
     });
   }catch(e){}
@@ -2909,7 +2909,7 @@ function load(){
   try{
     const g=JSON.parse(localStorage.getItem('ai_guardian_v1')||'{}');
     (g.pos||[]).forEach(p=>{
-      if(p && p.id && p.entry && !S[p.id]) S[p.id]={entry:p.entry,t1:p.t1,t2:p.t2,t3:p.t3,sl:p.sl,at:p.t0||Date.now(),hits:{t1:!!p.t1hit,t2:!!p.t2hit},score:p.score||0};
+      if(p && p.id && p.entry && !S[p.id]) S[p.id]={entry:p.entry,t1:p.t2,t2:p.t2,t3:p.t2,sl:p.sl,at:p.t0||Date.now(),hits:{t1:!!p.t1hit,t2:!!p.t2hit},score:p.score||0};
       else if(p && p.id && S[p.id]){ S[p.id].hits=S[p.id].hits||{}; if(p.t1hit)S[p.id].hits.t1=true; if(p.t2hit)S[p.id].hits.t2=true; }
     });
   }catch(e){}
@@ -2945,7 +2945,7 @@ function ensure(a){
     return S[id];
   }
   if(isClosedRecently(id)) return null; // مغلقة حديثاً: لا خطة جديدة حتى إشارة جديدة
-  S[id]={entry:a.entry,t1:a.t1,t2:a.t2,t3:a.t3,sl:a.sl,at:Date.now(),hits:{},score:a.score||0,sym:(a.c.symbol||'').toUpperCase(),tf:(a.plan&&a.plan.tf)||'',et:(a.plan&&a.plan.entryType)||''};
+  S[id]={entry:a.entry,t1:a.t2,t2:a.t2,t3:a.t2,sl:a.sl,at:Date.now(),hits:{},score:a.score||0,sym:(a.c.symbol||'').toUpperCase(),tf:(a.plan&&a.plan.tf)||'',et:(a.plan&&a.plan.entryType)||''};
   save();
   return S[id];
 }
@@ -2959,12 +2959,12 @@ function clear(id){ try{ if(S[id]){ delete S[id]; save(); } }catch(e){} }
 function completed(id){
   try{
     const r=S[id];
-    if(r&&r.hits&&r.hits.t1&&r.hits.t2&&r.hits.t3) return true;
+    if(r&&r.hits&&r.hits.t2) return true;
   }catch(e){}
   try{
     const G=(window.GUARDIAN&&window.GUARDIAN.G)||{pos:[]};
     const p=G.pos.find(x=>x.id===id);
-    if(p&&!p.open&&(p.verdict==='FINAL'||p.t3hit)) return true;
+    if(p&&!p.open&&(p.verdict==='FINAL'||p.t2hit)) return true;
   }catch(e){}
   return false;
 }
@@ -3015,7 +3015,7 @@ function patch(){
           if(p&&p.entry&&Math.abs(p.entry-c.entry)/c.entry<0.001){ pos=p; if(p.effSL||p.sl) sl=Math.min(p.effSL||p.sl, c.entry); }
           else if(p&&p.entry){ pos=p; }
         }catch(e){}
-        return {entry:c.entry,t1:c.t1,t2:c.t2,t3:c.t3,sl:sl,riskPct:Math.abs(c.entry-Math.min(sl,c.entry))/c.entry*100,locked:true,at:c.at,pos:pos,tf:c.tf||'',entryType:c.et||''};
+        return {entry:c.entry,t1:c.t2,t2:c.t2,t3:c.t2,sl:sl,riskPct:Math.abs(c.entry-Math.min(sl,c.entry))/c.entry*100,locked:true,at:c.at,pos:pos,tf:c.tf||'',entryType:c.et||''};
       }catch(e){ return orig(a); }
     };
     wrapped._plan40=true;
@@ -3038,17 +3038,14 @@ function paint(){
       if(live>=C.t2) hit(id,'t2');
       if(live>=C.t3) hit(id,'t3');
       const H=(get(id).hits||{});
-      // وسم الصفوف مرة واحدة
+      // وسم الصفوف مرة واحدة (هدف واحد)
       let rows=card.querySelectorAll('.st-plan .pl-row');
-      if(rows.length>=5){
-        rows[1].dataset.t='t1'; rows[2].dataset.t='t2'; rows[3].dataset.t='t3';
-        [['t1',rows[1],C.t1],['t2',rows[2],C.t2],['t3',rows[3],C.t3]].forEach(([lv,row,tv])=>{
+      if(rows.length>=3){
+        rows[1].dataset.t='t2';
+        [['t2',rows[1],C.t2]].forEach(([lv,row,tv])=>{
           const isHit=H[lv]||live>=tv;
           row.classList.toggle('t-hit',!!isHit);
-          // إبراز الهدف التالي
-          const order=['t1','t2','t3'];
-          const next=!H.t1?'t1':!H.t2?'t2':!H.t3?'t3':null;
-          row.classList.toggle('t-next',(lv===next)&&!isHit);
+          row.classList.toggle('t-next',!isHit);
         });
       }
       // سطر زمن التثبيت تحت الخطة (مرة واحدة)
@@ -3243,8 +3240,8 @@ document.addEventListener('DOMContentLoaded',()=>{ try{ holdWake(); }catch(e){} 
     var an=(window.RADAR&&window.RADAR.analyzed)||[], out=[];
     for(var i=0;i<an.length;i++){ var a=an[i]; if(!a||!a.c||!a.isBuy) continue;
       var P=null; try{ P=(window.DEALS&&window.DEALS.planOf)?window.DEALS.planOf(a):null; }catch(e){}
-      if(!P||!P.entry||!P.t1||!P.sl) continue;
-      out.push({id:a.c.id,sym:a.c.symbol||a.c.id,coin:String(a.c.symbol||a.c.id).toUpperCase(),entry:P.entry,target:(P.t3||P.t1),stop:P.sl,price:a.c.current_price||P.entry,score:a.score||0});
+      if(!P||!P.entry||!P.t2||!P.sl) continue;
+      out.push({id:a.c.id,sym:a.c.symbol||a.c.id,coin:String(a.c.symbol||a.c.id).toUpperCase(),entry:P.entry,target:P.t2,stop:P.sl,price:a.c.current_price||P.entry,score:a.score||0});
     }
     push('cards',out);
   }catch(e){} }
@@ -3386,9 +3383,9 @@ function confirmOne(p){
 }
 function tradeState(st,live){
   try{
-    if(live>=st.t1) return '✅ ضرب الهدف 1 — مستمر للنهاية';
+    if(live>=st.t2) return '✅ ضرب الهدف 💰 — مستمر للنهاية';
     const tot=Math.max(1e-9,st.t1-st.entry);
-    if((live-st.entry)/tot>=0.7) return '🎯 يقترب من هدف 1';
+    if((live-st.entry)/tot>=0.7) return '🎯 يقترب من الهدف';
     if(live<=st.sl) return '🔴 عند الوقف';
     if(live<st.entry) return '⏳ تحت الدخول — متمسك';
     return '🟢 تم الدخول — يراقب';
@@ -3563,7 +3560,7 @@ async function scan(){
               if(S.halalOnly!==false && !(window.isHalal&&window.isHalal(sg.id,sg.coin||sg.sym))) continue;
               if(S.lastStop&&S.lastStop[sg.id]&&Date.now()-S.lastStop[sg.id]<30*60*1000) continue;
               const P={entry:sg.entry,t1:sg.target,t3:sg.target,sl:sg.stop};
-              if(!(P.entry>0)||!(P.t1>0)||!(P.sl>0)||!(P.sl<P.entry)) continue;
+              if(!(P.entry>0)||!(P.t2>0)||!(P.sl>0)||!(P.sl<P.entry)) continue;
               cands.push({a:{c:{id:sg.id,symbol:sg.coin||sg.sym,current_price:sg.price}},P:P,score:sg.score||0,linked:true,src:sg.src});
             }catch(e){}
           }
@@ -3736,7 +3733,7 @@ function paintStrat(){
 if(!window.__stratBound){ window.__stratBound=1; document.addEventListener('click',e=>{ try{ const b=e.target&&e.target.closest?e.target.closest('[data-strat]'):null; if(b&&b.dataset.strat) applyStrat(b.dataset.strat); }catch(x){} }); }
 const CLAS=[
  {id:'calm',name:'🌱 آمن — دخول واحد',desc:'دخول واحد كامل • خروج بأي ربح 0.30$+ • انتظار التعادل • الأقل مخاطرة',lvl:'جيد',max:1,tp:0.7,inst:0.3,goal:5,day:5},
- {id:'boom',name:'🔥 انفجار — هدف 1',desc:'دخول الانفجار فقط • بيع 70% بهدف 1 و30% تجري للأخير • وقف للدخول',lvl:'قوي',max:3,tp:0.7,inst:0.3,goal:10,day:10},
+ {id:'boom',name:'🔥 انفجار — هدف واحد 💰',desc:'دخول الانفجار فقط • خروج كامل بهدف واحد • وقف للدخول',lvl:'قوي',max:3,tp:0.7,inst:0.3,goal:10,day:10},
  {id:'beast',name:'👑 الوحش — انفجار + تعزيز',desc:'دخول الانفجار فقط + تعزيز حتى 3 مرات + هدف مضاعف بعد التعزيز',lvl:'الأقوى 👑',max:3,tp:1.4,inst:0.6,goal:15,day:10},
  {id:'runner',name:'🐎 دع الربح يركض',desc:'خروج متدرج T1/T2/الأخير • سقف ربح $2 • يترك الرابحة تكبر',lvl:'أقوى',max:3,tp:2.0,inst:1.0,goal:20,day:10},
  {id:'m5',name:'🕯 مخصص فريم 5 دقائق',desc:'محرك الشموع 5m فقط • دخول وخروج سريع • مضاربة لحظية',lvl:'قوي',max:3,tp:0.7,inst:0.3,goal:10,day:10},
@@ -4564,7 +4561,7 @@ function scan(){
       +'<div class="ob-meta">الحجم <b>$'+fmtM(r.vol)+'</b> • الدوران <b>'+(r.to*100).toFixed(0)+'%</b> • 1س '+(r.h1>=0?'+':'')+r.h1.toFixed(1)+'% • 24س +'+r.h24.toFixed(1)+'% • القوة <b>'+r.score+'</b></div>'
       +'<div class="ob-bar"><i style="width:'+r.score+'%"></i></div>'
       +'<div class="ob-dir">✅ دخول جيد — سيولة حقيقية داخلة</div>'
-      +(en>0?'<div class="ob-meta">🎯 دخول <b>'+money(en)+'</b> • 🛡 وقف <b>'+money(sl)+'</b> • 🎯 هدف أول <b>'+money(t1)+'</b></div>':'')
+      +(en>0?'<div class="ob-meta">🎯 دخول <b>'+money(en)+'</b> • 🛡 وقف <b>'+money(sl)+'</b> • 🎯 هدف <b>'+money(t1)+'</b></div>':'')
       +'</div>';
     }).join(''):'<div class="muted" style="font-size:.8rem">لا إشارات حالياً — القسم يراقب وحده كل دورة</div>';
   }catch(e){}
@@ -4697,7 +4694,7 @@ async function scan(){
       var cur0=tr.price||tr.entry;
       if(cur0>=tr.t1) tr.hit.t1=true;
       if(cur0>=tr.t2) tr.hit.t2=true;
-      if(cur0>=tr.t3){ tr.hit.t3=true; if(tr.status==='open'){ tr.status='win'; tr.closeAt=now; try{ toast('🏆 '+tr.sym+' حقق هدف الاختراق ✅'); }catch(e){} } }
+      if(cur0>=tr.t2){ tr.hit.t2=true; if(tr.status==='open'){ tr.status='win'; tr.closeAt=now; try{ toast('🏆 '+tr.sym+' حقق هدف الاختراق ✅'); }catch(e){} } }
       else if(tr.status==='open'&&cur0<=tr.sl){ tr.status='loss'; tr.closeAt=now; }
     }
     var show=[];
@@ -4710,7 +4707,7 @@ async function scan(){
     show=show.slice(0,12);
     var kept={}; for(i=0;i<show.length;i++) kept[show[i].id]=show[i];
     mem.trades=kept; save();
-    try{ if(window.BOT_LINK) window.BOT_LINK.push('brk', show.filter(function(r){ return r.status==='open'; }).map(function(r){ return {id:r.id,sym:r.sym,coin:String(r.sym||'').toUpperCase(),entry:r.entry,target:r.t3,stop:r.sl,price:r.price||r.entry,score:r.sc}; })); }catch(e){}
+    try{ if(window.BOT_LINK) window.BOT_LINK.push('brk', show.filter(function(r){ return r.status==='open'; }).map(function(r){ return {id:r.id,sym:r.sym,coin:String(r.sym||'').toUpperCase(),entry:r.entry,target:r.t2,stop:r.sl,price:r.price||r.entry,score:r.sc}; })); }catch(e){}
     var opens=0; for(i=0;i<show.length;i++) if(show[i].status==='open') opens++;
     var cnt=$('brkCount'); if(cnt) cnt.textContent=String(show.length);
     var st=$('brkStatus');
@@ -4718,14 +4715,12 @@ async function scan(){
     function tick(on){ return on?' <span class="cl-ck">✅</span>':''; }
     box.innerHTML=show.length?show.map(function(r){
       var entry=r.entry, cur=r.price||entry, open=(r.status==='open');
-      var prog=entry<r.t3?Math.max(0,Math.min(1,(cur-entry)/(r.t3-entry))):0;
+      var prog=entry<r.t2?Math.max(0,Math.min(1,(cur-entry)/(r.t2-entry))):0;
       var pnl=entry>0?((cur-entry)/entry*100):0;
       var head=r.status==='win'?'🏆 تحققت الأهداف — ✅':(r.status==='loss'?'🛑 ضرب الوقف':'🎫 شراء اختراق — كسر مؤكد بحجم حقيقي');
       var trade='<div class="ob-trade'+(r.status==='loss'?' down':'')+'"><div class="ob-trade-h">'+head+'</div><div class="ob-trow">'
         +'<span>دخول <b>'+money(entry)+'</b></span>'
-        +'<span class="up">🎯1 '+money(r.t1)+tick(r.hit&&r.hit.t1)+'</span>'
-        +'<span class="up">🎯2 '+money(r.t2)+tick(r.hit&&r.hit.t2)+'</span>'
-        +'<span class="up">🎯3 '+money(r.t3)+tick(r.hit&&r.hit.t3)+'</span>'
+        +'<span class="up">🎯 هدف '+money(r.t2)+tick(r.hit&&r.hit.t2)+' (+'+(entry>0?((r.t2-entry)/entry*100).toFixed(2):'0')+'% 💰)</span>'
         +'<span class="dn">🛑 وقف '+money(r.sl)+'</span>'
         +'<span>حالي '+money(cur)+' ('+(pnl>=0?'+':'')+pnl.toFixed(1)+'%)</span>'
         +'</div></div>';
@@ -4924,7 +4919,7 @@ async function scan(){
       var cur0=tr.price||tr.entry;
       if(cur0>=tr.t1) tr.hit.t1=true;
       if(cur0>=tr.t2) tr.hit.t2=true;
-      if(cur0>=tr.t3){ tr.hit.t3=true; if(tr.status==='open'){ tr.status='win'; tr.closeAt=now; try{ toast('🏆 '+tr.sym+' حقق هدف الصعود المؤكد ✅'); }catch(e){} } }
+      if(cur0>=tr.t2){ tr.hit.t2=true; if(tr.status==='open'){ tr.status='win'; tr.closeAt=now; try{ toast('🏆 '+tr.sym+' حقق هدف الصعود المؤكد ✅'); }catch(e){} } }
       else if(tr.status==='open'&&cur0<=tr.sl){ tr.status='loss'; tr.closeAt=now; }
     }
     var show=[];
@@ -4937,7 +4932,7 @@ async function scan(){
     show=show.slice(0,12);
     var kept={}; for(i=0;i<show.length;i++) kept[show[i].id]=show[i];
     mem.trades=kept; save();
-    try{ if(window.BOT_LINK) window.BOT_LINK.push('mom', show.filter(function(r){ return r.status==='open'; }).map(function(r){ return {id:r.id,sym:r.sym,coin:String(r.sym||'').toUpperCase(),entry:r.entry,target:r.t3,stop:r.sl,price:r.price||r.entry,score:r.sc}; })); }catch(e){}
+    try{ if(window.BOT_LINK) window.BOT_LINK.push('mom', show.filter(function(r){ return r.status==='open'; }).map(function(r){ return {id:r.id,sym:r.sym,coin:String(r.sym||'').toUpperCase(),entry:r.entry,target:r.t2,stop:r.sl,price:r.price||r.entry,score:r.sc}; })); }catch(e){}
     var opens=0; for(i=0;i<show.length;i++) if(show[i].status==='open') opens++;
     var cnt=$('momCount'); if(cnt) cnt.textContent=String(show.length);
     var st=$('momStatus');
@@ -4945,14 +4940,12 @@ async function scan(){
     function tick(on){ return on?' <span class="cl-ck">✅</span>':''; }
     box.innerHTML=show.length?show.map(function(r){
       var entry=r.entry, cur=r.price||entry, open=(r.status==='open');
-      var prog=entry<r.t3?Math.max(0,Math.min(1,(cur-entry)/(r.t3-entry))):0;
+      var prog=entry<r.t2?Math.max(0,Math.min(1,(cur-entry)/(r.t2-entry))):0;
       var pnl=entry>0?((cur-entry)/entry*100):0;
       var head=r.status==='win'?'🏆 تحققت الأهداف — ✅':(r.status==='loss'?'🛑 ضرب الوقف':'🎫 شراء — صعود مؤكد (ترند + تأكيد)');
       var trade='<div class="ob-trade'+(r.status==='loss'?' down':'')+'"><div class="ob-trade-h">'+head+'</div><div class="ob-trow">'
         +'<span>دخول <b>'+money(entry)+'</b></span>'
-        +'<span class="up">🎯1 '+money(r.t1)+tick(r.hit&&r.hit.t1)+'</span>'
-        +'<span class="up">🎯2 '+money(r.t2)+tick(r.hit&&r.hit.t2)+'</span>'
-        +'<span class="up">🎯3 '+money(r.t3)+tick(r.hit&&r.hit.t3)+'</span>'
+        +'<span class="up">🎯 هدف '+money(r.t2)+tick(r.hit&&r.hit.t2)+' (+'+(entry>0?((r.t2-entry)/entry*100).toFixed(2):'0')+'% 💰)</span>'
         +'<span class="dn">🛑 وقف '+money(r.sl)+'</span>'
         +'<span>حالي '+money(cur)+' ('+(pnl>=0?'+':'')+pnl.toFixed(1)+'%)</span>'
         +'</div></div>';
@@ -5225,7 +5218,7 @@ async function scan(){
       var cur0=tr.price||tr.entry;
       if(cur0>=tr.t1) tr.hit.t1=true;
       if(cur0>=tr.t2) tr.hit.t2=true;
-      if(cur0>=tr.t3){ tr.hit.t3=true; if(tr.status==='open'){ tr.status='win'; tr.closeAt=now; try{ toast('🏆 '+tr.sym+' حقق هدف النموذج ✅'); }catch(e){} } }
+      if(cur0>=tr.t2){ tr.hit.t2=true; if(tr.status==='open'){ tr.status='win'; tr.closeAt=now; try{ toast('🏆 '+tr.sym+' حقق هدف النموذج ✅'); }catch(e){} } }
       else if(tr.status==='open'&&cur0<=tr.sl){ tr.status='loss'; tr.closeAt=now; }
     }
     var show=[];
@@ -5238,7 +5231,7 @@ async function scan(){
     show=show.slice(0,12);
     var kept={}; for(i=0;i<show.length;i++) kept[show[i].id]=show[i];
     mem.trades=kept; save();
-    try{ if(window.BOT_LINK) window.BOT_LINK.push('pat', show.filter(function(r){ return r.status==='open'; }).map(function(r){ return {id:r.id,sym:r.sym,coin:String(r.sym||'').toUpperCase(),entry:r.entry,target:r.t3,stop:r.sl,price:r.price||r.entry,score:r.sc}; })); }catch(e){}
+    try{ if(window.BOT_LINK) window.BOT_LINK.push('pat', show.filter(function(r){ return r.status==='open'; }).map(function(r){ return {id:r.id,sym:r.sym,coin:String(r.sym||'').toUpperCase(),entry:r.entry,target:r.t2,stop:r.sl,price:r.price||r.entry,score:r.sc}; })); }catch(e){}
     var opens=0; for(i=0;i<show.length;i++) if(show[i].status==='open') opens++;
     var cnt=$('patCount'); if(cnt) cnt.textContent=String(show.length);
     var st=$('patStatus');
@@ -5246,15 +5239,13 @@ async function scan(){
     function tick(on){ return on?' <span class="cl-ck">✅</span>':''; }
     box.innerHTML=show.length?show.map(function(r){
       var entry=r.entry, cur=r.price||entry, open=(r.status==='open');
-      var prog=entry<r.t3?Math.max(0,Math.min(1,(cur-entry)/(r.t3-entry))):0;
+      var prog=entry<r.t2?Math.max(0,Math.min(1,(cur-entry)/(r.t2-entry))):0;
       var pnl=entry>0?((cur-entry)/entry*100):0;
       var tag=r.ptype==='tri'?'tri':'dbl';
       var head=r.status==='win'?'🏆 تحققت الأهداف — ✅':(r.status==='loss'?'🛑 ضرب الوقف':'🎫 شراء — '+(r.pname||'نموذج صاعد'));
       var trade='<div class="ob-trade'+(r.status==='loss'?' down':'')+'"><div class="ob-trade-h">'+head+'</div><div class="ob-trow">'
         +'<span>دخول <b>'+money(entry)+'</b></span>'
-        +'<span class="up">🎯1 '+money(r.t1)+tick(r.hit&&r.hit.t1)+'</span>'
-        +'<span class="up">🎯2 '+money(r.t2)+tick(r.hit&&r.hit.t2)+'</span>'
-        +'<span class="up">🎯3 '+money(r.t3)+tick(r.hit&&r.hit.t3)+'</span>'
+        +'<span class="up">🎯 هدف '+money(r.t2)+tick(r.hit&&r.hit.t2)+' (+'+(entry>0?((r.t2-entry)/entry*100).toFixed(2):'0')+'% 💰)</span>'
         +'<span class="dn">🛑 وقف '+money(r.sl)+'</span>'
         +'<span>حالي '+money(cur)+' ('+(pnl>=0?'+':'')+pnl.toFixed(1)+'%)</span>'
         +'</div></div>';
@@ -5342,7 +5333,7 @@ function powAnalyze(kl){
     var step=Math.max(atr*0.9,risk*0.9);
     var lad=[]; for(i=1;i<=NLAD;i++) lad.push(lc+i*step);
     return {entry:lc,sl:sl,risk:risk,atr:atr,R:R,s1:s1,s2:s2,trend:tr,patLo:patLo,vr:vr,s:s,tight:tight,
-      t1:lad[0],t2:lad[2],t3:lad[5],lad:lad,meas:R+(R-patLo),
+      t1:lad[2],t2:lad[2],t3:lad[2],lad:lad,meas:R+(R-patLo),
       sup1:sl,sup2:sl-risk*0.8,inval:sl-risk*2.2};
   }catch(e){ return null; }
 }
@@ -5463,7 +5454,7 @@ async function scan(){
       var cur0=tr.price||tr.entry;
       if(cur0>=tr.t1) tr.hit.t1=true;
       if(cur0>=tr.t2) tr.hit.t2=true;
-      if(cur0>=tr.t3){ tr.hit.t3=true; if(tr.status==='open'){ tr.status='win'; tr.closeAt=now; try{ toast('🏆 '+tr.sym+' حقق هدف النموذج القوي ✅'); }catch(e){} } }
+      if(cur0>=tr.t2){ tr.hit.t2=true; if(tr.status==='open'){ tr.status='win'; tr.closeAt=now; try{ toast('🏆 '+tr.sym+' حقق هدف النموذج القوي ✅'); }catch(e){} } }
       else if(tr.status==='open'&&cur0<=tr.sl){ tr.status='loss'; tr.closeAt=now; }
     }
     var show=[];
@@ -5476,7 +5467,7 @@ async function scan(){
     show=show.slice(0,12);
     var kept={}; for(i=0;i<show.length;i++) kept[show[i].id]=show[i];
     mem.trades=kept; save();
-    try{ if(window.BOT_LINK) window.BOT_LINK.push('pow', show.filter(function(r){ return r.status==='open'; }).map(function(r){ return {id:r.id,sym:r.sym,coin:String(r.sym||'').toUpperCase(),entry:r.entry,target:r.t3,stop:r.sl,price:r.price||r.entry,score:r.sc}; })); }catch(e){}
+    try{ if(window.BOT_LINK) window.BOT_LINK.push('pow', show.filter(function(r){ return r.status==='open'; }).map(function(r){ return {id:r.id,sym:r.sym,coin:String(r.sym||'').toUpperCase(),entry:r.entry,target:r.t2,stop:r.sl,price:r.price||r.entry,score:r.sc}; })); }catch(e){}
     var opens=0; for(i=0;i<show.length;i++) if(show[i].status==='open') opens++;
     var cnt=$('powCount'); if(cnt) cnt.textContent=String(show.length);
     var st=$('powStatus');
@@ -5484,18 +5475,16 @@ async function scan(){
     function tick(on){ return on?' <span class="cl-ck">✅</span>':''; }
     box.innerHTML=show.length?show.map(function(r){
       var entry=r.entry, cur=r.price||entry, open=(r.status==='open');
-      var prog=entry<r.t3?Math.max(0,Math.min(1,(cur-entry)/(r.t3-entry))):0;
+      var prog=entry<r.t2?Math.max(0,Math.min(1,(cur-entry)/(r.t2-entry))):0;
       var pnl=entry>0?((cur-entry)/entry*100):0;
       var head=r.status==='win'?'🏆 تحققت الأهداف — ✅':(r.status==='loss'?'🛑 ضرب الوقف':'💪 شراء — نموذج قوي مكتمل');
       var trade='<div class="ob-trade'+(r.status==='loss'?' down':'')+'"><div class="ob-trade-h">'+head+'</div><div class="ob-trow">'
         +'<span>دخول <b>'+money(entry)+'</b></span>'
-        +'<span class="up">🎯1 '+money(r.t1)+tick(r.hit&&r.hit.t1)+'</span>'
-        +'<span class="up">🎯2 '+money(r.t2)+tick(r.hit&&r.hit.t2)+'</span>'
-        +'<span class="up">🎯3 '+money(r.t3)+tick(r.hit&&r.hit.t3)+'</span>'
+        +'<span class="up">🎯 هدف '+money(r.t2)+tick(r.hit&&r.hit.t2)+' (+'+(entry>0?((r.t2-entry)/entry*100).toFixed(2):'0')+'% 💰)</span>'
         +'<span class="dn">🛑 وقف '+money(r.sl)+'</span>'
         +'<span>حالي '+money(cur)+' ('+(pnl>=0?'+':'')+pnl.toFixed(1)+'%)</span>'
         +'</div></div>';
-      var ladHtml=''; try{ ladHtml='<div class="pow-lad">'+(r.lad||[]).slice(0,8).map(function(v,k){ return '<div><small>🎯 هدف '+(k+1)+'</small><b>'+money(v)+'</b></div>'; }).join('')+'</div>'; }catch(e){}
+      var ladHtml=''; try{ ladHtml='<div class="pow-lad"><div><small>🎯 هدف واحد 💰</small><b>'+money(r.t2)+'</b></div></div>'; }catch(e){}
       var h='<div class="ob-card d-up'+(open?' cl-pulse':'')+'"><div class="ob-top"><span class="cl-live'+(r.status==='loss'?' dn':'')+'"></span><b>'+r.sym+'</b><span>'+money(cur)+'</span><span>💪 قوي '+r.sc+'</span></div>'
       +'<div class="ob-meta">مقاومة <b>'+money(r.R)+'</b> • حجم <b>'+Number(r.vr||0).toFixed(1)+'x</b> • هدف النموذج <b>'+money(r.meas)+'</b></div>'
       +(r.svg||'')

@@ -73,12 +73,11 @@ let autoMode=true;const AUTO_MS=10000;let nextAt=0;
 $('scan').onclick=()=>doScan();
 function cardHTML(a,tag){
  const s=a.sym.replace('USDT',''),n=a.n;
- const p1='+'+a.p1Pct.toFixed(1)+'%',p2='+'+a.p2Pct.toFixed(1)+'%',p3='+'+a.p3Pct.toFixed(1)+'%';
- const score=Math.round(n*10+a.vr*5+a.p3Pct);
- return '<div class="top"><b>'+s+'/USDT</b><span class="badge">'+tag+' '+n+'/6 • قوة '+score+'</span></div>'
- +'<div class="nums"><div class="en"><small>📍 الدخول</small><b>'+money(a.entry)+'</b></div><div class="tp"><small>🎯 هـ3 '+p3+'</small><b>'+money(a.t3)+'</b></div><div class="sp"><small>🛡 الوقف '+(-a.riskPct).toFixed(1)+'%</small><b>'+money(a.sl)+'</b></div></div>'
- +'<div class="nums"><div><small>🎯 هـ1 '+p1+'</small><b class="u">'+money(a.t1)+'</b></div><div><small>🎯 هـ2 '+p2+'</small><b class="u">'+money(a.t2)+'</b></div><div><small>⚖️ مخاطرة</small><b>'+a.riskPct.toFixed(1)+'%</b></div></div>'
- +'<div class="lpnl" data-live="'+a.sym+'" data-e="'+a.entry+'" data-t1="'+a.t1+'" data-t2="'+a.t2+'" data-t3="'+a.t3+'">⏳ بانتظار السعر الحي...</div>';
+  const p2='+'+a.p2Pct.toFixed(1)+'%';
+  const score=Math.round(n*10+a.vr*5+a.p2Pct);
+  return '<div class="top"><b>'+s+'/USDT</b><span class="badge">'+tag+' '+n+'/6 • قوة '+score+'</span></div>'
+  +'<div class="nums"><div class="en"><small>📍 الدخول</small><b>'+money(a.entry)+'</b></div><div class="tp"><small>🎯 هدف '+p2+' 💰</small><b>'+money(a.t2)+'</b></div><div class="sp"><small>🛡 الوقف '+(-a.riskPct).toFixed(1)+'%</small><b>'+money(a.sl)+'</b></div></div>'
+  +'<div class="lpnl" data-live="'+a.sym+'" data-e="'+a.entry+'" data-t="'+a.t2+'" data-p="'+a.p2Pct.toFixed(1)+'">⏳ بانتظار السعر الحي...</div>';
 }
 async function doScan(){
  if(scanning)return;scanning=true;$('scan').disabled=true;
@@ -180,10 +179,10 @@ async function tickLive(){
  (Array.isArray(arr)?arr:[arr]).forEach(x=>{px[x.symbol]=parseFloat(x.price);});
  els.forEach(el=>{
   const live=px[el.dataset.live];if(!(live>0))return;
-  const e=+el.dataset.e,t1=+el.dataset.t1,t2=+el.dataset.t2,t3=+el.dataset.t3;
-  const pnl=(live-e)/e*100;
-  const m=(t,lb)=>live>=t?'✅ '+lb+' ضُرب':'🎯 '+lb;
-  el.innerHTML='💰 حي '+money(live)+' ('+(pnl>=0?'+':'')+pnl.toFixed(2)+'%) • '+m(t1,'هـ1')+' • '+m(t2,'هـ2')+' • '+m(t3,'هـ3');
+   const e=+el.dataset.e,t=+el.dataset.t;
+   const pnl=(live-e)/e*100;
+   el.innerHTML='💰 حي '+money(live)+' ('+(pnl>=0?'+':'')+pnl.toFixed(2)+'%) • '+(live>=t?'✅ الهدف ضُرب +'+el.dataset.p+'% 💰':'🎯 الهدف +'+el.dataset.p+'%');
+   try{ var _b=document.querySelector('[data-w="'+el.dataset.live+'"]'); if(_b){ _b.style.width=Math.max(0,Math.min(100,(live-e)/Math.max(t-e,1e-9)*100)).toFixed(1)+'%'; } }catch(_){}
   const prev=lastPx[el.dataset.live];lastPx[el.dataset.live]=live;
   el.classList.remove('up','down');void el.offsetWidth;
   el.classList.add(prev==null?(pnl>=0?'up':'down'):(live>prev?'up':live<prev?'down':(pnl>=0?'up':'down')));

@@ -162,8 +162,7 @@ async function run(){
       const p=r.plan, medal=i===0?'🥇':i===1?'🥈':'🥉';
       return '<div class="card"><div class="top"><b>'+medal+' '+r.sym.replace(/USDT$/,'')+'</b><div class="ring" style="--p:'+r.score+'"><b>'+r.score+'</b><small>ممتاز</small></div></div>'
       +'<div class="kv"><div><small>📍 الدخول</small><b>'+money(p.entry)+'</b></div><div><small>💰 الربح المتوقع</small><b class="up">+$'+(c.equity*(p.t2-p.entry)/p.entry).toFixed(2)+'</b></div>'
-      +'<div><small>🎯 T1</small><b class="up">'+money(p.t1)+'</b></div><div><small>🎯 T2</small><b class="up">'+money(p.t2)+'</b></div>'
-      +'<div><small>🎯 T3</small><b class="up">'+money(p.t3)+'</b></div><div><small>🛡 الوقف</small><b class="down">'+money(p.sl)+'</b></div></div>'
+      +'<div><small>🎯 هدف +'+((p.t2-p.entry)/p.entry*100).toFixed(2)+'% 💰</small><b class="up">'+money(p.t2)+'</b></div><div><small>🛡 الوقف</small><b class="down">'+money(p.sl)+'</b></div></div>'
       +'<div class="kv"><div><small>⚖️ R:R</small><b>'+r.rr+'</b></div><div><small>📊 الفريمات</small><b style="font-size:.7rem">'+r.tf.d+'/'+r.tf.h4+'/'+r.tf.h1+'/'+r.tf.m15+'</b></div></div>'
       +'<canvas class="spark" width="260" height="56" data-sym="'+r.sym+'" data-e="'+p.entry+'" data-t="'+p.t2+'" data-s="'+p.sl+'"></canvas>'
       +'<div class="trig">✅ شراء مؤهل '+r.score+'/100 • R:R '+r.rr+' — '+r.reasons.slice(0,2).join(' • ')+'</div></div>';
@@ -191,8 +190,7 @@ async function trackHQ(){
     open.forEach(t=>{
       const live=px[t.sym+'USDT']; if(!(live>0)) return;
       t.live=live;
-      if(!t.hit1&&live>=t.t1){ t.hit1=true; t.sl=Math.max(t.sl,t.entry); }
-      if(live>=t.t2){ t.status='win'; t.exit=t.t2; t.pnl=(t.t2-t.entry)/t.entry*100; }
+      if(live>=t.t2){ t.status='win'; t.exit=t.t2; t.pnl=(t.t2-t.entry)/t.entry*100; t.hit1=true; }
       else if(live<=t.sl){ t.status=t.hit1?'win':'loss'; t.exit=t.sl; t.pnl=(t.sl-t.entry)/t.entry*100; }
     });
     jsave(); paintJ();
