@@ -21,3 +21,8 @@ node_modules/
 apk/alert.conf
 # مفتاح سيرفر القناة — يُخبز عند البناء ولا يُرفع أبداً
 apk/srv.conf
+# بيانات التشغيل الدائم 24/7 (لا تُرفع — تبقى في السيرفر فقط)
+private-system.json
+private-system.json.bak
+bot-state.json.bak
+*.tmp

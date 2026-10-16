@@ -13,9 +13,19 @@ Type=simple
 User=root
 WorkingDirectory=/root/PlayGround
 ExecStart=/usr/bin/node /root/PlayGround/bot-server.js
+# ♾️ استمرار بدون توقف: إعادة تشغيل دائمة حتى بعد الكراش أو إعادة تشغيل السيرفر نفسه
 Restart=always
-RestartSec=10
+RestartSec=5
+StartLimitIntervalSec=0
+TimeoutStopSec=15
+# الحفظ الدائم: STATE_FILE للبوت + PRIVATE_FILE لنظامك الخاص (يبقى بعد خروجك ودخولك)
+# ⚠️ غيّر OWNER_CODE ليكون نفس كلمة سر my-system.html
 Environment=MODE=paper
+Environment=PORT=8787
+Environment=STATE_FILE=/root/PlayGround/bot-state.json
+Environment=PRIVATE_FILE=/root/PlayGround/private-system.json
+Environment=OWNER_CODE=1234
+Environment=AUTOSAVE_SEC=20
 Environment=STAKE_USD=20
 Environment=TP_USD=0.7
 Environment=MIN_TP_USD=0.3

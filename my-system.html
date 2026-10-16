@@ -68,6 +68,7 @@ footer{text-align:center;color:var(--mut);font-size:.8rem;padding:18px}
 <div class="logo">👑 <span id="sysName2">نظامي</span></div>
 <div class="pill">💰 <b id="hEq">$100</b></div>
 <div class="pill">📅 <b id="hPnl">+$0</b></div>
+<div class="pill" id="srvPill" title="حالة السيرفر">🌐 <b id="srvTxt">...</b></div>
 <button onclick="lock()">🔒 قفل</button>
 </div></header>
 <div class="container">
@@ -80,6 +81,15 @@ footer{text-align:center;color:var(--mut);font-size:.8rem;padding:18px}
 </div>
 
 <div data-p="home">
+<div class="panel" id="srvCard" style="border-color:#22c55e66"><h3>🌐 السيرفر <span>الحقيقي</span> <small id="svDot" style="color:var(--mut)">● جاري الاتصال...</small></h3>
+<div class="grid4" style="margin-bottom:0">
+<div class="stat"><small>الحالة</small><b id="svAlive" style="font-size:1rem">...</b></div>
+<div class="stat"><small>شغال منذ</small><b id="svUp" style="font-size:1rem">—</b></div>
+<div class="stat"><small>صفقات البوت المفتوحة</small><b id="svOpen">—</b></div>
+<div class="stat"><small>آخر حفظ لنظامك</small><b id="svSave" style="font-size:.85rem">—</b></div>
+</div>
+<p style="color:var(--mut);font-size:.8rem;margin-top:10px">🔗 <span id="svUrl">—</span> • ترى هذه البطاقة خضراء = السيرفر شغال 24/7 وكل شيء محفوظ فيه</p>
+</div>
 <div class="grid4">
 <div class="stat"><small>رأس المال</small><b class="gold" id="stEq">$100</b></div>
 <div class="stat"><small>ربح اليوم</small><b id="stDay">$0</b></div>
@@ -132,8 +142,10 @@ footer{text-align:center;color:var(--mut);font-size:.8rem;padding:18px}
 <div class="panel"><h3>⚙️ <span>إعدادات</span> نظامك</h3>
 <div class="form">
 <input id="sName" placeholder="اسم نظامك">
-<input id="sPass" placeholder="كلمة سر جديدة">
+<input id="sPass" placeholder="كلمة سر جديدة (= كود المالك في السيرفر)">
+<input id="sSrv" placeholder="رابط السيرفر (مثال: http://localhost:8787)" dir="ltr">
 <button class="btn" onclick="saveSet()">حفظ الإعدادات ✅</button>
+<p id="srvInfo" style="grid-column:1/-1;color:var(--mut);font-size:.82rem;line-height:1.9"></p>
 <button class="btn ghost" onclick="if(confirm('مسح كل بياناتك؟')){localStorage.clear();location.reload()}">🗑 مسح كل البيانات</button>
 </div></div>
 </div>
@@ -144,12 +156,69 @@ footer{text-align:center;color:var(--mut);font-size:.8rem;padding:18px}
 
 <script>
 const $=id=>document.getElementById(id);
+// 🌐 السيرفر الدائم 24/7 — كل شيء يحدث في نظامك يُحفظ هنا، ولو خرجت كلياً ورجعت بكود المالك تجده كما هو
+function srvCandidates(){
+  const saved=localStorage.getItem("moja_srv_url")||"";
+  const list=[];
+  if(saved)list.push(saved.replace(/\/$/,""));
+  try{
+    if(location.origin&&location.origin.startsWith("http"))list.push(location.origin.replace(/\/$/,""));
+    if(location.hostname)list.push("http://"+location.hostname+":8787");
+  }catch(e){}
+  list.push("http://localhost:8787");
+  return [...new Set(list)];
+}
+let SRV=localStorage.getItem("moja_srv_url")||"";
+let SRV_OK=false, srvTimer=null, saveTimer=null;
+async function srvHealth(base){
+  try{const r=await fetch(base+"/health",{cache:"no-store"});if(!r.ok)return null;return await r.json()}catch(e){return null}
+}
+async function srvFindWorking(){
+  for(const b of srvCandidates()){const h=await srvHealth(b);if(h&&h.alive){SRV=b;localStorage.setItem("moja_srv_url",b);return b}}
+  return null;
+}
+function srvStatus(txt,ok){
+  SRV_OK=!!ok;const el=$("srvTxt");if(el){el.textContent=txt;el.style.color=ok?"var(--up)":"var(--mut)"}
+  const info=$("srvInfo");if(info)info.innerHTML="🌐 السيرفر: <b>"+(SRV||"غير مربوط")+"</b> — الحالة: <b>"+txt+"</b><br>💡 كل حفظ يُرسل للسيرفر تلقائياً. لو خرجت ودخلت بكود المالك (كلمة السر) ترجع بياناتك كاملة والنظام شغال 24/7.<br>⚙️ في السيرفر اضبط <b>OWNER_CODE</b> = نفس كلمة سرك.";
+}
+async function srvPull(){
+  if(!SRV)await srvFindWorking();
+  if(!SRV){srvStatus("محلي فقط",false);return null}
+  try{
+    const r=await fetch(SRV+"/api/state?key="+encodeURIComponent(DB.pass),{cache:"no-store"});
+    if(r.status===401){srvStatus("كود غلط",false);return null}
+    if(!r.ok)throw 0;
+    const j=await r.json();
+    if(j&&j.ok&&j.data){srvStatus("متصل ✅ 24/7",true);return j}
+    srvStatus("متصل ✅ 24/7",true);return j;
+  }catch(e){const f=await srvFindWorking();if(f){srvStatus("متصل ✅ 24/7",true)}else{srvStatus("محلي فقط",false)}return null}
+}
+let _pushing=false;
+async function srvPush(){
+  if(!SRV||!DB||_pushing)return;
+  _pushing=true;
+  try{
+    await fetch(SRV+"/api/state",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({key:DB.pass,data:DB})});
+    srvStatus("متصل ✅ 24/7",true);
+  }catch(e){/* يبقى محلياً ويُعاد لاحقاً */}
+  _pushing=false;
+}
+function srvPushSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(srvPush,800)}
 let DB={name:"نظامي",pass:"1234",eq:100,dayStart:100,trades:[],closed:[],hist:[100]};
 try{const s=JSON.parse(localStorage.getItem("moja_private_v1")||"{}");DB={...DB,...s}}catch(e){}
-function save(){localStorage.setItem("moja_private_v1",JSON.stringify(DB))}
-function unlock(){
-if($("pass").value===DB.pass){$("lock").classList.add("hidden");$("app").classList.remove("hidden");boot()}
-else $("err").textContent="❌ كلمة السر غلط";
+function save(){localStorage.setItem("moja_private_v1",JSON.stringify(DB));srvPushSoon()}
+async function unlock(){
+if($("pass").value!==DB.pass && !(await tryOwnerCode($("pass").value))){$("err").textContent="❌ كلمة السر غلط";return}
+$("lock").classList.add("hidden");$("app").classList.remove("hidden");boot()}
+async function tryOwnerCode(code){
+  // اسمح بالدخول بكود المالك المحفوظ في السيرفر حتى من جهاز جديد: جرّب تحميل بيانات السيرفر بهذا الكود
+  for(const b of srvCandidates()){
+    try{
+      const r=await fetch(b+"/api/state?key="+encodeURIComponent(code),{cache:"no-store"});
+      if(r.ok){const j=await r.json();if(j&&j.ok&&j.data){DB={...DB,...j.data,pass:code};localStorage.setItem("moja_private_v1",JSON.stringify(DB));SRV=b;localStorage.setItem("moja_srv_url",b);return true}}
+    }catch(e){}
+  }
+  return false;
 }
 function lock(){location.reload()}
 $("pass").addEventListener("keydown",e=>{if(e.key==="Enter")unlock()});
@@ -160,9 +229,30 @@ document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"
 document.querySelectorAll("[data-p]").forEach(p=>p.classList.toggle("hidden",p.dataset.p!==e.target.dataset.t));
 });
 let live={};
+function fmtUp(s){if(s==null)return "—";s=Math.max(0,s|0);const h=(s/3600|0),m=(s%3600/60|0);return h?h+"س "+m+"د":m+"د "+(s%60)+"ث"}
+async function paintServer(){
+  if(!SRV){setSvCard(false);return}
+  try{
+    const h=await srvHealth(SRV);if(!h||!h.alive)throw 0;
+    let open=h.open||0,eq=h.equity,day=h.dayPnl;
+    try{const r=await fetch(SRV+"/api/bot",{cache:"no-store"});const b=await r.json();if(b&&b.ok){open=(b.open||[]).length;eq=b.equity;day=b.dayPnl}}catch(e){}
+    $("svAlive").textContent="🟢 شغال";$("svAlive").style.color="var(--up)";
+    $("svDot").textContent="● يعمل الآن 24/7";$("svDot").style.color="var(--up)";
+    $("svUp").textContent=fmtUp(h.uptimeSec);
+    $("svOpen").textContent=open;
+    $("svSave").textContent=h.privSavedAt?new Date(h.privSavedAt).toLocaleString("ar"):"بانتظار أول حفظ";
+    $("svUrl").textContent=SRV;
+  }catch(e){setSvCard(false)}
+}
+function setSvCard(on){
+  if(on)return;
+  if($("svAlive")){$("svAlive").textContent="🔴 غير متصل";$("svAlive").style.color="var(--down)"}
+  if($("svDot")){$("svDot").textContent="● السيرفر لا يرد — تحقق من الرابط في الإعدادات";$("svDot").style.color="var(--down)"}
+  if($("svUrl"))$("svUrl").textContent=SRV||"لا رابط — ضعه في ⚙️ إعدادات";
+}
 async function prices(){
 try{const r=await fetch("https://api.binance.com/api/v3/ticker/price?symbols="+encodeURIComponent(JSON.stringify(["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","DOGEUSDT"])));const j=await r.json();j.forEach(o=>live[o.symbol]=parseFloat(o.price))}catch(e){}
-renderMkt();renderTrades();$("tm").textContent="تحديث: "+new Date().toLocaleTimeString("ar");
+renderMkt();renderTrades();paintServer();$("tm").textContent="تحديث: "+new Date().toLocaleTimeString("ar");
 }
 function renderMkt(){$("mkt").innerHTML=Object.keys(live).map(k=>`<span class="pill">${k.replace("USDT","")} <b>$${live[k]}</b></span>`).join("")||"جاري الجلب..."}
 function addTrade(){
@@ -193,12 +283,31 @@ window.closeT=id=>{const t=DB.trades.find(x=>x.id===id);if(!t)return;const u=unr
 window.delT=id=>{DB.trades=DB.trades.filter(x=>x.id!==id);save();renderTrades()};
 function saveWallet(){if($("wEq").value)DB.eq=parseFloat($("wEq").value);if($("wAdd").value)DB.eq+=parseFloat($("wAdd").value);DB.hist.push(DB.eq);save();renderTrades();alert("تم ✅")}
 function calc(){const c=parseFloat($("cCap").value||0),p=parseFloat($("cPct").value||0);$("cOut").textContent="الربح: $"+(c*p/100).toFixed(2)+" — الإجمالي: $"+(c+c*p/100).toFixed(2)}
-function saveSet(){if($("sName").value)DB.name=$("sName").value;if($("sPass").value)DB.pass=$("sPass").value;save();location.reload()}
+function saveSet(){if($("sName").value)DB.name=$("sName").value;if($("sSrv").value){SRV=$("sSrv").value.trim().replace(/\/$/,"");localStorage.setItem("moja_srv_url",SRV)}const oldPass=DB.pass;if($("sPass").value)DB.pass=$("sPass").value;save();if(DB.pass!==oldPass){srvPush()}location.reload()}
 const SIGS=[["BTC","PUMP",12.4],["ETH","PUMP",7.8],["SOL","DUMP",9.1],["BNB","PUMP",5.4],["XRP","PUMP",9.6],["LINK","PUMP",11.2]];
 function renderSigs(){$("sigGrid").innerHTML=SIGS.map(s=>`<div class="card ${s[1]==="PUMP"?"pump":"dump"}"><b>${s[0]}</b><small>${s[1]} • اليوم</small><div class="num"><span>النتيجة</span><b style="color:${s[2]>0?"var(--up)":"var(--down)"}">+${s[2]}%</b></div><button class="btn" onclick="copySig('${s[0]}')">⭐ أضف لصفقاتي</button></div>`).join("")}
 window.copySig=c=>{DB.trades.push({id:Date.now(),coin:c,entry:live[c+"USDT"]||0,qty:1,tp:0,sl:0,note:"من الإشارات",t0:Date.now(),open:true});save();alert("تضافت "+c+" لصفقاتك ✅")};
 function drawEq(){const c=$("eq"),x=c.getContext("2d");c.width=c.offsetWidth;c.height=130;const h=[...DB.hist,DB.eq+DB.closed.reduce((a,b)=>a+b.pnl,0)];x.clearRect(0,0,c.width,c.height);const mx=Math.max(...h),mn=Math.min(...h);x.beginPath();h.forEach((v,i)=>{const px=i/(h.length-1||1)*c.width;const py=10+(1-(v-mn)/((mx-mn)||1))*(c.height-20);i?x.lineTo(px,py):x.moveTo(px,py)});x.strokeStyle="#d4af37";x.lineWidth=2.5;x.stroke()}
-function boot(){$("sysName1").textContent=DB.name;$("sysName2").textContent=DB.name;$("sName").value=DB.name;$("wEq").value=DB.eq;renderSigs();renderTrades();prices();setInterval(prices,30000)}
+async function boot(){$("sysName1").textContent=DB.name;$("sysName2").textContent=DB.name;$("sName").value=DB.name;$("sSrv").value=SRV||"";$("wEq").value=DB.eq;srvStatus("جاري الاتصال...",false);renderSigs();renderTrades();prices();setInterval(prices,30000);
+ // ⬇️ أول دخول: اسحب آخر نسخة من السيرفر (تبقى حتى بعد الخروج الكلي) وادمجها
+ try{
+   const remote=await srvPull();
+   if(SRV&&$("sSrv"))$("sSrv").value=SRV;
+   if(remote&&remote.data&&typeof remote.data==="object"){
+     const r=remote.data;
+     // السيرفر هو المرجع الأحدث: ادمج الصفقات والسجل بدون فقدان
+     DB={...r,pass:DB.pass,name:r.name||DB.name};
+     try{const local=JSON.parse(localStorage.getItem("moja_private_v1")||"{}");if((local.trades||[]).length>(DB.trades||[]).length&&(remote.updatedAt||"")<(local.updatedAt||"")){DB={...DB,...local}} }catch(e){}
+     localStorage.setItem("moja_private_v1",JSON.stringify(DB));
+     renderTrades();
+   }
+ }catch(e){}
+ srvPushSoon();
+ // 🔁 نبض دوري: حفظ تلقائي + إبقاء الاتصال حياً (النظام يستمر في السيرفر 24/7 حتى وأنت خارج)
+ clearInterval(srvTimer);srvTimer=setInterval(async()=>{await srvPush();const h=SRV?await srvHealth(SRV):null;if(!h)await srvFindWorking();if(SRV&&$("sSrv")&&!$("sSrv").value)$("sSrv").value=SRV;srvStatus(SRV?"متصل ✅ 24/7":"محلي فقط",!!SRV)},30000);
+ document.addEventListener("visibilitychange",()=>{if(document.hidden)srvPush()});
+ window.addEventListener("beforeunload",()=>{try{localStorage.setItem("moja_private_v1",JSON.stringify(DB))}catch(e){} if(SRV&&navigator.sendBeacon){try{navigator.sendBeacon(SRV+"/api/state",JSON.stringify({key:DB.pass,data:DB}))}catch(e){}}});
+}
 </script>
 </body>
 </html>

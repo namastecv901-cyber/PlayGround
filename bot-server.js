@@ -40,18 +40,43 @@ const CFG = {
   tgChat: process.env.TG_CHAT || '',
   tgChannel: process.env.TG_CHANNEL || '',
   notifySecret: process.env.NOTIFY_SECRET || '',
+  ownerCode: process.env.OWNER_CODE || process.env.NOTIFY_SECRET || '1234',
+  privateFile: process.env.PRIVATE_FILE || './private-system.json',
+  autosaveSec: Math.max(10, parseInt(process.env.AUTOSAVE_SEC || '20', 10)),
   port: parseInt(process.env.PORT || '8787', 10),
   stateFile: process.env.STATE_FILE || './bot-state.json',
   maxCycles: parseInt(process.env.CYCLES || '0', 10),
 };
+const BOOT_AT = Date.now();
 const STABLES = new Set(['USDT','USDC','DAI','FDUSD','USDE','TUSD','USDD','PYUSD','EURS','SUSD']);
 const nowISO = () => new Date().toISOString();
 const todayUTC = () => nowISO().slice(0, 10);
 const log = (...a) => console.log('[' + nowISO() + ']', ...a);
 
 let S = { trades: {}, profit: 0, closed: 0, day: todayUTC(), dayPnl: 0, equity: CFG.equityStart, info: {}, noBin: {}, buys: 0, stopDay: null, stopWhy: '' };
-function loadState() { try { const j = JSON.parse(fs.readFileSync(CFG.stateFile, 'utf8')); Object.keys(j).forEach(k => { S[k] = j[k]; }); } catch (e) {} }
-function saveState() { try { fs.writeFileSync(CFG.stateFile, JSON.stringify(S)); } catch (e) { log('state-save-fail', e.message); } }
+// 🗄️ مخزن النظام الخاص (my-system.html) — يبقى في السيرفر 24/7 حتى بعد خروجك ودخولك
+let PRIV = { updatedAt: null, db: null };
+function ensureDirFor(f) { try { const d = require('path').dirname(f); if (d && d !== '.' && d !== './') fs.mkdirSync(d, { recursive: true }); } catch (e) {} }
+// 💾 حفظ ذري: كتابة لملف مؤقت ثم rename — لا يضيع أبداً حتى لو انطفأ السيرفر فجأة + نسخة احتياطية
+function atomicWrite(file, data) {
+  ensureDirFor(file);
+  const tmp = file + '.tmp';
+  fs.writeFileSync(tmp, data);
+  try {
+    if (fs.existsSync(file)) fs.copyFileSync(file, file + '.bak');
+  } catch (e) {}
+  fs.renameSync(tmp, file);
+}
+function loadState() {
+  try { const j = JSON.parse(fs.readFileSync(CFG.stateFile, 'utf8')); Object.keys(j).forEach(k => { S[k] = j[k]; }); }
+  catch (e) {
+    try { const j = JSON.parse(fs.readFileSync(CFG.stateFile + '.bak', 'utf8')); Object.keys(j).forEach(k => { S[k] = j[k]; }); log('state-restored-from-backup ✅'); }
+    catch (e2) {}
+  }
+}
+function saveState() { try { atomicWrite(CFG.stateFile, JSON.stringify(S)); } catch (e) { log('state-save-fail', e.message); } }
+function loadPriv() { try { PRIV = JSON.parse(fs.readFileSync(CFG.privateFile, 'utf8')); if (!PRIV || typeof PRIV !== 'object') PRIV = { updatedAt: null, db: null }; } catch (e) { try { PRIV = JSON.parse(fs.readFileSync(CFG.privateFile + '.bak', 'utf8')); } catch (e2) { PRIV = { updatedAt: null, db: null }; } } }
+function savePriv() { try { PRIV.updatedAt = nowISO(); atomicWrite(CFG.privateFile, JSON.stringify(PRIV)); } catch (e) { log('priv-save-fail', e.message); } }
 
 async function jget(url, headers, timeoutMs) {
   const ctl = new AbortController();
@@ -333,46 +358,126 @@ async function selftest() {
   CFG.splitN = 0;
   ok('split-off-fixed', stakeFor() === CFG.stake);
   CFG.splitN = 4;
+  // 💾 الحفظ الدائم 24/7: ذري + مفتاح المالك + مخزن خاص
+  ok('atomic-write-roundtrip', (() => { try { atomicWrite('/tmp/opencode/selftest-state.json', JSON.stringify({ a: 1 })); const r = JSON.parse(fs.readFileSync('/tmp/opencode/selftest-state.json', 'utf8')); return r.a === 1; } catch (e) { return false; } })());
+  ok('owner-key-accept', (() => { const keep = CFG.ownerCode; CFG.ownerCode = 'SECRET123'; const r = checkKey({ key: 'SECRET123' }, new URLSearchParams('')) === true; CFG.ownerCode = keep; return r; })());
+  ok('owner-key-reject', (() => { const keep = CFG.ownerCode; CFG.ownerCode = 'SECRET123'; const r = !checkKey({ key: 'WRONG' }, new URLSearchParams('')); CFG.ownerCode = keep; return r; })());
+  ok('priv-save-load', (() => { const kf = CFG.privateFile; CFG.privateFile = '/tmp/opencode/selftest-priv.json'; PRIV = { updatedAt: null, db: { eq: 555 } }; savePriv(); loadPriv(); const r = PRIV.db && PRIV.db.eq === 555; CFG.privateFile = kf; loadPriv(); return r; })());
   console.log(pass + ' passed, ' + fail + ' failed');
   process.exit(fail ? 1 : 0);
 }
 
 let lastPost = 0;
-// 📣 بوابة /notify: التطبيق يرسل أحداث البوت والبطاقات عبر السيرفر فقط (التوكن لا يخرج من السيرفر)
-function startNotify() {
-  if (!CFG.notifySecret) { log('notify OFF (no NOTIFY_SECRET)'); return; }
+function checkKey(j, q) {
+  const k = (j && j.key) || (q && q.get('key')) || '';
+  return k && CFG.ownerCode && k === CFG.ownerCode;
+}
+// 🖥️ سيرفر حقيقي واحد: نفس الرابط يخدم الواجهة + الحفظ (بدون localhost)
+//  GET  /health                  → نبض السيرفر (بدون مفتاح)
+//  GET  /                        → الواجهة الرئيسية index.html
+//  GET  /my-system.html          → نظامك الخاص (يفتح من نفس رابط السيرفر ✅)
+//  GET  /api/bot                 → حالة البوت (بدون مفتاح، بيانات عامة فقط)
+//  GET  /api/state?key=CODE      → تحميل نظامك الخاص
+//  POST /api/state {key, data}   → حفظ نظامك الخاص (يبقى حتى بعد خروجك ودخولك)
+//  POST /notify {key, text}       → بوابة التلغرام (التوكن لا يخرج من السيرفر)
+const STATIC_TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json', '.png': 'image/png', '.ico': 'image/x-icon', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' };
+function serveStatic(pathname, res) {
+  try {
+    let f = decodeURIComponent(pathname);
+    if (f === '/') f = '/index.html';
+    if (f.includes('..') || f.includes('\0')) return false;
+    const path = require('path');
+    const file = path.join(__dirname, f.slice(1));
+    if (!fs.existsSync(file) || !fs.statSync(file).isFile()) return false;
+    const ext = path.extname(file).toLowerCase();
+    res.writeHead(200, { 'Content-Type': STATIC_TYPES[ext] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
+    fs.createReadStream(file).pipe(res);
+    return true;
+  } catch (e) { return false; }
+}
+function startServer() {
   const http = require('http');
   const srv = http.createServer((req, res) => {
-    if (req.method !== 'POST' || req.url !== '/notify') { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end('{}'); return; }
-    let b = '';
-    req.on('data', c => { b += c; if (b.length > 2000) { try { req.destroy(); } catch (e) {} } });
-    req.on('end', async () => {
-      try {
-        const j = JSON.parse(b || '{}');
-        if (j.key !== CFG.notifySecret) { res.writeHead(403, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"bad key"}'); return; }
-        const text = String(j.text || '').slice(0, 900);
-        if (!text) { res.writeHead(400, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"empty"}'); return; }
-        if (Date.now() - lastPost < 3000) { res.writeHead(429, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"slow down"}'); return; }
-        lastPost = Date.now();
-        await tgCh(text);
-        res.writeHead(200, { 'Content-Type': 'application/json' }); res.end('{"ok":true}');
-      } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end('{"ok":false}'); }
-    });
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+    const u = new URL(req.url || '/', 'http://x');
+    // نبض — يكفي تفتحه لتعرف السيرفر حي
+    if (req.method === 'GET' && u.pathname === '/health') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, alive: true, uptimeSec: Math.floor((Date.now() - BOOT_AT) / 1000), time: nowISO(), mode: CFG.mode, equity: S.equity, dayPnl: S.dayPnl, open: Object.values(S.trades).filter(t => t && t.open).length, privSavedAt: PRIV.updatedAt || null }));
+      return;
+    }
+    if (req.method === 'GET' && u.pathname === '/api/bot') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, time: nowISO(), mode: CFG.mode, equity: S.equity, dayPnl: S.dayPnl, profit: S.profit, closed: S.closed, buys: S.buys, open: Object.values(S.trades).filter(t => t && t.open).map(t => ({ sym: t.sym, coin: t.coin, entry: t.entry, qty: t.qty })), stopDay: S.stopDay || null, stopWhy: S.stopWhy || '' }));
+      return;
+    }
+    // تحميل النظام الخاص — يحتاج كود المالك
+    if (req.method === 'GET' && u.pathname === '/api/state') {
+      if (!checkKey(null, u.searchParams)) { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"bad key"}'); return; }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, updatedAt: PRIV.updatedAt, data: PRIV.db }));
+      return;
+    }
+    if ((req.method === 'POST' && (u.pathname === '/api/state' || u.pathname === '/notify')) || (req.method === 'POST' && u.pathname === '/state')) {
+      let b = '';
+      req.on('data', c => { b += c; if (b.length > 1000000) { try { req.destroy(); } catch (e) {} } });
+      req.on('end', async () => {
+        try {
+          const j = JSON.parse(b || '{}');
+          if (!checkKey(j, u.searchParams)) { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"bad key"}'); return; }
+          // حفظ النظام الخاص — أهم endpoint: كل شيء يحدث في نظامك يُحفظ هنا
+          if (u.pathname === '/api/state' || u.pathname === '/state') {
+            if (!j.data || typeof j.data !== 'object') { res.writeHead(400, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"empty data"}'); return; }
+            PRIV.db = j.data; savePriv(); saveState();
+            res.writeHead(200, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ ok: true, savedAt: PRIV.updatedAt }));
+            return;
+          }
+          // بوابة التلغرام
+          const text = String(j.text || '').slice(0, 900);
+          if (!text) { res.writeHead(400, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"empty"}'); return; }
+          if (Date.now() - lastPost < 3000) { res.writeHead(429, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"slow down"}'); return; }
+          lastPost = Date.now();
+          await tgCh(text);
+          res.writeHead(200, { 'Content-Type': 'application/json' }); res.end('{"ok":true}');
+        } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end('{"ok":false}'); }
+      });
+      return;
+    }
+    // 📄 ملفات الواجهة من نفس السيرفر — نظامك يفتح من نفس الرابط (لا localhost بعد اليوم)
+    if (req.method === 'GET' && !u.pathname.startsWith('/api/') && u.pathname !== '/health' && u.pathname !== '/notify') {
+      if (serveStatic(u.pathname, res)) return;
+    }
+    res.writeHead(404, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"not found"}');
   });
-  srv.listen(CFG.port, () => { log('notify listening :' + CFG.port); tgCh('🚀 سيرفر البوت يعمل — القناة مربوطة ✅'); });
+  srv.on('error', e => log('http-error:', e.message));
+  srv.listen(CFG.port, () => {
+    log('🌐 24/7 server listening :' + CFG.port + ' — /health /api/state /api/bot');
+    if (CFG.tgBot && CFG.tgChannel) tgCh('🚀 سيرفر البوت يعمل 24/7 — الحفظ التلقائي شغال ✅');
+    else log('notify OFF (no TG_BOT/TG_CHANNEL) — لكن الحفظ والسيرفر شغالان ✅');
+  });
+  // التقاط أي خطأ غير متوقع بدون إسقاط السيرفر
+  process.on('uncaughtException', e => log('uncaught (kept alive):', (e && e.message) || e));
+  return srv;
 }
 
 async function main() {
   if (process.argv.includes('--selftest')) return selftest();
   if (CFG.mode !== 'paper' && (!CFG.key || !CFG.sec)) { console.error('need BINANCE_KEY + BINANCE_SECRET for ' + CFG.mode); process.exit(1); }
   loadState();
+  loadPriv();
   if (todayUTC() !== S.day) { S.day = todayUTC(); S.dayPnl = 0; }
   await syncTime();
-  startNotify();
-  log('BOT SERVER start mode=' + CFG.mode + ' base=' + CFG.base + ' stake=$' + CFG.stake + ' tp=$' + CFG.tp + ' max=' + CFG.max + ' goal=$' + CFG.dailyGoal + ' equity=$' + S.equity.toFixed(2));
+  startServer();
+  // 💾 حفظ دوري تلقائي — حتى لو حدث أي شيء، آخر نسخة محفوظة قبل ≤ AUTOSAVE_SEC ثانية
+  setInterval(() => { try { saveState(); savePriv(); } catch (e) {} }, CFG.autosaveSec * 1000);
+  log('BOT SERVER start mode=' + CFG.mode + ' base=' + CFG.base + ' stake=$' + CFG.stake + ' tp=$' + CFG.tp + ' max=' + CFG.max + ' goal=$' + CFG.dailyGoal + ' equity=$' + S.equity.toFixed(2) + ' | owner-protection=' + (CFG.ownerCode ? 'ON' : 'OFF') + ' privSavedAt=' + (PRIV.updatedAt || 'never'));
   let n = 0;
-  process.on('SIGINT', () => { log('SIGINT, saving...'); saveState(); process.exit(0); });
-  process.on('SIGTERM', () => { log('SIGTERM, saving...'); saveState(); process.exit(0); });
+  const graceful = (sig) => { log(sig + ', saving...'); try { saveState(); savePriv(); } catch (e) {} process.exit(0); };
+  process.on('SIGINT', () => graceful('SIGINT'));
+  process.on('SIGTERM', () => graceful('SIGTERM'));
   process.on('unhandledRejection', e => log('unhandled:', (e && e.message) || e));
   while (true) {
     n++;

@@ -1,0 +1,32 @@
+# 🌐 سيرفر النظام الحقيقي 24/7 على Render (مجاني)
+# الخطوات:
+#  1. ارفع هذا المجلد على GitHub
+#  2. في Render: New + → Web Service → اختر الريبو
+#  3. اضبط المتغيرات أدناه ثم Deploy
+#  4. ستأخذ رابط https://xxx.onrender.com ← هذا هو "رابط السيرفر" تضعه في النظام
+services:
+  - type: web
+    name: my-system-server
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: MODE
+        value: paper
+      - key: PORT
+        value: 10000
+      - key: OWNER_CODE
+        value: 1234
+      - key: STATE_FILE
+        value: /tmp/bot-state.json
+      - key: PRIVATE_FILE
+        value: /tmp/private-system.json
+      - key: AUTOSAVE_SEC
+        value: 20
+      - key: POLL_SEC
+        value: 60
+      - key: EQUITY_START
+        value: 100

@@ -1,0 +1,14 @@
+{
+  "name": "my-private-system-server",
+  "version": "1.0.0",
+  "description": "سيرفر النظام الخاص 24/7 — الواجهة + الحفظ الدائم في رابط واحد",
+  "main": "bot-server.js",
+  "scripts": {
+    "start": "node bot-server.js",
+    "test": "node bot-server.js --selftest"
+  },
+  "engines": {
+    "node": "20.x"
+  },
+  "license": "private"
+}
