@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>💥 نظام الانفجار — قاع + اختراق 1m</title>
+<meta name="theme-color" content="#06070b">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:system-ui,'Cairo',sans-serif;background:radial-gradient(900px 400px at 50% -10%,#16c78411,transparent),#06070b;color:#f6f1df;min-height:100dvh;padding-bottom:90px}
+header{position:sticky;top:0;z-index:20;background:#06070bee;backdrop-filter:blur(12px);border-bottom:1px solid #16c78433;padding:12px 14px}
+h1{font-size:1.05rem}.grad{background:linear-gradient(135deg,#7ef0c1,#16c784);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:#a89f83;font-size:.75rem;margin-top:2px}
+.live{display:inline-flex;align-items:center;gap:6px;font-weight:900;color:#4ade80}
+.dot{width:10px;height:10px;border-radius:50%;background:#4ade80;animation:pl 1.6s infinite}
+@keyframes pl{70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.row{display:flex;gap:8px;margin-top:10px}
+button{font-family:inherit;font-weight:900;border-radius:12px;border:none;cursor:pointer;padding:12px;font-size:.95rem}
+#scan{flex:1;background:linear-gradient(135deg,#7ef0c1,#16c784);color:#04120c}
+#scan:disabled{opacity:.5}
+main{padding:12px;max-width:900px;margin:0 auto}
+.card{background:linear-gradient(160deg,#101a17,#0b0d15);border:2px solid #16c78466;border-radius:20px;padding:14px;margin-bottom:12px}
+.top{display:flex;align-items:center;gap:8px}
+.top b{font-size:1.2rem}
+.badge{margin-inline-start:auto;font-weight:900;font-size:.8rem;background:#16c78422;border:1px solid #16c78466;color:#4ade80;border-radius:99px;padding:5px 12px;white-space:nowrap}
+.nums{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0;text-align:center}
+.nums div{background:#00000066;border:1px solid #ffffff14;border-radius:12px;padding:8px}
+.nums small{display:block;color:#a89f83;font-size:.65rem;font-weight:800}
+.nums b{font-size:1.05rem;font-variant-numeric:tabular-nums}
+.en b{color:#f6e27a}.tp b{color:#4ade80}.sp b{color:#ff8d95}.u{color:#4ade80}
+.empty{text-align:center;color:#a89f83;padding:30px;border:1px dashed #16c78433;border-radius:16px;line-height:2}
+.boom{border:3px solid #f0b90b !important;box-shadow:0 0 35px #f0b90b55,0 0 80px #16c78422 !important;background:linear-gradient(160deg,#221a05,#101a17 60%,#0b0d15) !important}
+.brk{border:3px solid #16c784 !important;box-shadow:0 0 35px #16c78455 !important}
+.boomTitle{text-align:center;font-weight:900;font-size:1.1rem;color:#f6e27a;margin-bottom:8px;animation:blink 1.2s infinite}
+.brkTitle{text-align:center;font-weight:900;font-size:1.1rem;color:#4ade80;margin-bottom:8px;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.6}}
+.secT{font-weight:900;font-size:.95rem;margin:14px 0 8px;color:#7ef0c1}
+</style>
+</head>
+<body>
+<header>
+<h1>💥 <span class="grad">نظام الانفجار</span> — قاع + اختراق 1m <small style="background:#16c78422;border:1px solid #16c78466;color:#4ade80;border-radius:99px;padding:2px 10px;font-size:.7rem">500 عملة • 10ث</small></h1>
+<div class="sub"><span class="live"><span class="dot"></span> مباشر</span> • <span id="status">جاهز للفحص...</span><br><small id="autoInfo" style="color:#7ef0c1;font-weight:800">🔄 الفحص التلقائي مفعّل كل 10 ثوانٍ</small></div>
+<div class="row"><button id="scan">🔍 افحص السوق الآن</button></div>
+</header>
+<main>
+<div class="prog" id="progWrap" style="display:none;margin-bottom:12px;background:#00000055;border:1px solid #16c78433;border-radius:12px;padding:8px"><div style="display:flex;justify-content:space-between;font-size:.75rem;font-weight:900;color:#7ef0c1"><span id="progTxt">0%</span><span id="progCnt"></span></div><div style="height:10px;background:#ffffff12;border-radius:99px;overflow:hidden;margin-top:6px"><div id="progFill" style="height:100%;width:0%;background:linear-gradient(90deg,#f6e27a,#16c784);border-radius:99px;transition:width .2s"></div></div></div>
+<div class="secT">💥 بطاقة القاع — انفجار من القاع</div>
+<div id="gridBoom"><div class="empty">بانتظار أول فحص...</div></div>
+<div class="secT">🚀 بطاقة الاختراق — كسر القمة بحجم</div>
+<div id="gridBrk"><div class="empty">بانتظار أول فحص...</div></div>
+</main>
+<script>
+const BASE='https://data-api.binance.vision';
+const $=id=>document.getElementById(id);
+const money=n=>n>=1000?n.toLocaleString('en',{maximumFractionDigits:1}):n>=1?n.toFixed(4):String(Number(n.toPrecision(3)));
+async function jget(url){
+ const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),12000);
+ try{const r=await fetch(url,{signal:ctl.signal,cache:'no-store'});if(!r.ok)throw 0;return await r.json();}
+ finally{clearTimeout(to);}
+}
+function rsiAt(c,i,per){per=per||14;if(i<per||i>=c.length)return 50;let g=0,l=0;for(let k=i-per+1;k<=i;k++){const d=c[k]-c[k-1];if(d>0)g+=d;else l-=d;}if(l===0)return 100;if(g===0)return 0;return 100-100/(1+g/l);}
+function setProg(pct,txt,cnt){try{$('progWrap').style.display='block';$('progFill').style.width=pct+'%';if(txt!=null)$('progTxt').textContent=txt;if(cnt!=null)$('progCnt').textContent=cnt;}catch(e){}}
+function cntTxt(done,total,t0){const el=((Date.now()-t0)/1000).toFixed(0);return done+'/'+total+' • '+el+'ث';}
+function setAutoInfo(t){try{$('autoInfo').textContent=t;}catch(e){}}
+let scanning=false;
+let autoMode=true;const AUTO_MS=10000;let nextAt=0;
+$('scan').onclick=()=>doScan();
+function cardHTML(a,tag){
+ const s=a.sym.replace('USDT',''),n=a.n;
+ const p1='+'+a.p1Pct.toFixed(1)+'%',p2='+'+a.p2Pct.toFixed(1)+'%',p3='+'+a.p3Pct.toFixed(1)+'%';
+ const score=Math.round(n*10+a.vr*5+a.p3Pct);
+ return '<div class="top"><b>'+s+'/USDT</b><span class="badge">'+tag+' '+n+'/6 • قوة '+score+'</span></div>'
+ +'<div class="nums"><div class="en"><small>📍 الدخول</small><b>'+money(a.entry)+'</b></div><div class="tp"><small>🎯 هـ3 '+p3+'</small><b>'+money(a.t3)+'</b></div><div class="sp"><small>🛡 الوقف '+(-a.riskPct).toFixed(1)+'%</small><b>'+money(a.sl)+'</b></div></div>'
+ +'<div class="nums"><div><small>🎯 هـ1 '+p1+'</small><b class="u">'+money(a.t1)+'</b></div><div><small>🎯 هـ2 '+p2+'</small><b class="u">'+money(a.t2)+'</b></div><div><small>⚖️ مخاطرة</small><b>'+a.riskPct.toFixed(1)+'%</b></div></div>';
+}
+async function doScan(){
+ if(scanning)return;scanning=true;$('scan').disabled=true;
+ try{
+ $('status').textContent='⏳ جلب عملات Binance Spot...';setProg(2,'⏳ جلب القائمة...','');
+ const ticks=await jget(BASE+'/api/v3/ticker/24hr');
+ const stb=new Set(['USDT','USDC','DAI','FDUSD','USDE','TUSD','USDD','PYUSD','EURS','SUSD','BFUSD','USD1','BTTC','XUSD','AUSD']);
+ const MAX_COINS=500, MIN_QV=100000;
+ let uni=ticks.filter(t=>t.symbol&&t.symbol.endsWith('USDT')&&parseFloat(t.quoteVolume||0)>=MIN_QV&&!stb.has(t.symbol.slice(0,-4))&&t.symbol.indexOf('UPUSDT')<0&&t.symbol.indexOf('DOWNUSDT')<0&&t.symbol.indexOf('BEARUSDT')<0&&t.symbol.indexOf('BULLUSDT')<0);
+ uni=uni.sort((a,b)=>parseFloat(b.quoteVolume)-parseFloat(a.quoteVolume)).slice(0,MAX_COINS);
+ const qvMap={};uni.forEach(t=>{qvMap[t.symbol]=parseFloat(t.quoteVolume||0);});
+ if(!uni.length){$('status').textContent='❌ لا عملات بعد فلتر السيولة';scanning=false;$('scan').disabled=false;try{$('progWrap').style.display='none';}catch(e){}return;}
+ const t0=Date.now();
+ const h1=new Array(uni.length).fill(null);
+ const CONC=20;
+ for(let s=0;s<uni.length;s+=CONC){
+  const slice=uni.slice(s,s+CONC).map(t=>()=>jget(BASE+'/api/v3/klines?symbol='+t.symbol+'&interval=1m&limit=61'));
+  const res=await Promise.all(slice.map(f=>f().catch(()=>null)));
+  for(let k=0;k<res.length;k++)h1[s+k]=res[k];
+  const done=Math.min(uni.length,s+CONC),pct=Math.round(2+done/uni.length*96);
+  setProg(pct,'⚡ فحص 1m '+done+'/'+uni.length,cntTxt(done,uni.length,t0));
+  $('status').textContent='⏳ فحص 1m ('+done+'/'+uni.length+') — قاع + اختراق...';
+  if(s+CONC<uni.length)await new Promise(r=>setTimeout(r,40));
+ }
+ let booms=[],brks=[];
+ for(let i=0;i<uni.length;i++){
+  const kl=h1[i];if(!kl||kl.length<40)continue;
+  const K=kl.slice(0,-1);
+  const C=K.map(k=>parseFloat(k[4])),H=K.map(k=>parseFloat(k[2])),L=K.map(k=>parseFloat(k[3])),V=K.map(k=>parseFloat(k[5]));
+  const live=parseFloat(uni[i].lastPrice),chg=parseFloat(uni[i].priceChangePercent||0);
+  if(chg>25||chg<-30)continue;
+  const w=C.slice(-60),hi=Math.max(...w),lo=Math.min(...w);
+  if(!(hi>lo))continue;
+  const pos=(live-lo)/(hi-lo);
+  const rNow=rsiAt(C,C.length-1,14),rPrev=rsiAt(C,C.length-6,14);
+  const level=Math.max(...H.slice(-21,-1));
+  const close=C[C.length-1],low=L[L.length-1];
+  const bos=close>level,retest=low<=level*1.005&&close>level;
+  const dist=(close-level)/(level||1e-9);
+  const avg20=V.slice(-20).reduce((a,b)=>a+b,0)/20;
+  const avg3=(V[V.length-1]+V[V.length-2]+V[V.length-3])/3;
+  const vr=avg20>0?avg3/avg20:0;
+  const accRange=(Math.max(...H.slice(-12))-Math.min(...L.slice(-12)))/((Math.max(...H.slice(-36,-12))-Math.min(...L.slice(-36,-12)))||1e-9);
+  const qv=qvMap[uni[i].symbol]||0;
+  // — بطاقة القاع: 6 شروط —
+  const cond=[
+   pos<=0.35,accRange<=0.65,vr>=1.2,rNow>rPrev&&rNow>=35&&rNow<=72,bos||retest,dist<=0.02
+  ];
+  const nHit=cond.filter(Boolean).length;
+  // — بطاقة الاختراق: كسر قمة 20 + حجم + قرب القمة —
+  const brkCond=[
+   bos,vr>=1.4,dist<=0.015&&dist>=-0.005,pos>=0.60,rNow>=50&&rNow<=78&&rNow>=rPrev,qv>=300000
+  ];
+  const bHit=brkCond.filter(Boolean).length;
+  const entry=live,sl=Math.min(lo*0.998,entry*0.995),risk=entry-sl;
+  if(!(risk>0))continue;
+  const t1=entry+risk*1.5,t2=entry+risk*2.5,t3=Math.min(entry+risk*4,hi*0.995);
+  const rr=(t2-entry)/risk,riskPct=risk/entry*100,roomPct=(hi-entry)/entry*100;
+  if(!(rr>=1.8&&roomPct>=riskPct))continue;
+  const p1Pct=(t1-entry)/entry*100,p2Pct=(t2-entry)/entry*100,p3Pct=(t3-entry)/entry*100;
+  const base={sym:uni[i].symbol,entry,sl,t1,t2,t3,rr,riskPct,p1Pct,p2Pct,p3Pct,pos,vr,rNow,qv};
+  if(nHit>=5&&vr>=1.4&&pos<=0.30&&p3Pct>=0.4&&qv>=300000)booms.push(Object.assign({n:nHit},base));
+  if(bHit>=5&&p3Pct>=0.4)brks.push(Object.assign({n:bHit},base));
+ }
+ booms.sort((x,y)=>(y.n-x.n)||(y.p3Pct-x.p3Pct)||(x.pos-y.pos));
+ brks.sort((x,y)=>(y.n-x.n)||(y.vr-x.vr)||(y.p3Pct-x.p3Pct));
+ render(booms,brks);
+ setProg(100,'✅ اكتمل',uni.length+' عملة');
+ $('status').textContent='✅ فحصنا '+uni.length+' عملة — قاع: '+booms.length+' • اختراق: '+brks.length+' — '+new Date().toLocaleTimeString('ar');
+ setTimeout(()=>{try{$('progWrap').style.display='none';}catch(e){}},4000);
+ }catch(e){$('status').textContent='❌ تعذر الفحص — تحقق من الإنترنت وأعد المحاولة';try{$('progWrap').style.display='none';}catch(_){}}
+ scanning=false;$('scan').disabled=false;
+ nextAt=Date.now()+AUTO_MS;
+}
+function render(booms,brks){
+ const gb=$('gridBoom'),gr=$('gridBrk');
+ if(!booms.length)gb.innerHTML='<div class="empty">💤 لا انفجار قاع الآن (5+/6 • حجم ×1.4+ • قاع ≤30% • هدف ≥+0.4%).<br><small>ننتظر اكتمال الشروط.</small></div>';
+ else{const a=booms[0];gb.innerHTML='<div class="boomTitle">💥 انفجار قاع — فرصة واحدة 💥</div><div class="card boom">'+cardHTML(a,'💥')+'</div>';}
+ if(!brks.length)gr.innerHTML='<div class="empty">💤 لا اختراق الآن (كسر قمة 20 • حجم ×1.4+ • قرب القمة • هدف ≥+0.4%).<br><small>ننتظر الكسر المؤكد.</small></div>';
+ else{const a=brks[0];gr.innerHTML='<div class="brkTitle">🚀 اختراق مؤكد — فرصة واحدة 🚀</div><div class="card brk">'+cardHTML(a,'🚀')+'</div>';}
+}
+setInterval(()=>{
+ if(!autoMode||scanning||!nextAt)return;
+ if(document.hidden)return;
+ const s=Math.max(0,Math.round((nextAt-Date.now())/1000));
+ if(s>0)setAutoInfo('🔄 فحص تلقائي بعد '+s+' ث — 500 عملة');
+ else doScan();
+},1000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&autoMode&&!scanning&&Date.now()>=nextAt-1000)doScan();});
+setTimeout(()=>{if(autoMode&&!scanning)doScan();},800);
+</script>
+</body>
+</html>
