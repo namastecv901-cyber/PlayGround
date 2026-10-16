@@ -124,10 +124,12 @@ async function doScan(){
  const px={};book.forEach(b=>{const bid=parseFloat(b.bidPrice),ask=parseFloat(b.askPrice);if(bid>0&&ask>0)px[b.symbol]={sp:(ask-bid)/((ask+bid)/2)};});
  let uni=ticks.filter(t=>{
   if(!t.symbol||!t.symbol.endsWith('USDT'))return false;
-  if(parseFloat(t.quoteVolume||0)<100000)return false;
+  if(parseFloat(t.quoteVolume||0)<50000)return false;
   if(stb.has(t.symbol.slice(0,-4)))return false;
   if(/UPUSDT|DOWNUSDT|BEARUSDT|BULLUSDT/.test(t.symbol))return false;
-  const q=px[t.symbol];if(!q||q.sp>0.002)return false;
+  const q=px[t.symbol];
+  if(!q){ if(parseFloat(t.quoteVolume||0)<500000) return false; } // بدون دفتر: فقط سيولة عالية
+  else if(q.sp>0.005) return false; // سبريد ≤0.5% للوصول إلى 500 عملة
   return true;
  });
  uni=uni.sort((a,b)=>parseFloat(b.quoteVolume)-parseFloat(a.quoteVolume)).slice(0,500);
@@ -154,7 +156,7 @@ async function doScan(){
   if(!ev||!ev.ok)continue;
   if(!(live>=ev.sup*0.999))continue; // رفض: استمرار أسفل القاع
   if((live-ev.entry)/ev.entry>0.015)continue; // دخول متأخر
-  cand.push({sym:uni[i].symbol,live,ev,H,sp:px[uni[i].symbol].sp});
+  cand.push({sym:uni[i].symbol,live,ev,H,sp:(px[uni[i].symbol]||{}).sp||0});
  }
  cand=cand.sort((a,b)=>b.ev.vr-a.ev.vr).slice(0,15);
  if(!cand.length){render([]);$('status').textContent='✅ فحصنا '+uni.length+' عملة — لا سحب مؤكد الآن — '+new Date().toLocaleTimeString('ar');scanning=false;$('scan').disabled=false;try{$('progWrap').style.display='none';}catch(e){}return;}
