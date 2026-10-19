@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="نموذج الاختراق">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script>/*__BOOTV1__*/(function(){try{localStorage.removeItem('ai_remote_html_v1');localStorage.removeItem('ai_seen_apk_v1');window.__LOCAL_VER__='v300.0';}catch(e){}})();</script>
+<script>/*__BNCACHE__*/(function(){try{if(window.__BN_SHARED_CACHE__)return;window.__BN_SHARED_CACHE__=1;var of=window.fetch.bind(window),c={},inf={};window.fetch=function(u,o){try{var url=String(u);o=o||{};if((o.method||"GET").toUpperCase()!=="GET")return of(u,o);if(!/api\.binance\.com|data-api\.binance\.vision/.test(url))return of(u,o);var ttl=/klines|ticker\/24hr/.test(url)?8000:(/exchangeInfo/.test(url)?120000:0);var now=Date.now(),e=c[url];if(ttl&&e&&now-e.t<ttl)return Promise.resolve(new Response(e.body,{status:200,headers:{"Content-Type":"application/json"}}));if(inf[url])return inf[url].then(function(t){return new Response(t,{status:200,headers:{"Content-Type":"application/json"}});});var pr=of(u,o).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.text();});inf[url]=pr;pr.then(function(t){if(ttl)c[url]={t:Date.now(),body:t};delete inf[url];},function(){delete inf[url];});return pr.then(function(t){return new Response(t,{status:200,headers:{"Content-Type":"application/json"}});});}catch(x){return of(u,o);}};}catch(e){}})();</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png" type="image/png">
 <style>
@@ -112,6 +113,17 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 .ob-card.lq{border-color:#38bdf866}
 .ob-card.prex{border-color:#38bdf866}
 .ob-card.prex .ob-meta{line-height:1.9}
+
+.ob-card.grn{border-color:#22c55e66}
+.ob-card.grn .ob-meta{line-height:1.9}
+
+.ob-card.grn.gold{border-color:#ffd700!important;box-shadow:0 0 0 1px #ffd70055,0 0 22px #ffd70022}
+.ob-card.rly{border-color:#38bdf866}
+.ob-card.rly .ob-meta{line-height:1.9}
+.ob-card.rly.early{border-color:#22c55e!important;box-shadow:0 0 0 1px #22c55e44,0 0 18px #22c55e22}
+.ob-trade.limit{border-color:#38bdf888;background:linear-gradient(135deg,#071a2b,#0b1224)}
+.ob-trade.limit .ob-trade-h{color:#8fd6ff}
+.rl-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 10px #22c55e;margin-inline-end:7px;vertical-align:middle}
 
 </style>
 </head>
@@ -245,9 +257,82 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 </ol>
 </details>
 </div>
+<div class="sec" id="grSec">
+<h2>🟢 شموع الانفجار الخضراء — كشف الصعود الجديد + 🥇 دخول ذهبي مؤكد (15M/1H/4H) — Spot BUY</h2>
+<div class="sub"><span class="live"><span class="dot" id="grPulse"></span> مباشر</span> • <span id="grStatus">يبدأ فحص شموع الانفجار...</span> • <span id="grNext" style="color:#8fd6ff;font-weight:900"></span></div>
+<div class="bar" style="margin-top:10px">
+<button id="grScanBtn">🟢 افحص الآن</button>
+<button class="chip on" id="grAutoBn">⏱ تلقائي 30ث: مفعّل</button>
+<select id="grRrSel"><option value="1.5" selected>RR ≥ 1.5</option><option value="2">RR ≥ 2</option><option value="2.5">RR ≥ 2.5</option></select>
+<select id="grVolSel"><option value="0" selected>كل عملات Binance (~505)</option><option value="1000000">سيولة ≥ $1M</option><option value="5000000">سيولة ≥ $5M</option><option value="20000000">سيولة ≥ $20M</option></select>
+<select id="grNumSel"><option value="500" selected>500 عملة (سريع)</option><option value="300">300 عملة</option><option value="100">100 عملة</option><option value="30">30 عملة</option></select>
+</div>
+<div class="strip">
+<div><small>🥇/🟢 دخول مؤكد</small><b id="gr1">0</b></div>
+<div><small>⏳ انتظار</small><b id="gr2">0</b></div>
+<div><small>🚫 وهمي/مرفوض</small><b id="gr3">0</b></div>
+<div><small>🔎 محلَّل</small><b id="gr4">0</b></div>
+</div>
+<div class="note">🟢 نشتري فقط عند <b>إغلاق شمعة انفجار خضراء حقيقية</b>: جسم ≥ 2.2×ATR (15M) أو 1.8×ATR (1H/4H) + حجم ≥ 2.8×/2.2× + إغلاق قرب القمة + اختراق مقاومة + توافق 1H/4H. نفحص <b>15M أولاً</b> للدخول المبكر ثم 1H ثم 4H — لا نتأخر. الدخول في <b>منطقة تحت</b> (مستوى الاختراق ← منتصف الشمعة) أو دخول فوري فقط إذا كان السعر ≤ 1% فوق الشمعة. <b>نرفض</b>: الشمعة بلا اختراق، الحجم الضعيف، الذيل الطويل، الاتجاه المعاكس، السعر الممتد (مطاردة)، وRR الضعيف. 🥇 <b>الدخول الذهبي</b>: صعود جديد مؤكد (تحوّل 1D/4H) + توافق 1H + درجة ≥85. 🥇 <b>الدخول الذهبي</b>: صعود جديد مؤكد (تحوّل 1D/4H) + توافق 1H + درجة ≥85. لا رافعة — شراء فقط.</div>
+<div class="ob-grid" id="grGrid"><div class="empty">⏳ فحص شموع الانفجار الخضراء على 15M/1H/4H...</div></div>
+<details class="plan">
+<summary>📋 قواعد قسم شموع الانفجار الخضراء (شراء فقط)</summary>
+<ol>
+<li><b>الفكرة:</b> لا نشتري شمعة خضراء صغيرة ولا مطاردة — فقط <b>شمعة انفجار</b> مكتملة الإغلاق بعد تجميع/ضغط، ثم نشتري في منطقة تحت ونبيع عند المقاومات فوق.</li>
+<li><b>الفريمات:</b> 15M للاكتشاف المبكر والدخول • 1H للتأكيد المتوسط • 4H للقوة والاتجاه • 1D لفلترة الاتجاه الهابط القوي. الأولوية للفريم الأسرع المؤكد حتى لا تفوت الفرصة.</li>
+<li><b>شمعة الانفجار (حقيقية):</b> خضراء • جسم ≥ 2.2×ATR على 15M أو ≥ 1.8×ATR على 1H/4H • حجم ≥ 2.8×/2.2× متوسط 20 • الإغلاق قرب أعلى الشمعة (≥60–65%) • ذيل علوي ≤30% • اختراق مقاومة آخر 20 شمعة • إغلاق شمعة كاملة (لا شمعة مفتوحة).</li>
+<li><b>فلترة الوهمي:</b> شمعة خضراء بلا اختراق • حجم ضعيف • ذيل علوي طويل • إغلاق بعيد عن القمة • عودة السعر تحت مستوى الاختراق • اتجاه 1H/4H معاكس • ارتفاع 24س مفرط • سيولة ضعيفة. أي شرط ناقص = لا شراء.</li>
+<li><b>منطقة الشراء:</b> من مستوى الاختراق (أو قاع الشمعة) حتى منتصف جسم شمعة الانفجار. إن كان السعر داخل المنطقة → دخول الآن. إن كان أعلى ≤1% → دخول فوري مؤكد. أعلى من ذلك → انتظر إعادة الاختبار. فوق +2% → مطاردة مرفوضة.</li>
+<li><b>الوقف:</b> أسفل قاع شمعة الانفجار ومستوى الاختراق بهامش تقلب ATR. وعند الدخول الفوري القريب من القمة يكون الوقف تحت منتصف الشمعة/الاختراق لتقليل المخاطرة.</li>
+<li><b>الأهداف:</b> بيع1 أقرب مقاومة/قمة فوق الدخول • بيع2 امتداد محسوب (قمة الشمعة + الجسم) • بيع3 امتداد أقوى. تُحسب RR بعد رسوم 0.2% وتُرفض الإشارة إذا RR < الحد المختار.</li>
+<li><b>الدرجة /100:</b> قوة الجسم 25 • الحجم 20 • الاختراق 20 • الضغط قبل الانفجار 15 • توافق الاتجاه 10 • جودة الدخول 10 — والحد الأدنى 75، والدرجة لا تُلغي أي شرط رفض.</li>
+<li><b>الإدارة:</b> شراء فقط بلا رافعة • حجم الصفقة حسب المخاطرة المسموحة • لا صفقة إذا تجاوز التعرض حد المحفظة • تسجيل الإشارات ومراقبة النتائج قبل أي تنفيذ حقيقي.</li>
+<li><b>🥇 الدخول الذهبي:</b> يُمنح فقط عند صعود جديد (تقاطع EMA9/21 على 1D أو استعادة EMA50، أو تحوّل 4H) + توافق 1H + شمعة انفجار 15M مؤكدة + درجة ≥85 + RR كافٍ. بدون ذلك يبقى دخولًا عاديًا أو مرفوضًا.</li>
+<li><b>🥇 الدخول الذهبي:</b> يُمنح فقط عند صعود جديد (تقاطع EMA9/21 على 1D أو استعادة EMA50، أو تحوّل 4H) + توافق 1H + شمعة انفجار 15M مؤكدة + درجة ≥85 + RR كافٍ. بدون ذلك يبقى دخولًا عاديًا أو مرفوضًا.</li>
+<li><b>القاعدة:</b> ابحث عن الانضغاط ثم الانفجار المؤكد بالحجم والاختراق — لا نشتري شمعة وهمية ولا نطارد. تعليمي — ليس نصيحة مالية.</li>
+</ol>
+</details>
+</div>
+
+
+<div class="sec" id="rlSec">
+<h2>🚀 بداية الصعود — دخول مبكر قبل 3 شموع خضراء (1H/4H) — من الانطلاق إلى الآن</h2>
+<div class="sub"><span class="live"><span class="dot" id="rlPulse"></span> مباشر</span> • <span id="rlStatus">يبدأ رصد بدايات الصعود...</span> • <span id="rlNext" style="color:#8fd6ff;font-weight:900"></span></div>
+<div class="bar" style="margin-top:10px">
+<button id="rlScanBtn">🚀 ارصد الآن</button>
+<button class="chip on" id="rlAutoBn">⏱ تلقائي 30ث: مفعّل</button>
+<select id="rlRrSel"><option value="1.5" selected>RR ≥ 1.5</option><option value="2">RR ≥ 2</option><option value="2.5">RR ≥ 2.5</option></select>
+<select id="rlVolSel"><option value="0" selected>كل عملات Binance (~505)</option><option value="1000000">سيولة ≥ $1M</option><option value="5000000">سيولة ≥ $5M</option><option value="20000000">سيولة ≥ $20M</option></select>
+<select id="rlNumSel"><option value="300" selected>300 عملة (سريع)</option><option value="500">500 عملة</option><option value="100">100 عملة</option><option value="30">30 عملة</option></select>
+</div>
+<div class="strip">
+<div><small>🌱 بداية الصعود</small><b id="rl1">0</b></div>
+<div><small>🚀 صعود جارٍ</small><b id="rl2">0</b></div>
+<div><small>⚠️ ممتد — لا تلحق</small><b id="rl3">0</b></div>
+<div><small>⏳ يقترب</small><b id="rl4">0</b></div>
+</div>
+<div class="note">🚀 نرصد <b>أول شمعة اختراق</b> على 1H/4H (إغلاق فوق قمة 20 + جسم ≥0.4×ATR + حجم ≥1.5×) فنعطي <b>⚡ دخولاً مبكراً قبل اكتمال 3 شموع خضراء</b>، وموجة 3 شموع (+5%/+8%) تبقى تأكيداً. وقبل الاختراق نعرض <b>أمر شراء معلّقاً فوق المقاومة</b> ينفّذ عند أول اختراق. ثم نحدد <b>مستوى الانطلاق</b> (قمة القاعدة قبله). نعرض <b>من مستوى الانطلاق → السعر الآن (+X%)</b> وعدد الساعات منذ الانطلاق. <b>⚡ دخول مبكر</b> = أول شمعة اختراق (أقوى نقطة شراء) • <b>🌱 بداية</b> = آخر 4 شموع وبحركة ≤15% • <b>🚀 جارٍ</b> ≤35% • <b>⚠️ ممتد</b> &gt;35% مثل PHA من 0.026 إلى 0.045 (+75%) — <b>لا نلحق الممتد</b>، ننتظر تصحيحاً/إعادة اختبار. ندخل فقط عند توافق 1D/4H ودرجة ≥65 وRR ≥ المختار ومخاطرة ≤12%. لا رافعة — شراء فقط. <b>لمن فاتته الحركة:</b> البطاقة المرفوضة تعرض «📥 أمر شراء معلّق تحت» على تصحيح 61.8% من الموجة (وقف تحت 80%) — لا تشترِ السعر الحالي مطاردة.</div>
+<div class="ob-grid" id="rlGrid"><div class="empty">⏳ رصد بدايات الصعود على 1H/4H...</div></div>
+<details class="plan">
+<summary>📋 قواعد قسم بداية الصعود (شراء فقط)</summary>
+<ol>
+<li><b>الفكرة:</b> لا نطارد عملة ارتفعت بالفعل — نحدد لحظة <b>الانطلاق</b> من قاعدة تجميع/قاع، ثم نعرض المسافة من مستوى الانطلاق إلى السعر الآن لنعرف: هل ما زلنا في البداية أم أن الحركة امتدت؟</li>
+<li><b>مستوى الانطلاق:</b> أعلى قمة في آخر 30 شمعة قبل شرارة الصعود (قاع/قاعدة). هو المرجع الذي نقيس منه: <b>من مستوى الانطلاق → السعر الآن</b>.</li>
+<li><b>⚡ الدخول المبكر (قبل 3 شموع خضراء):</b> أول شمعة تُغلق فوق قمة آخر 20 شمعة بجسم ≥0.4×ATR وإغلاق في أعلى 60% من الشمعة وحجم ≥1.5× متوسط 20 → إشارة شراء مبكرة لا تنتظر اكتمال 3 شموع. وموجة 3 شموع ≥5% (1H) أو ≥8% (4H) تُستخدم كتأكيد إضافي. نبحث عن أول شرارة خلال آخر 60 ساعة (1H) أو 4 أيام (4H) حتى لا نفوت بداية امتدت أياماً.</li>
+<li><b>التصنيف:</b> ⚡ <b>دخول مبكر</b> = أول شمعة اختراق • 🌱 <b>بداية الصعود</b> = الشرارة خلال آخر 4 شموع والارتفاع من المستوى ≤15% • 🚀 <b>صعود جارٍ</b> = ≤35% • ⚠️ <b>ممتد — لا تلحق</b> = &gt;35% • ⏳ <b>يقترب</b> = لم يخترق بعد لكنه قريب من المستوى (≥98%) مع حركة 3 شموع ≥1.5%.</li>
+<li><b>توافق الاتجاه:</b> نفضّل 1D صاعد و4H صاعد. الاتجاه اليومي الهابط القوي (تحت EMA50 وتراجع &gt;20% من القمة) = رفض كامل.</li>
+<li><b>خطة الدخول (للبداية/الجاري فقط):</b> شراء عند السعر الحالي • وقف تحت مستوى الانطلاق (أو تحت قاع آخر 3 شموع للجاري) بهامش ATR • 3 أهداف محسوبة • RR بعد رسوم 0.2% • ترفض الإشارة إذا المخاطرة &gt;12% أو RR أقل من المختار.</li>
+<li><b>الرفض:</b> حركة ممتدة (&gt;35%) • لم يخترق المستوى • اتجاه 1D هابط قوي • درجة &lt;65 • وقف بعيد • RR ضعيف. البطاقة الممتدة تظهر للعلم فقط مع «لا تلحق».</li>
+<li><b>الترتيب:</b> البداية أولاً ثم الدخول المؤكد ثم الجاري ثم الأعلى درجة. التحديث تلقائي كل 30 ث على شموع مغلقة + شارة TradingView لكل بطاقة.</li>
+<li><b>⚡ أمر شراء قبل الاختراق:</b> إذا كان السعر قريباً من المقاومة (≥98%) ولم يخترق بعد، تُعرض خطة أمر معلّق فوق المقترح بـ0.3% ينفّذ عند أول اختراق، بوقف تحت المستوى (2.5%) وأهداف من نطاق القاعدة — الدخول قبل ظهور الشموع الخضراء الثلاث، ويُلغى إذا فشل الاختراق.</li>
+<li><b>📥 أمر الشراء المعلّق تحت:</b> إذا فاتك سعر البداية/الجاري ورفض النظام الدخول الحالي (وقف بعيد أو RR ضعيف)، تُحسب خطة بديلة: أمر شراء عند تصحيح 61.8% من موجة الصعود (منطقة 50%–78.6%)، وقف تحت 80%، وهدف1 العودة إلى القمة ثم امتدادات. تظهر فقط إذا تحسّن RR للمختار والمخاطرة ≤12% — ولا تُنفَّذ إلا إذا هبط السعر إليها.</li>
+<li><b>القاعدة:</b> نلتقط البداية لا المطاردة — من فاتته الحركة ينتظر إعادة الاختبار. تعليمي — ليس نصيحة مالية، ولا رافعة مالية.</li>
+</ol>
+</details>
+</div>
 
 </main>
-<footer>🚀 نموذج الاختراق + 🎯 اكتشاف القاع + ⚡ فريم الدقيقة + 💧 سحب السيولة + 🧨 ما قبل الانفجار — فحص Binance Spot على شموع حقيقية • شارة TradingView لكل بطاقة • تحديث تلقائي (30ث • 15ث للدقيقة)</footer>
+<footer>🚀 نموذج الاختراق + 🎯 اكتشاف القاع + ⏱ فريم الدقيقة + 💧 سحب السيولة + 🧨 ما قبل الانفجار + 🟢 شموع الانفجار + 🚀 بداية الصعود — فحص Binance Spot على شموع حقيقية • شارة TradingView لكل بطاقة • تحديث تلقائي (30ث) • شراء فقط بلا رافعة</footer>
 <script>
 (function(){
 "use strict";
@@ -1609,6 +1694,834 @@ setInterval(function(){
 document.addEventListener('DOMContentLoaded',function(){ doScan(); });
 setTimeout(function(){ if(!nextAt) doScan(); },3500);
 window.PREX={scan:scan,analyze:analyze};
+})();
+
+</script>
+<script>
+/* ===== 🟢 شموع الانفجار الخضراء — متعدد الفريمات (15M/1H/4H) — شراء تحت / بيع فوق ===== */
+(function(){
+"use strict";
+// كاش/دمج طلبات Binance بين كل الأقسام لتقليل الضغط ومنع 429/451
+try{
+  if(!window.__BN_SHARED_CACHE__){
+    window.__BN_SHARED_CACHE__=1;
+    var __of=window.fetch.bind(window), __c={}, __inf={};
+    window.fetch=function(u,o){
+      try{
+        var url=String(u); o=o||{};
+        if((o.method||'GET').toUpperCase()!=='GET') return __of(u,o);
+        if(!/api\.binance\.com|data-api\.binance\.vision/.test(url)) return __of(u,o);
+        var ttl=/klines|ticker\/24hr/.test(url)?8000:(/exchangeInfo/.test(url)?120000:0);
+        var now=Date.now(), e=__c[url];
+        if(ttl&&e&&now-e.t<ttl) return Promise.resolve(new Response(e.body,{status:200,headers:{'Content-Type':'application/json'}}));
+        if(__inf[url]) return __inf[url].then(function(t){ return new Response(t,{status:200,headers:{'Content-Type':'application/json'}}); });
+        var pr=__of(u,o).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); });
+        __inf[url]=pr;
+        pr.then(function(t){ if(ttl) __c[url]={t:Date.now(),body:t}; delete __inf[url]; },function(){ delete __inf[url]; });
+        return pr.then(function(t){ return new Response(t,{status:200,headers:{'Content-Type':'application/json'}}); });
+      }catch(x){ return __of(u,o); }
+    };
+  }
+}catch(e0){}
+var LS='ai_grn_v1', COOL=2*3600*1000, AUTO_MS=30000, NUM=500, GAP=35, gateAt=0, CONC=20;
+var STABLES={usdt:1,usdc:1,dai:1,tusd:1,busd:1,usdd:1,fdusd:1,pyusd:1,usde:1,eurs:1,susd:1,usdb:1,usdx:1,usdy:1};
+var cache={}, mem={seen:{}};
+try{ var m0=JSON.parse(localStorage.getItem(LS)||'null'); if(m0){ mem.seen=m0.seen||{}; } }catch(e){}
+function save(){ try{ localStorage.setItem(LS,JSON.stringify(mem)); }catch(e){} }
+var $=function(id){ return document.getElementById(id); };
+function money(n){ if(n==null||isNaN(n)) return '—'; n=Number(n); if(n>=1000) return '$ '+n.toLocaleString('en-US',{maximumFractionDigits:1}); if(n>=1) return '$ '+n.toLocaleString('en-US',{maximumFractionDigits:3}); return '$ '+n.toLocaleString('en-US',{maximumFractionDigits:6}); }
+function isSt(s){ s=String(s||'').toLowerCase(); if(STABLES[s]) return true; return /(up|down|bull|bear)usdt$/.test(s); }
+function mean(a){ if(!a||!a.length) return 0; var s=0,i; for(i=0;i<a.length;i++) s+=a[i]; return s/a.length; }
+function ema(a,n){ if(!a||a.length<n) return null; var k=2/(n+1),e=0,i; for(i=0;i<n;i++) e+=a[i]; e/=n; for(i=n;i<a.length;i++) e=a[i]*k+e*(1-k); return e; }
+function atrKL(kl,n){ n=n||14; try{ if(!kl||kl.length<2) return 0; var s=0,c=0,i; for(i=Math.max(1,kl.length-n);i<kl.length;i++){ var h=parseFloat(kl[i][2]),l=parseFloat(kl[i][3]),pc=parseFloat(kl[i-1][4]); s+=Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)); c++; } return c?s/c:0; }catch(e){ return 0; } }
+function col(kl,ix){ var o=[],i; for(i=0;i<kl.length;i++) o.push(parseFloat(kl[i][ix])); return o; }
+var host=0;
+function gateFetch(u,sig){ var now=Date.now(), wait=Math.max(0,gateAt-now); gateAt=Math.max(now,gateAt)+GAP; return new Promise(function(res,rej){ setTimeout(function(){ fetch(u,{signal:sig,cache:'no-store'}).then(res,rej); },wait); }); }
+function jget(url){
+  var bases=['https://data-api.binance.vision','https://api.binance.com'];
+  var order=bases.slice(host).concat(bases.slice(0,host));
+  function go(i){
+    if(i>=order.length) return Promise.reject(new Error('all-hosts-failed'));
+    var ctl=new AbortController(), to=setTimeout(function(){ try{ctl.abort();}catch(e){} },60000);
+    return gateFetch(order[i]+url,ctl.signal).then(function(r){ clearTimeout(to); if(!r.ok) throw new Error('HTTP '+r.status); host=i; return r.json(); })
+    .catch(function(){ clearTimeout(to); return new Promise(function(res){ setTimeout(res,300); }).then(function(){ return go(i+1); }); });
+  }
+  return go(0);
+}
+var exCache={set:null,t:0};
+function tradableSet(){
+  if(exCache.set&&Date.now()-exCache.t<3600000) return Promise.resolve(exCache.set);
+  return jget('/api/v3/exchangeInfo').then(function(info){
+    var s={},i,arr=(info&&info.symbols)||[];
+    for(i=0;i<arr.length;i++){ var x=arr[i]; if(x.status==='TRADING'&&x.quoteAsset==='USDT'&&x.isSpotTradingAllowed!==false) s[x.symbol]=1; }
+    exCache.set=s; exCache.t=Date.now(); return s;
+  }).catch(function(){ return null; });
+}
+function klines(sym,iv,ttl){
+  var key=sym+'|'+iv, c=cache[key];
+  if(c&&Date.now()-c.t<(ttl||20000)) return Promise.resolve(c.kl);
+  return jget('/api/v3/klines?symbol='+sym+'&interval='+iv+'&limit=120').then(function(kl){
+    if(!kl||kl.length<80) return null; cache[key]={kl:kl,t:Date.now()}; return kl;
+  }).catch(function(){ return null; });
+}
+// قمع 15M: آخر 3 شموع مغلقة فيها انفجار أخضر (نلتقط البداية مبكراً)
+function preIgn15(h15){
+  try{
+    h15=h15.slice(0,-1); var n=h15.length; if(n<40) return false;
+    var v=col(h15,5), atr=atrKL(h15,14); if(!(atr>0)) return false;
+    for(var i=n-4;i<n;i++){
+      if(i<1) continue;
+      var o=parseFloat(h15[i][1]),c=parseFloat(h15[i][4]),body=c-o; if(body<=0) continue;
+      var avg=mean(v.slice(Math.max(0,i-20),i)); if(!(avg>0)) continue;
+      if(v[i]/avg>=1.8&&body>=atr*1.0) return true;
+    }
+    return false;
+  }catch(e){ return false; }
+}
+// ==== تقييم فريم واحد ====
+function evalTF(kl,tf,d1,h4,h1,liq,minRR,h24,liveKL,livePx){
+  try{
+    var n=kl.length; if(n<40) return null;
+    var o=col(kl,1),hi=col(kl,2),lo=col(kl,3),c=col(kl,4),v=col(kl,5);
+    var is15=(tf==='15m'), is1=(tf==='1h');
+    var needBody=is15?2.2:1.8, needVol=is15?2.8:2.2, needClose=is15?0.65:0.60;
+    var gi=-1,cand=null,i;
+    for(i=n-1;i>=Math.max(0,n-2);i--){
+      var bo=c[i]-o[i]; if(bo<=0) continue;
+      var rng=hi[i]-lo[i]; if(!(rng>0)) continue;
+      var atrPre=atrKL(kl.slice(0,i),14); if(!(atrPre>0)) continue;
+      var avgV=mean(v.slice(Math.max(0,i-20),i)); if(!(avgV>0)) continue;
+      var vr=v[i]/avgV, bodyAtr=bo/atrPre, bodyPct=bo/rng, closePos=(c[i]-lo[i])/rng, upWick=(hi[i]-c[i])/rng;
+      var pr=[]; for(var jj=Math.max(0,i-10);jj<i;jj++) pr.push((hi[jj]-lo[jj])/c[jj]);
+      var obj={i:i,body:bo,atr:atrPre,vol:vr,rng:rng,bodyPct:bodyPct,closePos:closePos,upWick:upWick,
+        level:Math.max.apply(null,hi.slice(Math.max(0,i-20),i)),comp:mean(pr)};
+      if(!cand) cand=obj;
+      if(bodyAtr>=needBody&&vr>=needVol&&bodyPct>=(is15?0.58:0.55)&&closePos>=needClose&&upWick<=0.30){ gi=i; cand=obj; break; }
+    }
+    if(gi<0) return null;
+    var g=cand;
+    // اتجاه/فلترة أعلى فريم
+    var dc=col(d1,4), dE20=ema(dc,20), dE50=ema(dc,50), dLast=dc[dc.length-1];
+    var dUp=(dE20>dE50), dHigh=Math.max.apply(null,dc.slice(-30)), dd=(dHigh-dLast)/dHigh;
+    var strongDown=(!dUp&&dLast<dE50&&dd>0.20);
+    var h4c=col(h4,4), h4e20=ema(h4c,20), h4e50=ema(h4c,50), h4Last=h4c[h4c.length-1];
+    var h4Up=(h4e20!=null&&h4e50!=null&&h4e20>h4e50);
+    var h4Down=(h4e20!=null&&h4e50!=null&&h4e20<h4e50&&h4Last<h4e50);
+    var h1c=col(h1,4), h1e9=ema(h1c,9), h1e21=ema(h1c,21), h1Last=h1c[h1c.length-1];
+    var h1Bull=(h1e9!=null&&h1e21!=null&&h1e9>h1e21&&h1Last>h1e21);
+    // ===== كشف الصعود الجديد (تحوّل اتجاه) =====
+    var dE9=ema(dc,9), dE21=ema(dc,21);
+    var dE9p=ema(dc.slice(0,-10),9), dE21p=ema(dc.slice(0,-10),21), dE50p=ema(dc.slice(0,-10),50);
+    var dTurn=(dE9!=null&&dE21!=null&&dE9>dE21&&dE9p!=null&&dE21p!=null&&dE9p<=dE21p);
+    var dLow10=1e18; for(var q=Math.max(0,dc.length-11);q<dc.length-1;q++){ if(dc[q]<dLow10) dLow10=dc[q]; }
+    var dReclaim=(dLast>dE50&&dE50p!=null&&dLow10<dE50);
+    var h4e9=ema(h4c,9), h4e21=ema(h4c,21);
+    var h4e9p=ema(h4c.slice(0,-8),9), h4e21p=ema(h4c.slice(0,-8),21);
+    var h4Turn=(h4e9!=null&&h4e21!=null&&h4e9>h4e21&&h4e9p!=null&&h4e21p!=null&&h4e9p<=h4e21p);
+    var h1e9p=ema(h1c.slice(0,-4),9), h1e21p=ema(h1c.slice(0,-4),21);
+    var h1Turn=(h1e9!=null&&h1e21!=null&&h1e9>h1e21&&h1e9p!=null&&h1e21p!=null&&h1e9p<=h1e21p);
+    var fresh=(dTurn||dReclaim||(h4Turn&&!dUp));
+    var level=g.level, mid=(o[gi]+c[gi])/2, ignH=hi[gi], ignL=lo[gi];
+    var rejected=[], reasons=[];
+    if(strongDown) rejected.push('اتجاه يومي هابط قوي');
+    if(h4Down&&!is15) rejected.push('اتجاه 4H هابط');
+    if(is15&&!h1Bull) rejected.push('هيكل 1H غير صاعد');
+    if(is1&&h4Down) rejected.push('4H هابط');
+    // إغلاق لاحق تحت مستوى الاختراق = فشل
+    var failed=false;
+    for(i=gi+1;i<n;i++){ if(c[i]<level*0.995){ failed=true; break; } }
+    var last=c[n-1];
+    var cur=(livePx>0)?livePx:((liveKL&&liveKL.length)?parseFloat(liveKL[liveKL.length-1][4]):last);
+    if(cur<level*0.995) failed=true;
+    if(failed) rejected.push('عاد السعر تحت مستوى الاختراق');
+    var brk=(c[gi]>level*1.0005);
+    if(!brk) rejected.push('بدون اختراق مقاومة = وهمية');
+    if(h24>85) rejected.push('ارتفاع 24س مفرط');
+    // الدرجة
+    var pStr=(g.body>=g.atr*3?25:g.body>=g.atr*2.5?22:g.body>=g.atr*2?18:14);
+    var pVol=(g.vol>=5?20:g.vol>=3?17:g.vol>=2.5?14:10);
+    var pBrk=brk?20:0;
+    var pComp=(g.comp<=0.02?15:g.comp<=0.035?10:g.comp<=0.05?6:2);
+    var pHtf=strongDown?0:(dUp?10:5);
+    if(h4Down) pHtf=Math.min(pHtf,3);
+    if(is15){ if(!h1Bull) pHtf=Math.min(pHtf,2); }
+    if(is1){ if(h4Up) pHtf=Math.min(10,pHtf+2); }
+    var entQ=0;
+    if(cur<=mid*1.005&&cur>=level*0.995) entQ=10;
+    else if(cur<=ignH*1.01) entQ=7;
+    else if(cur<=ignH*1.02) entQ=4;
+    var score=Math.round(pStr+pVol+pBrk+pComp+pHtf+entQ);
+    score=Math.max(0,Math.min(100,score));
+    // منطقة الشراء
+    var entryLow=Math.max(level,ignL*1.001), entryHigh=mid;
+    if(!(entryHigh>entryLow)) entryHigh=entryLow*1.005;
+    var entry, status;
+    if(failed){ status='❌ ملغاة'; entry=entryLow; }
+    else if(!brk||g.vol<needVol||g.bodyPct<(is15?0.58:0.55)||g.closePos<needClose||g.upWick>0.30){ status='🚫 وهمية'; entry=entryLow; }
+    else if(strongDown||(is15&&!h1Bull)||(is1&&h4Down)){ status='🚫 اتجاه معاكس'; entry=entryLow; }
+    else if(score<75){ status='🚫 مرفوضة'; entry=entryLow; }
+    else if(cur<level*0.995){ status='❌ ملغاة'; entry=entryLow; }
+    else if(cur<=entryHigh*1.005&&cur>=entryLow*0.995){ status='📥 منطقة شراء'; entry=cur; }
+    else if(cur<=ignH*1.01){ status='🟢 دخول فوري'; entry=cur; }
+    else if(cur<=ignH*1.02){ status='⏳ انتظر إعادة اختبار'; entry=entryHigh; }
+    else { status='🚫 مطاردة — لا تدخل'; entry=entryHigh; }
+    var atrNow=atrKL(kl,14)||cur*0.005;
+    var slBase=(entry<=entryHigh*1.005)?Math.min(ignL,level):mid;
+    var sl=slBase-Math.max(g.atr*0.55,atrNow*0.5);
+    if(!(sl<entry)) sl=entry-atrNow;
+    var risk=entry-sl, costs=entry*0.002;
+    // أقرب مقاومة فوق سعر الدخول من الفريمات الأعلى (بلا شمعة الانفجار)
+    var next=1e18,k;
+    var highs=[], dh=col(d1,2);
+    for(k=0;k<dh.length;k++) highs.push(dh[k]);
+    for(k=0;k<hi.length;k++){ if(k<gi-1||k>gi+1) highs.push(hi[k]); }
+    var h4h=col(h4,2), h1h=col(h1,2);
+    for(k=0;k<h4h.length;k++) highs.push(h4h[k]);
+    for(k=0;k<h1h.length;k++) highs.push(h1h[k]);
+    for(k=0;k<highs.length;k++){ if(highs[k]>entry*1.02&&highs[k]<next) next=highs[k]; }
+    var meas=ignH+g.body;
+    if(!(next<1e17)||(next-entry)<entry*0.015) next=meas;
+    var tp1=Math.max(next,entry+g.body*0.5);
+    var tp2=Math.max(tp1*1.008,ignH+g.body);
+    var tp3=Math.max(tp2*1.008,ignH+g.body*1.5);
+    var rr=risk>0?((tp1-entry-costs)/risk):0;
+    // شروط إلزامية
+    if(g.vol<needVol) rejected.push('حجم '+g.vol.toFixed(1)+'× أقل من '+needVol+'×');
+    if(g.bodyPct<0.55) rejected.push('جسم الشمعة ضعيف');
+    if(g.closePos<needClose) rejected.push('إغلاق بعيد عن القمة');
+    if(g.upWick>0.30) rejected.push('ذيل علوي طويل');
+    if(risk<=0||risk/entry>0.15) rejected.push('وقف بعيد/غير مناسب');
+    if(rr<minRR) rejected.push('عائد ضعيف (RR '+rr.toFixed(1)+')');
+    if(score<75) rejected.push('الدرجة '+score+'<75');
+    var mandatory=failed||!brk||g.vol<needVol||g.bodyPct<0.55||g.closePos<needClose||g.upWick>0.30||strongDown||(is15&&!h1Bull)||(is1&&h4Down)||risk<=0||risk/entry>0.15||rr<minRR||score<75;
+    if(mandatory&&status!=='❌ ملغاة'&&status!=='🚫 وهمية'&&status!=='🚫 اتجاه معاكس') status='🚫 مرفوضة';
+    if(!mandatory){
+      reasons.push('شمعة انفجار خضراء ('+g.body.toFixed(2)+'×ATR)');
+      reasons.push('حجم '+g.vol.toFixed(1)+'×');
+      reasons.push('إغلاق قرب القمة '+Math.round(g.closePos*100)+'%');
+      reasons.push('اختراق مقاومة');
+      if(h1Bull) reasons.push('هيكل 1H صاعد');
+      if(h4Up) reasons.push('اتجاه 4H صاعد');
+      if(status==='📥 منطقة شراء'||status==='🟢 دخول فوري') reasons.push('دخول مؤكد بلا مطاردة');
+    } else {
+      if(brk) reasons.push('الاختراق موجود لكن الشروط غير مكتملة');
+    }
+    var gold=(!mandatory&&fresh&&h1Bull&&(dUp||dTurn||dReclaim)&&(h4Up||h4Turn)&&score>=85&&rr>=minRR&&(status==='📥 منطقة شراء'||status==='🟢 دخول فوري'));
+    if(gold){ status='🥇 دخول ذهبي مؤكد'; reasons.unshift('🥇 صعود جديد — دخول ذهبي مؤكد'); }
+    else if(!mandatory&&fresh) reasons.push('صعود جديد (تحوّل اتجاه)');
+    return {tf:tf,tfName:(is15?'15M ⚡ مبكر':(is1?'1H 🎯 متوسط':'4H 🏔 قوي')),
+      status:status,entryOK:(status==='📥 منطقة شراء'||status==='🟢 دخول فوري'||status==='🥇 دخول ذهبي مؤكد'),valid:!mandatory,gold:gold,fresh:fresh,dTurn:dTurn,h4Turn:h4Turn,
+      s:score,parts:{str:pStr,vol:pVol,brk:pBrk,comp:pComp,htf:pHtf,ent:entQ},
+      entry:entry,entryLow:entryLow,entryHigh:entryHigh,sl:sl,tp1:tp1,tp2:tp2,tp3:tp3,rr:rr,risk:risk,
+      pos:0,ext:(cur-ignH)/ignH,rangePct:0,volRatio:g.vol,bodyAtr:g.body/g.atr,bodyPct:g.bodyPct,closePos:g.closePos,upWick:g.upWick,
+      liq:liq,level:level,ignHigh:ignH,ignLow:ignL,ignIdx:gi,ignAgo:n-1-gi,comp:g.comp,mid:mid,
+      sweepOK:false,pattern:'انفجار أخضر '+tf,reasons:reasons.slice(0,7),rejects:rejected.slice(0,7)};
+  }catch(e){ return null; }
+}
+// ==== المحلل الموحّد: يقيّم 15M و1H و4H ويختار الأسرع المؤكد ====
+function analyze(d1,h4,h1,m15,liq,minRR,h24,livePx){
+  try{
+    if(!d1||d1.length<80||!h4||h4.length<80||!h1||h1.length<80||!m15||m15.length<80) return null;
+    d1=d1.slice(0,-1); h4=h4.slice(0,-1); h1=h1.slice(0,-1); m15=m15.slice(0,-1);
+    var cands=[];
+    var a=evalTF(m15,'15m',d1,h4,h1,liq,minRR,h24,m15,livePx); if(a)cands.push(a);
+    var b=evalTF(h1,'1h',d1,h4,h1,liq,minRR,h24,m15,livePx); if(b)cands.push(b);
+    var d=evalTF(h4,'4h',d1,h4,h1,liq,minRR,h24,m15,livePx); if(d)cands.push(d);
+    if(!cands.length){
+      var dc=col(d1,4), dE20=ema(dc,20), dE50=ema(dc,50), dLast=dc[dc.length-1];
+      var strongDown=(dE20!=null&&dE50!=null&&! (dE20>dE50) && dLast<dE50);
+      return {status:'⏳ مراقبة',entryOK:false,valid:false,s:0,tf:'—',tfName:'لا إشارة',
+        parts:{str:0,vol:0,brk:0,comp:0,htf:strongDown?0:5,ent:0},
+        entry:null,entryLow:null,entryHigh:null,sl:null,tp1:null,tp2:null,tp3:null,rr:0,risk:0,pos:0,ext:0,rangePct:0,volRatio:0,liq:liq,
+        bodyAtr:0,bodyPct:0,closePos:0,upWick:0,comp:0,pattern:'لا شمعة انفجار',level:null,sweepOK:false,ignAgo:0,
+        reasons:['لا شمعة خضراء انفجارية مغلقة على 15M/1H/4H'],
+        rejects:[strongDown?'اتجاه يومي هابط':'انتظر إغلاق شمعة انفجار خضراء قوية']};
+    }
+    // الأولوية للفريم الأسرع إذا كان مؤكداً (لا نتأخر)
+    var pick=null,i;
+    var order=['15m','1h','4h'];
+    for(i=0;i<order.length;i++){
+      for(var j=0;j<cands.length;j++){
+        var x=cands[j];
+        if(x.tf===order[i]&&x.valid&&x.s>=75){ pick=x; break; }
+      }
+      if(pick) break;
+    }
+    if(!pick){ cands.sort(function(p,q){ return q.s-p.s; }); pick=cands[0]; }
+    return pick;
+  }catch(e){ return null; }
+}
+var lastPx={};
+function runPool(items,limit,worker,onProg){
+  var idx=0,done=0,active=0;
+  return new Promise(function(resolve){
+    function next(){
+      if(idx>=items.length&&active===0) return resolve();
+      while(active<limit&&idx<items.length){
+        (function(){ var it=items[idx++]; active++;
+          Promise.resolve().then(function(){ return worker(it); }).then(function(){ active--; done++; if(onProg)onProg(done,items.length); next(); },function(){ active--; done++; if(onProg)onProg(done,items.length); next(); });
+        })();
+      }
+    }
+    next();
+  });
+}
+var scanning=false, failN=0;
+function scan(){
+  if(scanning) return Promise.resolve();
+  scanning=true;
+  var pulse=$('grPulse'); if(pulse) pulse.classList.add('scan');
+  var st=$('grStatus'); if(st) st.textContent='⏳ جلب العملات...';
+  var MIN=parseFloat(($('grVolSel')&&$('grVolSel').value)||0);
+  var minRR=parseFloat(($('grRrSel')&&$('grRrSel').value)||1.5);
+  return Promise.all([tradableSet(),jget('/api/v3/ticker/24hr')]).then(function(res){ failN=0; var trad=res[0], list=res[1];
+    if(!Array.isArray(list)) throw new Error('bad');
+    var pool=list.filter(function(t){
+      var s=String(t.symbol||''); if(!/USDT$/.test(s)) return false;
+      if(trad&&!trad[s]) return false;
+      var base=s.slice(0,-4).toLowerCase(); if(isSt(base)) return false;
+      if(parseFloat(t.quoteVolume||0)<MIN) return false;
+      return true;
+    }).sort(function(a,b){ return parseFloat(b.quoteVolume)-parseFloat(a.quoteVolume); }).slice(0,Math.max(1,parseFloat(($('grNumSel')&&$('grNumSel').value)||NUM)));
+    if(st) st.textContent='⏳ فحص شموع الانفجار على 15M ('+pool.length+' عملة)...';
+    var px={}; pool.forEach(function(t){ px[t.symbol]=parseFloat(t.lastPrice)||0; });
+    lastPx=px;
+    var out=[];
+    return runPool(pool,CONC,function(t){
+      var sym=t.symbol, liq=parseFloat(t.quoteVolume||0), h24=parseFloat(t.priceChangePercent||0);
+      return klines(sym,'15m',15000).then(function(m15){
+        if(!m15||!preIgn15(m15)) return; // قمع سريع مبكر
+        return Promise.all([klines(sym,'1h',60000),klines(sym,'4h',120000),klines(sym,'1d',300000)]).then(function(k){
+          if(!k[0]||!k[1]||!k[2]) return;
+          var r=analyze(k[2],k[1],k[0],m15,liq,minRR,h24,px[sym]);
+          if(!r) return;
+          if(r.s<60&&!r.entryOK&&!r.valid) return;
+          var live=px[sym]||r.entry;
+          out.push({id:sym,sym:sym.slice(0,-4),price:live,live:live,r:r,tv:sym});
+        });
+      }).catch(function(){});
+    },function(d,tot){ if(st) st.textContent='⏳ تحليل الانفجار (15M ← 1H/4H/1D) '+d+'/'+tot+'...'; }).then(function(){ return out; });
+  }).then(function(out){
+    out=(out||[]).filter(Boolean).sort(function(x,y){
+      var ax=(x.r.gold?4:0)+(x.r.valid?2:0)+(x.r.entryOK?1:0), ay=(y.r.gold?4:0)+(y.r.valid?2:0)+(y.r.entryOK?1:0);
+      if(ay!==ax) return ay-ax;
+      return y.r.s-x.r.s;
+    }).slice(0,70);
+    var now=Date.now(),i;
+    for(i=0;i<out.length;i++){
+      var f=out[i], r=f.r;
+      if(r.entryOK&&r.valid&&(!mem.seen[f.id]||now-mem.seen[f.id]>COOL)){
+        mem.seen[f.id]=now;
+        try{ if(window.toast) window.toast((r.gold?'🥇 ':'🟢 ')+r.status+' '+f.sym+' • '+r.s+'/100 • '+r.tfName+' • دخول '+money(r.entry)); }catch(e){}
+      }
+    }
+    save();
+    render(out);
+  }).catch(function(){
+    failN=(failN||0)+1;
+    if(st) st.textContent='❌ تعذر الجلب — إعادة المحاولة تلقائياً ('+failN+'/4)';
+    var g=$('grGrid'); if(g) g.innerHTML='<div class="empty">❌ تعذر جلب البيانات من Binance.<br>'+(failN<4?'⏳ إعادة المحاولة تلقائياً خلال 6 ث...':'اضغط «افحص الآن» للمحاولة من جديد.')+'</div>';
+    if(failN<4) setTimeout(function(){ if(!scanning) doScan(); },6000);
+  }).then(function(){ scanning=false; if(pulse) pulse.classList.remove('scan'); });
+}
+function statusKey(s){
+  if(s==='🥇 دخول ذهبي مؤكد') return 'gold';
+  if(s==='📥 منطقة شراء'||s==='🟢 دخول فوري') return 'buy';
+  if(s==='⏳ انتظر إعادة اختبار'||s==='⏳ مراقبة') return 'wait';
+  if(s==='❌ ملغاة') return 'cancel';
+  if(s==='🚫 مطاردة — لا تدخل'||s==='🚫 اتجاه معاكس'||s==='🚫 مرفوضة') return 'rej';
+  return 'fake';
+}
+function render(out){
+  out=out||[];
+  var buy=0,wait=0,fake=0,gold=0;
+  out.forEach(function(x){ var k=statusKey(x.r.status); if(k==='gold'){gold++;buy++;} else if(k==='buy')buy++; else if(k==='wait')wait++; else fake++; });
+  if($('gr1'))$('gr1').textContent=buy;
+  if($('gr2'))$('gr2').textContent=wait;
+  if($('gr3'))$('gr3').textContent=fake;
+  if($('gr4'))$('gr4').textContent=out.length;
+  var st=$('grStatus');
+  if(st)st.textContent=out.length?('🟢 '+out.length+' انفجار محلَّل • 🥇 '+gold+' ذهبي • 📥 '+buy+' دخول مؤكد • ⏳ '+wait+' انتظار • '+new Date().toLocaleTimeString('ar')):'لا شمعة انفجار ولا صعود جديد مؤكد الآن — لا نشتري شمعة وهمية';
+  var box=$('grGrid'); if(!box) return;
+  if(!out.length){ box.innerHTML='<div class="empty">🟢 لا شمعة انفجار الآن.<br>الفحص على 15M/1H/4H: جسم ≥ 2.2×/1.8×ATR • حجم ≥ 2.8×/2.2× • إغلاق قرب القمة • اختراق مقاومة ← ثم شراء في منطقة تحت (إعادة اختبار) بلا مطاردة. أي إشارة غير مكتملة تُرفض.</div>'; return; }
+  var colors={gold:'#ffd700',buy:'#22c55e',wait:'#f6e27a',cancel:'#ef4444',fake:'#f59e0b',rej:'#94a3b8'};
+  box.innerHTML=out.map(function(x){
+    var r=x.r, k=statusKey(r.status), colr=colors[k]||'#94a3b8';
+    var live=x.live||r.entry;
+    var pnl=r.entry?((live-r.entry)/r.entry*100):0;
+    var trade=r.tp1
+      ? '<div class="ob-trade'+(r.entryOK?'':' down')+'"><div class="ob-trade-h">'+(r.entryOK?'📥 خطة الشراء الآن — نشتري تحت ونبيع فوق':'⏳ خطة معلّقة — انتظر منطقة الشراء')+'</div><div class="ob-trow">'
+        +'<span>📥 منطقة شراء <b>'+money(r.entryLow)+' – '+money(r.entryHigh)+'</b></span>'
+        +'<span>💵 سعر الدخول <b>'+money(r.entry)+'</b></span>'
+        +'<span class="up">🎯 بيع1 <b>'+money(r.tp1)+'</b></span>'
+        +'<span class="up">🎯 بيع2 <b>'+money(r.tp2)+'</b></span>'
+        +'<span class="up">🎯 بيع3 <b>'+money(r.tp3)+'</b></span>'
+        +'<span class="dn">🛑 وقف '+money(r.sl)+'</span>'
+        +'<span>RR '+r.rr.toFixed(1)+' • مخاطرة '+(r.risk/r.entry*100).toFixed(1)+'%</span>'
+        +(live!==r.entry?'<span>السعر الآن <b>'+money(live)+'</b> ('+(pnl>=0?'+':'')+pnl.toFixed(1)+'%)</span>':'')
+        +'</div></div>'
+      : '<div class="ob-trade down"><div class="ob-trade-h">🚫 لماذا لا ندخل؟</div><div style="font-size:.74rem;line-height:1.9;color:#ffb4ba">'+(r.rejects.length?r.rejects.join(' • '):'لا شمعة انفجار مؤكدة')+'</div></div>';
+    var metrics='<div class="tf">'
+      +'<span class="ok">'+r.tfName+'</span>'
+      +'<span class="ok">جسم '+(r.bodyAtr||0).toFixed(1)+'×ATR</span>'
+      +'<span class="ok">حجم '+(r.volRatio||0).toFixed(1)+'×</span>'
+      +'<span class="ok">إغلاق '+Math.round((r.closePos||0)*100)+'%</span>'
+      +'<span class="ok">ذيل '+Math.round((r.upWick||0)*100)+'%</span>'
+      +'<span class="ok">ضغط قبل '+((r.comp||0)*100).toFixed(1)+'%</span></div>';
+    return '<div class="ob-card grn'+(k==='gold'?' gold':'')+'" style="border-color:'+colr+'88">'
+      +'<div class="ob-top"><span class="cl-live" style="background:'+colr+';box-shadow:0 0 10px '+colr+'"></span><b>'+x.sym+'</b><span>'+money(live)+'</span>'
+      +'<span style="margin-inline-start:auto;font-size:.7rem;font-weight:900;color:'+colr+';border:1px solid '+colr+'66;border-radius:99px;padding:1px 9px">'+r.status+'</span></div>'
+      +'<div class="ob-meta">الدرجة <b style="color:'+colr+'">'+r.s+'/100</b> • '+r.pattern+' • '+r.tfName+' • قبل '+(r.ignAgo||0)+' شمعة</div>'
+      +'<div class="cl-prog" style="margin-top:9px"><i style="width:'+r.s+'%;background:'+colr+'"></i></div>'
+      +metrics
+      +'<div class="ob-meta">'+(r.reasons.length?'✅ '+r.reasons.join(' • '):'⏳ لا تأكيد بعد')+'</div>'
+      +trade
+      +(x.tv?'<div><button class="pex-tv" data-tv="'+x.tv+'">📊 الشارت</button><div class="pex-chart" hidden></div>'+tvBadge(x.tv)+'</div>':'')
+      +'</div>';
+  }).join('');
+}
+function tvBadge(sym){ return '<a class="tv-badge" href="https://www.tradingview.com/chart/?symbol=BINANCE:'+sym+'" target="_blank" rel="noopener" title="افتح شارت '+sym+' على TradingView">📈 <b>TradingView</b></a>'; }
+document.addEventListener('click',function(e){
+  try{
+    var b=e.target&&e.target.closest?e.target.closest('#grGrid button.pex-tv'):null; if(!b) return;
+    var wrap=b.parentElement, box=wrap?wrap.querySelector('.pex-chart'):null; if(!box) return;
+    if(box.hidden){
+      if(!box.dataset.on){ var u='https://www.tradingview.com/widgetembed/?symbol=BINANCE:'+b.dataset.tv+'&interval=15&theme=dark&style=1&locale=ar&hide_side_toolbar=1&allow_symbol_change=0'; box.innerHTML='<iframe loading="lazy" src="'+u+'"></iframe><a href="https://www.tradingview.com/chart/?symbol=BINANCE:'+b.dataset.tv+'" target="_blank" rel="noopener" style="display:block;text-align:center;font-size:.68rem;font-weight:900;color:#8fd6ff;padding:5px">↗ فتح كامل</a>'; box.dataset.on='1'; }
+      box.hidden=false; b.textContent='📊 إخفاء الشارت';
+    } else { box.hidden=true; b.textContent='📊 الشارت'; }
+  }catch(x){}
+});
+var autoOn=true, nextAt=0;
+function armNext(){ nextAt=Date.now()+AUTO_MS; }
+function doScan(){ armNext(); return scan(); }
+if($('grScanBtn')) $('grScanBtn').onclick=function(){ doScan(); };
+if($('grAutoBn')) $('grAutoBn').onclick=function(){ autoOn=!autoOn; this.classList.toggle('on',autoOn); this.textContent='⏱ تلقائي 30ث: '+(autoOn?'مفعّل':'متوقف'); if(autoOn) armNext(); };
+if($('grRrSel')) $('grRrSel').onchange=function(){ doScan(); };
+if($('grVolSel')) $('grVolSel').onchange=function(){ doScan(); };
+if($('grNumSel')) $('grNumSel').onchange=function(){ doScan(); };
+setInterval(function(){
+  var el=$('grNext');
+  if(autoOn&&nextAt>Date.now()){ var s=Math.max(0,Math.round((nextAt-Date.now())/1000)); if(el) el.textContent='🔄 التالي بعد '+s+' ث'; }
+  else if(el) el.textContent='';
+  if(autoOn&&nextAt&&Date.now()>=nextAt&&!document.hidden) doScan();
+},1000);
+document.addEventListener('DOMContentLoaded',function(){ doScan(); });
+setTimeout(function(){ if(!nextAt) doScan(); },3000);
+window.GRN={scan:scan,analyze:analyze,evalTF:evalTF};
+})();
+</script>
+<script>
+/* ===== 🚀 بداية الصعود — يرصد أي عملة تبدأ تصعد من مستوى انطلاق (1H/4H) ===== */
+(function(){
+"use strict";
+var LS='ai_rally_v1', COOL=2*3600*1000, AUTO_MS=30000, NUM=300, GAP=32, gateAt=0, CONC=20;
+var STABLES={usdt:1,usdc:1,dai:1,tusd:1,busd:1,usdd:1,fdusd:1,pyusd:1,usde:1,eurs:1,susd:1,usdb:1,usdx:1,usdy:1};
+var cache={}, mem={seen:{}};
+try{ var m0=JSON.parse(localStorage.getItem(LS)||'null'); if(m0){ mem.seen=m0.seen||{}; } }catch(e){}
+function save(){ try{ localStorage.setItem(LS,JSON.stringify(mem)); }catch(e){} }
+var $=function(id){ return document.getElementById(id); };
+function money(n){ if(n==null||isNaN(n)) return '—'; n=Number(n); if(n>=1000) return '$ '+n.toLocaleString('en-US',{maximumFractionDigits:1}); if(n>=1) return '$ '+n.toLocaleString('en-US',{maximumFractionDigits:3}); return '$ '+n.toLocaleString('en-US',{maximumFractionDigits:6}); }
+function isSt(s){ s=String(s||'').toLowerCase(); if(STABLES[s]) return true; return /(up|down|bull|bear)usdt$/.test(s); }
+function mean(a){ if(!a||!a.length) return 0; var s=0,i; for(i=0;i<a.length;i++) s+=a[i]; return s/a.length; }
+function ema(a,n){ if(!a||a.length<n) return null; var k=2/(n+1),e=0,i; for(i=0;i<n;i++) e+=a[i]; e/=n; for(i=n;i<a.length;i++) e=a[i]*k+e*(1-k); return e; }
+function atrKL(kl,n){ n=n||14; try{ if(!kl||kl.length<2) return 0; var s=0,c=0,i; for(i=Math.max(1,kl.length-n);i<kl.length;i++){ var h=parseFloat(kl[i][2]),l=parseFloat(kl[i][3]),pc=parseFloat(kl[i-1][4]); s+=Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)); c++; } return c?s/c:0; }catch(e){ return 0; } }
+function col(kl,ix){ var o=[],i; for(i=0;i<kl.length;i++) o.push(parseFloat(kl[i][ix])); return o; }
+var host=0;
+function gateFetch(u,sig){ var now=Date.now(), wait=Math.max(0,gateAt-now); gateAt=Math.max(now,gateAt)+GAP; return new Promise(function(res,rej){ setTimeout(function(){ fetch(u,{signal:sig,cache:'no-store'}).then(res,rej); },wait); }); }
+function jget(url){
+  var bases=['https://data-api.binance.vision','https://api.binance.com'];
+  var order=bases.slice(host).concat(bases.slice(0,host));
+  function go(i){
+    if(i>=order.length) return Promise.reject(new Error('all-hosts-failed'));
+    var ctl=new AbortController(), to=setTimeout(function(){ try{ctl.abort();}catch(e){} },60000);
+    return gateFetch(order[i]+url,ctl.signal).then(function(r){ clearTimeout(to); if(!r.ok) throw new Error('HTTP '+r.status); host=i; return r.json(); })
+    .catch(function(){ clearTimeout(to); return new Promise(function(res){ setTimeout(res,300); }).then(function(){ return go(i+1); }); });
+  }
+  return go(0);
+}
+var exCache={set:null,t:0};
+function tradableSet(){
+  if(exCache.set&&Date.now()-exCache.t<3600000) return Promise.resolve(exCache.set);
+  return jget('/api/v3/exchangeInfo').then(function(info){
+    var s={},i,arr=(info&&info.symbols)||[];
+    for(i=0;i<arr.length;i++){ var x=arr[i]; if(x.status==='TRADING'&&x.quoteAsset==='USDT'&&x.isSpotTradingAllowed!==false) s[x.symbol]=1; }
+    exCache.set=s; exCache.t=Date.now(); return s;
+  }).catch(function(){ return null; });
+}
+function klines(sym,iv,ttl){
+  var key=sym+'|'+iv, c=cache[key];
+  if(c&&Date.now()-c.t<(ttl||30000)) return Promise.resolve(c.kl);
+  return jget('/api/v3/klines?symbol='+sym+'&interval='+iv+'&limit=120').then(function(kl){
+    if(!kl||kl.length<80) return null; cache[key]={kl:kl,t:Date.now()}; return kl;
+  }).catch(function(){ return null; });
+}
+// قمع سريع: حركة صاعدة حديثة على 1H
+function preRally(kl){
+  try{
+    var a=kl.slice(0,-1), n=a.length; if(n<50) return false;
+    var c=col(a,4), v=col(a,5), o=col(a,1);
+    var atr=atrKL(a,14); if(!(atr>0)) return false;
+    var avg=mean(v.slice(n-21,n-1)); if(!(avg>0)) return false;
+    var last=0; for(var i=n-3;i<n;i++){ var b=c[i]-o[i]; if(b>=atr*0.7&&v[i]/avg>=1.4) last=1; }
+    var mv=c[n-1]/c[n-4]-1;
+    var preHi=Math.max.apply(null,col(a,2).slice(Math.max(0,n-49),n-2));
+    var near=c[n-1]>=preHi*0.985&&v[n-1]/avg>=1.3;
+    return !!(last||mv>=0.03||near);
+  }catch(e){ return false; }
+}
+// ==== تقييم فريم (1H أو 4H) ====
+function evalR(kl,tf,d1,h4,liq,minRR){
+  try{
+    var is4=(tf==='4h'), n=kl.length; if(n<50) return null;
+    var o=col(kl,1),hi=col(kl,2),lo=col(kl,3),c=col(kl,4),v=col(kl,5);
+    var cUp=col(kl,4); // closed only
+    var dc=col(d1,4), dE20=ema(dc,20), dE50=ema(dc,50), dLast=dc[dc.length-1];
+    var dUp=(dE20!=null&&dE50!=null&&dE20>dE50);
+    var dHigh=Math.max.apply(null,dc.slice(-30)), dd=dHigh>0?(dHigh-dLast)/dHigh:0;
+    var strongDown=(!dUp&&dE50!=null&&dLast<dE50&&dd>0.20);
+    var h4c=col(h4,4), h4e20=ema(h4c,20), h4e50=ema(h4c,50);
+    var h4Up=(h4e20!=null&&h4e50!=null&&h4e20>h4e50);
+    // ابحث عن شرارة الانطلاق الأولى: أول شمعة اختراق حقيقية (جسم+حجم) أو موجة 3 شموع قوية
+    var lookBack=is4?24:60, i, q;
+    var atrPre=atrKL(kl,14)||c[n-1]*0.01;
+    var ign=-1, ignLevel=0, ignBar=false;
+    for(i=Math.max(3,n-lookBack);i<n;i++){
+      var m3i=c[i]/c[i-3]-1;
+      var ph=-1e18;
+      for(q=Math.max(0,i-20);q<i;q++){ if(hi[q]>ph) ph=hi[q]; }
+      if(!(ph>0)) continue;
+      var avgVi=mean(v.slice(Math.max(0,i-20),i));
+      var bdy=c[i]-o[i], rngBar=hi[i]-lo[i];
+      var brkBar=(c[i]>ph*1.0005&&bdy>atrPre*0.4&&avgVi>0&&v[i]>=avgVi*1.5&&rngBar>0&&(c[i]-lo[i])/rngBar>=0.6);
+      var surge=(m3i>=(is4?0.08:0.05)&&c[i]>ph*1.0005);
+      if(brkBar||surge){ ign=i; ignLevel=ph; ignBar=brkBar; break; }
+    }
+    var level=0, baseHi=0, baseLo=0;
+    if(ign>=0){
+      var bStart=Math.max(0,ign-30); baseHi=-1e18; baseLo=1e18;
+      for(i=bStart;i<ign;i++){ if(hi[i]>baseHi) baseHi=hi[i]; if(lo[i]<baseLo) baseLo=lo[i]; }
+      if(!(baseHi>0)||!(baseLo>0)) return null;
+      level=baseHi;
+      if(!(c[ign]>level*1.0005)) level=ignLevel||baseHi;
+    } else {
+      var pStart=Math.max(0,n-48); baseHi=-1e18; baseLo=1e18;
+      for(i=pStart;i<n-2;i++){ if(hi[i]>baseHi) baseHi=hi[i]; if(lo[i]<baseLo) baseLo=lo[i]; }
+      if(!(baseHi>0)||!(baseLo>0)) return null;
+      level=baseHi;
+    }
+    var first=ign;
+    var cur=c[n-1];
+    var brk=(first>=0&&cur>level*1.0005);
+    var since=level>0?(cur/level-1):0;
+    var brkAgo=first>=0?(n-1-first):0;
+    var hours=brkAgo*(is4?4:1);
+    var baseRangePct=(baseHi-baseLo)/baseLo;
+    var move3=(c[n-1]/c[Math.max(0,n-4)]-1);
+    var green=0; for(i=Math.max(0,n-4);i<n;i++){ if(c[i]>o[i]) green++; }
+    var avgV=mean(v.slice(Math.max(0,n-21),n-1));
+    var maxV=0; for(i=Math.max(0,n-3);i<n;i++){ var r=avgV>0?v[i]/avgV:0; if(r>maxV) maxV=r; }
+    var status=null, early=false, mEarly=false, running=false, extended=false, approach=false;
+    if(brk){
+      mEarly=(brkAgo<=1&&since<=0.10);
+      early=(brkAgo<=4&&since<=0.15);
+      running=(since<=0.35);
+      extended=(since>0.35);
+      if(mEarly) status='⚡ دخول مبكر';
+      else if(early) status='🌱 بداية الصعود';
+      else if(running) status='🚀 صعود جارٍ';
+      else status='⚠️ ممتد — لا تلحق';
+    } else if(first<0&&cur>=level*0.98&&move3>=0.01){
+      approach=true; status='⏳ يقترب من الانطلاق';
+    }
+    if(!status) return null;
+    if(strongDown) return {tf:tf,status:'🚫 اتجاه معاكس',entryOK:false,early:false,running:false,extended:false,approach:false,
+      s:0,cur:cur,level:level,baseHi:baseHi,baseLo:baseLo,since:since,brkAgo:brkAgo,hours:hours,move3:move3,volRatio:maxV,baseRangePct:baseRangePct,
+      mEarly:false,pbOK:false,preOK:false,
+      entry:null,sl:null,tp1:null,tp2:null,tp3:null,rr:0,risk:0,liq:liq,reasons:[],rejects:['اتجاه يومي هابط قوي']};
+    // خطة الدخول
+    var atr=atrKL(kl,14)||cur*0.01;
+    var entry=null,sl=null,risk=0,rr=0,tp1=null,tp2=null,tp3=null;
+    if(early||running){
+      entry=cur;
+      var low3=Math.min.apply(null,lo.slice(Math.max(0,n-3)));
+      if(early){
+        sl=level*0.99-atr*0.2;
+        if(!(sl<entry)) sl=entry-atr;
+        var range=Math.max(baseHi-baseLo,level*0.03);
+        tp1=Math.max(level+range,entry+atr*2);
+        tp2=Math.max(level+range*1.6,entry+atr*4);
+        tp3=Math.max(level+range*2.4,entry+atr*6);
+      }else{
+        sl=Math.min(entry-atr*1.2,low3-atr*0.2);
+        tp1=entry+atr*2; tp2=entry+atr*3.5; tp3=entry+atr*5;
+      }
+      if(!(sl<entry)) sl=entry-atr;
+      risk=entry-sl;
+      rr=risk>0?((tp1-entry-entry*0.002)/risk):0;
+    }
+    // النقاط /100
+    var pImp;
+    if(is4) pImp=(move3>=0.15?25:move3>=0.10?21:move3>=0.06?17:move3>=0.035?12:6);
+    else pImp=(move3>=0.10?25:move3>=0.06?21:move3>=0.04?17:move3>=0.025?12:6);
+    var pVol=(maxV>=4?20:maxV>=2.5?16:maxV>=1.8?12:maxV>=1.4?8:4);
+    var pBase=(baseRangePct<=0.12?20:baseRangePct<=0.25?16:baseRangePct<=0.45?12:8);
+    var pEarly=(since<=0.05?15:since<=0.12?12:since<=0.25?7:since<=0.35?3:0);
+    var pTrend=strongDown?0:((dUp&&h4Up)?10:((dUp||h4Up)?6:3));
+    var pEnt=(entry&&rr>=2?10:entry&&rr>=1.5?7:entry&&rr>=1?3:0);
+    var score=Math.round(pImp+pVol+pBase+pEarly+pTrend+pEnt);
+    score=Math.max(0,Math.min(100,score));
+    var rejects=[];
+    if(brk&&!early&&!running) rejects.push('امتدت الحركة +'+(since*100).toFixed(0)+'% — الدخول الآن مطاردة');
+    if(!brk&&approach) rejects.push('لم تخترق مستوى الانطلاق بعد ('+money(level)+')');
+    if(score<65) rejects.push('الدرجة '+score+'<65');
+    if(entry&&risk/entry>0.12) rejects.push('الوقف بعيد (مخاطرة '+(risk/entry*100).toFixed(0)+'%)');
+    if(entry&&rr<minRR) rejects.push('RR ضعيف '+rr.toFixed(1));
+    var entryOK=!!(entry&&(early||running)&&score>=65&&risk>0&&risk/entry<=0.12&&rr>=minRR);
+    // خطة الشراء المعلّق تحت: لمن فاتته الحركة — أمر على تصحيح 61.8% من موجة الصعود
+    var pbOK=false, pbEntry=null, pbSL=null, pbTP1=null, pbTP2=null, pbTP3=null, pbRR=0, pbRisk=0, pbLo=null, pbHi=null;
+    if(brk&&!entryOK&&level>0&&cur>level){
+      var rng=cur-level;
+      pbEntry=cur-rng*0.618;
+      pbHi=cur-rng*0.5;
+      pbLo=cur-rng*0.786;
+      if(pbEntry<level*1.005){
+        pbEntry=level*1.01; pbLo=level*1.005; pbHi=level*1.025;
+        pbSL=level*0.985;
+      } else {
+        pbSL=cur-rng*0.80-atr*0.1;
+      }
+      if(!(pbSL<pbEntry)) pbSL=pbEntry-atr;
+      pbRisk=pbEntry-pbSL;
+      pbTP1=cur; pbTP2=cur+rng*0.5; pbTP3=cur+rng;
+      pbRR=pbRisk>0?((pbTP1-pbEntry-pbEntry*0.002)/pbRisk):0;
+      pbOK=!!(pbEntry>level&&pbRisk>0&&pbRisk/pbEntry<=0.12&&pbRR>=minRR);
+    }
+    // خطة ما قبل الاختراق: أمر شراء معلّق فوق المقاومة (قبل 3 شموع خضراء)
+    var preOK=false, preEntry=null, preSL=null, preTP1=null, preTP2=null, preTP3=null, preRR=0, preRisk=0;
+    if(approach&&!brk&&level>0){
+      var prng=Math.max(baseHi-baseLo,level*0.03);
+      preEntry=level*1.003;
+      preSL=level*0.975;
+      preTP1=level+prng; preTP2=level+prng*1.6; preTP3=level+prng*2.4;
+      preRisk=preEntry-preSL;
+      preRR=preRisk>0?((preTP1-preEntry-preEntry*0.002)/preRisk):0;
+      preOK=!!(preRisk>0&&preRisk/preEntry<=0.12&&preRR>=minRR);
+    }
+    var reasons=[];
+    if(brk) reasons.push(ignBar?'أول شمعة اختراق (جسم+حجم)':'اختراق مستوى الانطلاق');
+    if(move3>0) reasons.push('آخر 3 شموع +'+(move3*100).toFixed(1)+'%');
+    if(maxV>=1.5) reasons.push('حجم '+maxV.toFixed(1)+'×');
+    if(green>=3) reasons.push(green+' شموع خضراء من 4');
+    if(h4Up) reasons.push('4H صاعد');
+    if(dUp) reasons.push('1D صاعد');
+    return {tf:tf,tfName:(is4?'4H':'1H'),status:status,entryOK:entryOK,early:early,running:running,extended:extended,approach:approach,
+      s:score,cur:cur,level:level,baseHi:baseHi,baseLo:baseLo,since:since,brkAgo:brkAgo,hours:hours,move3:move3,volRatio:maxV,baseRangePct:baseRangePct,
+      entry:entry,sl:sl,tp1:tp1,tp2:tp2,tp3:tp3,rr:rr,risk:risk,liq:liq,green:green,
+      mEarly:mEarly,pbOK:pbOK,pbEntry:pbEntry,pbSL:pbSL,pbTP1:pbTP1,pbTP2:pbTP2,pbTP3:pbTP3,pbRR:pbRR,pbRisk:pbRisk,pbLo:pbLo,pbHi:pbHi,
+      preOK:preOK,preEntry:preEntry,preSL:preSL,preTP1:preTP1,preTP2:preTP2,preTP3:preTP3,preRR:preRR,preRisk:preRisk,
+      reasons:reasons.slice(0,6),rejects:rejects.slice(0,4)};
+  }catch(e){ return null; }
+}
+function analyze(d1,h4,h1,liq,minRR){
+  try{
+    if(!d1||d1.length<80||!h4||h4.length<80||!h1||h1.length<80) return null;
+    d1=d1.slice(0,-1); h4=h4.slice(0,-1); h1=h1.slice(0,-1);
+    var a=evalR(h1,'1h',d1,h4,liq,minRR);
+    var b=evalR(h4,'4h',d1,h4,liq,minRR);
+    if(!a&&!b) return null;
+    // الأفضل: المبكر أولاً ثم الأعلى نقاطاً
+    if(a&&a.early&&!b) return a;
+    if(b&&b.early&&!a) return b;
+    if(a&&a.early) return a;
+    if(b&&b.early) return b;
+    if(a&&b) return (a.s>=b.s?a:b);
+    return a||b;
+  }catch(e){ return null; }
+}
+var lastPx={};
+function runPool(items,limit,worker,onProg){
+  var idx=0,done=0,active=0;
+  return new Promise(function(resolve){
+    function next(){
+      if(idx>=items.length&&active===0) return resolve();
+      while(active<limit&&idx<items.length){
+        (function(){ var it=items[idx++]; active++;
+          Promise.resolve().then(function(){ return worker(it); }).then(function(){ active--; done++; if(onProg)onProg(done,items.length); next(); },function(){ active--; done++; if(onProg)onProg(done,items.length); next(); });
+        })();
+      }
+    }
+    next();
+  });
+}
+var scanning=false, failN=0, okN=0, tryN=0;
+function scan(){
+  if(scanning) return Promise.resolve();
+  scanning=true;
+  var pulse=$('rlPulse'); if(pulse) pulse.classList.add('scan');
+  var st=$('rlStatus'); if(st) st.textContent='⏳ جلب العملات...';
+  var MIN=parseFloat(($('rlVolSel')&&$('rlVolSel').value)||0);
+  var minRR=parseFloat(($('rlRrSel')&&$('rlRrSel').value)||1.5);
+  return Promise.all([tradableSet(),jget('/api/v3/ticker/24hr')]).then(function(res){ failN=0; var trad=res[0], list=res[1];
+    if(!Array.isArray(list)) throw new Error('bad');
+    var pool=list.filter(function(t){
+      var s=String(t.symbol||''); if(!/USDT$/.test(s)) return false;
+      if(trad&&!trad[s]) return false;
+      var base=s.slice(0,-4).toLowerCase(); if(isSt(base)) return false;
+      if(parseFloat(t.quoteVolume||0)<MIN) return false;
+      return true;
+    }).sort(function(a,b){ return parseFloat(b.quoteVolume)-parseFloat(a.quoteVolume); }).slice(0,Math.max(1,parseFloat(($('rlNumSel')&&$('rlNumSel').value)||NUM)));
+    if(st) st.textContent='⏳ رصد بدايات الصعود على 1H ('+pool.length+' عملة)...';
+    var px={}; pool.forEach(function(t){ px[t.symbol]=parseFloat(t.lastPrice)||0; });
+    lastPx=px;
+    var out=[]; okN=0; tryN=pool.length;
+    return runPool(pool,CONC,function(t){
+      var sym=t.symbol, liq=parseFloat(t.quoteVolume||0);
+      return klines(sym,'1h',60000).then(function(h1){
+        if(!h1) return; okN++;
+        if(!preRally(h1)) return;
+        return Promise.all([klines(sym,'4h',120000),klines(sym,'1d',300000)]).then(function(k){
+          if(!k[0]||!k[1]) return;
+          var r=analyze(k[1],k[0],h1,liq,minRR);
+          if(!r) return;
+          if(r.s<55&&!r.entryOK&&!r.extended&&!r.preOK) return;
+          var live=px[sym]||r.cur;
+          out.push({id:sym,sym:sym.slice(0,-4),price:live,live:live,r:r,tv:sym});
+        });
+      }).catch(function(){});
+    },function(d,tot){ if(st) st.textContent='⏳ رصد الصعود (1H ← 4H/1D) '+d+'/'+tot+'...'; }).then(function(){ return out; });
+  }).then(function(out){
+    if(!out.length&&!okN&&tryN) throw new Error('no-network');
+    out=(out||[]).filter(Boolean).sort(function(x,y){
+      function w(r){ return (r.early?4:0)+(r.entryOK?2:0)+(r.pbOK?1:0)+(r.preOK?1:0)+(r.running?1:0); }
+      var ax=w(x.r), ay=w(y.r);
+      if(ay!==ax) return ay-ax;
+      return y.r.s-x.r.s;
+    }).slice(0,90);
+    var now=Date.now(),i;
+    for(i=0;i<out.length;i++){
+      var f=out[i], r=f.r;
+      if(r.entryOK&&(!mem.seen[f.id]||now-mem.seen[f.id]>COOL)){
+        mem.seen[f.id]=now;
+        try{ if(window.toast) window.toast((r.mEarly?'⚡ دخول مبكر ':(r.early?'🌱 بداية صعود ':'🚀 صعود '))+f.sym+' • من '+money(r.level)+' إلى '+money(f.live)+' • '+r.s+'/100'); }catch(e){}
+      }
+    }
+    save(); render(out);
+  }).catch(function(){
+    failN++;
+    if(st) st.textContent='❌ تعذر الجلب — إعادة المحاولة ('+failN+'/4)';
+    var g=$('rlGrid'); if(g) g.innerHTML='<div class="empty">❌ تعذر جلب البيانات من Binance.<br>'+(failN<4?'⏳ إعادة المحاولة خلال 6 ث...':'اضغط «ارصد الآن».')+'</div>';
+    if(failN<4) setTimeout(function(){ if(!scanning) doScan(); },6000);
+  }).then(function(){ scanning=false; if(pulse) pulse.classList.remove('scan'); });
+}
+function sKey(s){
+  if(s.indexOf('دخول مبكر')>=0) return 'early';
+  if(s==='🌱 بداية الصعود') return 'early';
+  if(s==='🚀 صعود جارٍ') return 'run';
+  if(s==='⚠️ ممتد — لا تلحق') return 'late';
+  if(s==='⏳ يقترب من الانطلاق') return 'near';
+  return 'rej';
+}
+function render(out){
+  out=out||[];
+  var early=0,run=0,late=0,near=0;
+  out.forEach(function(x){ var k=sKey(x.r.status); if(k==='early')early++; else if(k==='run')run++; else if(k==='late')late++; else if(k==='near')near++; });
+  if($('rl1'))$('rl1').textContent=early;
+  if($('rl2'))$('rl2').textContent=run;
+  if($('rl3'))$('rl3').textContent=late;
+  if($('rl4'))$('rl4').textContent=near;
+  var st=$('rlStatus');
+  if(st)st.textContent=out.length?('🚀 '+out.length+' عملة تتحرك • 🌱 '+early+' بداية • 🚀 '+run+' جارٍ • ⚠️ '+late+' ممتد • '+new Date().toLocaleTimeString('ar')):'لا بداية صعود واضحة الآن — نراقب Binance تلقائياً';
+  var box=$('rlGrid'); if(!box) return;
+  if(!out.length){ box.innerHTML='<div class="empty">🚀 لا عملة تبدأ صعوداً واضحاً الآن.<br>نرصد: اختراق مستوى انطلاق + حركة 3 شموع + حجم + بقاء قرب المستوى. تظهر العملة في لحظة البداية، ويُميَّز الممتد حتى لا تلحق الحركة.</div>'; return; }
+  var colors={early:'#22c55e',run:'#38bdf8',late:'#f59e0b',near:'#f6e27a',rej:'#94a3b8'};
+  box.innerHTML=out.map(function(x){
+    var r=x.r, k=sKey(r.status), colr=colors[k]||'#94a3b8';
+    var live=x.live||r.cur;
+    var since=(r.level>0)?((live-r.level)/r.level*100):0;
+    var trade=r.entryOK
+      ? '<div class="ob-trade"><div class="ob-trade-h">'+(r.mEarly?'<i class="rl-dot"></i>⚡ خطة الدخول المبكر — قبل اكتمال 3 شموع خضراء':'📥 خطة الدخول — '+(r.early?'بداية الصعود':'صعود جارٍ'))+'</div><div class="ob-trow">'
+        +'<span>🚀 الانطلاق من <b>'+money(r.level)+'</b></span>'
+        +'<span>💵 الدخول <b>'+money(r.entry)+'</b></span>'
+        +'<span>📈 الآن <b>'+money(live)+'</b> ('+(since>=0?'+':'')+since.toFixed(1)+'%)</span>'
+        +'<span class="up">🎯 هدف1 <b>'+money(r.tp1)+'</b></span>'
+        +'<span class="up">🎯 هدف2 <b>'+money(r.tp2)+'</b></span>'
+        +'<span class="up">🎯 هدف3 <b>'+money(r.tp3)+'</b></span>'
+        +'<span class="dn">🛑 وقف '+money(r.sl)+'</span>'
+        +'<span>RR '+r.rr.toFixed(1)+' • مخاطرة '+(r.risk/r.entry*100).toFixed(1)+'%</span>'
+        +'</div></div>'
+      : r.preOK
+        ? '<div class="ob-trade limit"><div class="ob-trade-h"><i class="rl-dot"></i>⚡ أمر شراء مبكر — قبل 3 شموع خضراء</div><div class="ob-trow">'
+          +'<span>شرط التفعيل: اختراق <b>'+money(r.level)+'</b></span>'
+          +'<span>🎯 الدخول ≈ <b>'+money(r.preEntry)+'</b> (فوق المستوى)</span>'
+          +'<span>💵 الآن <b>'+money(live)+'</b> — لا تشترِ قبل الاختراق</span>'
+          +'<span class="up">🎯 هدف1 <b>'+money(r.preTP1)+'</b></span>'
+          +'<span class="up">🎯 هدف2 <b>'+money(r.preTP2)+'</b></span>'
+          +'<span class="up">🎯 هدف3 <b>'+money(r.preTP3)+'</b></span>'
+          +'<span class="dn">🛑 وقف '+money(r.preSL)+'</span>'
+          +'<span>RR '+r.preRR.toFixed(1)+' • مخاطرة '+(r.preRisk/r.preEntry*100).toFixed(1)+'%</span>'
+          +'</div><div style="font-size:.72rem;line-height:1.8;color:#8fd6ff;margin-top:6px">⏳ أمر شراء معلّق <b>فوق</b> المقاومة: يُنفَّذ فقط عند اختراق '+money(r.level)+' — قبل ظهور الشموع الخضراء الثلاث. إن فشل الاختراق يُلغى.</div></div>'
+        : r.pbOK
+        ? '<div class="ob-trade limit"><div class="ob-trade-h">📥 أمر شراء معلّق تحت — لمن فاتته الحركة</div><div class="ob-trow">'
+          +'<span>🎯 أمر الشراء <b>'+money(r.pbEntry)+'</b></span>'
+          +'<span>منطقة <b>'+money(r.pbLo)+'</b> – <b>'+money(r.pbHi)+'</b></span>'
+          +'<span>💵 الآن <b>'+money(live)+'</b> — لا تشترِ فوق أمرك</span>'
+          +'<span class="up">🎯 هدف1 <b>'+money(r.pbTP1)+'</b></span>'
+          +'<span class="up">🎯 هدف2 <b>'+money(r.pbTP2)+'</b></span>'
+          +'<span class="up">🎯 هدف3 <b>'+money(r.pbTP3)+'</b></span>'
+          +'<span class="dn">🛑 وقف '+money(r.pbSL)+'</span>'
+          +'<span>RR '+r.pbRR.toFixed(1)+' • مخاطرة '+(r.pbRisk/r.pbEntry*100).toFixed(1)+'%</span>'
+          +'</div><div style="font-size:.72rem;line-height:1.8;color:#8fd6ff;margin-top:6px">⏳ يُنفَّذ فقط إذا هبط السعر إلى الأمر (تصحيح 61.8% من الموجة). إن ارتد قبل الوصول تُلغى الخطة — لا تشترِ السعر الحالي مطاردة.<br>من <b>'+money(r.level)+'</b> إلى <b>'+money(live)+'</b> ('+(since>=0?'+':'')+since.toFixed(1)+'%) • قبل '+(r.hours||0)+' ساعة.</div></div>'
+        : '<div class="ob-trade down"><div class="ob-trade-h">'+(r.extended?'⚠️ الحركة ممتدة — لا تلحق':'🚫 لا دخول الآن')+'</div><div style="font-size:.74rem;line-height:1.9;color:#ffb4ba">'
+          +'من <b>'+money(r.level)+'</b> إلى <b>'+money(live)+'</b> ('+(since>=0?'+':'')+since.toFixed(1)+'%) • بدأت قبل '+(r.hours||0)+' ساعة.'
+          +(r.rejects.length?'<br>'+r.rejects.join(' • '):'')
+          +'<br>انتظر تصحيحاً/إعادة اختبار قبل أي دخول.</div></div>';
+    var metrics='<div class="tf">'
+      +'<span class="ok">'+r.tfName+'</span>'
+      +'<span class="ok">3 شموع '+((r.move3||0)*100).toFixed(1)+'%</span>'
+      +'<span class="ok">حجم '+(r.volRatio||0).toFixed(1)+'×</span>'
+      +'<span class="ok">'+(r.green||0)+'/4 خضراء</span>'
+      +'<span class="ok">قاعدة '+((r.baseRangePct||0)*100).toFixed(1)+'%</span>'
+      +(r.mEarly?'<span class="ok" style="border-color:#22c55e;color:#22c55e">⚡ قبل 3 شموع</span>':'')+'</div>';
+    return '<div class="ob-card rly'+(k==='early'?' early':'')+'" style="border-color:'+colr+'88">'
+      +'<div class="ob-top"><span class="cl-live" style="background:'+colr+';box-shadow:0 0 10px '+colr+'"></span><b>'+x.sym+'</b><span>'+money(live)+'</span>'
+      +'<span style="margin-inline-start:auto;font-size:.7rem;font-weight:900;color:'+colr+';border:1px solid '+colr+'66;border-radius:99px;padding:1px 9px">'+r.status+'</span></div>'
+      +'<div class="ob-meta">من <b style="color:'+colr+'">'+money(r.level)+'</b> → <b>'+money(live)+'</b> • <b style="color:'+colr+'">'+(since>=0?'+':'')+since.toFixed(1)+'%</b> منذ الانطلاق • قبل '+(r.hours||0)+' ساعة • '+r.s+'/100</div>'
+      +'<div class="cl-prog" style="margin-top:9px"><i style="width:'+r.s+'%;background:'+colr+'"></i></div>'
+      +metrics
+      +'<div class="ob-meta">'+(r.reasons&&r.reasons.length?'✅ '+r.reasons.join(' • '):'⏳ مراقبة')+'</div>'
+      +trade
+      +(x.tv?'<div><button class="pex-tv" data-tv="'+x.tv+'">📊 الشارت</button><div class="pex-chart" hidden></div>'+tvBadge(x.tv)+'</div>':'')
+      +'</div>';
+  }).join('');
+}
+function tvBadge(sym){ return '<a class="tv-badge" href="https://www.tradingview.com/chart/?symbol=BINANCE:'+sym+'" target="_blank" rel="noopener" title="افتح شارت '+sym+' على TradingView">📈 <b>TradingView</b></a>'; }
+document.addEventListener('click',function(e){
+  try{
+    var b=e.target&&e.target.closest?e.target.closest('#rlGrid button.pex-tv'):null; if(!b) return;
+    var wrap=b.parentElement, box=wrap?wrap.querySelector('.pex-chart'):null; if(!box) return;
+    if(box.hidden){
+      if(!box.dataset.on){ var u='https://www.tradingview.com/widgetembed/?symbol=BINANCE:'+b.dataset.tv+'&interval=60&theme=dark&style=1&locale=ar&hide_side_toolbar=1&allow_symbol_change=0'; box.innerHTML='<iframe loading="lazy" src="'+u+'"></iframe><a href="https://www.tradingview.com/chart/?symbol=BINANCE:'+b.dataset.tv+'" target="_blank" rel="noopener" style="display:block;text-align:center;font-size:.68rem;font-weight:900;color:#8fd6ff;padding:5px">↗ فتح كامل</a>'; box.dataset.on='1'; }
+      box.hidden=false; b.textContent='📊 إخفاء الشارت';
+    } else { box.hidden=true; b.textContent='📊 الشارت'; }
+  }catch(x){}
+});
+var autoOn=true, nextAt=0;
+function armNext(){ nextAt=Date.now()+AUTO_MS; }
+function doScan(){ armNext(); return scan(); }
+if($('rlScanBtn')) $('rlScanBtn').onclick=function(){ doScan(); };
+if($('rlAutoBn')) $('rlAutoBn').onclick=function(){ autoOn=!autoOn; this.classList.toggle('on',autoOn); this.textContent='⏱ تلقائي 30ث: '+(autoOn?'مفعّل':'متوقف'); if(autoOn) armNext(); };
+if($('rlRrSel')) $('rlRrSel').onchange=function(){ doScan(); };
+if($('rlVolSel')) $('rlVolSel').onchange=function(){ doScan(); };
+if($('rlNumSel')) $('rlNumSel').onchange=function(){ doScan(); };
+setInterval(function(){
+  var el=$('rlNext');
+  if(autoOn&&nextAt>Date.now()){ var s=Math.max(0,Math.round((nextAt-Date.now())/1000)); if(el) el.textContent='🔄 التالي بعد '+s+' ث'; }
+  else if(el) el.textContent='';
+  if(autoOn&&nextAt&&Date.now()>=nextAt&&!document.hidden) doScan();
+},1000);
+document.addEventListener('DOMContentLoaded',function(){ doScan(); });
+setTimeout(function(){ if(!nextAt) doScan(); },5000);
+window.RALLY={scan:scan,analyze:analyze,evalR:evalR};
 })();
 
 </script>
