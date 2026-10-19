@@ -1495,16 +1495,6 @@ body.linkmode #masterFab{display:none!important}
 <div class="one-decision od-wait" id="oneDecision">⏳ القرار الواحد: جارٍ التحليل...</div>
 <div class="one-decision od-wait" id="mktHead">🌍 رئيس النظام: يقرأ السوق العام...</div>
 </div>
-<div class="ob-sec" id="liqSec">
-  <div class="ob-head"><h2>💧 دخول السيولة — عملات دخلتها أموال الآن</h2><span class="ob-count" id="liqCount">0</span></div>
-  <div class="ob-status" id="liqStatus">💧 يراقب دخول السيولة...</div>
-  <div class="ob-grid" id="liqGrid"></div>
-</div>
-<div class="ob-sec" id="binSec">
-  <div class="ob-head"><h2>🏦 سيولة بينانس — عملات دخلتها أموال على Binance الآن</h2><span class="ob-count" id="binCount">0</span></div>
-  <div class="ob-status" id="binStatus">🏦 يراقب سيولة منصة Binance مباشرة...</div>
-  <div class="ob-grid" id="binGrid"></div>
-</div>
 <div class="member-bar" id="memberBar">
   <span class="mb-badge mb-guest" id="mbBadge">👤 زائر</span>
   <span id="mbTxt">محتوى الأعضاء محمي 🔒</span>
@@ -1605,31 +1595,6 @@ body.linkmode #masterFab{display:none!important}
 
 </div>
 
-<div class="ob-sec" id="brkSec">
-  <div class="ob-head"><h2>🚀 اختراق مؤكد — كسر قمة 20 بحجم حقيقي + إعادة اختبار (Spot فقط)</h2><span class="ob-count" id="brkCount">0</span><button class="blink-btn" data-blink="brk">🔗 اربط بالبوت</button></div>
-  <div class="ob-status" id="brkStatus">🚀 يفحص كسر القمم على شموع Binance الحقيقية 1h + تأكيد الحجم...</div>
-  <div class="ob-grid" id="brkGrid"></div>
-</div>
-
-<div class="ob-sec" id="momSec">
-  <div class="ob-head"><h2>✅ صعود مؤكد — ترند 4h حقيقي + تأكيد شمعة 1h بحجم (Spot فقط)</h2><span class="ob-count" id="momCount">0</span><button class="blink-btn" data-blink="mom">🔗 اربط بالبوت</button></div>
-  <div class="ob-status" id="momStatus">✅ يتحقق من الترند على شموع 4h الحقيقية ثم تأكيد الدخول بشمعة 1h...</div>
-  <div class="ob-grid" id="momGrid"></div>
-</div>
-
-<div class="ob-sec" id="patSec">
-  <div class="ob-head"><h2>🔷 نموذج صاعد مؤكد — مثلث صاعد / قاع مزدوج على شموع 4h + رسم تلقائي (Spot فقط)</h2><span class="ob-count" id="patCount">0</span><button class="blink-btn" data-blink="pat">🔗 اربط بالبوت</button></div>
-  <div class="ob-status" id="patStatus">🔷 يرسم شموع 4h الحقيقية ويبحث عن نموذج صعودي مكتمل...</div>
-  <div class="ob-grid" id="patGrid"></div>
-</div>
-
-<div class="ob-sec" id="powSec">
-  <div class="ob-head"><h2>💪 النموذج القوي — مثلث صاعد + ترند + سلم أهداف مثل الصورة (Spot فقط)</h2><span class="ob-count" id="powCount">0</span><button class="blink-btn" data-blink="pow">🔗 اربط بالبوت</button><button class="blink-btn" id="powSoloBtn">⛶ قسم وحدو</button></div>
-  <div class="ob-status" id="powStatus">💪 يبحث عن أقوى مثلث صاعد على 4h (مقاومة أفقية + ترند صاعد + حجم) ويرسمه مثل الصورة...</div>
-  <div class="ob-grid" id="powGrid"></div>
-</div>
-<div id="powModal"><div class="powSolo-box"><div class="powSolo-head"><span>💪 النموذج القوي — قسم وحدو</span><small>نافذة مستقلة • نفس الإشارات والربط بالبوت</small><span style="margin-inline-start:auto"></span><button class="btn btn-sm" id="powSoloX">✕ إغلاق</button></div><div class="powSolo-body" id="powSoloWrap"></div></div></div>
-
 <div class="ob-sec" id="minSec">
   <div class="ob-head"><h2>⏱ فريم الدقيقة (1m) — دخول شراء فقط (بدون بيع)</h2><span class="ob-count" id="minCount">0</span><button class="blink-btn" data-blink="min">🔗 اربط بالبوت</button></div>
   <div class="min-profit" id="minProfit">💰 الربح المحفوظ تلقائيًا: <b id="minProfitV">$0</b> <small id="minProfitN">(0 صفقة)</small><span class="min-stake"> • 💵 مبلغ الصفقة $<input id="minStake" type="number" min="1" step="1" value="10"></span></div>
@@ -1638,45 +1603,8 @@ body.linkmode #masterFab{display:none!important}
   <div class="ob-grid" id="minGrid"></div>
 </div>
 
-<div class="ob-sec" id="smartSec">
-  <div class="ob-head"><h2>🔎 الماسح الذكي — إشارات تلقائية (شراء/بيع) متعددة المؤشرات 15m</h2><span class="ob-count" id="smartCount">0</span><button class="blink-btn" data-blink="smart">🔗 اربط بالبوت</button><button class="blink-btn" id="smartSoloBtn">⛶ قسم وحدو</button></div>
-  <div class="ob-status" id="smartStatus">🔎 يمسح أقوى العملات تلقائياً ويحسب RSI + EMA + MACD + الحجم ثم يعطي إشارة شراء/بيع — يعمل وحده كل 90 ثانية.</div>
-  <div class="ob-grid" id="smartGrid"></div>
-</div>
-<div id="smartModal"><div class="powSolo-box"><div class="powSolo-head"><span>🔎 الماسح الذكي — قسم وحدو</span><small>نافذة مستقلة • إشارات حية تلقائية + الربط بالبوت</small><span style="margin-inline-start:auto"></span><button class="btn btn-sm" id="smartSoloX">✕ إغلاق</button></div><div class="powSolo-body" id="smartSoloWrap"></div></div></div>
 
-<div class="section-head" style="margin:16px 0 6px"><h2>💎 كل شيء في بطاقة واحدة</h2>
-<button class="blink-btn" data-blink="cards">🔗 اربط بالبوت</button>
-<p class="muted" id="dealsStatus">...</p></div>
-<div class="toolbar-btns">
-  <button class="chip active" data-ai="buy">🟢 شراء فقط</button>
-  <button class="chip" data-ai="strong">⭐ القوية</button>
-  <button class="chip" data-ai="watch">👀 مراقبة</button>
-  <button class="chip" data-ai="all">الكل</button>
-</div>
-<div class="hl-count" id="hlCount"></div>
-<p class="hint">🧠 الشارة = قرار واحد • 🎫 الخطة = دخول واحد و3 أهداف ووقف واحد • 🧮 حساب الصفقة = من رأس المال التجريبي • 🛡️ الحارس = مراقبتك الحيّة. كلها في بطاقة واحدة.</p>
-<div class="new-sec" id="newSec" hidden>
-  <div class="new-head"><h2>🆕 صعود جديد</h2><span class="new-count" id="newCount">0</span></div>
-  <div class="sig-grid cards-grid" id="newGrid" style="margin-top:8px"></div>
-</div>
-<div class="strong-sec" id="strongSec" hidden>
-  <div class="strong-head"><h2>🔥 الصعود المؤكد — القوية وحدها</h2><span class="strong-count" id="strongCount">0</span></div>
-  <div class="sig-grid cards-grid" id="strongGrid" style="margin-top:8px"></div>
-</div>
 
-<div class="free-gate only-guest" id="freeGate">
-  <h3>🎁 صفقة مجانية يوميا؋ باسمك</h3>
-  <p>أدخل اسمك وإيميلك لفتح صفقتك المجانية اليوم — تتجدد غداً 🎁 هكذا تبدو الصفقة الحقيقية</p>
-  <div class="fg-row">
-    <input id="leadName" type="text" placeholder="الاسم الكريم" maxlength="30">
-    <input id="leadEmail" type="text" inputmode="email" dir="ltr" placeholder="email@example.com" maxlength="60">
-    <button class="btn btn-primary btn-sm" id="leadGo">افتح هديتي 🎁</button>
-  </div>
-  <div class="muted" id="leadMsg" style="font-size:.76rem;margin-top:6px"></div>
-  <div style="margin-top:8px"><button class="btn btn-sm" id="shareBtn">📣 شارك التطبيق وادعُ أصدقاءك</button></div>
-</div>
-<div class="sig-grid cards-grid" id="dealsGrid" style="margin-top:10px"><div class="loading">🧠 الذكاء يحلل 500 عملة...</div></div>
 <button class="master-fab" id="masterFab" title="تحكم المالك">👑</button>
 <div class="owner-modal" id="ownerModal">
   <div class="owner-card">
@@ -4579,7 +4507,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(r.ok){ m.textContent='✅ تم التفعيل — أهلاً '+M.name; m.style.color='#1fe196'; }
     else { m.textContent='❌ '+r.why; m.style.color='#ff7b85'; sess('زائر','كود فاشل'); }
   };
-  $('leadGo').onclick=()=>{
+  const lg=$('leadGo'); if(lg) lg.onclick=()=>{
     const nm=($('leadName').value||'').trim(), em=($('leadEmail').value||'').trim().toLowerCase();
     const m=$('leadMsg');
     if(nm.length<2){ m.textContent='❌ أدخل اسمك الكريم'; return; }
