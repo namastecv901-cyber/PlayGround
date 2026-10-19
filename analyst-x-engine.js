@@ -117,7 +117,7 @@ function evaluate(c){
   const pr=(c.sparkline_in_7d&&c.sparkline_in_7d.price&&c.sparkline_in_7d.price.length>10)?c.sparkline_in_7d.price.slice():[c.current_price*0.99,c.current_price];
   const {tools,candle}=fiftyTools(c,pr);
   const byId={}; tools.forEach(t=>byId[t.id]=t);
-  const votes=ANALYSTS.map(a=>{ const vs=a.tools.map(id=>byId[id].v); const avg=vs.reduce((x,y)=>x+y,0)/vs.length; const bulls=a.tools.filter(id=>byId[id].bull).length;
+  const votes=ANALYSTS.filter(a=>a.id!=='chief').map(a=>{ const vs=a.tools.map(id=>byId[id].v); const avg=vs.reduce((x,y)=>x+y,0)/vs.length; const bulls=a.tools.filter(id=>byId[id].bull).length;
     const verdict=a.id==='trap'?(avg>=55?'آمن ✅':'فخ 🚫'):avg>=62?'شراء 🟢':avg>=52?'مراقبة 👀':'تجنب 🔴';
     return {id:a.id,name:a.name,score:clamp(avg),bulls,total:a.tools.length,verdict,w:a.w}; });
   const v=id=>votes.find(x=>x.id===id);
@@ -164,7 +164,7 @@ function runSelftest(){
   const mk=(px,h1,h24,vol,mc)=>({symbol:'T',current_price:px,price_change_percentage_1h_in_currency:h1,price_change_percentage_24h_in_currency:h24,total_volume:vol,market_cap:mc,sparkline_in_7d:{price:Array.from({length:120},(_,i)=>px*(0.9+i/1200))}});
   const good=mk(100,1,4,5e7,1e9); const r1=evaluate(good);
   ok('tools-55',r1.tools.length===55,'n='+r1.tools.length);
-  ok('analysts-12',r1.analysts.length===12,'n='+r1.analysts.length);
+  ok('analysts-11',r1.analysts.length===11,'n='+r1.analysts.length);
   ok('plan-rr',r1.plan.t3>r1.plan.t2&&r1.plan.t2>r1.plan.t1&&r1.plan.sl<r1.plan.entry,'rr='+r1.plan.rr);
   ok('good-not-avoid-trap',r1.gates.filter(g=>g.code==='trap').length===0,'score='+r1.score);
   const pump=mk(100,15,80,1e5,1e9); const r2=evaluate(pump);

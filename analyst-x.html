@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🧠 ANALYST-X — 11 محللاً × 55 أداة | صفقة جاهزة</title>
+<title>🧠 ANALYST-X — 10 محللين × 55 أداة | صفقة جاهزة</title>
 <meta name="theme-color" content="#06070b">
 <script src="analyst-x-engine.js"></script>
 <style>
@@ -69,7 +69,7 @@ details summary{cursor:pointer;font-weight:900;color:#f0d675;padding:6px 0}
 </head>
 <body>
 <header>
-<h1>🧠 <span class="grad">ANALYST-X</span> — 11 محللاً × 55 أداة</h1>
+<h1>🧠 <span class="grad">ANALYST-X</span> — 10 محللين × 55 أداة</h1>
 <div class="sub"><span class="live"><span class="dot" id="pulse"></span> مباشر</span> • <span id="status">يبدأ الفحص التلقائي...</span> • <span id="next"></span></div>
 <div class="row">
 <button id="scan">🔍 افحص 500 عملة الآن</button>
@@ -138,7 +138,7 @@ async function doScan(manual){
  try{
  $('status').textContent='⏳ جلب 500 عملة...';
  const{coins,src}=await getCoins();
- $('status').textContent='⏳ '+coins.length+' عملة تمر على 11 محللاً × 55 أداة... ('+src+')';
+ $('status').textContent='⏳ '+coins.length+' عملة تمر على 10 محللين × 55 أداة... ('+src+')';
  ALL=[];let i=0;
  await new Promise(res=>{function chunk(){const end=Math.min(coins.length,i+40);for(;i<end;i++){try{ALL.push(ANALYSTX.evaluate(coins[i]));}catch(e){}}
  $('status').textContent='⏳ نبض حي: حلل '+i+'/'+coins.length+'...';if(i<coins.length)setTimeout(chunk,0);else res();}chunk();});
