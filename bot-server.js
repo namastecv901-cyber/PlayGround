@@ -10,6 +10,8 @@
  *    REINFORCE SPLIT_INIT REIN_DROP REIN_MAX HEARTBEAT_CYCLES
  *    SPLIT_N(4/6/8: تقسيم رأس المال) TG_CHANNEL(القناة) NOTIFY_SECRET(بوابة /notify) PORT(8787)
  *    HQ_MIN_SCORE(85: حد جودة الدخول) RISK_PCT(1.5: مخاطرة الصفقة%) HQ_COOLDOWN_H(4: منع تكرار الإشارة)
+ *    SIGNAL_SECRET(مفتاح /state و/signal) SIGNAL_ONLY(1: يتداول إشارات التطبيق فقط)
+ *  واجهة التطبيق: GET /state • POST /signal • POST /notify
  *  فحص ذاتي: node bot-server.js --selftest | القسم المنفرد وحده: node hq-entry.js --selftest
  */
 'use strict';
@@ -41,6 +43,8 @@ const CFG = {
   tgChat: process.env.TG_CHAT || '',
   tgChannel: process.env.TG_CHANNEL || '',
   notifySecret: process.env.NOTIFY_SECRET || '',
+  signalSecret: process.env.SIGNAL_SECRET || process.env.NOTIFY_SECRET || '',
+  signalOnly: process.env.SIGNAL_ONLY === '1',
   port: parseInt(process.env.PORT || '8787', 10),
   stateFile: process.env.STATE_FILE || './bot-state.json',
   maxCycles: parseInt(process.env.CYCLES || '0', 10),
@@ -157,23 +161,25 @@ async function hqIO(sym, interval, limit) {
   return kl;
 }
 
-async function openTrade(sym, base, plan, stakeOpt, hqOpt) {
-  const id = 'm5:' + sym;
-  if (S.trades[id]) return;
-  if (S.lastClose[sym] && Date.now() - S.lastClose[sym] < HQCFG.cooldownH * 3600e3) return; // منع تكرار الدخول على نفس الإشارة
+async function openTrade(sym, base, plan, stakeOpt, hqOpt, idOpt) {
+  const id = idOpt || ('m5:' + sym);
+  if (S.trades[id] && S.trades[id].open) return;
+  if (Object.values(S.trades).some(t => t && t.open && t.sym === sym)) return; // صفقة واحدة لكل عملة
+  if (!idOpt && S.lastClose[sym] && Date.now() - S.lastClose[sym] < HQCFG.cooldownH * 3600e3) return; // منع تكرار الدخول على نفس الإشارة
   if (Object.values(S.trades).filter(t => t && t.open).length >= CFG.max) return;
   if (S.equity < Math.min(10, CFG.equityStart * 0.2)) { log('equity-depleted, pausing'); stop('equity'); return; }
   const firstStake = stakeOpt > 0 ? stakeOpt : stakeFor() * CFG.splitInit;
-  let qty = firstStake / plan.entry, step = 1;
+  let qty = firstStake / plan.entry, step = 1, avgFill = 0;
   if (CFG.mode !== 'paper') {
     if (!CFG.key || !CFG.sec) { log('missing keys'); return; }
     const info = await getInfo(sym); step = info.step || 1;
     if (firstStake < (info.minNot || 0)) { log('below-min-notional', sym); return; }
     const o = await signed('POST', '/api/v3/order', { symbol: sym, side: 'BUY', type: 'MARKET', quoteOrderQty: firstStake });
-    let q = 0; (o.fills || []).forEach(f => { q += parseFloat(f.qty || 0); });
-    if (q > 0) qty = q;
+    let q = 0, qv = 0; (o.fills || []).forEach(f => { const fq = parseFloat(f.qty || 0); q += fq; qv += fq * parseFloat(f.price || 0); });
+    if (q > 0) { qty = q; if (qv > 0) avgFill = qv / q; }
   } else qty = floorStep(qty, 0.000001);
-  S.trades[id] = { id, sym, coin: base, qty, entry: plan.entry, t1: plan.t1, t2: plan.t2, t3: plan.t3, sl: plan.sl, step, open: true, s1: false, s2: false, sold: 0, rev: 0, t0: Date.now(), stake: firstStake, stakePlanned: stakeFor(), splitInit: CFG.splitInit, adds: 0, rT1: plan.t1 / plan.entry, rT2: plan.t2 / plan.entry, rT3: plan.t3 / plan.entry, rSl: plan.sl / plan.entry, peak: plan.entry, hqScore: (hqOpt && hqOpt.score) || 0 };
+  const entryPx = avgFill > 0 ? avgFill : plan.entry;
+  S.trades[id] = { id, sym, coin: base, qty, entry: entryPx, t1: plan.t1, t2: plan.t2, t3: plan.t3, sl: plan.sl, step, open: true, s1: false, s2: false, sold: 0, rev: 0, t0: Date.now(), stake: firstStake, stakePlanned: stakeFor(), splitInit: CFG.splitInit, adds: 0, rT1: plan.t1 / entryPx, rT2: plan.t2 / entryPx, rT3: plan.t3 / entryPx, rSl: plan.sl / entryPx, peak: entryPx, hqScore: (hqOpt && hqOpt.score) || 0 };
   S.buys++;
   saveState();
   log('BUY', base, 'x' + qty, '@' + plan.entry, hqOpt ? ('HQscore=' + hqOpt.score + ' RR=' + hqOpt.rr) : '');
@@ -312,6 +318,11 @@ async function cycle(n) {
     log('NO TRADE — شروط الدخول غير مكتملة | مرفوضات: ' + (top || '—'));
   }
   if (n % CFG.heartbeat === 0) log('heartbeat: alive, open=' + Object.values(S.trades).filter(t => t && t.open).length + ' equity=$' + S.equity.toFixed(2) + ' dayPnl=' + (S.dayPnl >= 0 ? '+' : '') + S.dayPnl.toFixed(2));
+  await manageOpen();
+  saveState();
+}
+async function manageOpen() {
+  if (todayUTC() !== S.day) { S.day = todayUTC(); S.dayPnl = 0; S.stopDay = null; S.stopWhy = ''; saveState(); }
   try {
     const prices = {};
     const syms = [...new Set(Object.values(S.trades).filter(t => t && t.open).map(t => t.sym))];
@@ -326,7 +337,6 @@ async function cycle(n) {
       await manage(st, live);
     }
   } catch (e) { log('manage-fail:', e.message); }
-  saveState();
 }
 
 let running = true;
@@ -388,29 +398,82 @@ async function selftest() {
   process.exit(fail ? 1 : 0);
 }
 
-let lastPost = 0;
-// 📣 بوابة /notify: التطبيق يرسل أحداث البوت والبطاقات عبر السيرفر فقط (التوكن لا يخرج من السيرفر)
-function startNotify() {
-  if (!CFG.notifySecret) { log('notify OFF (no NOTIFY_SECRET)'); return; }
+let lastPost = 0, lastSignal = {};
+function cors(res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,X-Bot-Key');
+  res.setHeader('Cache-Control', 'no-store');
+}
+function jbody(res, code, obj) { cors(res); res.writeHead(code, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(obj)); }
+function auth(req, url) { if (!CFG.signalSecret) return true; var k = req.headers['x-bot-key'] || url.searchParams.get('key') || ''; return k === CFG.signalSecret; }
+function stateOut() {
+  var open = Object.values(S.trades).filter(t => t && t.open).map(t => ({ sym: t.sym, coin: t.coin, entry: t.entry, qty: t.qty, t1: t.t1, t2: t.t2, t3: t.t3, sl: t.sl, t0: t.t0, stake: t.stake }));
+  var last = Object.values(S.trades).filter(t => t && !t.open).sort((a, b) => (b.closeAt || 0) - (a.closeAt || 0)).slice(0, 20)
+    .map(t => ({ sym: t.sym, coin: t.coin, entry: t.entry, exit: (t.rev && t.qty) ? t.rev / (t.sold || t.qty) : null, reason: t.closeWhy, pnl: t.rev - t.qty * t.entry, stake: t.stake, t0: t.t0, closeAt: t.closeAt }));
+  return { ok: true, mode: CFG.mode, equity: S.equity, profit: S.profit, closed: S.closed, day: S.day, dayPnl: S.dayPnl, buys: S.buys, maxTrades: CFG.max, open, last };
+}
+// 📣 بوابة التطبيق: /notify للأحداث • /state لحالة الحساب • /signal لاستقبال إشارات الأقسام
+function startApi() {
   const http = require('http');
   const srv = http.createServer((req, res) => {
-    if (req.method !== 'POST' || req.url !== '/notify') { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end('{}'); return; }
-    let b = '';
-    req.on('data', c => { b += c; if (b.length > 2000) { try { req.destroy(); } catch (e) {} } });
-    req.on('end', async () => {
-      try {
-        const j = JSON.parse(b || '{}');
-        if (j.key !== CFG.notifySecret) { res.writeHead(403, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"bad key"}'); return; }
-        const text = String(j.text || '').slice(0, 900);
-        if (!text) { res.writeHead(400, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"empty"}'); return; }
-        if (Date.now() - lastPost < 3000) { res.writeHead(429, { 'Content-Type': 'application/json' }); res.end('{"ok":false,"error":"slow down"}'); return; }
-        lastPost = Date.now();
-        await tgCh(text);
-        res.writeHead(200, { 'Content-Type': 'application/json' }); res.end('{"ok":true}');
-      } catch (e) { res.writeHead(500, { 'Content-Type': 'application/json' }); res.end('{"ok":false}'); }
-    });
+    const url = new URL(req.url, 'http://x');
+    if (req.method === 'OPTIONS') { cors(res); res.writeHead(204); res.end(); return; }
+    if (req.method === 'GET' && url.pathname === '/state') {
+      if (!auth(req, url)) return jbody(res, 403, { ok: false, error: 'bad key' });
+      return jbody(res, 200, stateOut());
+    }
+    if (req.method === 'POST' && url.pathname === '/signal') {
+      let b = '';
+      req.on('data', c => { b += c; if (b.length > 4000) { try { req.destroy(); } catch (e) {} } });
+      req.on('end', async () => {
+        try {
+          const j = JSON.parse(b || '{}');
+          if (!auth(req, url) || (j.key && j.key !== CFG.signalSecret)) return jbody(res, 403, { ok: false, error: 'bad key' });
+          const sym = String(j.sym || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+          const entry = +j.entry, sl = +j.sl, t1 = +j.t1, t2 = +j.t2, t3 = +j.t3;
+          if (!/^[A-Z0-9]{2,20}USDT$/.test(sym) || !(entry > 0) || !(sl > 0) || !(t1 > entry) || !(sl < entry)) return jbody(res, 400, { ok: false, error: 'bad plan' });
+          if ((t1 - entry) / (entry - sl) < 1.2) return jbody(res, 400, { ok: false, error: 'bad plan (RR < 1.2)' });
+          if (S.stopDay === todayUTC()) return jbody(res, 409, { ok: false, error: 'daily limit reached' });
+          if (Object.values(S.trades).some(t => t && t.open && t.sym === sym)) return jbody(res, 409, { ok: false, error: 'already open' });
+          if (S.lastClose && S.lastClose[sym] && Date.now() - S.lastClose[sym] < 10 * 60e3) return jbody(res, 409, { ok: false, error: 'cooldown after close' });
+          if (lastSignal[sym] && Date.now() - lastSignal[sym] < 15000) return jbody(res, 429, { ok: false, error: 'slow down' });
+          lastSignal[sym] = Date.now();
+          const px = (await jget(CFG.base + '/api/v3/ticker/price?symbol=' + sym)).price;
+          if (!(px > 0) || px > entry * 1.015 || px < sl) return jbody(res, 409, { ok: false, error: 'price moved', price: px });
+          const sp = Math.min(25, Math.max(1, +j.stakePct || 15));
+          const used = Object.values(S.trades).filter(t => t && t.open).reduce((a, t) => a + (+t.stake || 0), 0);
+          const stake = Math.min(S.equity * sp / 100, S.equity * 0.5, Math.max(0, S.equity - used));
+          if (stake < 5) return jbody(res, 409, { ok: false, error: 'rejected (no free equity)' });
+          const plan = { entry, t1, t2: t2 > t1 ? t2 : t1 * 1.01, t3: t3 > t2 ? t3 : (t2 > t1 ? t2 : t1 * 1.01) * 1.01, sl };
+          const id = 'sig:' + sym + ':' + Date.now();
+          await openTrade(sym, baseOf(sym), plan, stake, null, id);
+          const ok = !!(S.trades[id] && S.trades[id].open);
+          return jbody(res, ok ? 200 : 409, ok ? { ok: true, id, sym, stake, price: px } : { ok: false, error: 'rejected (max trades / min notional / equity)' });
+        } catch (e) { return jbody(res, 500, { ok: false, error: String((e && e.message) || e).slice(0, 120) }); }
+      });
+      return;
+    }
+    if (req.method === 'POST' && url.pathname === '/notify') {
+      let b = '';
+      req.on('data', c => { b += c; if (b.length > 2000) { try { req.destroy(); } catch (e) {} } });
+      req.on('end', async () => {
+        try {
+          const j = JSON.parse(b || '{}');
+          if (!CFG.notifySecret || j.key !== CFG.notifySecret) return jbody(res, 403, { ok: false, error: 'bad key' });
+          const text = String(j.text || '').slice(0, 900);
+          if (!text) return jbody(res, 400, { ok: false, error: 'empty' });
+          if (Date.now() - lastPost < 3000) return jbody(res, 429, { ok: false, error: 'slow down' });
+          lastPost = Date.now();
+          await tgCh(text);
+          return jbody(res, 200, { ok: true });
+        } catch (e) { return jbody(res, 500, { ok: false }); }
+      });
+      return;
+    }
+    return jbody(res, 404, {});
   });
-  srv.listen(CFG.port, () => { log('notify listening :' + CFG.port); tgCh('🚀 سيرفر البوت يعمل — القناة مربوطة ✅'); });
+  srv.listen(CFG.port, () => { log('api listening :' + CFG.port); if (CFG.notifySecret) tgCh('🚀 سيرفر البوت يعمل — القناة مربوطة ✅'); });
 }
 
 async function main() {
@@ -419,7 +482,7 @@ async function main() {
   loadState();
   if (todayUTC() !== S.day) { S.day = todayUTC(); S.dayPnl = 0; }
   await syncTime();
-  startNotify();
+  startApi();
   log('BOT SERVER start mode=' + CFG.mode + ' base=' + CFG.base + ' stake=$' + CFG.stake + ' tp=$' + CFG.tp + ' max=' + CFG.max + ' goal=$' + CFG.dailyGoal + ' equity=$' + S.equity.toFixed(2));
   let n = 0;
   process.on('SIGINT', () => { log('SIGINT, saving...'); saveState(); process.exit(0); });
@@ -428,7 +491,10 @@ async function main() {
   while (true) {
     n++;
     try {
-      if (S.stopDay === todayUTC()) {
+      if (CFG.signalOnly) {
+        await manageOpen();
+        if (n % 30 === 1) log('signal-only mode — managing open trades, waiting for /signal');
+      } else if (S.stopDay === todayUTC()) {
         if (n % 10 === 1) log('paused (' + (S.stopWhy || 'limit') + ') — waiting for next day, will resume automatically 🔁');
       } else {
         S.stopDay = null;
@@ -436,7 +502,7 @@ async function main() {
       }
     } catch (e) { log('cycle-error:', (e && e.message) || e); }
     if (CFG.maxCycles && n >= CFG.maxCycles) break;
-    await new Promise(r => setTimeout(r, CFG.poll * 1000));
+    await new Promise(r => setTimeout(r, (CFG.signalOnly ? Math.min(CFG.poll, 15) : CFG.poll) * 1000));
   }
   saveState();
   log('exit after ' + n + ' cycles');
