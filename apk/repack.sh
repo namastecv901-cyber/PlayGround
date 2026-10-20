@@ -60,7 +60,7 @@ else
 fi
 [ -f "$ROOT/icon-192.png" ] && cp "$ROOT/icon-192.png" "$WORK/base/assets/www/icon-192.png"
 # اسم التطبيق المعروض
-APP_LABEL="${APP_LABEL:-TRAININGV8 Premium}"
+APP_LABEL="${APP_LABEL:-فريم الدقيقة + بوت}"
 python3 "$ROOT/apk/patch_arsc.py" "$WORK/base/resources.arsc" "بطاقة واحدة" "$APP_LABEL" "$WORK/base/resources.arsc"
 rm -rf "$WORK/base/META-INF"
 rm -f "$OUT"
