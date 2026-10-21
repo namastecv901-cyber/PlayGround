@@ -5,6 +5,48 @@
 <script>/*__BOOTV1__*/(function(){try{var LV='v215.0';function vn(v){var m=String(v||'').match(/v(\d+)\.(\d+)/);return m?(parseInt(m[1],10)*1000+parseInt(m[2],10)):-1;}var raw=localStorage.getItem('ai_remote_html_v1');if(!raw)return;var c=JSON.parse(raw);if(!c||!c.html||!c.v)return;if(vn(c.v)<=vn(LV)){try{if(vn(c.v)<vn(LV))localStorage.removeItem('ai_remote_html_v1');}catch(e){}return;}if(c.html.indexOf('TRAININGV8 Premium')<0||c.html.indexOf('__BOOTV1__')<0)return;document.open();document.write(c.html);document.close();}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🧠 TRAININGV8 Premium: ذكاء + حاسبة + حارس (v215.0 تحديث تلقائي للجميع)</title>
+<script>/* BIN-GUARD v1 — data-api.binance.vision مرآة السوق الرسمية + تبديل تلقائي عند حجب api.binance.com
+   يحوّل كل طلبات بيانات السوق (GET) إلى المرآة، ويعيد المحاولة على مضيفات أخرى عند 451/403/5xx/انقطاع.
+   طلبات التداول الموقّعة (POST/DELETE) لا تُعاد لتجنّب تنفيذ مزدوج. */
+(function(){
+  "use strict";
+  if(window.__BIN_GUARD) return;
+  var orig=window.fetch;
+  if(typeof orig!=="function") return;
+  window.__BIN_GUARD=true;
+  var MIRROR="https://data-api.binance.vision";
+  var PUBLIC=[MIRROR,"https://api.binance.com","https://api1.binance.com","https://api2.binance.com","https://api3.binance.com"];
+  var PRIVATE=["https://api.binance.com","https://api1.binance.com","https://api2.binance.com","https://api3.binance.com"];
+  var MARKET=/^\/api\/v3\/(time|ping|klines|uiKlines|ticker\/|exchangeInfo|depth|trades|aggTrades|avgPrice|bookTicker)/;
+  function asURL(u){ try{ var x=new URL(u,location.href); if(/(^|\.)binance\.com$/.test(x.hostname)||x.hostname==="data-api.binance.vision") return x; }catch(e){} return null; }
+  window.fetch=function(input,init){
+    var raw=typeof input==="string"?input:(input&&input.url);
+    var url=raw?asURL(raw):null;
+    if(!url||url.hostname==="data-api.binance.vision") return orig.apply(this,arguments);
+    var method=String((init&&init.method)||(input&&input.method)||"GET").toUpperCase();
+    var path=url.pathname+url.search;
+    var list;
+    if(method!=="GET") list=[url.origin];
+    else if(MARKET.test(url.pathname)) list=PUBLIC;
+    else list=[url.origin].concat(PUBLIC);
+    var i=0,last=null;
+    function attempt(){
+      if(i>=list.length) return last ? Promise.resolve(last) : Promise.reject(new Error("Binance unreachable"));
+      var target=list[i++]+path;
+      return orig.call(window,target,init).then(function(r){
+        last=r;
+        if(r.ok) return r;
+        if(i<list.length&&(r.status===451||r.status===403||r.status===418||r.status===429||r.status>=500)) return attempt();
+        return r;
+      }).catch(function(e){
+        if(i<list.length) return attempt();
+        throw e;
+      });
+    }
+    return attempt();
+  };
+})();
+</script>
 <meta name="theme-color" content="#0a0e1a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">

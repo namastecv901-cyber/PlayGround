@@ -161,7 +161,7 @@ document.querySelectorAll("[data-p]").forEach(p=>p.classList.toggle("hidden",p.d
 });
 let live={};
 async function prices(){
-try{const r=await fetch("https://api.binance.com/api/v3/ticker/price?symbols="+encodeURIComponent(JSON.stringify(["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","DOGEUSDT"])));const j=await r.json();j.forEach(o=>live[o.symbol]=parseFloat(o.price))}catch(e){}
+try{const r=await fetch("https://data-api.binance.vision/api/v3/ticker/price?symbols="+encodeURIComponent(JSON.stringify(["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","DOGEUSDT"])));const j=await r.json();j.forEach(o=>live[o.symbol]=parseFloat(o.price))}catch(e){}
 renderMkt();renderTrades();$("tm").textContent="تحديث: "+new Date().toLocaleTimeString("ar");
 }
 function renderMkt(){$("mkt").innerHTML=Object.keys(live).map(k=>`<span class="pill">${k.replace("USDT","")} <b>$${live[k]}</b></span>`).join("")||"جاري الجلب..."}

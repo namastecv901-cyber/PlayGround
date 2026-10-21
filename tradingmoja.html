@@ -195,7 +195,7 @@ document.getElementById("cap").addEventListener("input",calc);document.getElemen
 (function(){const c=document.getElementById("eq"),x=c.getContext("2d");c.width=c.offsetWidth;c.height=150;let v=0;const pts=[0];for(let i=0;i<30;i++){v+=(Math.random()*4-1.2);pts.push(v)}const mx=Math.max(...pts),mn=Math.min(...pts);x.beginPath();pts.forEach((p,i)=>{const px=i/29*c.width,py=10+(1-(p-mn)/(mx-mn))*(c.height-20);i?x.lineTo(px,py):x.moveTo(px,py)});x.strokeStyle="#f0b90b";x.lineWidth=2.5;x.stroke()})();
 // live prices
 async function live(){
-try{const r=await fetch("https://api.binance.com/api/v3/ticker/price?symbols="+encodeURIComponent(JSON.stringify(["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT"])));const j=await r.json();document.getElementById("mkt").innerHTML=j.map(o=>`<span>${o.symbol.replace("USDT","")} <b class="gold">$${parseFloat(o.price)}</b></span>`).join("")}catch(e){}}
+try{const r=await fetch("https://data-api.binance.vision/api/v3/ticker/price?symbols="+encodeURIComponent(JSON.stringify(["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT"])));const j=await r.json();document.getElementById("mkt").innerHTML=j.map(o=>`<span>${o.symbol.replace("USDT","")} <b class="gold">$${parseFloat(o.price)}</b></span>`).join("")}catch(e){}}
 live();setInterval(live,30000);
 // sim
 function sim(){let p=0;const iv=setInterval(()=>{p+=206;if(p>=2600){clearInterval(iv);p=2600}document.getElementById("simPnl").textContent="+$"+p.toFixed(2)},100)}

@@ -54,16 +54,36 @@ let S = { trades: {}, profit: 0, closed: 0, day: todayUTC(), dayPnl: 0, equity: 
 function loadState() { try { const j = JSON.parse(fs.readFileSync(CFG.stateFile, 'utf8')); Object.keys(j).forEach(k => { S[k] = j[k]; }); } catch (e) {} }
 function saveState() { try { fs.writeFileSync(CFG.stateFile, JSON.stringify(S)); } catch (e) { log('state-save-fail', e.message); } }
 
+// 🛰 بيانات السوق العامة من مرآة Binance الرسمية عند حجب api.binance.com (HTTP 451/CORS)
+const PUBLIC_BASE = process.env.PUBLIC_BASE_URL || 'https://data-api.binance.vision';
+const BIN_FALLBACKS = ['https://api1.binance.com', 'https://api2.binance.com', 'https://api3.binance.com'];
+function publicUrls(url) {
+  if (!/^https?:\/\/api\.binance\.com\//.test(url)) return [url];
+  const path = url.replace(/^https?:\/\/api\.binance\.com/, '');
+  return [...new Set([PUBLIC_BASE + path, url, ...BIN_FALLBACKS.map(h => h + path)])];
+}
 async function jget(url, headers, timeoutMs) {
-  const ctl = new AbortController();
-  const to = setTimeout(() => ctl.abort(), timeoutMs || 20000);
-  try {
-    const r = await fetch(url, { headers: headers || {}, signal: ctl.signal });
-    const t = await r.text();
-    let j = null; try { j = JSON.parse(t); } catch (e) {}
-    if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + ((j && j.msg) || t.slice(0, 80)));
-    return j;
-  } finally { clearTimeout(to); }
+  const urls = publicUrls(url);
+  let lastError = null;
+  for (const target of urls) {
+    const ctl = new AbortController();
+    const to = setTimeout(() => ctl.abort(), timeoutMs || 20000);
+    try {
+      const r = await fetch(target, { headers: headers || {}, signal: ctl.signal });
+      const t = await r.text();
+      let j = null; try { j = JSON.parse(t); } catch (e) {}
+      if (!r.ok) {
+        lastError = new Error('HTTP ' + r.status + ' ' + ((j && j.msg) || t.slice(0, 80)));
+        if (urls.length > 1 && [403, 418, 429, 451].includes(r.status)) continue;
+        throw lastError;
+      }
+      return j;
+    } catch (e) {
+      lastError = e;
+      if (urls.length === 1) throw e;
+    } finally { clearTimeout(to); }
+  }
+  throw lastError || new Error('Binance unreachable');
 }
 let timeOffset = 0;
 async function syncTime() { if (CFG.mode === 'paper') return; try { const j = await jget(CFG.base + '/api/v3/time'); timeOffset = (j.serverTime || Date.now()) - Date.now(); } catch (e) {} }

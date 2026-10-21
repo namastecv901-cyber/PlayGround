@@ -87,8 +87,8 @@ async function jget(url){
 async function fetchKlines(sym,interval,limit){
   const q='symbol='+sym+'&interval='+interval+'&limit='+(limit||100);
   let kl=null;
-  try{ kl=await jget('https://api.binance.com/api/v3/klines?'+q); if(!(kl&&kl.length>=15)) throw new Error('short'); }
-  catch(e){ try{ kl=await jget('https://data-api.binance.vision/api/v3/klines?'+q); }catch(e2){ kl=null; } if(!(kl&&kl.length>=15)) kl=null; }
+  try{ kl=await jget('https://data-api.binance.vision/api/v3/klines?'+q); }catch(e){ kl=null; }
+  if(!(kl&&kl.length>=15)) kl=null;
   try{ if(kl&&interval==='1h') PX[sym]=kl.slice(-60).map(k=>parseFloat(k[4])); }catch(e){}
   return kl;
 }
@@ -122,7 +122,7 @@ let J=[]; try{ J=JSON.parse(localStorage.getItem('hq_trades_v1')||'[]'); if(!Arr
 function jsave(){ try{ localStorage.setItem('hq_trades_v1',JSON.stringify(J.slice(-100))); }catch(e){} }
 function modeNow(){ const m=$('hqMode'); return (m&&m.value==='live')?'live':'paper'; }
 async function universe(n){
-  let all=await jget('https://api.binance.com/api/v3/ticker/24hr').catch(()=>jget('https://data-api.binance.vision/api/v3/ticker/24hr'));
+  const all=await jget('https://data-api.binance.vision/api/v3/ticker/24hr');
   return all.filter(t=>t.symbol&&t.symbol.endsWith('USDT')&&!/(UP|DOWN|BULL|BEAR)USDT$/.test(t.symbol)&&!STAB.has(t.symbol.slice(0,-4)))
     .sort((a,b)=>parseFloat(b.quoteVolume||0)-parseFloat(a.quoteVolume||0)).slice(0,n||100);
 }
@@ -186,7 +186,7 @@ async function trackHQ(){
     const open=J.filter(x=>x&&x.status==='open');
     if(!open.length){ paintJ(); return; }
     const syms=[...new Set(open.map(x=>x.sym+'USDT'))];
-    const r=await jget('https://api.binance.com/api/v3/ticker/price?symbols='+encodeURIComponent(JSON.stringify(syms))).catch(()=>null);
+    const r=await jget('https://data-api.binance.vision/api/v3/ticker/price?symbols='+encodeURIComponent(JSON.stringify(syms))).catch(()=>null);
     const px={}; (Array.isArray(r)?r:[]).forEach(o=>{ px[o.symbol]=parseFloat(o.price); });
     open.forEach(t=>{
       const live=px[t.sym+'USDT']; if(!(live>0)) return;

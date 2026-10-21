@@ -68,8 +68,7 @@ async function jget(url){
 }
 async function klines(sym){
   const q='symbol='+sym+'&interval=1h&limit=60';
-  try{ const k=await jget('https://api.binance.com/api/v3/klines?'+q); if(k&&k.length>=10) return k; throw 0; }
-  catch(e){ try{ const k2=await jget('https://data-api.binance.vision/api/v3/klines?'+q); return (k2&&k2.length>=10)?k2:null; }catch(e2){ return null; } }
+  try{ const k=await jget('https://data-api.binance.vision/api/v3/klines?'+q); return (k&&k.length>=10)?k:null; }catch(e){ return null; }
 }
 function drawSpark(cv,pr,lv){
   try{
@@ -96,8 +95,7 @@ async function run(){
   try{
     st.textContent='📡 يجلب بيانات السوق...';
     let all=null;
-    try{ all=await jget('https://api.binance.com/api/v3/ticker/24hr'); }
-    catch(e){ all=await jget('https://data-api.binance.vision/api/v3/ticker/24hr'); }
+    all=await jget('https://data-api.binance.vision/api/v3/ticker/24hr');
     const pool=all.filter(t=>t.symbol&&t.symbol.endsWith('USDT')&&!/(UP|DOWN|BULL|BEAR)USDT$/.test(t.symbol)&&!STAB.has(t.symbol.slice(0,-4))&&parseFloat(t.quoteVolume||0)>=20000000);
     const pumps=pool.filter(t=>{ const c=parseFloat(t.priceChangePercent||0); return c>=8&&c<=50; }).sort((a,b)=>parseFloat(b.priceChangePercent)-parseFloat(a.priceChangePercent)).slice(0,9);
     const dumps=pool.filter(t=>{ const c=parseFloat(t.priceChangePercent||0); return c<=-8&&c>=-40; }).sort((a,b)=>parseFloat(a.priceChangePercent)-parseFloat(b.priceChangePercent)).slice(0,9);
