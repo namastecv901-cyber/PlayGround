@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>⏱ فريم الدقيقة — 500 عملة + بوت تلقائي — Binance Spot (v306.0)</title>
+<title>⏱ فريم الدقيقة — قائمة مخصصة + بوت تلقائي — Binance Spot (v312.0)</title>
 <meta name="theme-color" content="#06070b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="فريم الدقيقة + بوت">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<script>/*__BOOTV1__*/(function(){try{localStorage.removeItem('ai_remote_html_v1');localStorage.removeItem('ai_seen_apk_v1');window.__LOCAL_VER__='v306.0';}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{localStorage.removeItem('ai_remote_html_v1');localStorage.removeItem('ai_seen_apk_v1');window.__LOCAL_VER__='v312.0';}catch(e){}})();</script>
 <script>/*__BNCACHE__*/(function(){try{if(window.__BN_SHARED_CACHE__)return;window.__BN_SHARED_CACHE__=1;var of=window.fetch.bind(window),c={},inf={};window.fetch=function(u,o){try{var url=String(u);o=o||{};if((o.method||"GET").toUpperCase()!=="GET")return of(u,o);if(!/api\.binance\.com|data-api\.binance\.vision/.test(url))return of(u,o);var ttl=/klines|ticker\/24hr/.test(url)?8000:(/exchangeInfo/.test(url)?120000:0);var now=Date.now(),e=c[url];if(ttl&&e&&now-e.t<ttl)return Promise.resolve(new Response(e.body,{status:200,headers:{"Content-Type":"application/json"}}));if(inf[url])return inf[url].then(function(t){return new Response(t,{status:200,headers:{"Content-Type":"application/json"}});});var pr=of(u,o).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.text();});inf[url]=pr;pr.then(function(t){if(ttl)c[url]={t:Date.now(),body:t};delete inf[url];},function(){delete inf[url];});return pr.then(function(t){return new Response(t,{status:200,headers:{"Content-Type":"application/json"}});});}catch(x){return of(u,o);}};}catch(e){}})();</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png" type="image/png">
@@ -32,12 +32,12 @@ button{font-family:inherit;font-weight:900;border-radius:12px;border:none;cursor
 select,input{background:#0d1020;border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:9px;font-family:inherit;font-weight:800}
 .chip{background:#ffffff0d;border:1px solid var(--line);border-radius:99px;padding:6px 13px;font-size:.78rem;font-weight:800;color:var(--mut)}
 .chip.on{background:var(--grad);color:#231b05;border-color:transparent}
-.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.nb-stats{grid-template-columns:repeat(5,1fr)}
 .strip div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
 .strip small{display:block;color:var(--mut);font-size:.66rem}.strip b{font-size:1.25rem;color:#f6e27a}
 .note{background:#f0b90b14;border:1px solid #d4af3744;color:#f0d675;border-radius:14px;padding:10px 12px;font-size:.75rem;line-height:1.9;margin-bottom:12px}
 .ob-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:720px){.ob-grid{grid-template-columns:1fr}.strip{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.ob-grid{grid-template-columns:1fr}.strip{grid-template-columns:1fr 1fr}.nb-stats{grid-template-columns:repeat(2,1fr)}}
 .ob-card{background:linear-gradient(160deg,#121527,#0b0d15);border:2px solid #16c78466;border-radius:20px;padding:14px;box-shadow:0 10px 30px #00000055}
 .ob-card.loss{border-color:#ef444466;opacity:.95}
 .ob-card.win{border-color:#f6e27a99}
@@ -78,7 +78,7 @@ details.plan b{color:var(--txt)}
 footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-height:1.9}
 
 .nb-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.nb-head h2{font-size:1.02rem;margin:0}.nb-pill{font-size:.7rem;font-weight:900;border-radius:99px;padding:3px 10px;background:#ffffff0d;border:1px solid #ffffff22;color:var(--mut)}.nb-pill.on{background:#16c78422;border-color:#16c78466;color:#7ee2a8}.nb-pill.off{background:#f59e0b16;border-color:#f59e0b55;color:#ffd08a}.nb-field{display:flex;flex-direction:column;gap:4px;font-size:.72rem;font-weight:900;color:var(--mut)}.nb-field input{width:110px;padding:8px;border-radius:10px;border:1px solid var(--line);background:#06070b;color:var(--txt);font-weight:900}.nb-pos{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px;margin-top:10px;max-height:215px;overflow:auto}.nb-p{background:#0b0d15;border:1px solid #f0b90b66;border-radius:10px;padding:7px 9px;font-size:.72rem;line-height:1.55}.nb-p b{color:#f6e27a}.nb-p .up{color:#22c55e}.nb-p .down{color:#ef4444}.nb-hh{margin-top:12px;padding:7px 10px;border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;background:#ffffff06;color:#f0d675;font-size:.76rem;font-weight:900}.nb-feed{max-height:150px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#0b0d15;margin-top:10px;font-size:.73rem}.nb-fi{display:flex;gap:8px;padding:6px 9px;border-bottom:1px solid #ffffff0a}.nb-fi:last-child{border-bottom:0}.nb-fi time{color:var(--mut);font-size:.64rem;white-space:nowrap}.nb-fi span{color:#cfc7ad}
-.nb-modes{display:flex;gap:6px;margin-top:9px}.nb-mode{flex:1;padding:8px 6px;border-radius:10px;border:1px solid var(--line);background:#0b0d15;color:var(--mut);font-weight:900;font-size:.76rem;cursor:pointer}.nb-mode.active{background:#f0b90b;color:#090a0f;border-color:#f0b90b}.nb-real{margin-top:9px;padding:9px;border:1px solid #ef444455;border-radius:12px;background:#1a0d0d}.nb-auth{display:grid;grid-template-columns:1fr 1fr;gap:7px}.nb-auth label{display:flex;flex-direction:column;gap:4px;font-size:.68rem;font-weight:900;color:#ffb4b4}.nb-auth input{padding:7px;border-radius:8px;border:1px solid #ffffff22;background:#06070b;color:var(--txt);font-size:.74rem;font-weight:800;width:100%}.nb-realrow{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:8px}.nb-realrow button{padding:7px 10px;border-radius:9px;border:1px solid #ffffff22;background:#0b0d15;color:var(--txt);font-weight:900;font-size:.74rem;cursor:pointer}.nb-realrow button:disabled{opacity:.45;cursor:not-allowed}.nb-realrow .nb-go{background:#16c784;border-color:#16c784;color:#04120b}.nb-realrow .nb-danger{background:#ef4444;border-color:#ef4444;color:#fff}.nb-conn{font-size:.7rem;font-weight:800;color:var(--mut)}.nb-warn{margin-top:8px;padding:7px 9px;border-radius:9px;background:#ef444418;border:1px solid #ef444444;color:#ffb4b4;font-size:.68rem;line-height:1.6}
+.nb-modes{display:flex;gap:6px;margin-top:9px}.nb-mode{flex:1;padding:8px 6px;border-radius:10px;border:1px solid var(--line);background:#0b0d15;color:var(--mut);font-weight:900;font-size:.76rem;cursor:pointer}.nb-mode.active{background:#f0b90b;color:#090a0f;border-color:#f0b90b}.nb-real{margin-top:9px;padding:9px;border:1px solid #ef444455;border-radius:12px;background:#1a0d0d}.nb-server{border-color:#22d3ee66;background:#07131a}.nb-server .nb-hint{color:#8fd6ff}.nb-server .nb-auth label{color:#8fd6ff}.nb-server .nb-warn{border-color:#22d3ee44;background:#22d3ee0d;color:#a9dff0}.nb-auth{display:grid;grid-template-columns:1fr 1fr;gap:7px}.nb-auth label{display:flex;flex-direction:column;gap:4px;font-size:.68rem;font-weight:900;color:#ffb4b4}.nb-auth input{padding:7px;border-radius:8px;border:1px solid #ffffff22;background:#06070b;color:var(--txt);font-size:.74rem;font-weight:800;width:100%}.nb-realrow{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:8px}.nb-realrow button{padding:7px 10px;border-radius:9px;border:1px solid #ffffff22;background:#0b0d15;color:var(--txt);font-weight:900;font-size:.74rem;cursor:pointer}.nb-realrow button:disabled{opacity:.45;cursor:not-allowed}.nb-realrow .nb-go{background:#16c784;border-color:#16c784;color:#04120b}.nb-realrow .nb-danger{background:#ef4444;border-color:#ef4444;color:#fff}.nb-conn{font-size:.7rem;font-weight:800;color:var(--mut)}.nb-hint{margin-top:7px;color:#ffd08a;font-size:.66rem;line-height:1.6}.nb-hint code{display:inline-block;direction:ltr;unicode-bidi:embed;white-space:normal;word-break:break-all;color:#8fd6ff;background:#ffffff0a;border-radius:4px;padding:1px 4px;font-size:.64rem}.nb-warn{margin-top:8px;padding:7px 9px;border-radius:9px;background:#ef444418;border:1px solid #ef444444;color:#ffb4b4;font-size:.68rem;line-height:1.6}
 .mn-hwrap{margin-top:12px;border:1px solid var(--line);border-radius:12px;background:#0b0d15;overflow:hidden}.mn-hhead{display:flex;justify-content:space-between;gap:8px;padding:8px 11px;background:#ffffff06;color:#f0d675;font-size:.76rem;font-weight:900;border-bottom:1px solid var(--line)}.mn-hhead small{color:var(--mut);font-weight:800}.mn-hrow{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:7px 11px;border-bottom:1px solid #ffffff0a;font-size:.72rem}.mn-hrow:last-child{border-bottom:0}.mn-hrow b{color:#f6e27a}.mn-hrow span{color:var(--mut);line-height:1.7}.mn-hrow em{font-style:normal;font-weight:900;white-space:nowrap}.mn-hrow em.up{color:#22c55e}.mn-hrow em.down{color:#ef4444}.mn-hempty{padding:12px;text-align:center;color:var(--mut);font-size:.76rem}
 .mn-sec{margin:18px 0 0}
 .mn-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -317,12 +317,36 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 .ob-card.pre.win{border-color:#22c55e88;box-shadow:0 0 0 1px #22c55e33,0 0 18px #22c55e22}
 @media(max-width:720px){.ps-play{grid-template-columns:1fr}.ps-panel.wide{grid-column:auto}.ps-settings,.ps-examples{grid-template-columns:1fr}.ps-livehead span{display:none}.ps-bar select{flex:1;min-width:100px}.ps-hero{padding:12px}}
 
+
+/* 🐲 الخزنة الفاخرة — نبض البوت الحي */
+.vault-lux{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;padding:15px 16px;margin:12px 0;border:1px solid #d4af3788;border-radius:20px;background:linear-gradient(135deg,#241d09 0%,#0b0d15 45%,#0b1711 100%);box-shadow:0 0 0 1px #d4af3722,0 14px 45px #00000066,inset 0 0 38px #d4af370f}
+.vault-lux:before{content:'';position:absolute;inset:-60% -20%;background:linear-gradient(115deg,transparent 35%,#f6e27a1f 48%,transparent 58%);transform:translateX(-70%);animation:vaultSweep 7s ease-in-out infinite;pointer-events:none}
+.vault-lux:after{content:'';position:absolute;inset:0;border-radius:20px;background:radial-gradient(240px 100px at 15% 0%,#d4af3726,transparent 70%);pointer-events:none}
+.vault-lux.live{border-color:#1fe19699;box-shadow:0 0 0 1px #1fe19633,0 0 30px #1fe1961c,0 14px 45px #00000066,inset 0 0 38px #1fe1960d}
+.vault-lux.flash{animation:vaultFlash .85s ease-out}
+.vault-dragon{position:relative;z-index:1;font-size:2.5rem;line-height:1;filter:drop-shadow(0 0 12px #f6e27a99);animation:vaultDragon 3.2s ease-in-out infinite}
+.vault-main{position:relative;z-index:1;flex:1;min-width:0}
+.vault-kicker{display:flex;align-items:center;gap:7px;color:#f6e27a;font-size:.76rem;font-weight:900;letter-spacing:.2px}
+.vault-pulse{width:9px;height:9px;border-radius:50%;background:#64748b;box-shadow:0 0 0 0 #64748b66;flex:none}
+.vault-lux.live .vault-pulse{background:#1fe196;animation:vaultPulse 1.25s ease-out infinite}
+.vault-amount{font-size:2rem;font-weight:900;line-height:1.25;background:linear-gradient(120deg,#fff7cc,#f6e27a 35%,#d4af37 65%,#fff1a8);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px #d4af3733)}
+.vault-sub{color:#c9bf9f;font-size:.72rem;font-weight:800;line-height:1.7;margin-top:1px}
+.vault-bar{height:7px;background:#ffffff0d;border:1px solid #d4af3722;border-radius:99px;overflow:hidden;margin:8px 0 6px}
+.vault-bar i{display:block;height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#d4af37,#f6e27a,#1fe196);box-shadow:0 0 12px #f6e27a66;transition:width .55s ease}
+.vault-foot{display:flex;justify-content:space-between;gap:8px;color:#9b9278;font-size:.68rem;font-weight:900;flex-wrap:wrap}
+.vault-foot b{color:#1fe196}.vault-foot .neg{color:#ef4444}
+.vault-gem{position:relative;z-index:1;font-size:1.5rem;opacity:.9;filter:drop-shadow(0 0 8px #f6e27a66);animation:vaultDragon 4s ease-in-out infinite reverse}
+@keyframes vaultSweep{0%,55%{transform:translateX(-75%)}75%,100%{transform:translateX(75%)}}
+@keyframes vaultDragon{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-4px) rotate(2deg)}}
+@keyframes vaultPulse{0%{box-shadow:0 0 0 0 #1fe196aa}70%{box-shadow:0 0 0 10px #1fe19600}100%{box-shadow:0 0 0 0 #1fe19600}}
+@keyframes vaultFlash{0%{filter:brightness(1)}25%{filter:brightness(1.55);transform:scale(1.012)}100%{filter:brightness(1);transform:none}}
+@media(max-width:720px){.vault-lux{gap:10px;padding:13px}.vault-dragon{font-size:2rem}.vault-gem{display:none}.vault-amount{font-size:1.55rem}.vault-foot{font-size:.64rem}}
 </style>
 </head>
 <body>
 <header>
-<h1>⏱ <span class="grad">فريم الدقيقة — 500 عملة</span> + 🤖 بوت تلقائي</h1>
-<div class="sub"><span class="live"><span class="dot"></span> مباشر</span> • فحص 1m/5m/15m لأقوى 500 عملة USDT • شراء فقط Spot</div>
+<h1>⏱ <span class="grad">فريم الدقيقة — قائمة مخصصة</span> + 🤖 بوت تلقائي</h1>
+<div class="sub"><span class="live"><span class="dot"></span> مباشر</span> • فحص القائمة المحددة على 1m/5m/15m • شراء فقط Spot</div>
 </header>
 <main>
 <div class="sec" id="nbSec">
@@ -331,6 +355,7 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 <div class="nb-modes">
 <button type="button" class="nb-mode active" id="nbModeDemo">🧪 تجريبي</button>
 <button type="button" class="nb-mode" id="nbModeReal">🔴 حقيقي — Binance</button>
+<button type="button" class="nb-mode" id="nbModeServer">🖥️ 24/7</button>
 </div>
 <div class="nb-real" id="nbRealBox" hidden>
 <div class="nb-auth">
@@ -341,22 +366,58 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 <button type="button" id="nbConnect">🔌 اتصال واختبار</button>
 <span class="nb-conn" id="nbConn">غير متصل</span>
 </div>
+<div class="nb-auth nb-bridge">
+<label>جسر CORS — URL<input id="nbBridge" type="text" autocomplete="off" spellcheck="false" value="http://127.0.0.1:8787" dir="ltr"></label>
+<label>مفتاح الجسر (اختياري)<input id="nbBridgeKey" type="password" autocomplete="off" spellcheck="false" placeholder="X-Proxy-Secret" dir="ltr"></label>
+</div>
+<div class="nb-hint">🖥️ Binance يمنع الطلبات الموقعة من المتصفح (CORS). شغّل <b>bot-server</b> كجسر على جهازك: <code dir="ltr">PROXY_ONLY=1 PROXY_SECRET=... node bot-server.js</code> — اترك الرابط فارغاً للمحاولة المباشرة.</div>
+<div class="nb-hint">♾️ <b>لا يتوقف:</b> استئناف تلقائي بعد التحديث + إعادة اتصال + منع نوم الشاشة. للعمل بعد إغلاق المتصفح شغّل <b>bot-server</b> 24/7: <code dir="ltr">MODE=live BINANCE_KEY=... BINANCE_SECRET=... node bot-server.js</code> (استراتيجية السيرفر).</div>
 <div class="nb-auth nb-limits">
-<label>مبلغ الصفقة (USDT)<input id="nbStakeR" type="number" min="5" max="100" step="1" value="10"></label>
-<label>أقصى صفقات<input id="nbMaxR" type="number" min="1" max="10" step="1" value="3"></label>
+<label>مبلغ الصفقة (USDT)<input id="nbStakeR" type="number" min="5" max="10" step="1" value="10"></label>
+<label>أقصى صفقات<input id="nbMaxR" type="number" min="1" max="3" step="1" value="3"></label>
 </div>
 <div class="nb-realrow">
 <button type="button" class="nb-go" id="nbStart" disabled>▶ بدء التنفيذ الحقيقي</button>
-<button type="button" id="nbStop" hidden>⏸ إيقاف الدخول الجديد</button>
+<button type="button" id="nbStop" hidden>🛑 إيقاف طارئ (منع الشراء)</button>
 <button type="button" class="nb-danger" id="nbCloseAll" hidden>🔴 بيع كل الصفقات</button>
 </div>
-<div class="nb-warn">⚠️ المفاتيح لا تُحفظ في الصفحة. استخدم مفتاح Spot فقط بدون صلاحية سحب وفعّل IP Whitelist. أبقِ الصفحة مفتوحة؛ البوت يبيع عند الهدف/الوقف لكنه لا ينشئ أمر وقف على Binance. جرّب بمبلغ صغير أولاً.</div>
+<div class="nb-warn">⚠️ المفاتيح تُحفظ مؤقتاً في <b>sessionStorage</b> للجلسة فقط (تُمسح عند إغلاق التبويب) ليعمل الاستئناف التلقائي. استخدم مفتاح Spot فقط بدون صلاحية سحب وفعّل IP Whitelist. شغّل الجسر على جهازك فقط. البوت يستأنف بعد التحديث ويعيد الاتصال تلقائياً ويمنع نوم الشاشة، لكنه لا ينشئ أمر وقف على Binance. جرّب بمبلغ صغير أولاً. المفتاح يجب أن يكون Spot فقط (قراءة + تداول فوري) بدون سحب أو تحويل أو Margin/Futures، مع IP Whitelist.</div>
+<div class="nb-hint">🎯 <b>هدف يومي $10:</b> عند تحققه يتوقف البوت ويغلق أي صفقات مفتوحة، ثم يضيف ربح اليوم للمخزن التراكمي. زر «تشغيل» يصفّر ربح اليوم فقط؛ المخزن يبقى محفوظاً.</div>
+</div>
+<div class="nb-real nb-server" id="nbServerBox" hidden>
+<div class="nb-auth">
+<label>رابط السيرفر<input id="nbSrvUrl" type="text" autocomplete="off" spellcheck="false" value="http://127.0.0.1:8787" dir="ltr"></label>
+<label>مفتاح التحكم<input id="nbSrvKey" type="password" autocomplete="off" spellcheck="false" placeholder="SIGNAL_SECRET" dir="ltr"></label>
+</div>
+<div class="nb-realrow">
+<button type="button" id="nbSrvConnect">🔌 اتصال بالسيرفر</button>
+<span class="nb-conn" id="nbSrvConn">غير متصل</span>
+</div>
+<div class="nb-hint">🔐 <b>أمان:</b> فحص صلاحيات المفتاح وIP Whitelist إلزامي قبل التداول؛ السحب/التحويل/Margin/Futures مرفوضة. الحدود: $10 لكل صفقة، 3 صفقات، خسارة يومية $10.<br>🏦 <b>مخزن الربح:</b> تراكمي ومحاسبي فقط — لا يُستخدم في التداول. عند هدف $10 يُنقل إليه ربح اليوم ويبدأ «تشغيل» يومًا جديدًا بربح صفر.<br>🖥️ <b>سيرفر 24/7:</b> التشغيل والمراقبة من السيرفر نفسه، لا يتوقف عند إغلاق الصفحة. شغّله بمفاتيح Binance في متغيرات البيئة: <code dir="ltr">MODE=live BINANCE_KEY=... BINANCE_SECRET=... SIGNAL_SECRET=... node bot-server.js</code> ثم ضع نفس <b>SIGNAL_SECRET</b> هنا. مفتاح التحكم إلزامي إذا فتحت الواجهة من نطاق خارجي؛ الطلبات من أصل غير محلي تُرفض بدونه.</div>
+<div class="nb-realrow">
+<button type="button" class="nb-go" id="nbSrvStart">▶ تشغيل البوت</button>
+<button type="button" id="nbSrvStop">🛑 إيقاف طارئ (منع الشراء)</button>
+<button type="button" class="nb-danger" id="nbSrvCloseAll">🔴 بيع كل الصفقات</button>
+</div>
+<div class="nb-warn">🎯 حد الربح اليومي <b>$10</b>: عند بلوغه يغلق السيرفر الصفقات ويتوقف وينقل الربح إلى المخزن التراكمي. زر «تشغيل» يبدأ يوماً من صفر ويحفظ المخزن. الإيقاف اليدوي لا يغلق الصفقات؛ استخدم «بيع كل الصفقات» للإغلاق الفوري.</div>
 </div>
 <div class="strip nb-stats">
 <div><small id="nbEquityLbl">💰 رصيد فريم الدقيقة</small><b id="nbEquity" dir="ltr">$100.00</b></div>
 <div><small id="nbPnlLbl">📈 صافي الربح</small><b id="nbPnl" dir="ltr">+$0.00 (0.00%)</b></div>
 <div><small>📥 مفتوحة</small><b id="nbOpen">0</b></div>
 <div><small>🧾 مغلقة</small><b id="nbClosed">0</b></div>
+<div><small>🏦 مخزن الربح التراكمي</small><b id="nbVault" dir="ltr">$0.00</b></div>
+</div>
+<div class="vault-lux" id="vaultLux" data-v="">
+<div class="vault-dragon">🐲</div>
+<div class="vault-main">
+<div class="vault-kicker"><span class="vault-pulse" id="vaultLuxPulse"></span> خزنة التنين • نبض البوت الحي 💥</div>
+<div class="vault-amount" id="vaultLuxV" dir="ltr">$0.00</div>
+<div class="vault-sub" id="vaultLuxSub">الأرباح المحفوظة تتراكم هنا — البوت الحي يضخّها في الخزنة</div>
+<div class="vault-bar"><i id="vaultLuxBar"></i></div>
+<div class="vault-foot"><span id="vaultLuxDay">هدف اليوم $10 • 0%</span><span id="vaultLuxState">🤖 البوت متوقف</span></div>
+</div>
+<div class="vault-gem">💎</div>
 </div>
 <div class="nb-pos" id="nbPos"><div class="muted" style="font-size:.8rem">لا صفقات مفتوحة — ينتظر بطاقات فريم الدقيقة.</div></div>
 <div class="nb-hh" id="nbHistTitle">📜 سجل أرباح البوت — نفس سجل فريم الدقيقة</div>
@@ -365,19 +426,47 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 </div>
 
 <div class="mn-sec" id="minSec">
-  <div class="mn-head"><h2>⏱ فريم الدقيقة (1m) — فحص 500 عملة — شراء فقط</h2><span class="mn-count" id="minCount">0</span></div>
+  <div class="mn-head"><h2>⏱ فريم الدقيقة (1m) — القائمة المحددة — شراء فقط</h2><span class="mn-count" id="minCount">0</span></div>
   <div class="mn-profit" id="minProfit">💰 رأس المال المتحرك: <b id="minCapV">$100.00</b> <small id="minCapN" style="display:block;margin-top:2px">البداية $100.00 • صافي +$0.00 • متاح $100.00</small><span class="mn-stake">🎯 مبلغ الصفقة $<input id="minStake" type="number" min="1" step="1" value="10"></span><div class="mn-saved">💵 الربح المحفوظ: <b id="minProfitV">$0.00</b> <small id="minProfitN">(0 صفقة رابحة)</small></div></div>
   <div class="mn-hit" id="minHit" hidden></div>
-  <div class="mn-status" id="minStatus">⏱ يجهّز فحص 500 عملة على 1m/5m/15m — شراء فقط...</div>
+  <div class="mn-status" id="minStatus">⏱ يجهّز فحص القائمة المحددة على 1m/5m/15m — شراء فقط...</div>
   <div class="mn-hwrap"><div class="mn-hhead">📜 أرباح فريم الدقيقة لكل عملة <small id="minHistoryN">0 صفقة مغلقة</small></div><div id="minHistory"><div class="mn-hempty">لا صفقات مغلقة بعد — ستظهر كل عملة مع الدخول والهدف والربح.</div></div></div>
   <div class="mn-grid" id="minGrid"></div>
 </div>
 </main>
-<footer>⏱ فريم الدقيقة + 🤖 بوت تلقائي — فحص 500 عملة USDT على 1m/5m/15m • Spot فقط بلا رافعة • الوضع الحقيقي ينفذ على مسؤوليتك وليس نصيحة مالية</footer>
+<footer>⏱ فريم الدقيقة + 🤖 بوت تلقائي — فحص القائمة المحددة على 1m/5m/15m • Spot فقط بلا رافعة • الوضع الحقيقي ينفذ على مسؤوليتك وليس نصيحة مالية</footer>
 <script>// ⏱ MIN v1 (مضاف) — فريم الدقيقة (1m): تحليل 1m+5m+15m، دخول شراء فقط + حفظ الربح تلقائياً
 (function(){
 "use strict";
-var K='ai_min_v1', N=500, CONC=16, HOSTS=['https://data-api.binance.vision','https://api.binance.com'];
+var K='ai_min_v1', CONC=16, HOSTS=['https://data-api.binance.vision','https://api.binance.com'];
+var ONLY=[
+  'SOL', 'XRP', 'DOGE', 'ADA', 'SUI', 'AVAX', 'LINK', 'WLD', 'DOT', 'ARB',
+  'NEAR', 'LTC', 'SEI', 'HBAR', 'XLM', 'OP', 'FET', 'APT', 'TIA', 'TAO',
+  'ATOM', 'ALGO', 'PYTH', 'GALA', 'FIL', 'GRT', 'TON', 'VET', 'POL', 'ICP',
+  'BCH', 'ARKM', 'ETC', 'SAND', 'BIO', 'KAITO', 'MANA', 'THETA', 'JASMY', 'ROSE',
+  'AR', 'APE', 'STX', 'CHZ', 'CFX', 'OM', 'QNT', 'IO', 'ZRO', 'ENS',
+  'EGLD', 'ORDI', 'IMX', 'VIRTUAL', 'PAXG', 'ZK', 'ONE', 'ZIL', 'IOTA', 'XTZ',
+  'MANTA', 'AIXBT', 'TRB', 'LUNA', 'BAND', 'MASK', 'MAGIC', 'API3', 'SKL', 'LPT',
+  'XAI', 'ENJ', 'COOKIE', 'CGPT', 'ALT', 'ID', 'FLUX', 'MOVE', 'PROVE', 'LRC',
+  'HYPER', 'PORTAL', 'DASH', 'PHB', 'VANRY', 'RVN', 'MINA', 'GMT', 'AXL', 'HOT',
+  'SAHARA', 'FLOW', 'SAGA', 'KSM', 'CYBER', 'GPS', 'RLC', 'BAT', 'CHR', 'ARPA',
+  'PHA', 'CKB', 'SXP', 'CELO', 'MDT', 'QTUM', 'INIT', 'BLUR', 'PLUME', 'HOOK',
+  'RARE', 'TOWNS', 'ACH', 'DUSK', 'ANKR', 'NIL', 'METIS', 'EPIC', 'CELR', 'TWT',
+  'SSV', 'DIA', 'ZEN', 'SHELL', 'ALICE', 'MOVR', 'ACT', 'STORJ', 'GLMR', 'VANA',
+  'IOTX', 'DENT', 'CTSI', 'POLYX', 'XVG', 'FIDA', 'DGB', 'RONIN', 'ASTR', 'LAYER',
+  'SCR', 'AVA', 'BICO', 'SXT', 'VTHO', 'NFP', 'EDU', 'ICX', 'HIGH', 'ALPINE',
+  'TNSR', 'WCT', 'ACE', 'A', 'KAIA', 'AMP', 'DEXE', 'PARTI', 'TFUEL', 'NKN',
+  'NEWT', 'RAD', 'VIC', 'POND', 'PUNDIX', 'AGLD', 'GTC', 'WIN', 'SYS', 'XNO',
+  'A2Z', 'GLM', 'SC', 'IOST', 'RIF', 'SIGN', 'XEC', 'GAS', 'UTK', 'FIO',
+  'SOPH', 'SCRT', 'HEI', 'BMT', 'SFP', 'ATA', 'ARK', 'DATA', 'ERA', 'ADX',
+  'OXT', 'LINEA', 'SOMI', 'DCR', 'G', 'ARDR', 'LSK', 'STEEM', 'QKC', 'PIVX',
+  'AT', 'SAPIEN', 'KITE', 'ENSO', 'WAL', '2Z', 'MIRA', 'XPL', 'OG', 'ZKC',
+  'HOLO', 'OPEN', 'C', 'LA', 'AWE', 'TUT', 'MTL', 'CVC', 'COS', 'POWR',
+  'ZEC', 'RENDER', 'BANANA', 'UMA', 'RSR', 'W', '0G', 'BEAMX', 'BREV', 'IQ',
+  'HIVE', 'ZKP', 'STRAX', 'REQ', 'PROM', 'AI', 'EIGEN', 'ME', 'ONG', 'SKY'
+];
+var ONLY_SET={};ONLY.forEach(function(x){ONLY_SET[x]=1});
+var N=ONLY.length;
 function $(id){ return document.getElementById(id); }
 function rd(){ try{ return JSON.parse(localStorage.getItem(K)||'{}')||{}; }catch(e){ return {}; } }
 function wr(o){ try{ localStorage.setItem(K,JSON.stringify(o)); }catch(e){} }
@@ -417,7 +506,7 @@ async function loadUniverse(){
       var r=await fetch(HOSTS[h]+'/api/v3/ticker/24hr',{cache:'no-store'});
       if(!r.ok) continue;
       var arr=await r.json();
-      arr=(arr||[]).filter(function(x){ return /USDT$/.test(x.symbol||''); }).map(function(x){ return {c:{symbol:String(x.symbol).replace(/USDT$/,''),id:x.symbol,total_volume:parseFloat(x.quoteVolume)||0}}; });
+      arr=(arr||[]).filter(function(x){ return /USDT$/.test(x.symbol||''); }).map(function(x){ return {c:{symbol:String(x.symbol).replace(/USDT$/,''),id:x.symbol,total_volume:parseFloat(x.quoteVolume)||0}}; }).filter(function(x){ return ONLY_SET[String(x.c.symbol||'').toUpperCase()]; });
       window.__minU={t:Date.now(),a:arr};
       return arr;
     }catch(e){}
@@ -434,7 +523,7 @@ async function scan(){
     var stake=st.stake;
     var an=await loadUniverse();
     if(!an.length){ var s00=$('minStatus'); if(s00) s00.textContent='⏱ بانتظار بيانات السوق...'; paintProfit(st); return; }
-    var list=an.filter(function(a){ return a&&a.c&&a.c.symbol&&!STAB[String(a.c.symbol).toUpperCase()]&&kSym(a.c); })
+    var list=an.filter(function(a){ return a&&a.c&&a.c.symbol&&ONLY_SET[String(a.c.symbol).toUpperCase()]&&!STAB[String(a.c.symbol).toUpperCase()]&&kSym(a.c); })
       .slice().sort(function(x,y){ return (y.c.total_volume||0)-(x.c.total_volume||0); });
     if(st.halalOnly!==false && window.isHalal){ list=list.filter(function(a){ return window.isHalal(a.c.id,a.c.symbol); }); }
     list=list.slice(0,N);
@@ -522,7 +611,7 @@ function bindStake(){ try{ if(window.__minBound) return; window.__minBound=1;
 }catch(e){} }
 function run(){ try{ bindStake(); var p=scan(); if(p&&p.catch) p.catch(function(){}); }catch(e){} }
 document.addEventListener('DOMContentLoaded',function(){ paintProfit(rd()); setTimeout(run,6000); setInterval(run,60000); });
-window.MIN={scan:scan,get S(){ return rd(); }};
+window.MIN={scan:scan,only:ONLY_SET,get S(){ return rd(); }};
 })();
 </script>
 
@@ -579,38 +668,75 @@ window.MIN={scan:scan,get S(){ return rd(); }};
 <script>
 (function(){
 "use strict";
-var RK='ai_real_v1', MK='ai_bot_mode';
-var REAL={mode:'demo',connected:false,on:false,base:'https://api.binance.com',apiKey:'',apiSecret:'',off:0,usdt:0,startUsdt:0,pnl:0,pos:{},closed:[],logs:[],seenOpen:{},seenClose:{},busy:false,status:'',balances:{},stake:10,max:3};
+var RK='ai_real_v1', MK='ai_bot_mode', SK='ai_real_key', SS='ai_real_secret', SB='ai_real_bridge', SBS='ai_real_bridge_secret', SSU='ai_srv_url', SSK='ai_srv_key';
+var wake=null, reconnectAt=0;
+var SAFE_MAX_STAKE=10, SAFE_MAX_TRADES=3, SAFE_MAX_DAY_LOSS=10;
+var SAFE_PATHS=[/^\/api\/v3\/account$/,/^\/api\/v3\/time$/,/^\/api\/v3\/exchangeInfo$/,/^\/api\/v3\/order$/,/^\/api\/v3\/openOrders$/,/^\/api\/v3\/ticker\/price$/,/^\/api\/v3\/klines$/,/^\/sapi\/v1\/account\/apiRestrictions$/];
+var REAL={mode:'demo',connected:false,on:false,base:'https://api.binance.com',apiKey:'',apiSecret:'',off:0,usdt:0,startUsdt:0,pnl:0,pos:{},closed:[],logs:[],seenOpen:{},seenClose:{},busy:false,status:'',balances:{},stake:10,max:3,day:'',dayPnl:0,vault:0,goal:10,goalHit:false,goalBusy:false,securityLock:false,securityReason:'',lossLockDay:''};
+var SRV={url:'',key:'',connected:false,state:null,status:'',busy:false};
 function E(id){return document.getElementById(id)}
 function money(n){n=+n||0;var g=n<0?'-':'';return g+'$'+Math.abs(n).toFixed(2)}
 function price(n){n=+n||0;var a=Math.abs(n);var d=a>=1?4:a>=0.01?5:a>=0.0001?6:8;return '$'+n.toFixed(d)}
 function profit(n){n=+n||0;var a=Math.abs(n);var d=a===0?2:a>=0.01?2:a>=0.0001?4:6;return (n<0?'-':'+')+'$'+a.toFixed(d)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function readReal(){
-  try{var x=JSON.parse(localStorage.getItem(RK)||'{}')||{};REAL.pos=x.pos||{};REAL.closed=x.closed||[];REAL.logs=x.logs||[];REAL.pnl=+x.pnl||0;REAL.startUsdt=+x.startUsdt||0;REAL.stake=Math.max(5,+x.stake||10);REAL.max=Math.max(1,+x.max||3);REAL.seenOpen=x.seenOpen||{};REAL.seenClose=x.seenClose||{};
+  try{var x=JSON.parse(localStorage.getItem(RK)||'{}')||{};REAL.pos=x.pos||{};REAL.closed=x.closed||[];REAL.logs=x.logs||[];REAL.pnl=+x.pnl||0;REAL.startUsdt=+x.startUsdt||0;REAL.stake=Math.min(SAFE_MAX_STAKE,Math.max(5,+x.stake||10));REAL.max=Math.min(SAFE_MAX_TRADES,Math.max(1,+x.max||3));REAL.seenOpen=x.seenOpen||{};REAL.seenClose=x.seenClose||{};REAL.on=!!x.on;REAL.day=x.day||new Date().toISOString().slice(0,10);REAL.dayPnl=+x.dayPnl||0;REAL.vault=+x.vault||0;REAL.goal=Math.max(1,+x.goal||10);REAL.goalHit=!!x.goalHit;REAL.securityLock=!!x.securityLock;REAL.securityReason=String(x.securityReason||'');REAL.lossLockDay=String(x.lossLockDay||'');
     Object.keys(REAL.pos).forEach(function(k){delete REAL.pos[k].selling});
-    REAL.mode=localStorage.getItem(MK)==='real'?'real':'demo';
+    var mm=localStorage.getItem(MK);REAL.mode=(mm==='real'||mm==='server')?mm:'demo';
   }catch(e){}
 }
 function saveReal(){
-  try{localStorage.setItem(RK,JSON.stringify({pos:REAL.pos,closed:REAL.closed.slice(0,100),logs:REAL.logs.slice(0,60),pnl:REAL.pnl,startUsdt:REAL.startUsdt,stake:REAL.stake,max:REAL.max,seenOpen:REAL.seenOpen,seenClose:REAL.seenClose}));localStorage.setItem(MK,REAL.mode)}catch(e){}
+  try{localStorage.setItem(RK,JSON.stringify({pos:REAL.pos,closed:REAL.closed.slice(0,100),logs:REAL.logs.slice(0,60),pnl:REAL.pnl,startUsdt:REAL.startUsdt,stake:REAL.stake,max:REAL.max,seenOpen:REAL.seenOpen,seenClose:REAL.seenClose,on:!!REAL.on,day:REAL.day,dayPnl:+REAL.dayPnl||0,vault:+REAL.vault||0,goal:+REAL.goal||10,goalHit:!!REAL.goalHit,securityLock:!!REAL.securityLock,securityReason:REAL.securityReason||'',lossLockDay:REAL.lossLockDay||''}));localStorage.setItem(MK,REAL.mode)}catch(e){}
 }
 function logReal(m){REAL.logs.unshift({t:Date.now(),msg:String(m)});REAL.logs=REAL.logs.slice(0,60);saveReal()}
+function sessGet(k){try{return sessionStorage.getItem(k)||''}catch(e){return ''}}
+function sessSet(k,v){try{if(v==null||v==='')sessionStorage.removeItem(k);else sessionStorage.setItem(k,String(v))}catch(e){}}
+async function keepAwake(){if(!REAL.on||!navigator.wakeLock||(wake&&!wake.released))return;try{wake=await navigator.wakeLock.request('screen');wake.addEventListener('release',function(){wake=null})}catch(e){}}
+function releaseWake(){try{if(wake&&!wake.released)wake.release()}catch(e){}wake=null}
+function netErr(e){return /Failed to fetch|NetworkError|Load failed|فشل الشبكة|CORS/i.test(String(e&&e.message||e))}
+function safePath(p){return SAFE_PATHS.some(function(rx){return rx.test(String(p||''))})}
+function trustedBridge(url){try{var u=new URL(url);if(u.protocol==='https:')return true;var h=u.hostname;return h==='localhost'||h==='127.0.0.1'||h==='[::1]'||/^10\./.test(h)||/^192\.168\./.test(h)||/^172\.(1[6-9]|2\d|3[01])\./.test(h)}catch(e){return false}}
+function securityLock(msg){REAL.securityLock=true;REAL.securityReason=String(msg||'security').slice(0,180);REAL.on=false;releaseWake();saveReal();setStatus('🛑 قفل أمان — أوقفت الشراء: '+REAL.securityReason);logReal('🛑 قفل أمان: '+REAL.securityReason);paintMode();renderReal()}
+async function securityPreflight(){
+  var r=await signed('GET','/sapi/v1/account/apiRestrictions');
+  var bad=[];
+  if(r.enableReading!==true)bad.push('reading');
+  if(r.enableWithdrawals===true)bad.push('withdrawals');
+  if(r.enableInternalTransfer===true)bad.push('internal-transfer');
+  if(r.enableMargin===true)bad.push('margin');
+  if(r.enableFutures===true)bad.push('futures');
+  if(r.enableVanillaOptions===true)bad.push('options');
+  if(r.enableSpotAndMarginTrading!==true)bad.push('spot-trading');
+  if(r.ipRestrict!==true)bad.push('ip-whitelist');
+  if(bad.length){securityLock('صلاحيات المفتاح: '+bad.join(','));throw new Error('SECURITY permissions: '+bad.join(','));}
+  REAL.securityLock=false;REAL.securityReason='';
+  return true;
+}
 function setStatus(m){REAL.status=String(m);var e=E('nbStatus');if(e)e.textContent=m}
-function errMsg(e){var m=String(e&&e.message||e);if(/Failed to fetch|NetworkError|Load failed/i.test(m))return 'فشل الاتصال المباشر (قد يمنع Binance CORS في هذا المتصفح)';return m}
+function authErr(e){return /-2015|-1022|-2014|invalid api-key|signature|unauthorized|IP.*(not|denied)/i.test(String(e&&e.message||e))}
+function errMsg(e){var m=String(e&&e.message||e);if(/Failed to fetch|NetworkError|Load failed/i.test(m))return 'فشل الشبكة — Binance يمنع CORS غالباً؛ شغّل جسر bot-server أو تحقق من الرابط';return m}
 function qs(p){return Object.keys(p).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(p[k])}).join('&')}
 function toHex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2)}).join('')}
 async function hmac(secret,msg){var key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);return toHex(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(msg)))}
 async function handleRes(r){var txt=await r.text(),d;try{d=txt?JSON.parse(txt):{}}catch(e){throw new Error(String(txt).slice(0,180)||('HTTP '+r.status))}if(!r.ok)throw new Error((d.msg||('HTTP '+r.status))+(d.code?' ['+d.code+']':''));return d}
 async function pub(path){var r=await fetch(REAL.base+path,{cache:'no-store'});return handleRes(r)}
 async function signed(method,path,params){
+  try{return await signedOnce(method,path,params)}
+  catch(e){if(!/-1021|timestamp|recvWindow/i.test(String(e&&e.message||e)))throw e;await syncTime();return signedOnce(method,path,params)}
+}
+async function signedOnce(method,path,params){
+  if(!safePath(path))throw new Error('SECURITY: مسار API غير مسموح');
   if(!REAL.apiKey||!REAL.apiSecret)throw new Error('أدخل API Key و API Secret');
+  if(REAL.bridge){
+    var r=await fetch(REAL.bridge+'/binance',{method:'POST',headers:{'Content-Type':'application/json','X-Proxy-Secret':REAL.bridgeSecret||''},body:JSON.stringify({key:REAL.apiKey,secret:REAL.apiSecret,method:method,path:path,params:params||{}}),cache:'no-store'});
+    return handleRes(r);
+  }
   var p=Object.assign({},params||{});p.timestamp=Date.now()+REAL.off;p.recvWindow=5000;
   var q=qs(p),sig=await hmac(REAL.apiSecret,q);
-  var r=await fetch(REAL.base+path+'?'+q+'&signature='+sig,{method:method,headers:{'X-MBX-APIKEY':REAL.apiKey},cache:'no-store'});
-  return handleRes(r);
+  var r2=await fetch(REAL.base+path+'?'+q+'&signature='+sig,{method:method,headers:{'X-MBX-APIKEY':REAL.apiKey},cache:'no-store'});
+  return handleRes(r2);
 }
-async function syncTime(){var t=await pub('/api/v3/time');REAL.off=(+t.serverTime||Date.now())-Date.now()}
+async function syncTime(){var t=REAL.bridge?await signed('GET','/api/v3/time'):await pub('/api/v3/time');REAL.off=(+t.serverTime||Date.now())-Date.now()}
 async function refreshAccount(){
   var a=await signed('GET','/api/v3/account');REAL.balances={};
   (a.balances||[]).forEach(function(b){REAL.balances[b.asset]={free:+b.free||0,locked:+b.locked||0}});
@@ -622,15 +748,31 @@ function baseSym(b){return String(b||'').replace(/USDT$/,'')}
 function roundStep(q,step){var st=String(step||'0.00000001'),dec=(st.split('.')[1]||'').length;var n=Math.floor(((+q||0)+1e-12)/(+st))*(+st);return n.toFixed(dec)}
 function equityReal(){var e=+REAL.usdt||0;Object.keys(REAL.pos).forEach(function(k){var p=REAL.pos[k]||{},q=+p.qty||0,v=+p.price||+p.entry||0;e+=q*v});return e}
 function paintMode(){
-  var real=REAL.mode==='real';
+  var real=REAL.mode==='real',server=REAL.mode==='server';
   if(E('nbRealBox'))E('nbRealBox').hidden=!real;
-  if(E('nbModeDemo'))E('nbModeDemo').classList.toggle('active',!real);
+  if(E('nbServerBox'))E('nbServerBox').hidden=!server;
+  if(E('nbModeDemo'))E('nbModeDemo').classList.toggle('active',!real&&!server);
   if(E('nbModeReal'))E('nbModeReal').classList.toggle('active',real);
-  if(E('nbStart')){E('nbStart').disabled=!REAL.connected||REAL.on;E('nbStart').hidden=REAL.on}
+  if(E('nbModeServer'))E('nbModeServer').classList.toggle('active',server);
+  if(E('nbStart')){E('nbStart').disabled=!REAL.connected||REAL.on||REAL.securityLock;E('nbStart').hidden=REAL.on}
   if(E('nbStop'))E('nbStop').hidden=!REAL.on;
   if(E('nbCloseAll'))E('nbCloseAll').hidden=!(REAL.connected&&Object.keys(REAL.pos).length);
   if(E('nbConn'))E('nbConn').textContent=REAL.connected?'متصل ✅':'غير متصل';
-  if(E('nbNote'))E('nbNote').innerHTML=real?'🔴 <b>الوضع الحقيقي</b>: ينفذ إشارات فريم الدقيقة على Binance Spot بأوامر سوق. المفاتيح في الذاكرة فقط ولا تُحفظ. البوت لا ينشئ أمر وقف على المنصة — أبقِ الصفحة مفتوحة لإدارة الهدف/الوقف.':'🔗 الوضع <b>التجريبي</b>: يتبع فريم الدقيقة فقط بنفس الصفقات والأرباح المحاكاة. لا يفتح صفقات من أقسام أخرى.';
+  if(E('nbNote'))E('nbNote').innerHTML=server?'🖥️ <b>سيرفر 24/7</b>: البوت يعمل على السيرفر بمفاتيح Binance الموجودة في متغيرات البيئة. إغلاق الصفحة لا يوقفه. عند هدف $10 يتوقف تلقائياً وينقل الربح للمخزن؛ «تشغيل» يصفّر يوم الربح فقط.':(real?'🔴 <b>الوضع الحقيقي</b>: ينفذ إشارات فريم الدقيقة على Binance Spot بأوامر سوق. المفاتيح تبقى في جلسة التبويب فقط للاستئناف، ولا تُحفظ دائماً. البوت يستأنف تلقائياً بعد تحديث الصفحة ويعيد الاتصال. عند هدف $10 يتوقف ويغلق صفقاته وينقل ربح اليوم للمخزن؛ «تشغيل» يصفّر اليوم فقط.':'🔗 الوضع <b>التجريبي</b>: يتبع فريم الدقيقة فقط بنفس الصفقات والأرباح المحاكاة. لا يفتح صفقات من أقسام أخرى.');
+}
+function setVaultLux(v,active,dayPnl,goal,stateTxt){
+  var box=E('vaultLux');if(!box)return;
+  var prev=box.getAttribute('data-v'),old=prev===''?null:+prev;
+  var live=!!active;
+  box.classList.toggle('live',live);
+  if(E('vaultLuxV'))E('vaultLuxV').textContent=(v==null||!isFinite(+v))?'—':money(+v);
+  var g=Math.max(1,+goal||10),dp=+dayPnl||0,pct=Math.max(0,Math.min(100,dp/g*100));
+  if(E('vaultLuxBar'))E('vaultLuxBar').style.width=(v==null?0:pct)+'%';
+  if(E('vaultLuxDay'))E('vaultLuxDay').innerHTML='هدف اليوم $'+g+' • <b class="'+(dp<0?'neg':'')+'">'+profit(dp)+'</b> • '+pct.toFixed(0)+'%';
+  if(E('vaultLuxState'))E('vaultLuxState').textContent=stateTxt||(live?'🤖 البوت الحي ينبض':'🤖 البوت متوقف');
+  if(E('vaultLuxSub'))E('vaultLuxSub').textContent=live?'البوت الحي يضخ الأرباح في الخزنة — محفوظة ولا تُستخدم في التداول':'الأرباح المحفوظة تتراكم هنا — الخزنة لا تُستخدم في التداول';
+  if(v!=null&&old!=null&&+v>old+0.004){box.classList.remove('flash');void box.offsetWidth;box.classList.add('flash')}
+  box.setAttribute('data-v',v==null?'':+v);
 }
 function renderDemo(){
   var m=window.MIN?window.MIN.S:null;if(!m)return;
@@ -641,6 +783,8 @@ function renderDemo(){
   if(E('nbPnl')){E('nbPnl').textContent=profit(net)+' ('+(net>=0?'+':'-')+Math.abs(pct).toFixed(2)+'%)';E('nbPnl').style.color=net>=0?'#22c55e':'#ef4444'}
   if(E('nbOpen'))E('nbOpen').textContent=n;
   if(E('nbClosed'))E('nbClosed').textContent=hist.length;
+  if(E('nbVault'))E('nbVault').textContent='—';
+  setVaultLux(null,false,0,10,'🤖 الوضع التجريبي');
   if(E('nbPill')){E('nbPill').textContent='تجريبي';E('nbPill').className='nb-pill on'}
   if(E('nbStatus'))E('nbStatus').textContent='يتبع فريم الدقيقة • '+n+' مفتوحة • '+hist.length+' مغلقة • آخر مزامنة '+new Date().toLocaleTimeString('ar');
   if(E('nbPos'))E('nbPos').innerHTML=n?Object.keys(open).map(function(sym){var t=open[sym]||{};return '<div class="nb-p"><b>'+esc(sym)+'</b><div>دخول '+price(t.entry)+' • هدف '+price(t.target)+' • وقف '+price(t.stop)+'</div><div>مبلغ الصفقة '+money(t.stake)+'</div></div>'}).join(''):'<div class="muted" style="font-size:.8rem">لا صفقات مفتوحة — ينتظر بطاقات فريم الدقيقة.</div>';
@@ -655,49 +799,124 @@ function renderReal(){
   if(E('nbPnl')){E('nbPnl').textContent=profit(REAL.pnl)+' ('+(REAL.pnl>=0?'+':'-')+Math.abs(pct).toFixed(2)+'%)';E('nbPnl').style.color=REAL.pnl>=0?'#22c55e':'#ef4444'}
   if(E('nbOpen'))E('nbOpen').textContent=pos.length;
   if(E('nbClosed'))E('nbClosed').textContent=REAL.closed.length;
-  if(E('nbPill')){if(!REAL.connected){E('nbPill').textContent='غير متصل';E('nbPill').className='nb-pill off'}else if(REAL.on){E('nbPill').textContent='حقيقي نشط';E('nbPill').className='nb-pill on'}else{E('nbPill').textContent='حقيقي متوقف';E('nbPill').className='nb-pill off'}}
+  if(E('nbVault'))E('nbVault').textContent=money(REAL.vault);
+  setVaultLux(REAL.vault,REAL.on&&REAL.connected&&!REAL.securityLock,REAL.dayPnl,REAL.goal,REAL.securityLock?'🛑 قفل أمان':(REAL.goalHit?'🏆 هدف اليوم تحقق':(REAL.on&&REAL.connected?'🤖 البوت الحي ينبض':'🤖 البوت متوقف')));
+  if(E('nbPill')){if(REAL.securityLock){E('nbPill').textContent='🛑 قفل أمان';E('nbPill').className='nb-pill off'}else if(!REAL.connected){E('nbPill').textContent='غير متصل';E('nbPill').className='nb-pill off'}else if(REAL.on){E('nbPill').textContent='حقيقي نشط';E('nbPill').className='nb-pill on'}else{E('nbPill').textContent='حقيقي متوقف';E('nbPill').className='nb-pill off'}}
   if(E('nbStatus'))E('nbStatus').textContent=REAL.status||(REAL.connected?'متصل — بانتظار بدء التنفيذ':'أدخل مفاتيح Binance واتصل');
+  if(REAL.securityLock&&E('nbStatus'))E('nbStatus').textContent='🛑 قفل أمان: '+REAL.securityReason;
   if(E('nbHistTitle'))E('nbHistTitle').textContent='📜 سجل التنفيذ الحقيقي — Binance Spot';
   if(E('nbPos'))E('nbPos').innerHTML=pos.length?pos.map(function(sym){var t=REAL.pos[sym]||{},cur=+t.price||+t.entry||0,up=((+t.qty||0)*cur)-(+t.buyQuote||0);return '<div class="nb-p"><b>'+esc(t.binSym||binSym(sym))+'</b><div>شراء '+price(t.entry)+' • هدف '+price(t.target)+' • وقف '+price(t.stop)+'</div><div>كمية '+esc(t.qty)+' • الآن '+price(cur)+' • <em class="'+(up>=0?'up':'down')+'">'+profit(up)+'</em></div></div>'}).join(''):'<div class="muted" style="font-size:.8rem">لا صفقات حقيقية مفتوحة.</div>';
   if(E('nbFeed'))E('nbFeed').innerHTML=REAL.closed.length?REAL.closed.slice(0,10).map(function(x){var win=(+x.pnl||0)>=0;return '<div class="nb-fi"><time>'+new Date(x.t||Date.now()).toLocaleTimeString('ar')+'</time><span><b>'+esc(x.binSym||x.sym)+'</b> • دخول '+price(x.entry)+' • خروج '+price(x.exit)+' • <em style="font-style:normal;color:'+(win?'#22c55e':'#ef4444')+'">'+profit(x.pnl)+' '+(win?'✅':'🛑')+'</em> • '+esc(x.reason||'')+'</span></div>'}).join(''):'<div class="nb-fi"><time>—</time><span>لا صفقات حقيقية مغلقة بعد.</span></div>';
 }
-function render(){if(REAL.mode==='demo')renderDemo();else renderReal()}
-async function connect(){
-  var k=((E('nbKey')&&E('nbKey').value)||'').trim(),sec=((E('nbSecret')&&E('nbSecret').value)||'').trim();
-  if(!k||!sec){setStatus('أدخل API Key و API Secret أولاً');return}
-  var btn=E('nbConnect');if(btn){btn.disabled=true;btn.textContent='⏳ اتصال...'}
+function srvUrl(){return String(SRV.url||((E('nbSrvUrl')&&E('nbSrvUrl').value)||'')).replace(/\/+$/,'')}
+function srvHeaders(opt){var h=Object.assign({},(opt&&opt.headers)||{});if(SRV.key)h['X-Bot-Key']=SRV.key;return h}
+async function srvReq(path,opt){var o=Object.assign({cache:'no-store'},opt||{});o.headers=srvHeaders(opt);var r=await fetch(srvUrl()+path,o);return handleRes(r)}
+async function connectServer(silent){
+  var url=((E('nbSrvUrl')&&E('nbSrvUrl').value)||'').trim(),key=((E('nbSrvKey')&&E('nbSrvKey').value)||'').trim();
+  if(!url){SRV.status='أدخل رابط السيرفر';setStatus(SRV.status);return false}
+  SRV.url=url.replace(/\/+$/,'');SRV.key=key;
+  try{
+    var s=await srvReq('/state');SRV.connected=true;SRV.state=s;
+    sessSet(SSU,SRV.url);sessSet(SSK,key);
+    SRV.status='✅ متصل بالسيرفر — '+(s.mode||'')+' • '+(s.enabled?'نشط':(s.pauseWhy==='goal'?'متوقف عند هدف اليوم':'متوقف يدوياً'));
+    setStatus(SRV.status);paintMode();renderServer();return true;
+  }catch(e){SRV.connected=false;SRV.status='❌ تعذر الاتصال بالسيرفر: '+String((e&&e.message)||e).slice(0,160);setStatus(SRV.status);paintMode();renderServer();return false}
+}
+async function pollServer(){
+  if(REAL.mode!=='server'||SRV.busy||!srvUrl())return;
+  SRV.busy=true;
+  try{var s=await srvReq('/state');SRV.connected=true;SRV.state=s;SRV.status='✅ السيرفر متصل';}
+  catch(e){SRV.connected=false;SRV.status='⚠️ انقطع الاتصال بالسيرفر — إعادة محاولة تلقائية…';}
+  finally{SRV.busy=false;paintMode();renderServer()}
+}
+async function srvAction(action){
+  if(!SRV.connected){setStatus('اتصل بالسيرفر أولاً');return}
+  if(action==='closeall'&&!confirm('⚠️ بيع كل صفقات السيرفر المفتوحة بأمر سوق الآن؟'))return;
+  if(action==='stop'&&!confirm('⚠️ إيقاف الدخول الجديد؟ الصفقات المفتوحة ستظل تُدار حتى الهدف/الوقف.'))return;
+  SRV.busy=true;setStatus('⏳ تنفيذ الأمر على السيرفر…');
+  try{var s=await srvReq('/control',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:action})});SRV.connected=true;SRV.state=s;SRV.status=action==='stop'?'⏸ تم إيقاف الدخول الجديد يدوياً':'✅ تم تنفيذ الأمر';setStatus(SRV.status);}
+  catch(e){SRV.status='❌ فشل الأمر: '+String((e&&e.message)||e).slice(0,160);setStatus(SRV.status);}
+  finally{SRV.busy=false;paintMode();renderServer()}
+}
+function renderServer(){
+  var s=SRV.state||{},open=s.open||[],last=s.last||[],pnl=+s.profit||0,eq=+s.equity||0;
+  if(E('nbEquityLbl'))E('nbEquityLbl').textContent='💰 رصيد السيرفر (USDT)';
+  if(E('nbEquity'))E('nbEquity').textContent=SRV.connected?money(eq):'—';
+  if(E('nbPnlLbl'))E('nbPnlLbl').textContent='📈 صافي السيرفر المحقق';
+  if(E('nbPnl')){E('nbPnl').textContent=profit(pnl);E('nbPnl').style.color=pnl>=0?'#22c55e':'#ef4444'}
+  if(E('nbOpen'))E('nbOpen').textContent=open.length;
+  if(E('nbClosed'))E('nbClosed').textContent=s.closed||0;
+  if(E('nbVault'))E('nbVault').textContent=SRV.connected?money(+s.vault||0):'—';
+  setVaultLux(SRV.connected?(+s.vault||0):null,SRV.connected&&!!s.enabled,+s.dayPnl||0,+s.dailyGoal||10,SRV.connected?(s.securityLock?'🛑 قفل أمان':(s.pauseWhy==='goal'?'🏆 هدف اليوم تحقق':(s.enabled?'🤖 البوت الحي ينبض في 24/7':'🤖 البوت متوقف'))):'غير متصل');
+  if(E('nbPill')){E('nbPill').textContent=SRV.connected?(s.enabled?'24/7 نشط':'24/7 متوقف'):'غير متصل';E('nbPill').className='nb-pill '+(SRV.connected&&s.enabled?'on':'off')}
+  if(E('nbStatus'))E('nbStatus').textContent=SRV.status||(SRV.connected?'متصل بالسيرفر':'أدخل رابط السيرفر والمفتاح');
+  if(SRV.connected&&s.pauseWhy==='goal')SRV.status='🏆 هدف اليوم $'+((+s.dailyGoal||10))+' تحقق — الربح في المخزن، اضغط تشغيل لبدء يوم جديد';
+  if(E('nbHistTitle'))E('nbHistTitle').textContent='📜 سجل السيرفر 24/7 — Binance Spot';
+  var h=s.health||{},health=!SRV.connected?'—':(s.mode==='paper'?'Paper — محاكاة':(h.account?'Binance متصل ✅':(h.binance?'واجهة Binance متاحة • الحساب غير متصل':'Binance غير متصل ⚠️')));
+  if(E('nbSrvConn'))E('nbSrvConn').textContent=health;
+  if(E('nbSrvStart')){E('nbSrvStart').hidden=!SRV.connected||!!s.enabled;E('nbSrvStart').disabled=!SRV.connected||!!s.enabled||!!s.securityLock||(s.lossLockDay&&s.lossLockDay===new Date().toISOString().slice(0,10))}
+  if(E('nbSrvStop'))E('nbSrvStop').hidden=!SRV.connected||!s.enabled;
+  if(E('nbSrvCloseAll'))E('nbSrvCloseAll').disabled=!SRV.connected||!open.length;
+  if(E('nbStatus'))E('nbStatus').textContent=(SRV.status||'')+' • '+(h.at?'فحص الاتصال: '+new Date(h.at).toLocaleTimeString('ar'):'بانتظار الفحص');
+  if(SRV.connected&&s.securityLock)E('nbStatus').textContent='🛑 قفل أمان: '+(s.securityReason||'تحقق من المفتاح/الصلاحيات')+' — أصلح ثم أعد تشغيل السيرفر';
+  if(SRV.connected&&!s.securityLock&&s.lossLockDay===new Date().toISOString().slice(0,10))E('nbStatus').textContent='🛑 حد خسارة اليوم مقفل — لا يمكن تشغيل نفس اليوم';
+  if(E('nbPos'))E('nbPos').innerHTML=open.length?open.map(function(t){var up=((+t.qty||0)*(+t.entry||0));return '<div class="nb-p"><b>'+esc(t.sym||t.coin)+'</b><div>دخول '+price(t.entry)+' • هدف '+price(t.t1)+' / '+price(t.t2)+' / '+price(t.t3)+'</div><div>وقف '+price(t.sl)+' • كمية '+esc(t.qty)+' • مبلغ '+money(t.stake)+'</div></div>'}).join(''):'<div class="muted" style="font-size:.8rem">لا صفقات مفتوحة على السيرفر.</div>';
+  if(E('nbFeed'))E('nbFeed').innerHTML=last.length?last.slice(0,10).map(function(t){var w=(+t.pnl||0)>=0;return '<div class="nb-fi"><time>'+new Date(t.closeAt||t.t0||Date.now()).toLocaleTimeString('ar')+'</time><span><b>'+esc(t.sym||t.coin)+'</b> • دخول '+price(t.entry)+' • خروج '+price(t.exit)+' • <em style="font-style:normal;color:'+(w?'#22c55e':'#ef4444')+'">'+profit(t.pnl)+' '+(w?'✅':'🛑')+'</em> • '+esc(t.reason||'')+'</span></div>'}).join(''):'<div class="nb-fi"><time>—</time><span>لا صفقات مغلقة على السيرفر بعد.</span></div>';
+}
+function render(){if(REAL.mode==='demo')renderDemo();else if(REAL.mode==='server')renderServer();else renderReal()}
+async function connect(silent){
+  silent=!!silent;
+  var k=((E('nbKey')&&E('nbKey').value)||'').trim()||REAL.apiKey||sessGet(SK);
+  var sec=((E('nbSecret')&&E('nbSecret').value)||'').trim()||REAL.apiSecret||sessGet(SS);
+  if(!k||!sec){setStatus('أدخل API Key و API Secret أولاً');return false}
+  if(E('nbKey')&&!E('nbKey').value)E('nbKey').value=k;
+  if(E('nbSecret')&&!E('nbSecret').value)E('nbSecret').value=sec;
+  var btn=E('nbConnect');if(btn){btn.disabled=true;btn.textContent=silent?'🔄 إعادة اتصال...':'⏳ اتصال...'}
   try{
     REAL.apiKey=k;REAL.apiSecret=sec;REAL.connected=false;
-    await syncTime();await refreshAccount();REAL.connected=true;
-    setStatus('✅ متصل بـ Binance Spot — USDT '+money(REAL.usdt));
+    REAL.bridge=((E('nbBridge')&&E('nbBridge').value)||'').trim().replace(/\/+$/,'');
+    REAL.bridgeSecret=((E('nbBridgeKey')&&E('nbBridgeKey').value)||'').trim();
+    if(REAL.bridge&&!trustedBridge(REAL.bridge))throw new Error('SECURITY: الجسر يجب أن يكون محلياً/خاصاً أو HTTPS موثوقاً');
+    await syncTime();await refreshAccount();await securityPreflight();REAL.connected=true;
+    sessSet(SK,k);sessSet(SS,sec);sessSet(SB,REAL.bridge);sessSet(SBS,REAL.bridgeSecret);
+    setStatus('✅ متصل بـ Binance Spot — USDT '+money(REAL.usdt)+(REAL.on?' • استئناف تلقائي':''));
     logReal('🔌 اتصال ناجح — رصيد USDT '+money(REAL.usdt));
     if(E('nbConn'))E('nbConn').textContent='متصل ✅';
-    paintMode();renderReal();
-  }catch(e){REAL.connected=false;var m=errMsg(e);setStatus('❌ تعذر الاتصال: '+m);logReal('❌ اتصال: '+m);if(E('nbConn'))E('nbConn').textContent='فشل الاتصال';paintMode();renderReal()}
+    if(REAL.on){keepAwake();tick()}
+    paintMode();renderReal();return true;
+  }catch(e){REAL.connected=false;var m=errMsg(e);if(/SECURITY|permissions|ip-whitelist|invalid api-key|signature|-2015/i.test(m))securityLock(m);setStatus('❌ تعذر الاتصال: '+m);logReal('❌ اتصال: '+m);if(E('nbConn'))E('nbConn').textContent='فشل الاتصال';paintMode();renderReal();return false}
   finally{if(btn){btn.disabled=false;btn.textContent='🔌 اتصال واختبار'}}
 }
-function start(){
+async function start(){
   if(!REAL.connected){setStatus('اتصل بـ Binance أولاً');return}
+  if(REAL.securityLock){setStatus('🛑 قفل أمان: '+REAL.securityReason+' — أعد الاتصال بعد إصلاح المفتاح/الصلاحيات');return}
+  if(REAL.dayPnl<=-SAFE_MAX_DAY_LOSS)REAL.lossLockDay=new Date().toISOString().slice(0,10);
+  if(REAL.lossLockDay===new Date().toISOString().slice(0,10)){setStatus('🛑 حد خسارة اليوم مقفل — انتظر اليوم التالي UTC');return}
   if(!confirm('⚠️ تشغيل التنفيذ الحقيقي؟ سيشتري ويبيع بأموال حقيقية على Binance Spot. تأكد من المبلغ والمفاتيح.'))return;
-  REAL.stake=Math.max(5,Math.min(100,+E('nbStakeR').value||10));REAL.max=Math.max(1,Math.min(10,+E('nbMaxR').value||3));
-  REAL.on=true;
-  setStatus('🔴 التنفيذ الحقيقي نشط — ينفذ الإشارات المؤهلة ثم ينتظر الجديدة');
+  REAL.stake=Math.max(5,Math.min(SAFE_MAX_STAKE,+E('nbStakeR').value||10));REAL.max=Math.max(1,Math.min(SAFE_MAX_TRADES,+E('nbMaxR').value||3));
+  try{await refreshAccount()}catch(e){setStatus('❌ تعذر تحديث الرصيد: '+errMsg(e));return}
+  REAL.on=true;keepAwake();REAL.day=new Date().toISOString().slice(0,10);REAL.dayPnl=0;REAL.goalHit=false;REAL.goalBusy=false;
+  setStatus('🔴 التنفيذ الحقيقي نشط — حد الربح اليومي $'+REAL.goal+' — يوم جديد من صفر');
   logReal('▶ بدء التنفيذ الحقيقي — مبلغ '+money(REAL.stake)+' • أقصى '+REAL.max);
   saveReal();paintMode();renderReal();tick();
 }
-function stop(){REAL.on=false;setStatus('⏸ إيقاف الدخول الجديد — الصفقات المفتوحة تُدار حتى الهدف/الوقف');logReal('⏸ إيقاف الدخول الجديد');saveReal();paintMode();renderReal()}
+function stop(){REAL.on=false;releaseWake();setStatus('⏸ إيقاف الدخول الجديد — الصفقات المفتوحة تُدار حتى الهدف/الوقف');logReal('⏸ إيقاف الدخول الجديد');saveReal();paintMode();renderReal()}
 async function closeAll(){
   if(!Object.keys(REAL.pos).length)return;
   if(!confirm('⚠️ بيع كل الصفقات الحقيقية المفتوحة بأمر سوق الآن؟'))return;
-  REAL.on=false;paintMode();
+  REAL.on=false;releaseWake();paintMode();
   var syms=Object.keys(REAL.pos);
   for(var i=0;i<syms.length;i++){try{await sell(syms[i],'إغلاق يدوي')}catch(e){}}
   saveReal();paintMode();renderReal();
 }
 function setMode(m){
   if(m===REAL.mode)return;
-  if(m==='demo'&&Object.keys(REAL.pos).length){setStatus('⚠️ لا يمكن الانتقال للتجريبي وهناك صفقات حقيقية مفتوحة — أغلقها أولاً');return}
-  REAL.mode=m;if(m==='demo')REAL.on=false;saveReal();paintMode();render();
+  if(m!=='real'&&(Object.keys(REAL.pos).length||REAL.on)){setStatus('⚠️ أوقف التنفيذ المباشر وأغلق صفقاته قبل الانتقال إلى وضع آخر');return}
+  REAL.mode=m;
+  if(m!=='real'){REAL.on=false;releaseWake()}
+  if(m==='demo'){sessSet(SK,'');sessSet(SS,'');sessSet(SB,'');sessSet(SBS,'')}
+  saveReal();paintMode();render();
+  if(m==='server'&&!SRV.connected&&SRV.key)setTimeout(function(){connectServer(true)},300);
 }
 async function handleMinuteCloses(){
   var m=window.MIN?window.MIN.S:{},h=m.history||[];
@@ -711,23 +930,29 @@ async function checkPositions(){
   for(var i=0;i<list.length;i++){var sym=list[i],p=REAL.pos[sym];if(!p)continue;var px=+p.price||0;if(px>0&&px>=+p.target)await sell(sym,'هدف');else if(px>0&&px<=+p.stop)await sell(sym,'وقف')}
 }
 async function handleEntries(){
+  if(REAL.lossLockDay===new Date().toISOString().slice(0,10)||REAL.dayPnl<=-SAFE_MAX_DAY_LOSS)return;
   var m=window.MIN?window.MIN.S:{},open=m.open||{},keys=Object.keys(open);
   for(var i=0;i<keys.length;i++){
     if(Object.keys(REAL.pos).length>=REAL.max)break;
     var sym=keys[i],o=open[sym],k='O|'+sym+'|'+((o||{}).t0||'');
     if(!o||REAL.seenOpen[k]||REAL.pos[sym])continue;
+    if(!window.MIN||!window.MIN.only||!window.MIN.only[String(sym).toUpperCase()])continue;
     REAL.seenOpen[k]=1;
     var px=+o.price||+o.entry||0;
     if(px>0&&(px>+o.entry*1.006||px<+o.stop||px>=+o.target)){logReal('↷ تخطي '+sym+': السعر خرج عن نطاق الدخول');continue}
-    try{await buy(sym,o)}catch(e){var msg=errMsg(e);logReal('❌ شراء '+sym+': '+msg);setStatus('❌ تعذر شراء '+sym+': '+msg)}
+    try{await buy(sym,o)}catch(e){var msg=errMsg(e);if(authErr(e))securityLock(msg);logReal('❌ شراء '+sym+': '+msg);setStatus('❌ تعذر شراء '+sym+': '+msg)}
   }
 }
 async function buy(sym,o){
-  var b=binSym(sym),stake=Math.max(5,Math.min(100,+REAL.stake||10));
-  if(REAL.usdt&&REAL.usdt<stake)throw new Error('رصيد USDT غير كافٍ ('+money(REAL.usdt)+')');
-  var info=await pub('/api/v3/exchangeInfo?symbol='+b),si=(info.symbols||[])[0]||{},step='0.00000001';
+  if(!window.MIN||!window.MIN.only||!window.MIN.only[String(sym).toUpperCase()])throw new Error('العملة خارج قائمة الدخول المسموحة');
+  var b=binSym(sym),stake=Math.max(5,Math.min(SAFE_MAX_STAKE,+REAL.stake||10));
+  if(!(REAL.usdt>=stake))throw new Error('رصيد USDT غير كافٍ ('+money(REAL.usdt)+')');
+  var oo=await signed('GET','/api/v3/openOrders',{symbol:b});
+  if(Array.isArray(oo)&&oo.length)throw new Error('يوجد أمر مفتوح مسبقاً لهذا الرمز — منع التكرار');
+  var info=await signed('GET','/api/v3/exchangeInfo',{symbol:b}),si=(info.symbols||[])[0]||{},step='0.00000001';
   (si.filters||[]).forEach(function(f){if(f.filterType==='LOT_SIZE')step=f.stepSize});
-  var order=await signed('POST','/api/v3/order',{symbol:b,side:'BUY',type:'MARKET',quoteOrderQty:String(stake),newOrderRespType:'FULL'});
+  var cid='web'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  var order=await signed('POST','/api/v3/order',{symbol:b,side:'BUY',type:'MARKET',quoteOrderQty:String(stake),newOrderRespType:'FULL',newClientOrderId:cid});
   var qty=+order.executedQty,quote=+order.cummulativeQuoteQty;
   if(!(qty>0)||!(quote>0))throw new Error('لم يُنفذ أمر الشراء');
   REAL.pos[sym]={binSym:b,qty:String(qty),step:String(step),entry:quote/qty,buyQuote:quote,target:+o.target,stop:+o.stop,price:quote/qty,t:Date.now(),orderId:order.orderId};
@@ -744,39 +969,79 @@ async function sell(sym,reason){
     var asset=String(p.binSym||binSym(sym)).replace(/USDT$/,''),free=(REAL.balances[asset]||{}).free||0;
     var qty=Math.min(+p.qty||0,free),q=roundStep(qty,p.step);
     if(!(q>0))throw new Error('لا يوجد رصيد حر للبيع ('+asset+')');
-    var order=await signed('POST','/api/v3/order',{symbol:p.binSym,side:'SELL',type:'MARKET',quantity:q,newOrderRespType:'FULL'});
+    var scid='web'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    var order=await signed('POST','/api/v3/order',{symbol:p.binSym,side:'SELL',type:'MARKET',quantity:q,newOrderRespType:'FULL',newClientOrderId:scid});
     var proceeds=+order.cummulativeQuoteQty||0,pnl=proceeds-(+p.buyQuote||0);
-    REAL.pnl+=pnl;
+    REAL.pnl+=pnl;REAL.dayPnl=(+REAL.dayPnl||0)+pnl;
+    if(REAL.dayPnl<=-SAFE_MAX_DAY_LOSS){REAL.lossLockDay=new Date().toISOString().slice(0,10);if(REAL.on){REAL.on=false;releaseWake();setStatus('🛑 وصلت خسارة اليوم للحد $'+SAFE_MAX_DAY_LOSS+' — أوقفت الشراء حتى الغد');logReal('🛑 خسارة اليوم وصلت الحد — توقف حتى الغد')}}
     REAL.closed.unshift({sym:sym,binSym:p.binSym,entry:+p.entry,exit:proceeds/qty,qty:q,pnl:pnl,reason:reason,t:Date.now(),buyQuote:+p.buyQuote,sellQuote:proceeds});
     delete REAL.pos[sym];
     logReal('🔴 بيع حقيقي '+p.binSym+' — '+profit(pnl)+' — '+(reason||''));
     setStatus('🔴 تم بيع '+p.binSym+' — '+profit(pnl));
     try{await refreshAccount()}catch(e){}
     saveReal();
-  }catch(e){p.selling=false;var m=errMsg(e);logReal('❌ بيع '+sym+': '+m);setStatus('❌ تعذر بيع '+sym+': '+m);throw e}
+    if(!REAL.goalBusy&&!REAL.goalHit&&REAL.dayPnl>=+REAL.goal)await goalVault();
+  }catch(e){p.selling=false;var m=errMsg(e);if(authErr(e))securityLock(m);logReal('❌ بيع '+sym+': '+m);setStatus('❌ تعذر بيع '+sym+': '+m);throw e}
+}
+async function goalVault(){
+  if(REAL.goalBusy)return;
+  REAL.goalBusy=true;REAL.on=false;releaseWake();setStatus('🏆 تحقق هدف $'+REAL.goal+' — إغلاق الصفقات ونقل الربح للمخزن…');
+  logReal('🏆 هدف اليوم تحقق — جارٍ تثبيت الربح');
+  try{
+    var syms=Object.keys(REAL.pos);
+    for(var i=0;i<syms.length;i++){try{await sell(syms[i],'هدف يومي')}catch(e){}}
+    var amount=Math.max(0,+REAL.dayPnl||0);
+    REAL.vault=(+REAL.vault||0)+amount;REAL.dayPnl=0;REAL.goalHit=true;
+    saveReal();setStatus('🏆 تم تحقيق هدف $'+REAL.goal+' — توقف التنفيذ ونُقل '+money(amount)+' للمخزن التراكمي');
+    logReal('🏦 مخزن الربح +'+money(amount)+' — الإجمالي '+money(REAL.vault));
+  }finally{REAL.goalBusy=false;saveReal();paintMode();renderReal()}
 }
 async function tick(){
-  if(REAL.mode!=='real'||!REAL.connected||REAL.busy)return;
+  if(REAL.mode!=='real')return;
+  var today=new Date().toISOString().slice(0,10);
+  if(REAL.day!==today){REAL.day=today;REAL.dayPnl=0;REAL.goalHit=false;REAL.lossLockDay='';saveReal()}
+  if(!REAL.connected||REAL.busy)return;
   REAL.busy=true;
   try{await handleMinuteCloses();await checkPositions();if(REAL.on)await handleEntries()}
-  catch(e){var m=errMsg(e);setStatus('⚠️ '+m);logReal('⚠️ '+m)}
+  catch(e){var m=errMsg(e);if(netErr(e)){REAL.connected=false;setStatus('⚠️ انقطع الاتصال — إعادة محاولة تلقائية…')}else{if(authErr(e))securityLock(m);setStatus('⚠️ '+m)}logReal('⚠️ '+m)}
   finally{REAL.busy=false;saveReal();paintMode();renderReal()}
 }
 readReal();
 if(E('nbStakeR'))E('nbStakeR').value=REAL.stake;
 if(E('nbMaxR'))E('nbMaxR').value=REAL.max;
+if(E('nbKey'))E('nbKey').value=sessGet(SK);
+if(E('nbSecret'))E('nbSecret').value=sessGet(SS);
+if(E('nbBridge')&&sessGet(SB))E('nbBridge').value=sessGet(SB);
+if(E('nbBridgeKey'))E('nbBridgeKey').value=sessGet(SBS);
+if(E('nbSrvUrl')&&sessGet(SSU))E('nbSrvUrl').value=sessGet(SSU);
+if(E('nbSrvKey'))E('nbSrvKey').value=sessGet(SSK);
+SRV.url=((E('nbSrvUrl')&&E('nbSrvUrl').value)||'').trim().replace(/\/+$/,'');SRV.key=((E('nbSrvKey')&&E('nbSrvKey').value)||'').trim();
 paintMode();render();
+if(REAL.mode==='real'&&REAL.on){
+  if(sessGet(SK)&&sessGet(SS)){setStatus('🔄 استئناف تلقائي بعد التحديث…');setTimeout(function(){connect(true)},900)}
+  else setStatus('⏸ البوت كان نشطاً — أعد إدخال المفاتيح واضغط اتصال للاستئناف');
+}
+if(REAL.mode==='server'&&sessGet(SSK)){setStatus('🔄 الاتصال بالسيرفر 24/7…');setTimeout(function(){connectServer(true)},600)}
 document.addEventListener('DOMContentLoaded',function(){paintMode();render()});
 if(E('nbModeDemo'))E('nbModeDemo').onclick=function(){setMode('demo')};
 if(E('nbModeReal'))E('nbModeReal').onclick=function(){setMode('real')};
-if(E('nbConnect'))E('nbConnect').onclick=connect;
+if(E('nbModeServer'))E('nbModeServer').onclick=function(){setMode('server')};
+if(E('nbConnect'))E('nbConnect').onclick=function(){connect(false)};
+if(E('nbSrvConnect'))E('nbSrvConnect').onclick=function(){connectServer(false)};
+if(E('nbSrvStart'))E('nbSrvStart').onclick=function(){srvAction('start')};
+if(E('nbSrvStop'))E('nbSrvStop').onclick=function(){srvAction('stop')};
+if(E('nbSrvCloseAll'))E('nbSrvCloseAll').onclick=function(){srvAction('closeall')};
 if(E('nbStart'))E('nbStart').onclick=start;
 if(E('nbStop'))E('nbStop').onclick=stop;
 if(E('nbCloseAll'))E('nbCloseAll').onclick=closeAll;
 setInterval(function(){if(REAL.mode==='demo')renderDemo()},2000);
 setInterval(tick,3000);
+setInterval(function(){if(REAL.mode==='server')pollServer()},3000);
+setInterval(function(){if(REAL.mode==='real'&&REAL.on&&!REAL.connected&&!REAL.busy&&REAL.apiKey&&REAL.apiSecret&&Date.now()-reconnectAt>20000){reconnectAt=Date.now();connect(true)}},10000);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'){if(REAL.mode==='real'&&REAL.on){keepAwake();if(REAL.connected)tick()}}});
+window.addEventListener('beforeunload',function(e){if(REAL.mode==='real'&&(REAL.on||Object.keys(REAL.pos).length)){e.preventDefault();e.returnValue=''}});
 setTimeout(function(){if(REAL.mode==='demo')renderDemo();else renderReal()},1200);
-window.REALBOT={connect:connect,start:start,stop:stop,closeAll:closeAll,tick:tick,setMode:setMode,state:REAL,render:render};
+window.REALBOT={connect:connect,start:start,stop:stop,closeAll:closeAll,tick:tick,setMode:setMode,state:REAL,render:render,connectServer:connectServer,pollServer:pollServer,srvAction:srvAction,stateServer:SRV};
 })();
 </script>
 </body>

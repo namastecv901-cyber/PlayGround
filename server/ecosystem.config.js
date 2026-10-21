@@ -15,7 +15,7 @@ module.exports = {
     time: true,
     env: {
       MODE: 'paper',
-      STAKE_USD: '20',
+      STAKE_USD: '10',
       TP_USD: '0.7',
       MIN_TP_USD: '0.3',
       MAX_TRADES: '3',
@@ -23,6 +23,10 @@ module.exports = {
       DAILY_GOAL_USD: '10',
       EQUITY_START: '100',
       POLL_SEC: '60',
+      SECURITY_MAX_STAKE_USD: '10',
+      SECURITY_MAX_TRADES: '3',
+      SECURITY_MAX_DAILY_LOSS: '10',
+      SECURITY_REQUIRE_IP: '1',
     },
   }],
 };
