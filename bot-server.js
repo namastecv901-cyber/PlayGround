@@ -145,7 +145,7 @@ function checkApiRestrictions(r, requireIp) {
 function isLocalAddr(addr) { return /^(127\.|::1$|::ffff:127\.)/.test(String(addr || '')); }
 
 let preflightOK = false;
-let S = { trades: {}, profit: 0, closed: 0, day: todayUTC(), dayPnl: 0, equity: CFG.equityStart, usdt: 0, availableUsdt: 0, vault: 0, goalHit: false, goalBusy: false, lastGoalAt: 0, securityLock: false, securityReason: '', lossLockDay: '', info: {}, noBin: {}, buys: 0, stopDay: null, stopWhy: '', enabled: true, pauseWhy: '', health: { at: 0, binance: false, account: false, error: '' }, lastCycleAt: 0, lastError: '' };
+let S = { mode: CFG.mode, trades: {}, profit: 0, closed: 0, day: todayUTC(), dayPnl: 0, equity: CFG.equityStart, usdt: 0, availableUsdt: 0, vault: 0, goalHit: false, goalBusy: false, lastGoalAt: 0, securityLock: false, securityReason: '', lossLockDay: '', info: {}, noBin: {}, buys: 0, stopDay: null, stopWhy: '', enabled: true, pauseWhy: '', health: { at: 0, binance: false, account: false, error: '' }, lastCycleAt: 0, lastError: '' };
 function loadState() { try { const j = JSON.parse(fs.readFileSync(CFG.stateFile, 'utf8')); Object.keys(j).forEach(k => { S[k] = j[k]; }); } catch (e) {} if (typeof S.enabled !== 'boolean') S.enabled = true; S.goalBusy = false; }
 function saveState() { try { fs.writeFileSync(CFG.stateFile, JSON.stringify(S)); } catch (e) { log('state-save-fail', e.message); } }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -831,6 +831,8 @@ async function main() {
   if (CFG.mode === 'live' && !/^https:\/\/api\.binance\.com\/?$/i.test(CFG.base)) { console.error('SECURITY: live mode requires official https://api.binance.com'); process.exit(1); }
   const hadState = fs.existsSync(CFG.stateFile);
   loadState();
+  if (S.mode && S.mode !== CFG.mode) { console.error('STATE_FILE belongs to ' + S.mode + ' — use a separate STATE_FILE for ' + CFG.mode); process.exit(1); }
+  S.mode = CFG.mode;
   if (!hadState && CFG.mode === 'live') { S.enabled = false; S.pauseWhy = 'manual'; log('first live start — disabled until /control start'); }
   if (todayUTC() !== S.day) { S.day = todayUTC(); S.dayPnl = 0; S.lossLockDay = ''; }
   if (!CFG.autoStop) { S.stopDay = null; S.stopWhy = ''; }

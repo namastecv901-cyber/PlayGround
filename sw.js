@@ -1,5 +1,5 @@
 /* PRE-PUMP service worker — يحفظ نسخة للفتح السريع (بيانات الأسعار تبقى حية من الإنترنت) */
-const CACHE = 'breakout-v312';
+const CACHE = 'breakout-v3130';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
