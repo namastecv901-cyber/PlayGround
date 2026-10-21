@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>⏱ فريم الدقيقة — قائمة مخصصة + بوت تلقائي — Binance Spot (v313.0)</title>
+<title>⏱ فريم الدقيقة — قائمة مخصصة + بوت تلقائي — Binance Spot (v313.20)</title>
 <meta name="theme-color" content="#06070b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="فريم الدقيقة + بوت">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<script>/*__BOOTV1__*/(function(){try{localStorage.removeItem('ai_remote_html_v1');localStorage.removeItem('ai_seen_apk_v1');window.__LOCAL_VER__='v313.0';}catch(e){}})();</script>
+<script>/*__BOOTV1__*/(function(){try{localStorage.removeItem('ai_remote_html_v1');localStorage.removeItem('ai_seen_apk_v1');window.__LOCAL_VER__='v313.20';}catch(e){}})();</script>
 <script>/*__BNCACHE__*/(function(){try{if(window.__BN_SHARED_CACHE__)return;window.__BN_SHARED_CACHE__=1;var of=window.fetch.bind(window),c={},inf={};window.fetch=function(u,o){try{var url=String(u);o=o||{};if((o.method||"GET").toUpperCase()!=="GET")return of(u,o);if(!/api\.binance\.com|data-api\.binance\.vision/.test(url))return of(u,o);var ttl=/klines|ticker\/24hr/.test(url)?8000:(/exchangeInfo/.test(url)?120000:0);var now=Date.now(),e=c[url];if(ttl&&e&&now-e.t<ttl)return Promise.resolve(new Response(e.body,{status:200,headers:{"Content-Type":"application/json"}}));if(inf[url])return inf[url].then(function(t){return new Response(t,{status:200,headers:{"Content-Type":"application/json"}});});var pr=of(u,o).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.text();});inf[url]=pr;pr.then(function(t){if(ttl)c[url]={t:Date.now(),body:t};delete inf[url];},function(){delete inf[url];});return pr.then(function(t){return new Response(t,{status:200,headers:{"Content-Type":"application/json"}});});}catch(x){return of(u,o);}};}catch(e){}})();</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png" type="image/png">
@@ -428,6 +428,9 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 .sp-scan-btn.on{background:#0b1320;color:#9df3cd;border-color:#1fe19655}
 .sp-scan-bar{height:5px;border-radius:99px;background:#ffffff0d;overflow:hidden;margin:8px 0 6px}
 .sp-scan-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#d4af37,#1fe196);transition:width .25s ease}
+.sp-scan-bar.scanning i{background:linear-gradient(90deg,#d4af37,#1fe196,#38bdf8,#d4af37);background-size:200% 100%;animation:scanBarFlow 1.1s linear infinite}
+@keyframes scanBarFlow{from{background-position:200% 0}to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.sp-scan-bar.scanning i{animation:none}}
 .sp-scan-status{font-size:.68rem;line-height:1.7;color:#cfc7ad;font-weight:800;min-height:18px}
 .sp-scan-status b{color:#9df3cd}
 .sp-scan-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:7px}
@@ -480,7 +483,44 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 .bl-mark small{font-size:.6rem;line-height:1.5;text-align:center;color:#a9dced;font-weight:900}
 .bl-auto-note{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:9px;border:1px solid #1fe1963d;border-radius:9px;background:#07130f;padding:6px 9px;font-size:.63rem;line-height:1.7;color:#a9e8c9;font-weight:800}
 .bl-auto-note b{color:#f6e27a}
-.bl-toolbar{display:grid;grid-template-columns:.8fr .8fr .9fr .9fr auto;gap:7px;align-items:end;margin-top:8px}
+.bl-ready-panel{margin-top:8px;border-color:#1fe19655;background:linear-gradient(160deg,#081711,#080d13)}
+.bl-ready-list{display:grid;gap:5px;max-height:400px;overflow:auto}
+@keyframes blDot{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes blRow{0%,100%{border-color:#ffffff12;box-shadow:none}50%{border-color:#1fe19644;box-shadow:0 0 10px #1fe19612}}
+.bl-rrow{display:grid;grid-template-columns:96px 1fr .95fr 42px;gap:7px;align-items:center;border:1px solid #ffffff12;border-radius:9px;background:#060b11;padding:7px 8px;font-size:.61rem;color:#aebdc7;cursor:pointer;font-weight:800}
+.bl-rrow.fresh{animation:blRow 2.8s ease-in-out infinite}
+.bl-rrow:hover{border-color:#1fe19688;background:#081511}
+.bl-rrow b{color:#f6e27a;direction:ltr}
+.bl-rhead{display:flex;align-items:center;gap:4px;min-width:0}
+.bl-rhead b{font-size:.68rem;white-space:nowrap}
+.bl-rtf{font-size:.52rem;line-height:1.4;color:#8fa9a0;border:1px solid #ffffff14;border-radius:4px;padding:1px 3px;direction:ltr}
+.bl-live{width:5px;height:5px;border-radius:50%;background:#1fe196;box-shadow:0 0 5px #1fe196;animation:blDot 1.5s infinite;margin-left:auto;flex:0 0 auto}
+.bl-rlvls{display:grid;gap:1px;text-align:start;direction:ltr;min-width:0}
+.bl-rlvls span{font-size:.55rem;line-height:1.45;white-space:nowrap}
+.bl-rlvls .e1{color:#9df3cd}
+.bl-rlvls .e2{color:#8fc8e8}
+.bl-rlvls .sl{color:#ff9b9b}
+.bl-rlvls .tp{color:#9df3cd}
+.bl-etype{font-size:.47rem;line-height:1.2;border:1px solid #1fe19655;background:#1fe19610;color:#9df3cd;border-radius:4px;padding:1px 3px;font-weight:900;direction:ltr}
+.bl-etype.e2{border-color:#38bdf866;background:#38bdf812;color:#a9e5ff}
+.bl-rentry{display:grid;gap:1px;text-align:start;min-width:0;direction:ltr}
+.bl-rentry span{font-size:.58rem;line-height:1.45;color:#eaf9ff;white-space:nowrap}
+.bl-rentry small{font-size:.51rem;line-height:1.4;color:#8fa9a0;white-space:nowrap}
+.bl-rrow em{font-style:normal;text-align:end;white-space:nowrap;color:#9df3cd;font-weight:900;font-size:.58rem}
+.bl-ready-hint{font-size:.58rem;line-height:1.7;color:#8fa9a0;margin-top:5px;text-align:center}
+.bl-livebadge{display:inline-flex;align-items:center;gap:4px;border-color:#1fe19655!important;background:#1fe19612!important;color:#9df3cd!important}
+.bl-livebadge i{width:5px;height:5px;border-radius:50%;background:#1fe196;box-shadow:0 0 6px #1fe196;animation:blDot 1.5s infinite}
+.bl-livebadge b{font-size:.55rem;color:#f6e27a;min-width:14px;text-align:center;display:inline-block}
+.bl-rlegend{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-bottom:4px;font-size:.52rem;color:#8fa9a0;font-weight:800}
+.bl-rlegend .e1{color:#9df3cd}
+.bl-rlegend .e2{color:#8fc8e8}
+@media(prefers-reduced-motion:reduce){.bl-live,.bl-livebadge i,.bl-rrow.fresh{animation:none}}
+.bl-ready-progress{margin:5px 0 0}
+.bl-tv-wrap{margin-top:7px}
+.bl-tv-wrap .sp-tv{margin-top:0}
+.bl-tv-wrap .sp-tv iframe{height:180px;background:#0b0d15}
+@media(max-width:720px){.bl-tv-wrap .sp-tv iframe{height:160px}}
+.bl-toolbar{display:grid;grid-template-columns:.9fr .8fr .8fr auto;gap:7px;align-items:end;margin-top:8px}
 .bl-field{display:flex;flex-direction:column;gap:4px;font-size:.64rem;font-weight:900;color:#aebdc7;min-width:0}
 .bl-field select,.bl-field input{width:100%;min-width:0;border:1px solid #ffffff1a;border-radius:9px;background:#060b11;color:#f6f1df;padding:8px 7px;font-family:inherit;font-size:.74rem;font-weight:800}
 .bl-field select{direction:ltr}
@@ -502,6 +542,7 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 .bl-ph{display:flex;align-items:center;gap:7px;justify-content:space-between;margin-bottom:6px}
 .bl-ph h3{font-size:.82rem;color:#f6f1df}
 .bl-ph span{font-size:.63rem;font-weight:900;border:1px solid #ffffff1a;background:#ffffff08;color:#aebdc7;border-radius:99px;padding:2px 7px;white-space:nowrap}
+.bl-ph-end{display:flex;align-items:center;gap:5px}
 .bl-setup-top{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:5px}
 .bl-setup-top b{font-size:.94rem;color:#f6e27a;direction:ltr}
 .bl-setup-top span{font-size:.61rem;font-weight:900;border:1px solid #38bdf855;background:#38bdf80d;color:#9ddcff;border-radius:99px;padding:2px 7px}
@@ -540,6 +581,7 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 .bl-scanall{border:1px solid #1fe19666;border-radius:9px;background:linear-gradient(135deg,#1fe196,#0f9f6e);color:#03120b;padding:8px 12px;font-size:.72rem;font-weight:900;min-width:190px}
 .bl-scanall:disabled{opacity:.55;cursor:wait}
 .bl-scan-status{font-size:.64rem;line-height:1.7;color:#9fd8c2;font-weight:800;flex:1;min-width:150px}
+.bl-scan-live{margin-top:5px;border:1px solid #38bdf833;border-radius:7px;background:#06101a;padding:4px 7px;font-size:.61rem;line-height:1.65;color:#9ddcff;font-weight:800;direction:rtl}
 .bl-scanpanel{margin-top:9px}
 .bl-scan-results{display:grid;gap:4px;max-height:330px;overflow:auto}
 .bl-srow{display:grid;grid-template-columns:58px 42px 1fr 1fr 54px 74px;gap:5px;align-items:center;border:1px solid #ffffff0d;border-radius:8px;background:#060b11;padding:6px 7px;font-size:.61rem;color:#aebdc7;cursor:pointer}
@@ -577,13 +619,15 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 .bl-srow span.vol,.bl-srow span.rsi{display:none}
 .bl-scan-results{max-height:none}
 .ready-sec .bl-scan-results{grid-template-columns:1fr}
+.bl-rrow{grid-template-columns:84px 1fr .9fr;gap:5px}
+.bl-rrow em{display:none}
 }
 </style>
 </head>
 <body>
 <header>
 <h1>⏱ <span class="grad">فريم الدقيقة — قائمة مخصصة</span> + 🤖 بوت تلقائي</h1>
-<div class="sub"><span class="live"><span class="dot"></span> مباشر</span> • فحص تلاقي تلقائي كل 30 ث • عملات صالحة للدخول • Spot فقط</div>
+<div class="sub"><span class="live"><span class="dot"></span> مباشر</span> • فحص عملات حي تلقائي • 5m / 15m • Spot فقط • v313.20</div>
 </header>
 <main>
 <section class="bl-sec ready-sec" id="readySec" aria-labelledby="readyTitle">
@@ -592,19 +636,21 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 <div>
 <div class="bl-kicker">🚀 READY ENTRIES • فحص تلاقي تلقائي</div>
 <h2 id="readyTitle">عملات صالحة للدخول <span>الآن</span></h2>
-<p>قسم مستقل يعرض كل العملات الجاهزة من قائمتك، وليس عملة واحدة. لا يوجد اختيار يدوي للعملة هنا؛ الفحص يعمل تلقائياً كل 30 ثانية ويجمع E2 المفعّل مع قرب السعر والحجم وRSI واتجاه الفريم الأعلى.</p>
-<div class="bl-pills"><span class="bl-pill green">✅ دخول جاهز فقط</span><span class="bl-pill gold">🔄 كل 30 ثانية</span><span class="bl-pill blue">🌐 كل قائمتك</span><span class="bl-pill">🛡️ Spot / بدون أوامر</span></div>
+<p>قسم مستقل يعرض كل العملات الجاهزة من قائمتك على <b>5m / 15m فقط للصفقات السريعة</b>، وليس عملة واحدة. لا يوجد اختيار يدوي للعملة؛ الفحص تلقائي حي — يتسارع عند ظهور عملة ويجمع Entry 1 / Entry 2 مع قرب السعر والحجم وRSI واتجاه الفريم الأعلى.</p>
+<div class="bl-pills"><span class="bl-pill green">✅ دخول جاهز فقط</span><span class="bl-pill gold">🔄 فحص حي</span><span class="bl-pill blue">🕐 5m / 15m</span><span class="bl-pill blue">🌐 كل قائمتك</span><span class="bl-pill">🛡️ Spot / بدون أوامر</span></div>
 </div>
 <div class="bl-mark">🚀<small>Ready<br>Entries</small></div>
 </div>
 </div>
 <div class="bl-scanbar">
-<button type="button" class="bl-scanall" id="blScanAll">🔎 فحص التلاقي الآن (<b id="blScanCount">240</b>)</button>
-<span class="bl-scan-status" id="blScanStatus">تلقائي كل 30 ثانية — يعرض الدخول الجاهز فقط من قائمتك.</span>
+<button type="button" class="bl-scanall" id="blScanAll">🔎 فحص العملات الآن (<b id="blScanCount">240</b>)</button>
+<span class="bl-scan-status" id="blScanStatus">فحص حي تلقائي — يفحص كل عملة على 5m / 15m ويعرض الدخول الجاهز E1/E2 فقط.</span>
 </div>
+<div class="bl-scan-live" id="blScanLive">🔎 جاهز — سيبدأ فحص عملات قائمتك على 5m / 15m.</div>
+<div class="sp-scan-bar"><i id="blScanBar"></i></div>
 <div class="bl-scanpanel">
 <div class="bl-ph"><h3>الدخول الجاهز الآن</h3><span id="blScanN">0</span></div>
-<div class="bl-scan-results" id="blScanResults"><div class="bl-scan-empty">سيبدأ فحص التلاقي تلقائياً كل 30 ثانية — ستظهر هنا كل العملات الصالحة للدخول.</div></div>
+<div class="bl-scan-results" id="blScanResults"><div class="bl-scan-empty">سيبدأ فحص التلاقي على 5m / 15m تلقائياً — ستظهر هنا كل العملات الصالحة للدخول E1/E2.</div></div>
 </div>
 <div class="bl-note">قسم قراءة فقط. يعرض فقط العملات التي اكتملت فيها شروط التلاقي، ويستخدم نفس إعدادات Pivot/E2/SL/TP الموجودة في قسم BuyLow أدناه.</div>
 </section>
@@ -844,60 +890,72 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 <div class="sp-note">خطة تعليمية وتنظيمية — ليست نصيحة مالية. جرّبها على بيانات تاريخية أولاً، والتزم بإدارة رأس المال.</div>
 </section>
 
-<section class="bl-sec" id="buyLowSec" aria-labelledby="blTitle">
+<section class="bl-sec bt-sec" id="buyLowSec" aria-labelledby="blTitle">
+<style>
+.bt-sec .bt-plan{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.bt-sec .bt-pcard{background:linear-gradient(160deg,#121527,#0b0d15);border:1px solid #d4af3744;border-radius:14px;padding:10px 11px}
+.bt-sec .bt-pcard h4{font-size:.76rem;color:#f6e27a;margin-bottom:5px}.bt-sec .bt-pcard p{font-size:.68rem;line-height:1.85;color:var(--mut)}.bt-sec .bt-pcard b{color:var(--txt)}
+.bt-sec .bt-toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.bt-sec .bt-toolbar button{font-size:.78rem;padding:8px 12px;border:1px solid var(--line);background:#ffffff0a;color:var(--txt)}
+.bt-sec .bt-toolbar button.go{background:var(--grad);color:#231b05;border:0}
+.bt-sec .bt-toolbar button:disabled{opacity:.45}
+.bt-sec .bt-live{font-size:.7rem;font-weight:900;color:#7ee2a8;display:inline-flex;align-items:center;gap:5px}
+.bt-sec .bt-live i{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;animation:pl 1.6s infinite}
+.bt-sec .bt-live.off{color:var(--mut)}.bt-sec .bt-live.off i{background:#64748b;box-shadow:none;animation:none}
+.bt-sec .bt-status{font-size:.72rem;color:var(--mut);line-height:1.8;margin-bottom:8px}
+.bt-sec .bt-bar{height:7px;border-radius:99px;background:#ffffff10;overflow:hidden;margin-bottom:10px}
+.bt-sec .bt-bar i{display:block;height:100%;width:0;background:var(--grad);transition:width .3s}
+.bt-sec .bt-results{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.bt-sec .bt-row{background:#0b0d15;border:1px solid #22c55e44;border-radius:12px;padding:9px 10px;cursor:pointer;transition:.15s}
+.bt-sec .bt-row:hover{border-color:#f6e27a88;transform:translateY(-1px)}
+.bt-sec .bt-row.e2{border-color:#f6e27a66}
+.bt-sec .bt-rh{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:5px}
+.bt-sec .bt-rh b{font-size:.92rem;color:#f6e27a}.bt-sec .bt-rh .tag{font-size:.62rem;font-weight:900;border-radius:99px;padding:2px 7px;background:#ffffff0d;border:1px solid #ffffff22;color:var(--mut)}
+.bt-sec .bt-rh .tag.e1{color:#8fd6ff;border-color:#8fd6ff55}.bt-sec .bt-rh .tag.e2{color:#f6e27a;border-color:#f6e27a66}
+.bt-sec .bt-rh .age{margin-inline-start:auto;font-size:.62rem;color:var(--mut)}
+.bt-sec .bt-lv{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;font-size:.63rem;color:var(--mut)}
+.bt-sec .bt-lv b{display:block;color:var(--txt);font-size:.74rem;margin-top:1px;font-variant-numeric:tabular-nums}
+.bt-sec .bt-foot{display:flex;justify-content:space-between;gap:6px;margin-top:5px;font-size:.62rem;color:var(--mut)}
+.bt-sec .bt-foot .up{color:#22c55e}.bt-sec .bt-foot .dn{color:#ef4444}
+.bt-sec .bt-empty{grid-column:1/-1;text-align:center;color:var(--mut);padding:24px;border:1px dashed var(--line);border-radius:12px;font-size:.78rem;line-height:1.9}
+.bt-sec code{background:#ffffff10;border:1px solid #ffffff18;border-radius:6px;padding:1px 5px;color:#f6e27a;font-size:.7rem;direction:ltr;display:inline-block}
+.bt-sec .bt-src{font-size:.66rem;color:var(--mut);line-height:1.9;margin-top:8px}
+@media(max-width:760px){.bt-sec .bt-plan{grid-template-columns:1fr 1fr}.bt-sec .bt-results{grid-template-columns:1fr}.bt-sec .bt-lv{grid-template-columns:repeat(3,1fr)}}
+</style>
 <div class="bl-hero">
 <div class="bl-hero-grid">
 <div>
-<div class="bl-kicker">◆ BINANCE SPOT • استراتيجية مستقلة • قراءة فقط</div>
-<h2 id="blTitle">BuyLow SellHigher <span>— Clone</span></h2>
-<p>نسخة ويب من مؤشر Pivot Low: يحدد Entry 1 عند القاع، ثم Entry 2 أدنى منه، ووقفاً تحت Entry 2، مع ستة أهداف ربح. يفحص قائمتك فقط، والتحليل التفصيلي يختار أفضل عملة جاهزة تلقائياً بدون اختيار يدوي.</p>
-<div class="bl-pills"><span class="bl-pill green">✅ Pivot Low</span><span class="bl-pill blue">🎯 Entry 1 + Entry 2</span><span class="bl-pill gold">📊 6 أهداف ربح</span><span class="bl-pill blue">🔎 قائمتك فقط</span><span class="bl-pill green">🤖 بلا اختيار يدوي</span><span class="bl-pill">🛡️ Spot / بدون أوامر</span></div>
+<div class="bl-kicker">◆ خطة ثابتة • فحص شراء فقط • بدون تنفيذ أوامر</div>
+<h2 id="blTitle">BuyLow SellHigher <span>— الخطة + فحص الدخول</span></h2>
+<p>قسم مستقل بالكامل: يعرض خطة المؤشر كما هي، ثم يفحص العملات التي وصلت إلى <b>Entry 1 أو Entry 2</b> وما زالت صالحة للشراء قبل TP1. لا تداول، لا مفاتيح، ولا أوامر — فحص وقراءة فقط.</p>
+<div class="bl-pills"><span class="bl-pill green">✅ شراء فقط</span><span class="bl-pill blue">🎯 Pivot 10 → E1</span><span class="bl-pill blue">🎯 E2 −1.5%</span><span class="bl-pill gold">🛑 Stop −2%</span><span class="bl-pill gold">📊 TP1 1.5% → TP6 9%</span><span class="bl-pill">🕐 5m / 15m</span><span class="bl-pill">🌐 OKX Spot</span><span class="bl-pill">🚫 بدون أوامر</span></div>
 </div>
-<div class="bl-mark">📉→📈<small>Buy Low<br>Sell Higher</small></div>
-</div>
-</div>
-<select id="blSym" hidden aria-hidden="true"></select>
-<div class="bl-auto-note">🤖 التحليل التفصيلي يختار <b>أفضل عملة جاهزة تلقائياً</b> من قسم «عملات صالحة للدخول» — لا يوجد اختيار يدوي للعملة.</div>
-<div class="bl-toolbar">
-<label class="bl-field">الفريم<select id="blTf"><option value="15m">15m</option><option value="1h" selected>1h</option><option value="4h">4h</option><option value="1d">1d</option></select></label>
-<label class="bl-field">Pivot Length<input id="blPivot" type="number" min="2" max="50" step="1" value="10"></label>
-<label class="bl-field">Entry 2 Offset %<input id="blE2" type="number" min="0.1" step="0.1" value="1.5"></label>
-<label class="bl-field">Stop Loss %<input id="blSl" type="number" min="0.1" step="0.1" value="2.0"></label>
-<button type="button" class="bl-run" id="blRun" disabled>🔄 تحديث التحليل</button>
-</div>
-<details class="bl-tpbox">
-<summary>⚙️ إعدادات أهداف الربح TP1 – TP6</summary>
-<div class="bl-tps">
-<label class="bl-field">TP1 %<input id="blTp1" type="number" step="0.1" value="1.5"></label>
-<label class="bl-field">TP2 %<input id="blTp2" type="number" step="0.1" value="2.9"></label>
-<label class="bl-field">TP3 %<input id="blTp3" type="number" step="0.1" value="4.4"></label>
-<label class="bl-field">TP4 %<input id="blTp4" type="number" step="0.1" value="5.9"></label>
-<label class="bl-field">TP5 %<input id="blTp5" type="number" step="0.1" value="7.4"></label>
-<label class="bl-field">TP6 %<input id="blTp6" type="number" step="0.1" value="9.0"></label>
-</div>
-</details>
-<div class="bl-stats">
-<div class="bl-stat"><small>Total Signals</small><b id="blTotal">—</b></div>
-<div class="bl-stat"><small>Wins / TP6</small><b class="green" id="blWins">—</b></div>
-<div class="bl-stat"><small>Losses / SL</small><b class="red" id="blLosses">—</b></div>
-<div class="bl-stat"><small>Win Rate</small><b id="blRate">—</b></div>
-<div class="bl-stat"><small>E2 Activations</small><b id="blE2N">—</b></div>
-</div>
-<div class="bl-status" id="blStatus">بانتظار أول فحص تلاقي — سيُختار أفضل دخول جاهز تلقائياً.</div>
-<div class="bl-main">
-<div class="bl-panel">
-<div class="bl-ph"><h3>الإعداد الحالي / آخر إعداد</h3><span id="blSetupBadge">—</span></div>
-<div id="blSetup"><div class="bl-empty">بانتظار أول عملة جاهزة للدخول — لا يوجد اختيار يدوي.</div></div>
-</div>
-<div class="bl-panel">
-<div class="bl-ph"><h3>آخر الإشارات</h3><span id="blHistN">0</span></div>
-<div class="bl-hist" id="blHist"><div class="bl-empty">لا إشارات بعد.</div></div>
+<div class="bl-mark">📋<small>Plan<br>+ Scan</small></div>
 </div>
 </div>
-<div class="bl-note">Backtest فردي تعليمي على بيانات Binance العامة. القسم العلوي «عملات صالحة للدخول» هو الذي يفحص كل قائمتك تلقائياً ويعرض عدة عملات، وهذا القسم للتحليل التفصيلي لعملة واحدة عند الحاجة. الإشارات ليست توصية ولا يرسل القسم أي أوامر شراء أو بيع.</div>
+<div class="bt-plan">
+<div class="bt-pcard"><h4>1) اكتشاف القاع</h4><p><b>Pivot Low</b> بطول <b>10</b>. لا يُعتمد القاع إلا بعد تأكيده بمرور <b>10 شموع</b> على اليمين. <b>Entry 1 = سعر القاع</b> وليس السعر الحالي.</p></div>
+<div class="bt-pcard"><h4>2) الدخول — شراء فقط</h4><p><b>Entry 1</b> عند القاع المؤكد. <b>Entry 2 = E1 × (1 − 1.5%)</b> ولا يُفعّل إلا عند وصول السعر إليه. لا دخول بعد تجاوز <b>TP1</b>.</p></div>
+<div class="bt-pcard"><h4>3) الوقف والأهداف</h4><p><b>Stop = E2 × (1 − 2%)</b>. الأهداف من Entry 1: <b>1.5% / 2.9% / 4.4% / 5.9% / 7.4% / 9%</b>. الوقف لا يُنقل تلقائياً.</p></div>
+<div class="bt-pcard"><h4>4) حدود هذا القسم</h4><p>يعرض فقط العملات <b>الصالحة للشراء الآن</b> عند E1/E2 قبل TP1. لا يفتح صفقات، لا يحفظ مفاتيح، ولا يرسل أي أمر. المصدر: أسعار OKX العامة.</p></div>
+</div>
+<div class="bt-toolbar">
+<select id="btTf" aria-label="الفريم"><option value="5m">5m</option><option value="15m">15m</option><option value="both">5m + 15m</option></select>
+<button type="button" id="btScan" class="go">🔎 فحص العملات الآن</button>
+<span class="bt-live" id="btLive"><i></i> فحص تلقائي</span>
+<span class="bl-pill" id="btCount">0 صالح</span>
+<span class="bl-pill" id="btNext">—</span>
+</div>
+<div class="bt-status" id="btStatus">جاهز — سيبدأ فحص العملات الصالحة للدخول تلقائياً.</div>
+<div class="bt-bar"><i id="btBar"></i></div>
+<div class="bt-results" id="btResults"><div class="bt-empty">لم يبدأ الفحص بعد — ستظهر هنا العملات الصالحة للشراء عند Entry 1 أو Entry 2 فقط.</div></div>
+<div class="bl-note">🔒 <b>قراءة فقط:</b> هذه قائمة فحص وليست توصية. لا تُنفذ أي أوامر ولا تُدخل مفاتيح API. يتم استبعاد أي إعداد ضرب Stop أو تجاوز TP1 قبل الدخول. عند تعارض Stop/TP تاريخياً يُعتمد Stop أولاً.</div>
+<div class="bt-src">المصدر: OKX Spot العام (بدون Binance). الفحص يستخدم أعلى العملات سيولة مقابل USDT. اضغط على أي بطاقة لفتح شارت OKX.</div>
 </section>
+
+
 </main>
-<footer>⏱ فريم الدقيقة + 🤖 بوت تلقائي — فحص تلاقي تلقائي كل 30 ث • Spot فقط بلا رافعة • الوضع الحقيقي ينفذ على مسؤوليتك وليس نصيحة مالية</footer>
+<footer>⏱ فريم الدقيقة + 🤖 بوت تلقائي — فحص تلاقي حي تلقائي • Spot فقط بلا رافعة • الوضع الحقيقي ينفذ على مسؤوليتك وليس نصيحة مالية</footer>
 <script>// ⏱ MIN v1 (مضاف) — فريم الدقيقة (1m): تحليل 1m+5m+15m، دخول شراء فقط + حفظ الربح تلقائياً
 (function(){
 "use strict";
@@ -1635,7 +1693,7 @@ function tvChart(base){
 function render(list){
   if(!resultsEl)return;
   if(!list.length){
-    resultsEl.innerHTML='<div class="sp-scan-empty">لا يوجد دخول جاهز مؤكد الآن داخل قائمتك — الفحص يتجدد تلقائياً كل 30 ثانية، ولا تُعرض فرص المراقبة.</div>';
+    resultsEl.innerHTML='<div class="sp-scan-empty">لا يوجد دخول جاهز مؤكد الآن داخل قائمتك — الفحص يتجدد تلقائياً — ويتسارع عند ظهور عملة، ولا تُعرض فرص المراقبة.</div>';
     return;
   }
   resultsEl.innerHTML=list.slice(0,8).map(function(r){
@@ -1679,327 +1737,130 @@ async function run(){
   busy=false;
 }
 btn.addEventListener('click',run);
-setTimeout(function(){if(document.visibilityState!=='hidden')run()},3000);
-setInterval(function(){if(document.visibilityState!=='hidden')run()},30000);
-document.addEventListener('visibilitychange',function(){
-  if(document.visibilityState==='visible'&&!busy)run();
-});
+setTimeout(run,3000);
+setInterval(run,30000);
 })();
 </script>
 
 <script>
 (function(){
 "use strict";
-var sec=document.getElementById('buyLowSec');
-if(!sec)return;
-var symSel=document.getElementById('blSym'),tfSel=document.getElementById('blTf'),runBtn=document.getElementById('blRun');
-var pivotIn=document.getElementById('blPivot'),e2In=document.getElementById('blE2'),slIn=document.getElementById('blSl');
-var tpIns=[1,2,3,4,5,6].map(function(i){return document.getElementById('blTp'+i)});
-var totalEl=document.getElementById('blTotal'),winsEl=document.getElementById('blWins'),lossesEl=document.getElementById('blLosses'),rateEl=document.getElementById('blRate'),e2El=document.getElementById('blE2N');
-var statusEl=document.getElementById('blStatus'),setupEl=document.getElementById('blSetup'),setupBadge=document.getElementById('blSetupBadge'),histEl=document.getElementById('blHist'),histN=document.getElementById('blHistN');
-var scanBtn=document.getElementById('blScanAll'),scanStatusEl=document.getElementById('blScanStatus'),scanCountEl=document.getElementById('blScanCount'),scanNEl=document.getElementById('blScanN'),scanResultsEl=document.getElementById('blScanResults');
-var HOSTS=['https://data-api.binance.vision','https://api.binance.com'];
-var running=false,scanning=false;
-function onlyList(){
-  var o=(window.MIN&&window.MIN.only)||{};
-  return Object.keys(o).filter(function(x){return /^[A-Z0-9]{1,20}$/.test(String(x));});
+var sec=document.getElementById('buyLowSec'); if(!sec)return;
+var $=function(id){return document.getElementById(id)};
+var tfSel=$('btTf'),scanBtn=$('btScan'),liveEl=$('btLive'),countEl=$('btCount'),nextEl=$('btNext');
+var statusEl=$('btStatus'),barEl=$('btBar'),resultsEl=$('btResults');
+var HOST='https://www.okx.com',PIVOT=10,E2=1.5,SL=2,TPS=[1.5,2.9,4.4,5.9,7.4,9],MAX=60,CONC=5,LIMIT=100;
+var universe=[],lastUni=0,results=[],scanning=false,gen=0,lastScan=0,nextAt=0,universeCache=null;
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function px(v){v=Number(v);if(!isFinite(v))return '—';if(v>=1000)return v.toFixed(2);if(v>=1)return v.toFixed(4);if(v>=0.01)return v.toFixed(5);if(v>=0.0001)return v.toFixed(6);return v.toFixed(8)}
+function pct(v){v=Number(v);if(!isFinite(v))return '—';return (v>=0?'+':'')+v.toFixed(2)+'%'}
+function age(ts){var m=Math.max(0,Math.round((Date.now()-Number(ts))/60000));if(m<1)return 'الآن';if(m<60)return m+' د';if(m<1440)return Math.round(m/60)+' س';return Math.round(m/1440)+' ي'}
+function timeout(ms){var c=new AbortController();setTimeout(function(){try{c.abort()}catch(e){}},ms);return c.signal}
+async function getJson(url){
+  var r=await fetch(url,{cache:'no-store',signal:timeout(12000)});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  var j=await r.json();
+  if(j&&j.code&&j.code!=='0')throw new Error(j.msg||j.code);
+  return j;
 }
-var bases=onlyList();
-if(!bases.length)bases=['SOL'];
-if(scanCountEl)scanCountEl.textContent=String(bases.length);
-function fillSymbols(){
-  if(!symSel)return;
-  symSel.innerHTML=bases.map(function(b){return '<option value="'+b+'">'+b+' / USDT</option>'}).join('');
-  symSel.value=bases.indexOf('SOL')>=0?'SOL':bases[0];
+async function loadUniverse(force){
+  if(!force&&universeCache&&Date.now()-lastUni<600000)return universeCache;
+  var inst=await getJson(HOST+'/api/v5/public/instruments?instType=SPOT');
+  var tick=await getJson(HOST+'/api/v5/market/tickers?instType=SPOT');
+  var vol={};(tick.data||[]).forEach(function(x){vol[x.instId]=+x.volCcy24h||0});
+  var arr=(inst.data||[]).filter(function(x){return x.state==='live'&&x.quoteCcy==='USDT'&&/-USDT$/.test(x.instId)})
+    .map(function(x){return {id:x.instId,base:x.baseCcy||x.instId.split('-')[0],vol:vol[x.instId]||0}})
+    .filter(function(x){return x.vol>0})
+    .sort(function(a,b){return b.vol-a.vol})
+    .slice(0,MAX);
+  universeCache=arr;lastUni=Date.now();return arr;
 }
-fillSymbols();
-if(runBtn)runBtn.disabled=true;
-function fetchJson(url,ms){
-  return new Promise(function(resolve){
-    var c=new AbortController(),to=setTimeout(function(){try{c.abort()}catch(e){}},ms||8000);
-    fetch(url,{signal:c.signal,cache:'no-store'}).then(function(r){
-      if(!r.ok)throw new Error('HTTP '+r.status);
-      return r.json();
-    }).then(function(j){clearTimeout(to);resolve(j)}).catch(function(){clearTimeout(to);resolve(null)});
-  });
+async function candles(instId,tf){
+  var j=await getJson(HOST+'/api/v5/market/candles?instId='+encodeURIComponent(instId)+'&bar='+tf+'&limit='+LIMIT);
+  var a=(j.data||[]).slice().reverse();
+  return a.filter(function(k){return String(k[8])==='1'}).map(function(k){return {t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4]}});
 }
-async function klines(sym,iv,limit){
-  var i,d;
-  for(i=0;i<HOSTS.length;i++){
-    d=await fetchJson(HOSTS[i]+'/api/v3/klines?symbol='+sym+'&interval='+iv+'&limit='+(limit||500),8000);
-    if(Array.isArray(d)&&d.length)return d;
+function setupFor(inst,bars,cur,tf){
+  if(!bars||bars.length<PIVOT*2+2)return null;
+  var p=bars.length-PIVOT-1, low=bars[p].l;
+  if(!(low>0))return null;
+  for(var i=p-PIVOT;i<=p+PIVOT;i++){if(i!==p&&bars[i].l<=low)return null}
+  var confirm=p+PIVOT;
+  if(confirm>bars.length-1)return null;
+  var e1=low,e2=e1*(1-E2/100),stop=e2*(1-SL/100),tps=TPS.map(function(x){return e1*(1+x/100)});
+  var after=bars.slice(confirm+1);
+  for(var j=0;j<after.length;j++){
+    if(after[j].l<=stop)return null;
+    if(after[j].h>=tps[0])return null;
   }
-  return null;
+  if(!(cur>stop&&cur<=e1))return null;
+  var type=cur<=e2?'E2':'E1';
+  var entry=type==='E2'?e2:e1;
+  return {id:inst.id,base:inst.base,tf:tf,e1:e1,e2:e2,stop:stop,tp1:tps[0],tp6:tps[5],tps:tps,entry:entry,type:type,cur:cur,pivotTime:bars[p].t,confirmTime:bars[confirm].t,age:bars[confirm].t,dist:(cur/entry-1)*100,vol:inst.vol};
 }
-function fp(n){
-  n=+n||0;
-  if(n>=1000)return '$'+n.toLocaleString('en-US',{maximumFractionDigits:2});
-  if(n>=1)return '$'+n.toFixed(4);
-  if(n>=0.01)return '$'+n.toFixed(5);
-  return '$'+n.toFixed(6);
+async function mapLimit(arr,limit,fn){
+  var out=new Array(arr.length),i=0;
+  async function worker(){while(i<arr.length){var k=i++;try{out[k]=await fn(arr[k],k)}catch(e){out[k]=null}}}
+  await Promise.all(Array.from({length:Math.min(limit,arr.length)},worker));
+  return out;
 }
-function pct(n){return (n>=0?'+':'')+n.toFixed(2)+'%'}
-function dt(ms){
-  try{var d=new Date(+ms);return (d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours()+':'+('0'+d.getMinutes()).slice(-2)}catch(e){return '—'}
-}
-function isPivotLow(bars,p,len){
-  var v=+bars[p][3],j;
-  for(j=p-len;j<=p+len;j++){
-    if(j!==p&&+bars[j][3]<=v)return false;
-  }
-  return true;
-}
-function backtest(bars,cfg){
-  var n=bars.length,setups=[],active=null,wins=0,losses=0,total=0,e2=0,c,p,k,tps,b,lo,hi;
-  for(c=cfg.pivotLen*2;c<n;c++){
-    if(!active){
-      p=c-cfg.pivotLen;
-      if(p>=cfg.pivotLen&&isPivotLow(bars,p,cfg.pivotLen)){
-        var e1=+bars[p][3];
-        if(e1>0){
-          var entry2=e1*(1-cfg.e2/100);
-          var stop=entry2*(1-cfg.sl/100);
-          tps=cfg.tps.map(function(x){return e1*(1+x/100)});
-          active={entryBar:p,confirmBar:c,entry1:e1,entry2:entry2,stop:stop,tps:tps,tp1:tps[0],e2Hit:false,e2Bar:null,e2Time:null,result:null,exitBar:null,exitPrice:null,exitTime:null,tpReached:0,startTime:+bars[p][0],confirmTime:+bars[c][0]};
-          setups.push(active);
-          total++;
-        }
-      }
-    }
-    if(active){
-      b=bars[c];lo=+b[3];hi=+b[2];
-      if(!active.e2Hit&&lo<=active.entry2){
-        active.e2Hit=true;active.e2Bar=c;active.e2Time=+b[0];e2++;
-      }
-      if(active.e2Hit){
-        if(lo<=active.stop){
-          active.result='loss';active.exitBar=c;active.exitPrice=active.stop;active.exitTime=+b[0];losses++;active=null;
-        }else{
-          for(k=0;k<6;k++){if(hi>=active.tps[k])active.tpReached=Math.max(active.tpReached,k+1)}
-          if(hi>=active.tps[5]){
-            active.result='win';active.exitBar=c;active.exitPrice=active.tps[5];active.exitTime=+b[0];wins++;active=null;
-          }
-        }
-      }
-    }
-  }
-  return {setups:setups,wins:wins,losses:losses,totalSignals:total,e2Activations:e2,active:active};
-}
-function closesOf(bars){var a=[],i;for(i=0;i<bars.length;i++)a.push(+bars[i][4]);return a}
-function emaCalc(a,n){
-  if(!a||a.length<n)return null;
-  var k=2/(n+1),e=a[0],i;
-  for(i=1;i<a.length;i++)e=a[i]*k+e*(1-k);
-  return e;
-}
-function rsiAt(a,idx,n){
-  if(idx<n+1)return 50;
-  var g=0,l=0,i,d;
-  for(i=1;i<=n;i++){d=a[i]-a[i-1];if(d>=0)g+=d;else l-=d;}
-  var ag=g/n,al=l/n;
-  for(i=n+1;i<=idx;i++){d=a[i]-a[i-1];ag=(ag*(n-1)+(d>0?d:0))/n;al=(al*(n-1)+(d<0?-d:0))/n;}
-  return al===0?100:100-100/(1+ag/al);
-}
-function volRatioAt(bars,idx){
-  var i,now=0,base=0,cn=0,cb=0;
-  for(i=Math.max(0,idx-2);i<=idx;i++){now+=+bars[i][7]||+bars[i][5]||0;cn++}
-  for(i=Math.max(0,idx-22);i<=idx-3;i++){base+=+bars[i][7]||+bars[i][5]||0;cb++}
-  now=cn?now/cn:0;base=cb?base/cb:0;
-  return base>0?now/base:0;
-}
-function readyInfo(data,bars){
-  var s=data.active;
-  if(!s||!s.e2Hit||s.result||s.tpReached>0)return null;
-  var n=bars.length,last=bars[n-1],c=+last[4],o=+last[1];
-  if(!(s.entry2>0)||c<s.entry2||c>=s.tp1)return null;
-  var dist=(c-s.entry2)/s.entry2;
-  if(dist>0.015)return null;
-  var a=closesOf(bars),r=rsiAt(a,n-1,14),rp=rsiAt(a,n-2,14),v=volRatioAt(bars,n-1);
-  if(!(v>=1.1&&r>=32&&r<=60&&r>=rp&&c>=o))return null;
-  return {sym:s,dist:dist,vol:v,rsi:r,prevRsi:rp,green:c>=o,price:c,time:+last[0]};
-}
-async function trendFor(sym,iv){
-  var map={'15m':'1h','1h':'4h','4h':'1d','1d':'1w'},tf=map[iv]||'4h';
-  var b=await klines(sym,tf,120);
-  if(!b||b.length<55)return {ok:false,tf:tf};
-  var a=closesOf(b),e20=emaCalc(a,20),e50=emaCalc(a,50),last=a[a.length-1];
-  return {ok:e20!==null&&e50!==null&&last>e50&&e20>e50,tf:tf,last:last,e20:e20,e50:e50};
-}
-function num(id,def){
-  var v=parseFloat((document.getElementById(id)||{}).value);
-  return isFinite(v)?v:def;
-}
-function readCfg(){
-  var tps=tpIns.map(function(el,i){
-    var v=parseFloat(el?el.value:0);
-    if(!isFinite(v)||v<=0)v=[1.5,2.9,4.4,5.9,7.4,9][i];
-    return Math.max(0.1,Math.min(100,v));
-  });
-  return {pivotLen:Math.max(2,Math.min(50,Math.round(num('blPivot',10)))),e2:Math.max(0.1,Math.min(50,num('blE2',1.5))),sl:Math.max(0.1,Math.min(50,num('blSl',2))),tps:tps};
-}
-function level(label,val,cls,hit){
-  return '<div class="bl-lvl '+cls+(hit?' hit':'')+'"><small>'+label+'</small><b>'+fp(val)+'</b></div>';
-}
-function render(data,sym,iv,cfg,bars){
-  var last=bars[bars.length-1],lastPrice=+last[4],lastTime=+last[0];
-  var s=data.active||data.setups[data.setups.length-1]||null;
-  var active=!!data.active;
-  var decided=data.wins+data.losses;
-  var rate=decided?data.wins/decided*100:0;
-  if(totalEl)totalEl.textContent=String(data.totalSignals);
-  if(winsEl)winsEl.textContent=String(data.wins);
-  if(lossesEl)lossesEl.textContent=String(data.losses);
-  if(rateEl)rateEl.textContent=rate.toFixed(1)+'%';
-  if(e2El)e2El.textContent=String(data.e2Activations);
-  if(histN)histN.textContent=String(data.setups.length);
-  if(!s){
-    if(setupBadge)setupBadge.textContent='لا إعداد';
-    if(setupEl)setupEl.innerHTML='<div class="bl-empty">لا يوجد Pivot Low مؤكد ضمن البيانات الحالية. جرّب فريماً أصغر أو Pivot Length أقل.</div>';
-  }else{
-    var badge=active?'نشط':s.result==='win'?'ربح TP6':s.result==='loss'?'خسارة SL':'مغلق';
-    if(setupBadge)setupBadge.textContent=badge;
-    var dist=s.entry2>0?(lastPrice-s.entry2)/s.entry2*100:0;
-    var status=s.result==='win'?'✅ وصل TP6 وأُغلق بربح':s.result==='loss'?'🛑 ضرب الوقف قبل TP6':s.e2Hit?'⚡ Entry 2 مفعّل — راقب الوقف والأهداف':'⏳ بانتظار وصول السعر إلى Entry 2';
-    var tpHtml=s.tps.map(function(v,i){return level('TP'+(i+1)+' '+pct(data ? cfg.tps[i] : 0),v,'tp',s.tpReached>i)}).join('');
-    if(setupEl)setupEl.innerHTML='<div class="bl-setup-top"><b>'+sym+'USDT</b><span>'+iv+'</span><em>'+status+'</em></div>'
-      +'<div class="bl-levels">'+level('Entry 1',''+s.entry1,'e1',false)+level('Entry 2',''+s.entry2,'e2',s.e2Hit)+level('Stop Loss',''+s.stop,'sl',s.result==='loss')+tpHtml+'</div>'
-      +'<div class="bl-setup-meta">السعر الآن <b>'+fp(lastPrice)+'</b> • المسافة إلى Entry 2 <b>'+pct(dist)+'</b> • شمعة الإشارة '+dt(s.startTime)+' • E2 '+(s.e2Hit?'✅ '+dt(s.e2Time):'⏳ لم يُلمس')+' • أعلى TP '+s.tpReached+'/6'+'</div>'
-      +'<div class="bl-setup-meta">الدخول المرجعي Entry 2 <b>'+fp(s.entry2)+'</b> • الوقف <b>'+fp(s.stop)+'</b> • المخاطرة <b>'+pct((s.entry2-s.stop)/s.entry2*100)+'</b> • تأكيد Pivot '+dt(s.confirmTime)+' • آخر تحديث '+dt(lastTime)+'</div>';
-  }
-  if(histEl){
-    var rows=data.setups.slice().reverse().slice(0,10).map(function(x){
-      var cls=x.result==='win'?'win':x.result==='loss'?'loss':'open';
-      var txt=x.result==='win'?'WIN':x.result==='loss'?'LOSS':'OPEN';
-      return '<div class="bl-hrow"><b>'+dt(x.startTime)+'</b><span>E2 '+fp(x.entry2)+'</span><span>TP '+x.tpReached+'/6</span><em class="'+cls+'">'+txt+'</em></div>';
+async function scan(){
+  if(scanning)return;scanning=true;gen++;var g=gen;
+  scanBtn.disabled=true;liveEl.className='bt-live';liveEl.innerHTML='<i></i> يفحص...';
+  statusEl.textContent='جارٍ تحميل قائمة OKX والتحقق من الشموع...';barEl.style.width='3%';
+  try{
+    var uni=await loadUniverse(true);
+    if(!uni.length)throw new Error('لا توجد عملات USDT متاحة');
+    var tfs=tfSel.value==='both'?['5m','15m']:[tfSel.value];
+    var tasks=[];uni.forEach(function(u){tfs.forEach(function(tf){tasks.push({u:u,tf:tf})})});
+    var done=0,hits=[];
+    var out=await mapLimit(tasks,CONC,async function(x){
+      if(g!==gen)return null;
+      var bars=await candles(x.u.id,x.tf);
+      var cur=x.u.last||(bars.length?bars[bars.length-1].c:0);
+      var s=setupFor(x.u,bars,cur,x.tf);
+      done++;if(done%5===0||done===tasks.length){barEl.style.width=Math.round(done/tasks.length*100)+'%';statusEl.textContent='فحص '+done+' / '+tasks.length+' — '+(hits.length)+' صالح للشراء...'}
+      if(s)hits.push(s);
+      return s;
     });
-    histEl.innerHTML=rows.length?rows.join(''):'<div class="bl-empty">لا إشارات في هذه الفترة.</div>';
+    if(g!==gen)return;
+    results=hits.sort(function(a,b){if(a.type!==b.type)return a.type==='E2'?-1:1;return b.vol-a.vol});
+    render(results);lastScan=Date.now();
+    statusEl.textContent=results.length?('✅ '+results.length+' عملة صالحة للشراء الآن — E1/E2 قبل TP1.'):'لا توجد عملات صالحة للشراء الآن — لن تُعرض إشارات ناقصة.';
+  }catch(e){
+    statusEl.textContent='⚠️ تعذر الفحص: '+e.message+' — سيُعاد تلقائياً.';
+    resultsEl.innerHTML='<div class="bt-empty">تعذر جلب بيانات OKX الآن. أعد المحاولة بعد قليل.</div>';
+  }finally{
+    if(g===gen){scanning=false;scanBtn.disabled=false;liveEl.className='bt-live';liveEl.innerHTML='<i></i> فحص تلقائي';barEl.style.width='100%';schedule(60000)}
   }
-  if(statusEl)statusEl.innerHTML='✅ <b>'+sym+'USDT</b> • '+iv+' • '+bars.length+' شمعة — <b>'+data.totalSignals+'</b> إشارة • <b>'+data.wins+'</b> ربح TP6 • <b>'+data.losses+'</b> خسارة SL • <b>'+data.e2Activations+'</b> تنشيط E2 • '+(data.active?'إعداد نشط':'لا إعداد نشط')+'.';
 }
-function scoreReady(x){
-  var near=x.dist<=0.005?25:x.dist<=0.01?20:15;
-  var vol=Math.min(20,Math.round(8+(x.vol-1)*20));
-  var rs=x.rsi>=38&&x.rsi<=52?20:15;
-  return Math.min(100,near+vol+rs+25+10);
-}
-function renderScan(list,scanned){
-  if(scanNEl)scanNEl.textContent=String(list.length);
-  if(!scanResultsEl)return;
-  if(!list.length){
-    scanResultsEl.innerHTML='<div class="bl-scan-empty">لا يوجد دخول جاهز الآن. الفحص يعرض فقط E2 مفعّل + سعر قريب + حجم + RSI + اتجاه الفريم الأعلى.<br>تم فحص '+scanned+' عملة من قائمتك — لا تُعرض إشارات ناقصة.</div>';
-    return;
-  }
-  scanResultsEl.innerHTML=list.map(function(x){
-    var st=x.sym,tp6=st.tps&&st.tps.length?st.tps[st.tps.length-1]:0;
-    return '<article class="rd-card" data-sym="'+x.base+'" title="اضغط لفتح التحليل التفصيلي لـ '+x.base+'">'
-      +'<div class="rd-top"><b>'+x.base+'</b><span>'+x.trend.tf+' ▲</span><em>'+x.score+'%</em></div>'
-      +'<div class="rd-levels">'
-      +'<div class="rd-lvl e2"><small>Entry 2</small><b>'+fp(st.entry2)+'</b></div>'
-      +'<div class="rd-lvl sl"><small>Stop</small><b>'+fp(st.stop)+'</b></div>'
-      +'<div class="rd-lvl tp"><small>TP1</small><b>'+fp(st.tps[0])+'</b></div>'
-      +'<div class="rd-lvl tp"><small>TP6</small><b>'+fp(tp6)+'</b></div>'
-      +'</div>'
-      +'<div class="rd-meta"><span>'+pct(x.dist*100)+' من E2</span><span>حجم '+x.vol.toFixed(1)+'×</span><span>RSI '+Math.round(x.rsi)+'↑</span></div>'
-      +'<div class="rd-foot">اضغط لفتح التحليل التفصيلي ↗</div></article>';
+function schedule(ms){nextAt=Date.now()+ms}
+function render(list){
+  countEl.textContent=list.length+' صالح';
+  if(!list.length){resultsEl.innerHTML='<div class="bt-empty">لا توجد عملات صالحة للدخول الآن.<br>الشرط: Pivot Low مؤكد + السعر عند E1 أو E2 + لم يُضرب Stop أو TP1 قبل الدخول.</div>';return}
+  resultsEl.innerHTML=list.map(function(x){
+    return '<div class="bt-row '+(x.type==='E2'?'e2':'')+'" data-inst="'+esc(x.id)+'" data-tf="'+esc(x.tf)+'">'+
+      '<div class="bt-rh"><b>'+esc(x.base)+'</b><span class="tag">'+esc(x.tf)+'</span><span class="tag '+(x.type==='E2'?'e2':'e1')+'">'+x.type+'</span><span class="age">قاع مؤكد '+age(x.age)+'</span></div>'+
+      '<div class="bt-lv"><div>الدخول<b>'+px(x.entry)+'</b></div><div>E1<b>'+px(x.e1)+'</b></div><div>E2<b>'+px(x.e2)+'</b></div><div>Stop<b>'+px(x.stop)+'</b></div><div>TP1<b>'+px(x.tp1)+'</b></div></div>'+
+      '<div class="bt-foot"><span>الحالي <b>'+px(x.cur)+'</b></span><span class="'+(x.dist<=0?'up':'dn')+'">'+pct(x.dist)+' من الدخول</span><span>TP6 '+px(x.tp6)+'</span></div>'+
+      '</div>';
   }).join('');
 }
-async function scanAll(){
-  if(scanning||running)return;
-  if(!bases.length){if(scanStatusEl)scanStatusEl.textContent='⚠️ القائمة المخصصة غير محمّلة بعد.';return;}
-  scanning=true;
-  var scanLabel=scanBtn?scanBtn.innerHTML:'';
-  if(scanBtn){scanBtn.disabled=true;scanBtn.textContent='⏳ فحص التلاقي...'}
-  if(scanResultsEl)scanResultsEl.innerHTML='';
-  if(scanNEl)scanNEl.textContent='0';
-  var cfg=readCfg(),iv=tfSel.value,list=[],done=0,ok=0,idx=0,best=null;
-  function progress(){
-    if(scanStatusEl)scanStatusEl.textContent='⏳ فحص التلاقي '+done+' / '+bases.length+' — دخول جاهز: '+list.length;
-  }
-  progress();
-  async function worker(){
-    while(idx<bases.length){
-      var b=bases[idx++],bars=null,d=null,r=null;
-      try{bars=await klines(b+'USDT',iv,500)}catch(e){bars=null}
-      if(bars&&bars.length>=cfg.pivotLen*2+20){
-        ok++;
-        try{d=backtest(bars,cfg);r=readyInfo(d,bars)}catch(e){r=null}
-        if(r){r.base=b;r.data=d;r.bars=bars.length;list.push(r)}
-      }
-      done++;
-      if(done%5===0||done===bases.length)progress();
-    }
-  }
-  try{
-    await Promise.all(Array.from({length:6},worker));
-    if(list.length){
-      if(scanStatusEl)scanStatusEl.textContent='🔎 تحقق التلاقي: اتجاه الفريم الأعلى لـ '+list.length+' مرشح...';
-      var ti=0;
-      async function trendWorker(){
-        while(ti<list.length){
-          var x=list[ti++],t=null;
-          try{t=await trendFor(x.base+'USDT',iv)}catch(e){t=null}
-          x.trend=t;
-          if(t&&t.ok)x.score=scoreReady(x);
-        }
-      }
-      await Promise.all(Array.from({length:4},trendWorker));
-      list=list.filter(function(x){return x.trend&&x.trend.ok&&isFinite(x.score)});
-    }
-    list.sort(function(a,b){return b.score-a.score||a.dist-b.dist});
-    if(list.length)best=list[0].base;
-    renderScan(list,ok);
-    if(scanStatusEl)scanStatusEl.textContent='✅ فحص تلاقي تلقائي كل 30 ث — تم '+ok+' / '+bases.length+' — '+(list.length?list.length+' دخول جاهز فقط':'لا يوجد دخول جاهز الآن')+' • '+dt(Date.now())+'.';
-    if(!ok&&scanStatusEl)scanStatusEl.textContent='⚠️ تعذر جلب بيانات السوق الآن — سيُعاد الفحص تلقائياً.';
-  }finally{
-    scanning=false;
-    if(scanBtn){scanBtn.disabled=false;scanBtn.innerHTML=scanLabel}
-    if(best&&!running){
-      if(runBtn)runBtn.disabled=false;
-      symSel.value=best;run();
-    }else if(!best&&ok>0&&!running){
-      if(runBtn)runBtn.disabled=true;
-      if(setupEl)setupEl.innerHTML='<div class="bl-empty">لا يوجد دخول جاهز الآن — لن يُعرض تحليل فردي حتى تظهر فرصة مكتملة التلاقي.</div>';
-      if(statusEl)statusEl.textContent='⏳ بانتظار فرصة جاهزة من قسم «عملات صالحة للدخول»...';
-    }
-  }
-}
-async function run(){
-  if(running||scanning)return;
-  running=true;runBtn.disabled=true;runBtn.textContent='⏳ يفحص...';
-  if(statusEl)statusEl.textContent='⏳ يقرأ بيانات Binance ويحسب Pivot Low...';
-  try{
-    var sym=symSel.value,iv=tfSel.value,cfg=readCfg();
-    var bars=await klines(sym+'USDT',iv);
-    if(!bars||bars.length<cfg.pivotLen*2+10){
-      if(statusEl)statusEl.textContent='⚠️ تعذر جلب بيانات كافية من Binance — تحقق من الاتصال أو جرّب فريماً آخر.';
-      return;
-    }
-    var data=backtest(bars,cfg);
-    render(data,sym,iv,cfg,bars);
-  }catch(e){
-    if(statusEl)statusEl.textContent='⚠️ حدث خطأ أثناء الحساب — أعد المحاولة.';
-  }finally{
-    running=false;runBtn.disabled=false;runBtn.textContent='🔄 تحديث التحليل';
-  }
-}
-runBtn.addEventListener('click',run);
-if(scanBtn)scanBtn.addEventListener('click',scanAll);
-if(scanResultsEl)scanResultsEl.addEventListener('click',function(e){
-  var row=e.target.closest('.rd-card');
-  if(!row)return;
-  var b=row.getAttribute('data-sym');
-  if(b&&symSel){
-    symSel.value=b;run();
-    var bl=document.getElementById('buyLowSec');
-    if(bl&&bl.scrollIntoView)bl.scrollIntoView({behavior:'smooth',block:'start'});
-  }
+resultsEl.addEventListener('click',function(e){
+  var row=e.target.closest('.bt-row');if(!row)return;
+  var inst=row.getAttribute('data-inst');if(!inst)return;
+  window.open('https://www.okx.com/trade-spot/'+inst.toLowerCase(),'_blank','noopener');
 });
-setTimeout(function(){if(document.visibilityState!=='hidden')scanAll()},7000);
-setInterval(function(){if(document.visibilityState!=='hidden')scanAll()},30000);
-document.addEventListener('visibilitychange',function(){
-  if(document.visibilityState==='visible'&&!scanning)scanAll();
-});
+scanBtn.addEventListener('click',function(){scan()});
+tfSel.addEventListener('change',function(){scan()});
+setInterval(function(){
+  if(nextAt)nextEl.textContent=Math.max(0,Math.ceil((nextAt-Date.now())/1000))+'ث';
+  if(!scanning&&nextAt&&Date.now()>=nextAt&&!document.hidden)scan();
+},1000);
+setTimeout(scan,900);
 })();
 </script>
+
+
 </body>
 </html>
