@@ -1505,7 +1505,7 @@ body.linkmode #masterFab{display:none!important}
       <button class="btn btn-ghost btn-sm" id="installBtn" hidden>📲 تثبيت التطبيق</button>
     </span>
   </div>
-  <p>قسم واحد فقط — كل شيء داخل <b>البطاقة نفسها</b>: الشارة • خطة الصفقة • 🧮 الحاسبة • 🛡 الحارس الحي • التحليل • الشارت.</p>
+  <p>قسمان فقط — 💧 دخول السيولة و📐 رادار النماذج الفنية — وكل شيء داخل <b>البطاقة نفسها</b>: الشارة • خطة الصفقة • 🧮 الحاسبة • 🛡 الحارس الحي • التحليل • الشارت.</p>
   <div class="count-line">
     <span>المحللة: <b id="scanCount">0</b>/500</span><span>•</span>
     <span id="statusLine">...</span><span>•</span>
@@ -1519,6 +1519,10 @@ body.linkmode #masterFab{display:none!important}
   <div class="ob-head"><h2>💧 دخول السيولة — عملات دخلتها أموال الآن</h2><span class="ob-count" id="liqCount">0</span></div>
   <div class="ob-status" id="liqStatus">💧 يراقب دخول السيولة...</div>
   <div class="ob-grid" id="liqGrid"></div>
+</div>
+<div class="radar-sec" id="patternsSec" style="margin:12px 0;border:2px solid #38d9ff66;border-radius:20px;overflow:hidden;background:#0b0d15">
+<div style="display:flex;align-items:center;gap:8px;padding:12px 14px;font-weight:900">📐 رادار النماذج الفنية — 12 نموذج على عملات مختارة<span style="margin-inline-start:auto"></span><a href="patterns.html" style="color:#38d9ff;font-size:.8rem">فتح كاملاً ←</a></div>
+<iframe src="patterns.html?embed=1" style="width:100%;height:1250px;border:0;display:block;background:#06070b" loading="lazy" title="رادار النماذج الفنية"></iframe>
 </div>
 <div class="member-bar" id="memberBar">
   <span class="mb-badge mb-guest" id="mbBadge">👤 زائر</span>
@@ -1571,23 +1575,7 @@ body.linkmode #masterFab{display:none!important}
 <ul id="radarFeed" style="display:none"></ul><span id="radarCount" style="display:none">0</span>
 
 <div class="dash-panels">
-<div class="radar-sec" id="sweepStrategySec" style="margin:12px 0;border:2px solid #8fd6ff55;border-radius:20px;overflow:hidden;background:#0b0d15">
-<div style="display:flex;align-items:center;gap:8px;padding:12px 14px;font-weight:900">🧲 سحب السيولة والعودة فوق القاع — فخ الكسر الفاشل<span style="margin-inline-start:auto"></span><a href="sweep.html" style="color:#f0b90b;font-size:.8rem">فتح كاملاً ←</a></div>
-<iframe src="sweep.html" style="width:100%;height:1000px;border:0;display:block;background:#06070b" loading="lazy" title="سحب السيولة والعودة فوق القاع"></iframe>
-</div>
-<div class="radar-sec" id="retestStrategySec" style="margin:12px 0;border:2px solid #f6e27a66;border-radius:20px;overflow:hidden;background:#0b0d15">
-<div style="display:flex;align-items:center;gap:8px;padding:12px 14px;font-weight:900">♻️ الاختراق وإعادة الاختبار — الدخول بعد إثبات الكسر<span style="margin-inline-start:auto"></span><a href="retest.html" style="color:#f0b90b;font-size:.8rem">فتح كاملاً ←</a></div>
-<iframe src="retest.html" style="width:100%;height:1000px;border:0;display:block;background:#06070b" loading="lazy" title="الاختراق وإعادة الاختبار"></iframe>
-</div>
-<div class="radar-sec" id="stagesStrategySec" style="margin:12px 0;border:2px solid #f6e27a66;border-radius:20px;overflow:hidden;background:#0b0d15">
-<div style="display:flex;align-items:center;gap:8px;padding:12px 14px;font-weight:900">🪜 مراحل ما قبل الصعود القوي — تجميع → اختراق → استراحة → موجة ثانية<span style="margin-inline-start:auto"></span><a href="stages.html" style="color:#f0b90b;font-size:.8rem">فتح كاملاً ←</a></div>
-<iframe src="stages.html" style="width:100%;height:1000px;border:0;display:block;background:#06070b" loading="lazy" title="مراحل ما قبل الصعود القوي"></iframe>
-</div>
-<div class="radar-sec" id="planStrategySec" style="margin:12px 0;border:2px solid #f6e27a66;border-radius:20px;overflow:hidden;background:#0b0d15">
-<div style="display:flex;align-items:center;gap:8px;padding:12px 14px;font-weight:900">📋 خطة ما قبل الصعود القوي — منطقة دخول + إلغاء + أهداف<span style="margin-inline-start:auto"></span><a href="plan.html" style="color:#f0b90b;font-size:.8rem">فتح كاملاً ←</a></div>
-<iframe src="plan.html" style="width:100%;height:1000px;border:0;display:block;background:#06070b" loading="lazy" title="خطة ما قبل الصعود القوي"></iframe>
-</div>
-  <div class="bot-acts">
+<div class="bot-acts">
     <button class="btn btn-primary btn-sm" id="oneStart">▶ تشغيل</button>
     <button class="btn btn-sm" id="oneStop">⏸ إيقاف</button>
   </div>
@@ -1595,9 +1583,6 @@ body.linkmode #masterFab{display:none!important}
   <div class="bot-save" id="oneSave">💾 حفظ تلقائي مفعّل</div>
 </div>
 <div id="botToasts"></div>
-
-
-</div>
 
 <div id="momSec" hidden><div id="momStatus"></div><div class="ob-grid" id="momGrid"></div><span id="momCount" hidden>0</span></div>
 

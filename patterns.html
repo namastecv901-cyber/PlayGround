@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>📐 رادار النماذج الفنية — 12 نموذج على عملات مختارة</title>
+<meta name="theme-color" content="#06070b">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#06070b;--card:#0c1020cc;--line:#ffffff14;--txt:#eef1ff;--mut:#95a0c6;
+  --up:#16c784;--down:#ea3943;--gold:#f0b90b;--cyan:#38d9ff;--violet:#9b7bff;
+  --grad:linear-gradient(135deg,#f6e27a,#f0b90b 45%,#38d9ff);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{color-scheme:dark}
+body{
+  font-family:'Segoe UI',Tahoma,system-ui,sans-serif;background:var(--bg);color:var(--txt);
+  min-height:100dvh;overflow-x:hidden;padding-bottom:40px;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(900px 420px at 85% -8%,#f0b90b22,transparent 60%),
+    radial-gradient(900px 460px at 8% 0%,#38d9ff1c,transparent 60%),
+    radial-gradient(700px 500px at 50% 110%,#9b7bff12,transparent 60%);
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:radial-gradient(1.2px 1.2px at 22% 18%,#fff6,transparent),radial-gradient(1.4px 1.4px at 78% 12%,#fff5,transparent),radial-gradient(1px 1px at 62% 42%,#fff4,transparent),radial-gradient(1.2px 1.2px at 14% 64%,#fff3,transparent),radial-gradient(1px 1px at 88% 74%,#fff4,transparent);
+}
+header{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;
+  padding:12px 16px;background:#06070bee;backdrop-filter:blur(16px);border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{
+  width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.4rem;flex-shrink:0;
+  background:linear-gradient(145deg,#f0b90b33,#38d9ff22);border:1px solid #f0b90b55;box-shadow:0 0 22px #f0b90b22;
+}
+.brand h1{font-size:1.18rem;font-weight:900;letter-spacing:.2px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand p{font-size:.72rem;color:var(--mut);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.head-actions{display:flex;align-items:center;gap:8px;margin-inline-start:auto}
+.live{display:inline-flex;align-items:center;gap:6px;font-weight:900;font-size:.78rem;color:var(--up);white-space:nowrap}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--up);box-shadow:0 0 0 0 #16c78466;animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.icon-btn{
+  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;text-decoration:none;
+  background:#ffffff0a;border:1px solid var(--line);color:var(--txt);font-size:1rem;cursor:pointer;font-family:inherit;
+}
+.icon-btn:hover{background:#ffffff14}
+main{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:14px 14px 0}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;backdrop-filter:blur(10px)}
+.controls{display:flex;flex-direction:column;gap:11px}
+.row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.spacer{flex:1}
+.primary{
+  border:none;cursor:pointer;font-family:inherit;font-weight:900;font-size:.92rem;color:#171204;
+  background:var(--grad);border-radius:12px;padding:11px 20px;box-shadow:0 8px 24px #f0b90b2b;
+}
+.primary:disabled{opacity:.55;cursor:default;box-shadow:none}
+.ghost{
+  border:1px solid var(--line);background:#ffffff08;color:var(--txt);border-radius:11px;
+  padding:9px 14px;font-family:inherit;font-weight:800;font-size:.8rem;cursor:pointer;
+}
+.ghost:hover{background:#ffffff13}
+.switch{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;font-weight:800;color:var(--mut);cursor:pointer;user-select:none}
+.switch input{accent-color:var(--gold);width:16px;height:16px}
+select,input[type=search]{
+  background:#0a0e1e;border:1px solid var(--line);color:var(--txt);border-radius:10px;
+  padding:8px 10px;font-family:inherit;font-size:.8rem;outline:none;max-width:100%;
+}
+select:focus,input[type=search]:focus{border-color:#f0b90b88}
+label.sel{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;color:var(--mut);font-weight:800}
+.tfs{gap:7px}
+.tf-chip{
+  border:1px solid var(--line);background:#ffffff07;color:var(--mut);border-radius:999px;
+  padding:7px 14px;font-family:inherit;font-weight:900;font-size:.78rem;cursor:pointer;transition:.15s;
+}
+.tf-chip.on{background:#38d9ff18;border-color:#38d9ff66;color:#b9f3ff;box-shadow:0 0 18px #38d9ff18}
+.tf-chip small{color:inherit;opacity:.65;font-weight:700}
+.progress{height:6px;border-radius:99px;background:#ffffff0c;overflow:hidden}
+.progress i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#f0b90b,#38d9ff);transition:width .25s}
+.statusline{display:flex;align-items:center;gap:10px;font-size:.76rem;color:var(--mut);flex-wrap:wrap}
+.statusline #statusLine{color:#cfd6ef;font-weight:700}
+.statusline #lastScan{margin-inline-start:auto}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px 13px;backdrop-filter:blur(8px)}
+.stat small{display:block;color:var(--mut);font-size:.68rem;font-weight:800;margin-bottom:4px}
+.stat b{font-size:1.25rem;font-variant-numeric:tabular-nums}
+.stat.up b{color:var(--up)}.stat.dn b{color:var(--down)}.stat.gold b{color:var(--gold)}.stat.cyan b{color:var(--cyan)}
+.filters{margin-top:12px;display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.filters .search{flex:1;min-width:190px}
+.filters .search input{width:100%}
+.results-head{display:flex;align-items:center;gap:10px;margin:18px 2px 10px;flex-wrap:wrap}
+.results-head h2{font-size:1.05rem;font-weight:900}
+.results-head h2 span{color:var(--gold)}
+.results-head .hint{font-size:.73rem;color:var(--mut);margin-inline-start:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:11px}
+.card{
+  position:relative;border:1px solid var(--line);border-radius:17px;padding:13px;overflow:hidden;
+  background:linear-gradient(180deg,#10162acc,#0a0e1acc);backdrop-filter:blur(8px);
+  animation:rise .25s ease both;
+}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:3px;background:var(--mut)}
+.card.bull::before{background:linear-gradient(180deg,#16c784,#38d9ff)}
+.card.bear::before{background:linear-gradient(180deg,#ea3943,#ff8a3d)}
+.card.neutral::before{background:linear-gradient(180deg,#f0b90b,#9b7bff)}
+.card.confirmed{box-shadow:inset 0 0 0 1px #ffffff08,0 10px 30px #00000033}
+.fig{margin:2px 0 9px;border:1px solid #ffffff10;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#070b15,#0a1020)}
+.fig svg{display:block;width:100%;height:auto}
+.fig .tvchart{width:100%;height:178px}
+.card .c-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.coin{display:flex;align-items:baseline;gap:4px;font-weight:900;font-size:1.12rem;letter-spacing:.4px}
+.coin small{font-size:.62rem;color:var(--mut);font-weight:800}
+.tf-badge{
+  margin-inline-start:auto;background:#38d9ff14;border:1px solid #38d9ff40;color:#b9f3ff;
+  border-radius:999px;padding:3px 9px;font-size:.68rem;font-weight:900;white-space:nowrap;
+}
+.new{
+  background:#f0b90b;color:#171204;border-radius:999px;padding:2px 8px;font-size:.6rem;font-weight:900;
+  animation:newPulse 1.6s infinite;
+}
+@keyframes newPulse{50%{box-shadow:0 0 0 7px #f0b90b00}}
+.pname{font-size:.98rem;font-weight:900;line-height:1.5}
+.pname .num{
+  display:inline-grid;place-items:center;width:21px;height:21px;border-radius:7px;background:#ffffff0d;
+  border:1px solid var(--line);color:var(--gold);font-size:.67rem;vertical-align:1px;margin-inline-end:2px;
+}
+.pname small{display:block;color:var(--mut);font-size:.66rem;font-weight:700;direction:ltr;text-align:right;letter-spacing:.2px}
+.badges{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin:8px 0 10px}
+.badge{border-radius:999px;padding:3px 8px;font-size:.62rem;font-weight:900;border:1px solid transparent;white-space:nowrap}
+.badge.bull{background:#16c78418;border-color:#16c78444;color:#7ef0c1}
+.badge.bear{background:#ea394318;border-color:#ea394344;color:#ff9aa2}
+.badge.neutral{background:#f0b90b16;border-color:#f0b90b44;color:#ffe27a}
+.badge.ok{background:#16c78422;color:#91f5c0;border-color:#16c78455}
+.badge.form{background:#f0b90b16;color:#ffe27a;border-color:#f0b90b44}
+.metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:8px}
+.metrics div{background:#ffffff06;border:1px solid #ffffff08;border-radius:10px;padding:6px 8px;min-width:0}
+.metrics small{display:block;color:var(--mut);font-size:.58rem;font-weight:800;margin-bottom:2px}
+.metrics b{font-size:.78rem;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.up{color:var(--up)}.down{color:var(--down)}
+.conf{display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.conf .bar{flex:1;height:5px;border-radius:99px;background:#ffffff0d;overflow:hidden}
+.conf .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#f0b90b,#16c784)}
+.card.bear .conf .bar i{background:linear-gradient(90deg,#f0b90b,#ea3943)}
+.conf b{font-size:.66rem;color:var(--mut);font-weight:900;min-width:30px;text-align:left}
+.levels{font-size:.69rem;color:var(--mut);line-height:1.7;background:#ffffff05;border-radius:9px;padding:6px 8px;margin-bottom:8px}
+.levels b{color:#dfe5ff;font-variant-numeric:tabular-nums}
+.c-foot{display:flex;align-items:center;gap:8px;font-size:.64rem;color:var(--mut)}
+.c-foot a{margin-inline-start:auto;color:var(--gold);text-decoration:none;font-weight:900}
+.c-foot a:hover{text-decoration:underline}
+.empty{
+  border:1px dashed #ffffff1c;border-radius:18px;padding:34px 18px;text-align:center;color:var(--mut);
+  font-size:.84rem;line-height:1.9;background:#ffffff03;
+}
+.empty b{color:var(--txt)}
+.legend{margin-top:12px;border:1px solid var(--line);border-radius:14px;background:#ffffff04;padding:0 12px}
+.legend summary{cursor:pointer;padding:11px 0;font-weight:900;font-size:.8rem;color:#cfd6ef;list-style:none}
+.legend summary::-webkit-details-marker{display:none}
+.legend summary::after{content:"＋";float:left;color:var(--gold);font-weight:900}
+.legend[open] summary::after{content:"−"}
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px;padding:0 0 12px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:.69rem;color:var(--mut);background:#ffffff05;border-radius:8px;padding:6px 8px}
+.legend-item b{color:var(--gold);font-size:.62rem;min-width:16px}
+.legend-item i{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.legend-item i.bull{background:var(--up)}.legend-item i.bear{background:var(--down)}.legend-item i.neutral{background:var(--gold)}
+#toasts{position:fixed;z-index:80;bottom:16px;inset-inline-start:16px;display:flex;flex-direction:column;gap:8px;max-width:min(340px,calc(100vw - 32px))}
+.toast{background:#121a30f2;border:1px solid #f0b90b55;border-radius:12px;padding:10px 13px;font-size:.77rem;font-weight:800;box-shadow:0 10px 30px #0009;animation:rise .2s both}
+.toast.err{border-color:#ea394366}
+footer{position:relative;z-index:1;text-align:center;color:var(--mut);font-size:.7rem;padding:22px 14px 0;line-height:1.9}
+footer a{color:var(--gold);text-decoration:none}
+@media(max-width:720px){
+  header{padding:10px 12px;gap:9px}
+  .logo{width:40px;height:40px;border-radius:12px;font-size:1.2rem}
+  .brand h1{font-size:1.02rem}.brand p{font-size:.62rem}
+  .live{display:none}
+  main{padding:10px 10px 0}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat b{font-size:1.08rem}
+  .filters{gap:7px}
+  .filters select{flex:1;min-width:120px}
+  .grid{grid-template-columns:1fr 1fr;gap:8px}
+  .card{padding:10px;border-radius:14px}
+  .pname{font-size:.85rem}.pname small{font-size:.58rem}
+  .metrics{grid-template-columns:1fr 1fr}
+  .metrics div:last-child{display:none}
+  .levels{font-size:.64rem}
+}
+@media(max-width:560px){
+  .brand p{display:none}
+  .brand>div{min-width:0}
+  .brand h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+@media(max-width:430px){
+  .grid{grid-template-columns:1fr}
+  .metrics div:last-child{display:block}
+}
+body.embed header,body.embed footer{display:none}
+body.embed main{padding:8px 10px 0}
+body.embed .legend{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">📐</div>
+    <div>
+      <h1>رادار النماذج الفنية</h1>
+      <p>12 نموذج كلاسيكي • 240 عملة مختارة • كل الفريمات • شارت TradingView حقيقي بخطوط النموذج</p>
+    </div>
+  </div>
+  <div class="head-actions">
+    <span class="live"><i></i> رصد حي</span>
+    <button class="icon-btn" id="soundBtn" title="تشغيل/إيقاف الصوت" aria-label="الصوت">🔊</button>
+    <a class="icon-btn" href="index.html" title="الرئيسية" aria-label="الرئيسية">⌂</a>
+  </div>
+</header>
+
+<main>
+  <section class="panel controls">
+    <div class="row">
+      <button class="primary" id="scanBtn">⦿ فحص الآن</button>
+      <label class="switch"><input type="checkbox" id="autoChk" checked> تحديث تلقائي</label>
+      <span class="switch" style="font-weight:700" id="autoHint">كل 60 ثانية</span>
+      <span class="spacer"></span>
+      <label class="sel">العملات
+        <select id="universeSel">
+          <option value="watch">قائمتي المختارة (240 عملة)</option>
+        </select>
+      </label>
+    </div>
+    <div class="row tfs" id="tfChips"></div>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="statusline">
+      <span id="statusLine">جاهز — يبدأ الفحص تلقائياً…</span>
+      <span id="lastScan"></span>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat cyan"><small>عملات مفحوصة</small><b id="stScanned">0</b></div>
+    <div class="stat gold"><small>نماذج مرصودة</small><b id="stFound">0</b></div>
+    <div class="stat up"><small>مؤكدة</small><b id="stBull">0</b></div>
+    <div class="stat dn"><small>تتشكل</small><b id="stBear">0</b></div>
+  </section>
+
+  <section class="panel filters">
+    <div class="search"><input type="search" id="q" placeholder="ابحث عن عملة… مثال: SOL"></div>
+    <select id="fPattern"><option value="">كل الأنماط</option></select>
+    <select id="fDir">
+      <option value="">صاعد أو هابط</option>
+      <option value="bull">صاعد فقط</option>
+      <option value="bear">هابط فقط</option>
+    </select>
+    <select id="fStatus">
+      <option value="">الكل</option>
+      <option value="confirmed">مؤكد فقط</option>
+      <option value="forming">يتشكل فقط</option>
+    </select>
+    <select id="fTf">
+      <option value="">كل الفريمات</option>
+      <option value="15m">15 دقيقة</option>
+      <option value="1h">ساعة</option>
+      <option value="4h">4 ساعات</option>
+      <option value="1d">يومي</option>
+    </select>
+    <select id="fSort">
+      <option value="new">الأهم / الأحدث</option>
+      <option value="score">الأقوى</option>
+      <option value="change">أكبر تغير 24س</option>
+    </select>
+  </section>
+
+  <details class="legend">
+    <summary>الأنماط الـ12 التي يرصدها الرادار</summary>
+    <div class="legend-grid" id="legend"></div>
+  </details>
+
+  <div class="results-head">
+    <h2>الإشارات <span id="resCount">0</span></h2>
+    <span class="hint" id="filterHint"></span>
+  </div>
+  <section class="grid" id="grid"></section>
+  <section class="empty" id="empty">
+    <b>لا نماذج مطابقة الآن.</b><br>
+    الرادار يفحص تلقائياً كل دورة — أول فحص قد يستغرق ثوانٍ حسب عدد العملات والفريمات.
+  </section>
+</main>
+
+<footer>
+  Spot فقط • بيانات Binance الرسمية عبر مرآة السوق • الإشارات آلية تعليمية وليست توصية مالية<br>
+  <a href="index.html">← رجوع للتطبيق الرئيسي</a>
+</footer>
+
+<div id="toasts"></div>
+
+<script src="lightweight-charts.js"></script>
+<script>
+(function(){
+"use strict";
+if(new URLSearchParams(location.search).has("embed")) document.body.classList.add("embed");
+const API="https://data-api.binance.vision";
+const HOSTS=[API,"https://api.binance.com","https://api1.binance.com","https://api2.binance.com"];
+const WATCH=[
+"SOL","XRP","DOGE","ADA","SUI","AVAX","LINK","WLD","DOT","ARB","NEAR","LTC","SEI","HBAR","XLM","OP","FET","APT",
+"TIA","TAO","ATOM","ALGO","PYTH","GALA","FIL","SUS","GRT","TON","VET","POL","ICP","BCH","ARKM","ETC","SAND","BIO",
+"KAITO","MANA","THETA","JASMY","ROSE","AR","APE","STX","CHZ","CFX","OM","QNT","IO","ZRO","ENS","EGLD","ORDI","IMX",
+"VIRTUAL","PAXG","ZK","ONE","ZIL","IOTA","XTZ","MANTA","AIXBT","TRB","LUNA","BAND","MASK","MAGIC","API3","SKL","LPT","XAI",
+"ENJ","COOKIE","CGPT","ALT","ID","FLUX","MOVE","PROVE","LRC","HYPER","PORTAL","DASH","PHB","VANRY","RVN","MINA","GMT","AXL",
+"HOT","SAHARA","FLOW","SAGA","KSM","CYBER","GPS","RLC","BAT","CHR","ARPA","PHA","CKB","SXP","CELO","MDT","QTUM","INIT",
+"BLUR","PLUME","HOOK","RARE","TOWNS","ACH","DUSK","ANKR","NIL","METIS","EPIC","CELR","TWT","SSV","DIA","ZEN","SHELL","ALICE",
+"MOVR","ACT","STORJ","GLMR","VANA","IOTX","DENT","CTSI","POLYX","XVG","FIDA","DGB","RONIN","ASTR","LAYER","SCR","AVA","BICO",
+"SXT","VTHO","NFP","EDU","ICX","HIGH","ALPINE","TNSR","WCT","ACE","A","KAIA","AMP","DEXE","PARTI","TFUEL","NKN","NEWT",
+"RAD","VIC","POND","PUNDIX","AGLD","GTC","WIN","SYS","XNO","A2Z","GLM","SC","IOST","RIF","SIGN","XEC","GAS","UTK",
+"FIO","SOPH","SCRT","HEI","BMT","SFP","ATA","ARK","DATA","ERA","ADX","OXT","LINEA","SOMI","DCR","G","ARDR","LSK",
+"STEEM","QKC","PIVX","AT","SAPIEN","KITE","ENSO","WAL","2Z","MIRA","XPL","OG","ZKC","HOLO","OPEN","C","LA","AWE",
+"TUT","DUS","MTL","CVC","COS","POWR","ZEC","RENDER","BANANA","UMA","RSR","W","0G","BEAMX","BREV","IQ","HIVE","ZKP",
+"STRAX","REQ","PROM","AI","EIGEN","ME","ONG","SKY"
+];
+const WATCH_SET=new Set(WATCH.map(b=>b+"USDT"));
+const TFS=["15m","1h","4h","1d"];
+const TF_META={
+  "15m":{label:"15 دقيقة",short:"15m",bars:180,tv:"15"},
+  "1h":{label:"ساعة",short:"1h",bars:180,tv:"60"},
+  "4h":{label:"4 ساعات",short:"4h",bars:160,tv:"240"},
+  "1d":{label:"يومي",short:"1d",bars:140,tv:"D"}
+};
+const PATTERNS={
+  falling_wedge:{n:1,ar:"الوتد الهابط",en:"Falling Wedge",dir:"bull"},
+  inverse_hs:{n:2,ar:"الرأس والكتفان المقلوب",en:"Inverse Head and Shoulders",dir:"bull"},
+  sym_triangle:{n:3,ar:"المثلث المتماثل",en:"Symmetrical Triangle",dir:"neutral"},
+  cup_handle:{n:4,ar:"الكوب والعروة",en:"Cup and Handle",dir:"bull"},
+  rectangle:{n:5,ar:"المستطيل",en:"Rectangle",dir:"neutral"},
+  bull_flag:{n:6,ar:"الراية الصاعدة",en:"Bullish Flag",dir:"bull"},
+  bear_flag:{n:7,ar:"الراية الهابطة",en:"Bearish Flag",dir:"bear"},
+  rising_wedge:{n:8,ar:"الوتد الصاعد",en:"Rising Wedge",dir:"bear"},
+  hs:{n:9,ar:"الكتفان والرأس",en:"Head and Shoulders",dir:"bear"},
+  double_bottom:{n:10,ar:"القاع المزدوج",en:"Double Bottom",dir:"bull"},
+  double_top:{n:11,ar:"القمة المزدوجة",en:"Double Top",dir:"bear"},
+  desc_triangle:{n:12,ar:"المثلث الهابط",en:"Descending Triangle",dir:"bear"}
+};
+const FIG={
+  falling_wedge:{
+    y:[22,28,25,32,29,36,33,40,37,44,41,48,45,52,40,28],
+    lines:[[14,20,250,50],[14,33,250,57]],arrow:"up"
+  },
+  inverse_hs:{
+    y:[20,28,34,40,36,30,26,38,48,54,48,42,38,32,28,34,40,28,18],
+    lines:[[70,32,252,32]],
+    labels:[["كتف",60,50],["رأس",150,66],["كتف",238,50],["خط العنق",120,27]],arrow:"up"
+  },
+  sym_triangle:{
+    y:[22,32,26,36,30,38,34,40,36,42,40,44,42,46,38,26],
+    lines:[[14,18,252,44],[14,84,252,50]],arrow:"dir"
+  },
+  cup_handle:{
+    y:[22,27,34,42,50,58,66,72,76,77,74,68,60,52,44,38,36,40,34,24],
+    paths:["M20 26 Q150 122 250 26","M250 26 Q262 40 272 33 L280 26"],
+    lines:[[232,26,292,26]],
+    labels:[["الكوب",135,98],["العروة",264,48]],arrow:"up"
+  },
+  rectangle:{
+    y:[38,28,40,30,39,29,41,31,40,30,39,29,40,30,24,16],
+    lines:[[14,28,284,28],[14,42,284,42]],arrow:"dir"
+  },
+  bull_flag:{
+    y:[74,62,50,38,28,22,28,24,32,28,34,30,36,30,22,12],
+    lines:[[112,24,224,38],[112,32,224,46]],arrow:"up"
+  },
+  bear_flag:{
+    y:[18,30,42,54,64,70,64,68,60,64,58,62,56,62,70,82],
+    lines:[[112,64,224,50],[112,72,224,58]],arrow:"down"
+  },
+  rising_wedge:{
+    y:[82,74,78,68,72,62,66,56,60,52,56,48,52,46,40,50,60,74],
+    lines:[[14,74,250,46],[14,88,250,56]],arrow:"down"
+  },
+  hs:{
+    y:[80,72,64,56,60,66,72,64,54,46,42,46,54,60,64,62,58,64,70,80],
+    lines:[[62,60,252,60]],
+    labels:[["كتف",62,54],["رأس",145,34],["كتف",232,54],["خط العنق",100,56]],arrow:"down"
+  },
+  double_bottom:{
+    y:[20,28,36,44,52,58,52,44,36,30,26,32,40,48,56,58,50,40,28,16],
+    lines:[[64,30,280,30]],dots:[[84,58],[224,58]],
+    labels:[["قاع",84,71],["قاع",224,71],["خط العنق",160,25]],arrow:"up"
+  },
+  double_top:{
+    y:[90,82,74,66,58,52,58,66,74,80,84,78,70,62,54,52,60,70,82,94],
+    lines:[[64,84,280,84]],dots:[[84,52],[224,52]],
+    labels:[["قمة",84,44],["قمة",224,44],["خط العنق",160,79]],arrow:"down"
+  },
+  desc_triangle:{
+    y:[24,32,28,36,32,40,36,44,40,46,44,48,46,50,48,54,60,74],
+    lines:[[14,20,258,50],[14,52,284,52]],arrow:"down"
+  }
+};
+function figCandles(ys){
+  const L=14,R=282,H=104;
+  const step=(R-L)/Math.max(1,ys.length-1);
+  let s="";
+  for(let i=0;i<ys.length;i++){
+    const cx=L+i*step,c=ys[i],o=i?ys[i-1]:ys[i]+3;
+    const up=c<o,top=Math.min(o,c),bot=Math.max(o,c),bh=Math.max(1.8,Math.abs(c-o));
+    const hi=Math.max(5,top-2.5),lo=Math.min(H,bot+2.5);
+    s+='<line x1="'+cx.toFixed(1)+'" y1="'+hi.toFixed(1)+'" x2="'+cx.toFixed(1)+'" y2="'+lo.toFixed(1)+'" stroke="'+(up?"#16c784":"#ea3943")+'" stroke-width="1.1" opacity=".85"/>';
+    s+='<rect x="'+(cx-2.6).toFixed(1)+'" y="'+top.toFixed(1)+'" width="5.2" height="'+bh.toFixed(1)+'" rx=".8" fill="'+(up?"#16c784":"#ea3943")+'" opacity=".95"/>';
+  }
+  return s;
+}
+function figArrow(dir){
+  const up=!(dir==="down"||dir==="bear"),col=up?"#16c784":"#ea3943";
+  if(up) return '<line x1="299" y1="86" x2="299" y2="30" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round"/><path d="M292 40 L299 27 L306 40" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';
+  return '<line x1="299" y1="22" x2="299" y2="78" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round"/><path d="M292 68 L299 81 L306 68" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+function genericFig(kind,dir){
+  const f=FIG[kind];
+  if(!f) return "";
+  const flip=(kind==="sym_triangle"||kind==="rectangle")&&dir==="bear";
+  let body=figCandles(f.y);
+  (f.lines||[]).forEach(l=>{ body+='<line x1="'+l[0]+'" y1="'+l[1]+'" x2="'+l[2]+'" y2="'+l[3]+'" stroke="#f6e27a" stroke-width="1.7" stroke-linecap="round" opacity=".9"/>'; });
+  (f.paths||[]).forEach(d=>{ body+='<path d="'+d+'" fill="none" stroke="#f6e27a" stroke-width="1.7" stroke-linecap="round" opacity=".9"/>'; });
+  (f.dots||[]).forEach(d=>{ body+='<circle cx="'+d[0]+'" cy="'+d[1]+'" r="3.6" fill="none" stroke="#ffe27a" stroke-width="1.6"/>'; });
+  const labels=(f.labels||[]).map(l=>'<text x="'+l[1]+'" y="'+l[2]+'" fill="#aab6d8" font-size="8" font-weight="700" text-anchor="middle">'+l[0]+'</text>').join("");
+  const arrow=figArrow(f.arrow==="dir"?dir:f.arrow);
+  return '<svg viewBox="0 0 320 110" role="img" aria-label="'+PATTERNS[kind].ar+'" xmlns="http://www.w3.org/2000/svg">'
+    +(flip?'<g transform="translate(0 110) scale(1 -1)">'+body+'</g>':body)
+    +labels+arrow+'</svg>';
+}
+
+function realChart(ch,dir,label){
+  const n=ch.c.length;
+  let lo=Infinity,hi=-Infinity;
+  for(let i=0;i<n;i++){ if(ch.l[i]<lo) lo=ch.l[i]; if(ch.h[i]>hi) hi=ch.h[i]; }
+  const pad=Math.max((hi-lo)*0.07,hi*0.002),top=hi+pad,bot=lo-pad,rg=(top-bot)||1;
+  const L=10,R=294;
+  const X=i=>L+(i/(n-1))*(R-L);
+  const Y=v=>8+((top-v)/rg)*94;
+  const step=(R-L)/Math.max(1,n-1);
+  const w=Math.max(1.1,Math.min(3.4,step*0.62));
+  let s="";
+  for(let i=0;i<n;i++){
+    const o=ch.o[i],h=ch.h[i],l=ch.l[i],c=ch.c[i],up=c>=o,x=X(i);
+    s+='<line x1="'+x.toFixed(1)+'" y1="'+Y(h).toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+Y(l).toFixed(1)+'" stroke="'+(up?"#16c784":"#ea3943")+'" stroke-width=".9" opacity=".7"/>';
+    const y1=Y(Math.max(o,c)),y2=Y(Math.min(o,c));
+    s+='<rect x="'+(x-w/2).toFixed(1)+'" y="'+y1.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+Math.max(1,y2-y1).toFixed(1)+'" fill="'+(up?"#16c784":"#ea3943")+'" opacity=".95"/>';
+  }
+  (ch.lines||[]).forEach(ln=>{
+    if(!(ln.i2>ln.i1)) return;
+    const i1=Math.max(ch.start,ln.i1),i2=Math.min(ch.start+n-1,ln.i2);
+    if(i2<=i1) return;
+    const vAt=i=>ln.v1+(ln.v2-ln.v1)*((i-ln.i1)/(ln.i2-ln.i1));
+    s+='<line x1="'+X(i1-ch.start).toFixed(1)+'" y1="'+Y(vAt(i1)).toFixed(1)+'" x2="'+X(i2-ch.start).toFixed(1)+'" y2="'+Y(vAt(i2)).toFixed(1)+'" stroke="#f6e27a" stroke-width="1.4" stroke-linecap="round" opacity=".9"/>';
+  });
+  (ch.marks||[]).forEach(m=>{
+    const i=m.i-ch.start; if(i<0||i>=n) return;
+    s+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(m.v).toFixed(1)+'" r="2.8" fill="none" stroke="#ffe27a" stroke-width="1.3"/>';
+  });
+  const up=!(dir==="bear"||dir==="down"),col=up?"#16c784":"#ea3943";
+  s+= up
+    ? '<line x1="306" y1="88" x2="306" y2="34" stroke="'+col+'" stroke-width="2" stroke-linecap="round"/><path d="M301 42 L306 31 L311 42" fill="none" stroke="'+col+'" stroke-width="2" stroke-linecap="round"/>'
+    : '<line x1="306" y1="22" x2="306" y2="76" stroke="'+col+'" stroke-width="2" stroke-linecap="round"/><path d="M301 68 L306 79 L311 68" fill="none" stroke="'+col+'" stroke-width="2" stroke-linecap="round"/>';
+  return '<svg viewBox="0 0 320 110" role="img" aria-label="'+label+'" xmlns="http://www.w3.org/2000/svg">'+s+'</svg>';
+}
+const liveCharts=[];
+let chartIO=null;
+function destroyCharts(){
+  if(chartIO){ try{ chartIO.disconnect(); }catch(e){} chartIO=null; }
+  while(liveCharts.length){ try{ liveCharts.pop().remove(); }catch(e){} }
+}
+function patternFig(r){
+  if(r&&r.chart&&r.chart.c&&r.chart.c.length>25){
+    if(window.LightweightCharts) return '<div class="tvchart" data-k="'+r.symbol+'|'+r.tf+'"></div>';
+    return realChart(r.chart,r.dir,PATTERNS[r.pattern].ar);
+  }
+  return genericFig(r.pattern,r.dir);
+}
+function buildChart(el,r){
+  if(!el||el.dataset.done) return;
+  if(!r||!r.chart||!r.chart.c||r.chart.c.length<25) return;
+  el.dataset.done="1";
+  try{
+    const LC=window.LightweightCharts;
+    if(!LC) throw new Error("lib");
+    const ch=r.chart,n=ch.c.length;
+    if(!ch.t||ch.t.length!==n) throw new Error("chart time");
+    const toTime=ms=>Math.floor(ms/1000);
+    const chart=LC.createChart(el,{
+      autoSize:true,height:178,
+      layout:{background:{type:"solid",color:"#080d19"},textColor:"#8fa1c4",fontSize:9,attributionLogo:true},
+      grid:{vertLines:{color:"rgba(255,255,255,.035)"},horzLines:{color:"rgba(255,255,255,.045)"}},
+      rightPriceScale:{borderVisible:false,scaleMargins:{top:.16,bottom:.16},entireTextOnly:false},
+      timeScale:{visible:false,borderVisible:false,rightOffset:2,barSpacing:2.2},
+      crosshair:{mode:0,vertLine:{visible:false},horzLine:{visible:false}},
+      handleScroll:false,handleScale:false,
+      localization:{priceFormatter:v=>fmt(v)}
+    });
+    const cs=chart.addCandlestickSeries({upColor:"#16c784",downColor:"#ea3943",borderVisible:false,wickUpColor:"#16c784",wickDownColor:"#ea3943",priceLineVisible:false,lastValueVisible:false});
+    const data=[];
+    for(let i=0;i<n;i++){
+      if(!isFinite(ch.o[i])||!isFinite(ch.c[i])) continue;
+      data.push({time:toTime(ch.t[i]),open:ch.o[i],high:ch.h[i],low:ch.l[i],close:ch.c[i]});
+    }
+    cs.setData(data);
+    (ch.lines||[]).forEach(ln=>{
+      if(!(ln.i2>ln.i1)) return;
+      const i1=Math.max(ch.start,ln.i1),i2=Math.min(ch.start+n-1,ln.i2);
+      if(i2<=i1) return;
+      const t1=toTime(ch.t[i1-ch.start]),t2=toTime(ch.t[i2-ch.start]);
+      if(!(t2>t1)) return;
+      const vAt=i=>ln.v1+(ln.v2-ln.v1)*((i-ln.i1)/(ln.i2-ln.i1));
+      const ls=chart.addLineSeries({color:"#f6e27a",lineWidth:2,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
+      ls.setData([{time:t1,value:vAt(i1)},{time:t2,value:vAt(i2)}]);
+    });
+    const markMap=new Map();
+    (ch.marks||[]).forEach(m=>{
+      const i=m.i-ch.start; if(i<0||i>=n) return;
+      const t=toTime(ch.t[i]);
+      markMap.set(t,{time:t,position:m.v>ch.c[i]?"aboveBar":"belowBar",color:"#ffe27a",shape:"circle",text:""});
+    });
+    const up=!(r.dir==="bear"||r.dir==="down");
+    const lt=toTime(ch.t[n-1]);
+    markMap.set(lt,{time:lt,position:up?"belowBar":"aboveBar",color:up?"#16c784":"#ea3943",shape:up?"arrowUp":"arrowDown",text:""});
+    cs.setMarkers([...markMap.values()].sort((a,b)=>a.time-b.time));
+    chart.timeScale().fitContent();
+    liveCharts.push(chart);
+  }catch(e){
+    el.dataset.done="1";
+    el.innerHTML=realChart(r.chart,r.dir,PATTERNS[r.pattern].ar);
+  }
+}
+function mountCharts(){
+  if(!window.LightweightCharts) return;
+  const byKey=new Map(state.results.map(r=>[r.symbol+"|"+r.tf,r]));
+  const hosts=[...document.querySelectorAll(".tvchart[data-k]")];
+  if(!("IntersectionObserver" in window)){
+    hosts.forEach(el=>buildChart(el,byKey.get(el.dataset.k)));
+    return;
+  }
+  chartIO=new IntersectionObserver(es=>{
+    es.forEach(en=>{
+      if(!en.isIntersecting||!en.target.isConnected) return;
+      try{ chartIO.unobserve(en.target); }catch(e){}
+      buildChart(en.target,byKey.get(en.target.dataset.k));
+    });
+  },{rootMargin:"350px 0px"});
+  hosts.forEach(el=>chartIO.observe(el));
+}
+const STABLE=/^(USDC|FDUSD|TUSD|BUSD|USDP|DAI|USDD|PYUSD|EURS|AEUR|USDE|USDS|SUSD|USDB|XUSD|BUIDL|USD1|EUR|GBP)$/;
+const state={
+  symbols:[],tickers:{},tickersAt:0,results:[],scanning:false,auto:true,sound:true,force:false,
+  tfs:["1h","4h"],seen:{},scanned:0,total:0,lastScan:0,errs:0,universe:"watch",sort:"new",
+  filters:{q:"",pattern:"",dir:"",status:"",tf:""},newAt:0
+};
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const tick=()=>new Promise(r=>setTimeout(r,0));
+function fmt(v){
+  if(v==null||!isFinite(v)) return "—";
+  const a=Math.abs(v);
+  if(a>=1000) return Number(v).toLocaleString("en-US",{maximumFractionDigits:2});
+  if(a>=1) return Number(v).toFixed(3).replace(/0+$/,"").replace(/\.$/,"");
+  if(a>=0.01) return Number(v).toFixed(4);
+  if(a>=0.0001) return Number(v).toFixed(6);
+  return Number(v).toFixed(8);
+}
+function pctTxt(v){ if(v==null||!isFinite(v)) return "—"; return (v>=0?"+":"")+Number(v).toFixed(2)+"%"; }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+
+async function api(path){
+  for(const host of HOSTS){
+    for(let attempt=0;attempt<2;attempt++){
+      const ctl=new AbortController();
+      const to=setTimeout(()=>{ try{ctl.abort();}catch(e){} },16000);
+      try{
+        const r=await fetch(host+path,{signal:ctl.signal,cache:"no-store"});
+        if(r.ok) return await r.json();
+        if(r.status===429||r.status===418){ await sleep(900); continue; }
+        if(r.status===451||r.status===403) break;
+        if(r.status>=500){ await sleep(250); break; }
+        return null;
+      }catch(e){
+        if(attempt===0){ await sleep(180); continue; }
+      }finally{ clearTimeout(to); }
+    }
+  }
+  return null;
+}
+
+function atr(a,n){
+  n=n||14;
+  if(!a||a.length<2) return 0;
+  let s=0,c=0;
+  for(let i=Math.max(1,a.length-n);i<a.length;i++){
+    const h=+a[i][2],l=+a[i][3],pc=+a[i-1][4];
+    if(!isFinite(h)||!isFinite(l)||!isFinite(pc)) continue;
+    s+=Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc));c++;
+  }
+  return c?s/c:0;
+}
+function ema(a,n){
+  if(!a||a.length<n) return a? a.slice():[];
+  const k=2/(n+1);let e=avg(a.slice(0,n));const out=[];
+  for(let i=0;i<n;i++) out.push(null);
+  out[n-1]=e;
+  for(let i=n;i<a.length;i++){ e=a[i]*k+e*(1-k); out[i]=e; }
+  return out;
+}
+function fit(points){
+  const n=points.length;
+  if(n<2) return {a:0,b:n?points[0].v:0};
+  let sx=0,sy=0,sxx=0,sxy=0;
+  for(const p of points){ sx+=p.i;sy+=p.v;sxx+=p.i*p.i;sxy+=p.i*p.v; }
+  const den=n*sxx-sx*sx;
+  const a=den?(n*sxy-sx*sy)/den:0;
+  return {a,b:(sy-a*sx)/n};
+}
+function lineAt(line,i){ return line.a*i+line.b; }
+function touches(points,line,tol){
+  let n=0;
+  for(const p of points){ if(Math.abs(p.v-lineAt(line,p.i))<=tol) n++; }
+  return n;
+}
+function swings(a,left,right){
+  left=left||2;right=right||2;
+  const H=[],L=[];
+  for(let i=left;i<a.length-right;i++){
+    const h=+a[i][2],l=+a[i][3];
+    if(!isFinite(h)||!isFinite(l)) continue;
+    let ih=true,il=true;
+    for(let j=1;j<=left;j++){
+      if(+a[i-j][2]>=h||+a[i+j][2]>=h) ih=false;
+      if(+a[i-j][3]<=l||+a[i+j][3]<=l) il=false;
+    }
+    if(ih) H.push({i,v:h});
+    if(il) L.push({i,v:l});
+  }
+  return {H,L};
+}
+function detectBest(kl,tf){
+  if(!kl||kl.length<60) return null;
+  const NN=Math.min(kl.length,220);
+  const a=kl.slice(-NN);
+  const O=a.map(k=>+k[1]),H=a.map(k=>+k[2]),L=a.map(k=>+k[3]),C=a.map(k=>+k[4]),V=a.map(k=>+k[5]);
+  const price=C[NN-1];
+  if(!(price>0)) return null;
+  const atrPct=(atr(a,14)/price*100)||0.4;
+  const atrF=atrPct/100;
+  const sw=swings(a,3,3);
+  const SH=sw.H.filter(p=>p.i>NN-170);
+  const SL=sw.L.filter(p=>p.i>NN-170);
+  const avgV=avg(V.slice(-21,-1));
+  const vr=avgV>0?V[V.length-1]/avgV:1;
+  const cands=[];
+  const add=o=>{ if(o&&o.score>=62) cands.push(o); };
+  const highBetween=(i,j)=>Math.max.apply(null,H.slice(Math.max(0,i),Math.min(NN-1,j)+1));
+  const lowBetween=(i,j)=>Math.min.apply(null,L.slice(Math.max(0,i),Math.min(NN-1,j)+1));
+  const maxAfter=i=>{ let m=-Infinity; for(let j=i+1;j<NN;j++){ if(H[j]>m) m=H[j]; } return m; };
+  const minAfter=i=>{ let m=Infinity; for(let j=i+1;j<NN;j++){ if(L[j]<m) m=L[j]; } return m; };
+  const breakAgo=(level,dir)=>{
+    if(!(level>0)) return -1;
+    for(let i=NN-1;i>=1;i--){
+      if(dir==="up"&&C[i-1]<level&&C[i]>=level) return NN-1-i;
+      if(dir==="down"&&C[i-1]>level&&C[i]<=level) return NN-1-i;
+    }
+    return -1;
+  };
+  const minH=(mult=1.6)=>Math.max(0.03,atrF*mult);
+
+  if(SL.length>=2){
+    for(let k=SL.length-1;k>=1;k--){
+      const t2=SL[k],t1=SL[k-1];
+      if(t2.i>NN-4) continue;
+      if(t2.i<NN-28) break;
+      const sep=t2.i-t1.i;
+      if(sep<10||sep>70) continue;
+      const sim=Math.abs(t1.v-t2.v)/Math.min(t1.v,t2.v);
+      const tol=Math.max(0.007,atrF*0.3);
+      if(sim>tol) continue;
+      const lo=Math.min(t1.v,t2.v);
+      const neck=highBetween(t1.i,t2.i);
+      const rise=(neck-lo)/lo;
+      if(rise<minH(1.7)) continue;
+      if(minAfter(t2.i)<lo*(1-0.01)) continue;
+      const brokeUp=price>neck*1.001;
+      const ago=breakAgo(neck,"up");
+      const confirmed=brokeUp&&ago>=0&&ago<=6&&price<=neck+(neck-lo)*0.4;
+      const forming=!brokeUp&&price>=neck-(neck-lo)*0.35&&price>lo*1.01;
+      if(!confirmed&&!forming) continue;
+      const score=clamp(58+(1-sim/Math.max(tol,1e-6))*12+clamp(rise/0.1,0,1)*10+(confirmed?14:0)+(vr>1.3?4:0),52,96);
+      add({pattern:"double_bottom",dir:"bull",status:confirmed?"confirmed":"forming",score,price,trigger:neck,triggerName:"خط العنق",target:neck+(neck-lo),stop:lo*0.995,vr,
+        lines:[{i1:t1.i,v1:neck,i2:t2.i,v2:neck}],marks:[{i:t1.i,v:t1.v},{i:t2.i,v:t2.v}]});
+      break;
+    }
+  }
+  if(SH.length>=2){
+    for(let k=SH.length-1;k>=1;k--){
+      const t2=SH[k],t1=SH[k-1];
+      if(t2.i>NN-4) continue;
+      if(t2.i<NN-28) break;
+      const sep=t2.i-t1.i;
+      if(sep<10||sep>70) continue;
+      const sim=Math.abs(t1.v-t2.v)/Math.max(t1.v,t2.v);
+      const tol=Math.max(0.007,atrF*0.3);
+      if(sim>tol) continue;
+      const hi=Math.max(t1.v,t2.v);
+      const neck=lowBetween(t1.i,t2.i);
+      const drop=(hi-neck)/hi;
+      if(drop<minH(1.7)) continue;
+      if(maxAfter(t2.i)>hi*1.008) continue;
+      const brokeDn=price<neck*0.999;
+      const ago=breakAgo(neck,"down");
+      const confirmed=brokeDn&&ago>=0&&ago<=6&&price>=neck-(hi-neck)*0.4;
+      const forming=!brokeDn&&price<=hi-(hi-neck)*0.35&&price>neck*1.001;
+      if(!confirmed&&!forming) continue;
+      const score=clamp(58+(1-sim/Math.max(tol,1e-6))*12+clamp(drop/0.1,0,1)*10+(confirmed?14:0)+(vr>1.3?4:0),52,96);
+      add({pattern:"double_top",dir:"bear",status:confirmed?"confirmed":"forming",score,price,trigger:neck,triggerName:"خط العنق",target:neck-(hi-neck),stop:hi*1.005,vr,
+        lines:[{i1:t1.i,v1:neck,i2:t2.i,v2:neck}],marks:[{i:t1.i,v:t1.v},{i:t2.i,v:t2.v}]});
+      break;
+    }
+  }
+
+  if(SH.length>=3){
+    for(let k=SH.length-1;k>=2;k--){
+      const h3=SH[k],h2=SH[k-1],h1=SH[k-2];
+      if(h3.i>NN-4) continue;
+      if(h3.i<NN-20) break;
+      const span=h3.i-h1.i;
+      if(span<25||span>95) continue;
+      if(h2.i-h1.i<7||h3.i-h2.i<7) continue;
+      const headAbove=Math.min(h2.v/h1.v-1,h2.v/h3.v-1);
+      if(headAbove<Math.max(0.02,atrF*1.0)) continue;
+      const shoulderDiff=Math.abs(h1.v-h3.v)/h2.v;
+      if(shoulderDiff>0.035) continue;
+      const t1=lowBetween(h1.i,h2.i),t2=lowBetween(h2.i,h3.i);
+      const neck=(t1+t2)/2;
+      if(!(neck>0)||Math.abs(t1-t2)/neck>0.02) continue;
+      if(!(t1<h1.v*0.99&&t2<h2.v*0.99)) continue;
+      const drop=(h2.v-neck)/h2.v;
+      if(drop<minH(1.8)) continue;
+      if(maxAfter(h3.i)>h2.v*1.01) continue;
+      const brokeDn=price<neck*0.999;
+      const ago=breakAgo(neck,"down");
+      const confirmed=brokeDn&&ago>=0&&ago<=5&&price>=neck-(h2.v-neck)*0.4;
+      const forming=!brokeDn&&price>=neck*1.001&&price<=neck*1.006&&price<h3.v*0.995;
+      if(!confirmed&&!forming) continue;
+      const score=clamp(60+(1-shoulderDiff/0.035)*10+clamp(drop/0.1,0,1)*12+(confirmed?14:0)+(vr>1.3?4:0),54,96);
+      add({pattern:"hs",dir:"bear",status:confirmed?"confirmed":"forming",score,price,trigger:neck,triggerName:"خط العنق",target:neck-(h2.v-neck),stop:h2.v*1.01,vr,
+        lines:[{i1:h1.i,v1:t1,i2:h3.i,v2:t2}],marks:[{i:h1.i,v:h1.v},{i:h2.i,v:h2.v},{i:h3.i,v:h3.v}]});
+      break;
+    }
+  }
+  if(SL.length>=3){
+    for(let k=SL.length-1;k>=2;k--){
+      const t3=SL[k],t2=SL[k-1],t1=SL[k-2];
+      if(t3.i>NN-4) continue;
+      if(t3.i<NN-20) break;
+      const span=t3.i-t1.i;
+      if(span<25||span>95) continue;
+      if(t2.i-t1.i<7||t3.i-t2.i<7) continue;
+      const headBelow=Math.min(1-t2.v/t1.v,1-t2.v/t3.v);
+      if(headBelow<Math.max(0.02,atrF*1.0)) continue;
+      const shoulderDiff=Math.abs(t1.v-t3.v)/t2.v;
+      if(shoulderDiff>0.035) continue;
+      const h1=highBetween(t1.i,t2.i),h2=highBetween(t2.i,t3.i);
+      const neck=(h1+h2)/2;
+      if(!(neck>0)||Math.abs(h1-h2)/neck>0.02) continue;
+      if(!(h1>t1.v*1.01&&h2>t2.v*1.01)) continue;
+      const rise=(neck-t2.v)/t2.v;
+      if(rise<minH(1.8)) continue;
+      if(minAfter(t3.i)<t2.v*0.99) continue;
+      const brokeUp=price>neck*1.001;
+      const ago=breakAgo(neck,"up");
+      const confirmed=brokeUp&&ago>=0&&ago<=5&&price<=neck+(neck-t2.v)*0.4;
+      const forming=!brokeUp&&price<neck*0.999&&price>=neck*0.994&&price>t3.v*1.005;
+      if(!confirmed&&!forming) continue;
+      const score=clamp(60+(1-shoulderDiff/0.035)*10+clamp(rise/0.1,0,1)*12+(confirmed?14:0)+(vr>1.3?4:0),54,96);
+      add({pattern:"inverse_hs",dir:"bull",status:confirmed?"confirmed":"forming",score,price,trigger:neck,triggerName:"خط العنق",target:neck+(neck-t2.v),stop:t2.v*0.99,vr,
+        lines:[{i1:t1.i,v1:h1,i2:t3.i,v2:h2}],marks:[{i:t1.i,v:t1.v},{i:t2.i,v:t2.v},{i:t3.i,v:t3.v}]});
+      break;
+    }
+  }
+
+  if(SH.length>=3&&SL.length>=3){
+    const hp=SH.slice(-4),lp=SL.slice(-4);
+    const lh=fit(hp),ll=fit(lp);
+    const first=Math.min(hp[0].i,lp[0].i),last=NN-1;
+    const up0=lineAt(lh,first),lo0=lineAt(ll,first);
+    const up1=lineAt(lh,last),lo1=lineAt(ll,last);
+    const w0=up0-lo0,w1=up1-lo1,span=last-first;
+    const height=Math.max(Math.abs(w0),Math.abs(w1));
+    const heightPct=height/price;
+    const widthPct=w0/price;
+    const tol=Math.max(height*0.12,price*0.004);
+    const ht=touches(hp,lh,tol),lt=touches(lp,ll,tol);
+    const upMove=(up1-up0)/price,loMove=(lo1-lo0)/price;
+    if(span>=30&&ht>=3&&lt>=3&&w0>0&&w1>0&&up0>lo0&&up1>lo1&&widthPct>=0.025&&widthPct<=0.18&&heightPct>=Math.max(0.03,atrF*1.8)){
+      const converged=w1<w0*0.8;
+      if(converged){
+        if(upMove<-Math.max(0.015,widthPct*0.2)&&Math.abs(loMove)<Math.max(0.01,widthPct*0.15)){
+          const brokeDn=price<lo1*0.9995;
+          const ago=breakAgo(lo1,"down");
+          const confirmed=brokeDn&&ago>=0&&ago<=4;
+          const forming=!brokeDn&&price>lo1*1.001&&price<lo1*1.004;
+          const late=brokeDn&&price<lo1-(up0-lo0)*0.4;
+          if(!late&&(confirmed||forming)){
+            const score=clamp(62+clamp((1-w1/w0)/0.5,0,1)*12+(confirmed?12:0)+(vr>1.2?4:0),54,94);
+            add({pattern:"desc_triangle",dir:"bear",status:confirmed?"confirmed":"forming",score,price,trigger:lo1,triggerName:"الدعم",target:lo1-(up0-lo0)*0.8,stop:up1*1.005,vr,
+            lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+          }
+        }
+        if(upMove<-Math.max(0.02,widthPct*0.25)&&loMove>Math.max(0.02,widthPct*0.25)){
+          const cUp=price>up1*1.001&&breakAgo(up1,"up")>=0&&breakAgo(up1,"up")<=4;
+          const cDn=price<lo1*0.999&&breakAgo(lo1,"down")>=0&&breakAgo(lo1,"down")<=4;
+          const late=(cUp&&price>up1+(up1-lo1)*0.4)||(cDn&&price<lo1-(up1-lo1)*0.4);
+          if(!late&&(cUp||cDn)){
+            const score=clamp(62+clamp((1-w1/w0)/0.5,0,1)*12+12+(vr>1.2?4:0),54,94);
+            add({pattern:"sym_triangle",dir:cUp?"bull":"bear",status:"confirmed",score,price,trigger:cUp?up1:lo1,triggerName:cUp?"المقاومة":"الدعم",target:cUp?up1+(up1-lo1):lo1-(up1-lo1),stop:cUp?lo1*0.995:up1*1.005,vr,
+              lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+          }
+        }
+        if(upMove>Math.max(0.015,widthPct*0.2)&&loMove>Math.max(0.015,widthPct*0.2)&&loMove>upMove*1.1+0.008){
+          const brokeDn=price<lo1*0.9995;
+          const ago=breakAgo(lo1,"down");
+          const confirmed=brokeDn&&ago>=0&&ago<=4;
+          const forming=!brokeDn&&price<up1*0.999&&price>lo1*1.002;
+          const late=brokeDn&&price<lo1-(up1-lo1)*0.4;
+          if(!late&&(confirmed||forming)){
+            const score=clamp(62+clamp((loMove-upMove)/0.04,0,1)*12+(confirmed?13:0)+(vr>1.2?4:0),54,94);
+            add({pattern:"rising_wedge",dir:"bear",status:confirmed?"confirmed":"forming",score,price,trigger:lo1,triggerName:"الدعم",target:lo1-(up1-lo1)*0.8,stop:up1*1.005,vr,
+              lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+          }
+        }
+        if(upMove<-Math.max(0.015,widthPct*0.2)&&loMove<-Math.max(0.015,widthPct*0.2)&&upMove<loMove*1.1-0.008){
+          const brokeUp=price>up1*1.001;
+          const ago=breakAgo(up1,"up");
+          const confirmed=brokeUp&&ago>=0&&ago<=4;
+          const forming=!brokeUp&&price>lo1*0.999&&price<up1*0.998;
+          const late=brokeUp&&price>up1+(up1-lo1)*0.4;
+          if(!late&&(confirmed||forming)){
+            const score=clamp(62+clamp((loMove-upMove)/0.04,0,1)*12+(confirmed?13:0)+(vr>1.2?4:0),54,94);
+            add({pattern:"falling_wedge",dir:"bull",status:confirmed?"confirmed":"forming",score,price,trigger:up1,triggerName:"المقاومة",target:up1+(up1-lo1)*0.8,stop:lo1*0.995,vr,
+              lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+          }
+        }
+      }
+      if(Math.abs(upMove)<0.008&&Math.abs(loMove)<0.008&&widthPct>=0.02&&widthPct<=0.06&&span>=30){
+        const brokeUp=price>up1*1.001,brokeDn=price<lo1*0.999;
+        const cUp=brokeUp&&breakAgo(up1,"up")>=0&&breakAgo(up1,"up")<=4;
+        const cDn=brokeDn&&breakAgo(lo1,"down")>=0&&breakAgo(lo1,"down")<=4;
+        const late=(cUp&&price>up1+(up1-lo1)*0.4)||(cDn&&price<lo1-(up1-lo1)*0.4);
+        if(!late&&(cUp||cDn)){
+          const score=clamp(62+clamp((widthPct/0.05),0,1)*10+10+(vr>1.2?4:0),54,92);
+          add({pattern:"rectangle",dir:cUp?"bull":"bear",status:"confirmed",score,price,trigger:cUp?up1:lo1,triggerName:cUp?"المقاومة":"الدعم",target:cUp?up1+(up1-lo1):lo1-(up1-lo1),stop:cUp?lo1*0.995:up1*1.005,vr,
+            lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+        }
+      }
+    }
+  }
+
+  for(let pe=NN-7;pe>=Math.max(12,NN-30);pe--){
+    for(let len=5;len<=10;len++){
+      const st=pe-len+1;
+      if(st<0) continue;
+      const move=(C[pe]-C[st])/C[st];
+      const minPole=Math.max(0.05,atrF*2.5);
+      if(Math.abs(move)<minPole) continue;
+      let green=0,red=0;
+      for(let i=st;i<=pe;i++){ if(C[i]>=O[i]) green++; else red++; }
+      const bars=pe-st+1;
+      if(move>0&&green<Math.ceil(bars*0.7)) continue;
+      if(move<0&&red<Math.ceil(bars*0.7)) continue;
+      const cons=a.slice(pe+1);
+      const clen=cons.length;
+      if(clen<5||clen>12) continue;
+      const ch=Math.max.apply(null,cons.map(k=>+k[2]));
+      const cl=Math.min.apply(null,cons.map(k=>+k[3]));
+      const range=(ch-cl)/price;
+      if(range>Math.min(0.045,Math.abs(move)*0.45)) continue;
+      const cc=cons.map(k=>+k[4]);
+      const slope=fit(cc.map((v,i)=>({i,v}))).a/price*100;
+      if(move>0&&slope>0.02) continue;
+      if(move<0&&slope<-0.02) continue;
+      const cv=avg(cons.map(k=>+k[5]));
+      const pv=avg(a.slice(st,pe+1).map(k=>+k[5]))||1;
+      if(cv>pv*1.25) continue;
+      const retrace=move>0?(C[pe]-cl)/C[pe]:(ch-C[pe])/C[pe];
+      if(retrace>Math.abs(move)*0.55) continue;
+      const broke=move>0?price>ch*1.001:price<cl*0.999;
+      const ago=breakAgo(move>0?ch:cl,move>0?"up":"down");
+      const confirmed=broke&&ago>=0&&ago<=4;
+      const pole=Math.abs(C[pe]-C[st]);
+      const late=confirmed&&(move>0?price>ch+pole*0.35:price<cl-pole*0.35);
+      if(late) continue;
+      const forming=!broke&&(move>0?price>ch*0.996:price<cl*1.004);
+      if(!confirmed&&!forming) continue;
+      const pat=move>0?"bull_flag":"bear_flag";
+      const score=clamp(60+clamp(Math.abs(move)/0.15,0,1)*14+clamp(1-range/(Math.abs(move)*0.45),0,1)*8+(confirmed?12:0)+(cv<pv?4:0),54,95);
+      add({pattern:pat,dir:move>0?"bull":"bear",status:confirmed?"confirmed":"forming",score,price,trigger:move>0?ch:cl,triggerName:"حد الاختراق",target:move>0?ch+pole:cl-pole,stop:move>0?cl*0.995:ch*1.005,vr,
+        lines:[{i1:pe+1,v1:ch,i2:NN-1,v2:ch},{i1:pe+1,v1:cl,i2:NN-1,v2:cl},{i1:st,v1:C[st],i2:pe,v2:C[pe]}]});
+    }
+  }
+
+  if(NN>=90){
+    const span=Math.min(100,NN);
+    const part=a.slice(-span);
+    const closes=part.map(k=>+k[4]);
+    const sm=ema(closes,5);
+    let lowIdx=-1;
+    const lo1=Math.floor(span*0.3),hi1=Math.floor(span*0.7);
+    for(let i=lo1;i<=hi1;i++){ if(sm[i]!=null&&(lowIdx<0||sm[i]<sm[lowIdx])) lowIdx=i; }
+    if(lowIdx>lo1&&lowIdx<hi1){
+      const left=Math.max.apply(null,closes.slice(0,Math.floor(span*0.2)));
+      const right=Math.max.apply(null,closes.slice(span-Math.floor(span*0.24),span-Math.floor(span*0.08)));
+      const rim=Math.max(left,right);
+      const low=sm[lowIdx];
+      const depth=(rim-low)/rim;
+      const rimDiff=Math.abs(left-right)/rim;
+      const handle=closes.slice(span-8);
+      const hLow=Math.min.apply(null,handle),hHigh=Math.max.apply(null,handle);
+      const pull=(right-hLow)/right;
+      if(depth>=0.12&&depth<=0.35&&rimDiff<=0.03&&pull>=0.02&&pull<=depth*0.5&&hHigh<right*1.015&&hLow>rim-depth*0.45){
+        const brokeUp=price>rim*1.001;
+        const ago=breakAgo(rim,"up");
+        const confirmed=brokeUp&&ago>=0&&ago<=4;
+        const forming=!brokeUp&&price>rim*0.985&&price<=rim*1.001;
+        const late=brokeUp&&price>rim+depth*rim*0.35;
+        if(!late&&(confirmed||forming)){
+          const score=clamp(60+clamp(depth/0.25,0,1)*10+(1-rimDiff/0.03)*10+clamp((depth*0.5-pull)/depth,0,1)*6+(confirmed?13:0),54,95);
+          add({pattern:"cup_handle",dir:"bull",status:confirmed?"confirmed":"forming",score,price,trigger:rim,triggerName:"حافة الكوب",target:rim+depth*rim,stop:hLow*0.995,vr,
+            lines:[{i1:NN-span+Math.floor(span*0.2),v1:rim,i2:NN-1,v2:rim}],marks:[{i:NN-span+lowIdx,v:low}]});
+        }
+      }
+    }
+  }
+
+  if(!cands.length) return null;
+  cands.sort((x,y)=>(y.score+(y.status==="confirmed"?6:0))-(x.score+(x.status==="confirmed"?6:0)));
+  const best=cands[0];
+  const M=100,st=Math.max(0,NN-M);
+  best.chart={start:st,t:a.slice(st).map(k=>+k[0]),o:O.slice(st),h:H.slice(st),l:L.slice(st),c:C.slice(st),lines:best.lines||[],marks:best.marks||[]};
+  return best;
+}
+
+const kcache=new Map();
+function cacheTTL(tf){ return tf==="15m"?45000:tf==="1h"?55000:tf==="4h"?120000:300000; }
+async function getKlines(sym,tf,force){
+  const key=sym+"|"+tf;
+  const c=kcache.get(key);
+  if(!force&&c&&Date.now()-c.t<cacheTTL(tf)) return c.kl;
+  const bars=TF_META[tf].bars;
+  const kl=await api("/api/v3/klines?symbol="+encodeURIComponent(sym)+"&interval="+tf+"&limit="+bars);
+  if(Array.isArray(kl)&&kl.length>=35){ kcache.set(key,{kl,t:Date.now()}); return kl; }
+  return c?c.kl:null;
+}
+
+async function loadUniverse(force){
+  if(!force&&state.symbols.length&&Date.now()-state.tickersAt<70000) return true;
+  const data=await api("/api/v3/ticker/24hr");
+  if(!Array.isArray(data)||!data.length) return false;
+  const out=[];
+  for(const t of data){
+    if(!t||!t.symbol||!WATCH_SET.has(t.symbol)) continue;
+    const base=t.symbol.slice(0,-4);
+    if(!base||STABLE.test(base)) continue;
+    if(/(UP|DOWN|BULL|BEAR)USDT$/.test(t.symbol)) continue;
+    const vol=+t.quoteVolume||0;
+    const chg=+t.priceChangePercent||0;
+    out.push({symbol:t.symbol,base,last:+t.lastPrice||0,chg,vol});
+  }
+  out.sort((a,b)=>b.vol-a.vol);
+  const list=out;
+  const map={};
+  for(const s of list) map[s.symbol]=s;
+  state.symbols=list;state.tickers=map;state.tickersAt=Date.now();
+  try{ const opt=document.querySelector('#universeSel option[value="watch"]'); if(opt) opt.textContent="قائمتي المختارة ("+list.length+" عملة)"; }catch(e){}
+  return true;
+}
+
+function updateProgress(){
+  const p=state.total?Math.round(state.scanned/state.total*100):0;
+  $("bar").style.width=p+"%";
+  $("stScanned").textContent=state.scanned.toLocaleString("en-US");
+  const tfs=state.tfs.map(t=>TF_META[t].short).join(" + ");
+  $("statusLine").textContent="فحص "+tfs+" • "+state.scanned+"/"+state.total+" عملة • "+state.results.length+" نموذج";
+}
+
+function pruneSeen(){
+  const now=Date.now();
+  let n=0;
+  for(const k in state.seen){
+    if(now-state.seen[k]>7*24*3600*1000){ delete state.seen[k];n++; }
+  }
+  return n;
+}
+function saveSeen(){
+  try{ localStorage.setItem("patt_seen_v2",JSON.stringify(state.seen)); }catch(e){}
+}
+function loadSeen(){
+  try{
+    const o=JSON.parse(localStorage.getItem("patt_seen_v2")||"{}");
+    if(o&&typeof o==="object") state.seen=o;
+  }catch(e){}
+  pruneSeen();
+}
+
+async function scan(manual){
+  if(state.scanning) return;
+  state.scanning=true;
+  state.force=!!manual;
+  $("scanBtn").disabled=true;
+  $("scanBtn").textContent="⦿ جارٍ الفحص…";
+  state.scanned=0;state.errs=0;state.results=[];
+  const tfs=state.tfs.slice();
+  if(!tfs.length){ state.scanning=false;$("scanBtn").disabled=false;$("scanBtn").textContent="⦿ فحص الآن";return; }
+  if(!state.symbols.length||manual){
+    $("statusLine").textContent="📡 يجلب قائمة العملات…";
+    const ok=await loadUniverse(manual);
+    if(!ok){
+      state.scanning=false;$("scanBtn").disabled=false;$("scanBtn").textContent="⦿ فحص الآن";
+      $("statusLine").textContent="⚠ تعذر جلب العملات — تحقق من الاتصال ثم اضغط فحص الآن";
+      toast("تعذر جلب قائمة العملات","err");
+      return;
+    }
+  }
+  state.total=state.symbols.length;
+  const t0=Date.now();
+  const seenThis={};
+  const results=[];
+  let newCount=0,newConfirmed=0;
+  let cursor=0;
+  const force=state.force;
+  const workers=Array.from({length:Math.min(12,state.symbols.length)},()=> (async()=>{
+    while(true){
+      const idx=cursor++;
+      if(idx>=state.symbols.length) return;
+      const s=state.symbols[idx];
+      for(const tf of tfs){
+        let kl=null;
+        try{ kl=await getKlines(s.symbol,tf,force); }catch(e){}
+        if(!kl){ state.errs++; continue; }
+        let det=null;
+        try{ det=detectBest(kl,tf); }catch(e){}
+        if(!det) continue;
+        const key=det.pattern+"|"+s.symbol+"|"+tf;
+        const isNew=!state.seen[key]||(t0-state.seen[key]>6*3600*1000);
+        if(isNew){ state.seen[key]=t0;seenThis[key]=1;newCount++;if(det.status==="confirmed") newConfirmed++; }
+        results.push({...det,symbol:s.symbol,sym:s.base,tf,chg:s.chg,key,isNew,ts:t0});
+      }
+      state.scanned++;
+      if(state.scanned%6===0) updateProgress();
+      await tick();
+    }
+  })());
+  await Promise.all(workers);
+  const bestBySym=new Map();
+  for(const r of results){
+    const w=r.score+(r.status==="confirmed"?8:0);
+    const prev=bestBySym.get(r.symbol);
+    if(!prev||w>prev.w) bestBySym.set(r.symbol,{r,w});
+  }
+  state.results=[...bestBySym.values()].map(x=>x.r);
+  state.lastScan=Date.now();
+  state.scanning=false;
+  state.force=false;
+  saveSeen();
+  $("bar").style.width="100%";
+  $("scanBtn").disabled=false;
+  $("scanBtn").textContent="⦿ فحص الآن";
+  $("lastScan").textContent="آخر فحص: "+new Date(state.lastScan).toLocaleTimeString("ar");
+  render();
+  const took=((Date.now()-t0)/1000).toFixed(0);
+  $("statusLine").textContent="تم فحص "+state.scanned+" عملة • "+tfs.map(t=>TF_META[t].short).join(" + ")+" • "+state.results.length+" نموذج • "+took+" ث"+(state.errs?" • "+state.errs+" تعذر":"");
+  if(newCount){
+    toast("تم رصد "+newCount+" إشارة جديدة"+(newConfirmed?" • "+newConfirmed+" مؤكدة":""));
+    if(newConfirmed>0){ beep(); try{ navigator.vibrate&&navigator.vibrate([25,40,25]); }catch(e){} }
+  }
+}
+
+function dirLabel(d){ return d==="bull"?"صاعد":d==="bear"?"هابط":"محايد"; }
+function statusLabel(s){ return s==="confirmed"?"مؤكد":"يتشكل"; }
+
+function render(){
+  const f=state.filters;
+  let list=state.results.filter(r=>{
+    if(f.q&&!r.sym.includes(f.q)) return false;
+    if(f.pattern&&r.pattern!==f.pattern) return false;
+    if(f.dir&&r.dir!==f.dir) return false;
+    if(f.status&&r.status!==f.status) return false;
+    if(f.tf&&r.tf!==f.tf) return false;
+    return true;
+  });
+  if(state.sort==="score") list.sort((a,b)=>b.score-a.score);
+  else if(state.sort==="change") list.sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
+  else list.sort((a,b)=>(b.status==="confirmed"?1:0)-(a.status==="confirmed"?1:0)||b.score-a.score);
+  const confirmed=state.results.filter(r=>r.status==="confirmed").length;
+  const forming=state.results.filter(r=>r.status==="forming").length;
+  $("stFound").textContent=state.results.length;
+  $("stBull").textContent=confirmed;
+  $("stBear").textContent=forming;
+  $("resCount").textContent=list.length;
+  $("filterHint").textContent=list.length!==state.results.length?("من أصل "+state.results.length):"";
+  $("empty").style.display=list.length?"none":"block";
+  const grid=$("grid");
+  destroyCharts();
+  grid.innerHTML=list.map(r=>{
+    const p=PATTERNS[r.pattern];
+    const dcls=r.dir==="bull"?"bull":r.dir==="bear"?"bear":"neutral";
+    const sc=Math.round(r.score);
+    const diff=r.trigger&&r.price?((r.trigger/r.price-1)*100):0;
+    return '<article class="card '+dcls+' '+(r.status==="confirmed"?"confirmed":"")+'">'
+      +'<div class="c-top"><div class="coin">'+esc(r.sym)+'<small>USDT</small></div>'
+      +(r.isNew?'<span class="new">جديد</span>':'')
+      +'<span class="tf-badge">'+TF_META[r.tf].label+'</span></div>'
+      +'<div class="pname"><span class="num">'+p.n+'</span>'+esc(p.ar)+'<small>'+esc(p.en)+'</small></div>'
+      +'<div class="fig">'+patternFig(r)+'</div>'
+      +'<div class="badges"><span class="badge '+dcls+'">'+dirLabel(r.dir)+'</span>'
+      +'<span class="badge '+(r.status==="confirmed"?"ok":"form")+'">'+statusLabel(r.status)+'</span>'
+      +'<span class="badge neutral">'+TF_META[r.tf].short+'</span></div>'
+      +'<div class="metrics"><div><small>السعر</small><b>'+fmt(r.price)+'</b></div>'
+      +'<div><small>تغير 24س</small><b class="'+(r.chg>=0?"up":"down")+'">'+pctTxt(r.chg)+'</b></div>'
+      +'<div><small>الثقة</small><b>'+sc+'%</b></div></div>'
+      +'<div class="conf"><div class="bar"><i style="width:'+sc+'%"></i></div><b>'+sc+'%</b></div>'
+      +'<div class="levels">'+esc(r.triggerName||"حد الاختراق")+': <b>'+fmt(r.trigger)+'</b> • المسافة: <b>'+(diff>=0?"+":"")+diff.toFixed(2)+'%</b><br>الهدف: <b>'+fmt(r.target)+'</b> • الوقف: <b>'+fmt(r.stop)+'</b></div>'
+      +'<div class="c-foot"><span>'+new Date(r.ts).toLocaleTimeString("ar")+'</span>'
+      +'<a href="https://www.tradingview.com/chart/?symbol=BINANCE%3A'+encodeURIComponent(r.symbol)+'&interval='+TF_META[r.tf].tv+'" target="_blank" rel="noopener">الشارت ↗</a></div>'
+      +'</article>';
+  }).join("");
+  mountCharts();
+}
+
+let actx=null;
+function beep(){
+  if(!state.sound) return;
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC) return;
+    actx=actx||new AC();
+    if(actx.state==="suspended") actx.resume();
+    const t=actx.currentTime;
+    [880,1174.7].forEach((f,i)=>{
+      const o=actx.createOscillator(),g=actx.createGain();
+      o.type="sine";o.frequency.setValueAtTime(f,t+i*0.09);
+      g.gain.setValueAtTime(0.0001,t+i*0.09);
+      g.gain.exponentialRampToValueAtTime(0.16,t+i*0.09+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+i*0.09+0.22);
+      o.connect(g);g.connect(actx.destination);o.start(t+i*0.09);o.stop(t+i*0.09+0.24);
+    });
+  }catch(e){}
+}
+function toast(msg,cls){
+  const box=$("toasts");
+  const d=document.createElement("div");
+  d.className="toast"+(cls==="err"?" err":"");
+  d.textContent=msg;
+  box.appendChild(d);
+  setTimeout(()=>{ try{ d.remove(); }catch(e){} },5200);
+  while(box.children.length>3) box.firstChild.remove();
+}
+
+function savePrefs(){
+  try{
+    localStorage.setItem("patt_prefs_v2",JSON.stringify({tfs:state.tfs,auto:state.auto,sound:state.sound,universe:state.universe,sort:state.sort}));
+  }catch(e){}
+}
+function loadPrefs(){
+  try{
+    const o=JSON.parse(localStorage.getItem("patt_prefs_v2")||"{}");
+    if(Array.isArray(o.tfs)){ const t=o.tfs.filter(x=>TFS.includes(x)); if(t.length) state.tfs=t; }
+    if(typeof o.auto==="boolean") state.auto=o.auto;
+    if(typeof o.sound==="boolean") state.sound=o.sound;
+    state.universe="watch";
+    if(typeof o.sort==="string") state.sort=o.sort;
+  }catch(e){}
+}
+
+function buildTfChips(){
+  $("tfChips").innerHTML=TFS.map(tf=>'<button type="button" class="tf-chip'+(state.tfs.includes(tf)?" on":"")+'" data-tf="'+tf+'">'+TF_META[tf].short+' <small>'+TF_META[tf].label+'</small></button>').join("")+'<span class="spacer"></span><span class="switch" style="font-weight:700">اختر فريم أو أكثر</span>';
+}
+function buildLegend(){
+  $("legend").innerHTML=Object.keys(PATTERNS).map(k=>{
+    const p=PATTERNS[k];
+    return '<div class="legend-item"><b>'+p.n+'</b><i class="'+p.dir+'"></i>'+esc(p.ar)+(p.dir==="neutral"?' <span style="color:#f0b90b">(بعد الاختراق)</span>':'')+'</div>';
+  }).join("");
+  $("fPattern").innerHTML='<option value="">كل الأنماط</option>'+Object.keys(PATTERNS).map(k=>'<option value="'+k+'">'+PATTERNS[k].n+'. '+esc(PATTERNS[k].ar)+'</option>').join("");
+}
+function syncControls(){
+  $("autoChk").checked=state.auto;
+  $("soundBtn").textContent=state.sound?"🔊":"🔇";
+  $("universeSel").value=state.universe;
+  $("fSort").value=state.sort;
+}
+
+function bind(){
+  $("scanBtn").onclick=()=>{ if(!state.scanning) scan(true); };
+  $("soundBtn").onclick=()=>{ state.sound=!state.sound; $("soundBtn").textContent=state.sound?"🔊":"🔇"; savePrefs(); if(state.sound) beep(); };
+  $("autoChk").onchange=e=>{ state.auto=e.target.checked; savePrefs(); if(state.auto&&!state.scanning) scan(false); };
+  $("universeSel").onchange=e=>{ state.universe=e.target.value; savePrefs(); if(!state.scanning) scan(true); };
+  $("tfChips").addEventListener("click",e=>{
+    const b=e.target.closest("[data-tf]");
+    if(!b) return;
+    const tf=b.dataset.tf;
+    const i=state.tfs.indexOf(tf);
+    if(i>=0){ if(state.tfs.length===1) return; state.tfs.splice(i,1); }
+    else state.tfs.push(tf);
+    state.tfs.sort((a,b)=>TFS.indexOf(a)-TFS.indexOf(b));
+    b.classList.toggle("on");
+    savePrefs();
+    if(!state.scanning) scan(false);
+  });
+  const onFilter=()=>{
+    state.filters={
+      q:($("q").value||"").trim().toUpperCase().replace(/USDT$/,""),
+      pattern:$("fPattern").value,
+      dir:$("fDir").value,
+      status:$("fStatus").value,
+      tf:$("fTf").value
+    };
+    render();
+  };
+  $("q").oninput=onFilter;
+  ["fPattern","fDir","fStatus","fTf"].forEach(id=>{ $(id).onchange=onFilter; });
+  $("fSort").onchange=e=>{ state.sort=e.target.value; savePrefs(); render(); };
+  window.addEventListener("online",()=>{ if(state.auto) scan(true); });
+}
+
+loadPrefs();
+loadSeen();
+buildTfChips();
+buildLegend();
+syncControls();
+bind();
+$("autoChk").checked=state.auto;
+setInterval(()=>{
+  if(state.lastScan){
+    const s=Math.round((Date.now()-state.lastScan)/1000);
+    $("lastScan").textContent="آخر فحص: "+new Date(state.lastScan).toLocaleTimeString("ar")+(s<120?" • قبل "+s+" ث":"");
+  }
+},10000);
+setInterval(()=>{
+  if(state.auto&&!state.scanning&&!document.hidden) scan(false);
+},60000);
+window.PATRADAR={state,scan,detectBest,api,getKlines,PATTERNS};
+if(state.auto) setTimeout(()=>{ if(!document.hidden) scan(false); },900);
+})();
+</script>
+</body>
+</html>
