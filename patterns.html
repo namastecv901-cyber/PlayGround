@@ -257,6 +257,22 @@ body.live-off .pulse{background:linear-gradient(135deg,#f0b90b,#ff8a3d)}
 .legend-item b{color:var(--gold);font-size:.62rem;min-width:16px}
 .legend-item i{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .legend-item i.bull{background:var(--up)}.legend-item i.bear{background:var(--down)}.legend-item i.neutral{background:var(--gold)}
+.gallery-wrap{margin-top:12px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#ffffff06,#ffffff02);padding:10px 12px}
+.gallery-head{display:flex;align-items:center;gap:7px;font-size:.8rem;font-weight:900;color:#dfe5ff;margin-bottom:3px}
+.gallery-head b{color:var(--gold);font-size:.72rem;background:#f0b90b16;border:1px solid #f0b90b44;border-radius:99px;padding:1px 7px}
+.gallery-note{font-size:.66rem;color:var(--mut);font-weight:700;padding:0 0 9px;line-height:1.7}
+.pattern-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:7px;padding:0 0 12px}
+.pattern-tile{background:#070b16;border:1px solid #ffffff10;border-radius:10px;padding:6px;min-width:0}
+.pattern-tile .pt-top{display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.pattern-tile .pt-top b{font-size:.62rem;color:var(--gold);min-width:15px}
+.pattern-tile .pt-dir{font-size:.5rem;font-weight:900;border-radius:99px;padding:1px 5px;margin-inline-start:auto;border:1px solid transparent}
+.pattern-tile .pt-dir.bull{color:#8bf3c7;background:#16c78418;border-color:#16c78444}
+.pattern-tile .pt-dir.bear{color:#ffa3a8;background:#ea394318;border-color:#ea394344}
+.pattern-tile .pt-dir.neutral{color:#ffe27a;background:#f0b90b18;border-color:#f0b90b44}
+.pattern-tile .pt-name{font-size:.64rem;font-weight:900;color:#dfe5ff;line-height:1.35}
+.pattern-tile .pt-en{font-size:.5rem;color:var(--mut);font-weight:700;line-height:1.3;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pattern-tile .pt-fig{border:1px solid #ffffff0d;border-radius:6px;overflow:hidden;background:linear-gradient(180deg,#08101c,#0a1020)}
+.pattern-tile .pt-fig svg{display:block;width:100%;height:auto}
 #toasts{position:fixed;z-index:80;bottom:16px;inset-inline-start:16px;display:flex;flex-direction:column;gap:8px;max-width:min(340px,calc(100vw - 32px))}
 .toast{background:#121a30f2;border:1px solid #f0b90b55;border-radius:12px;padding:10px 13px;font-size:.77rem;font-weight:800;box-shadow:0 10px 30px #0009;animation:rise .2s both}
 .toast.err{border-color:#ea394366}
@@ -378,8 +394,14 @@ body.embed .legend{display:none}
     </select>
   </section>
 
+  <section class="gallery-wrap" id="galleryWrap">
+    <div class="gallery-head"><span>🖼️ كل الأنماط المدعومة</span><b>20</b></div>
+    <div class="gallery-note">أمثلة توضيحية لكل الأنماط. قسم الإشارات أسفل الصفحة يعرض فقط النماذج المؤكدة حالياً.</div>
+    <div class="pattern-gallery" id="patternGallery"></div>
+  </section>
+
   <details class="legend">
-    <summary>الأنماط الـ20 التي يرصدها الرادار</summary>
+    <summary>قائمة الأنماط الـ20</summary>
     <div class="legend-grid" id="legend"></div>
   </details>
 
@@ -540,41 +562,45 @@ const FIG={
     lines:[[14,20,258,50],[14,52,284,52]],arrow:"down"
   },
   asc_triangle:{
-    y:[70,62,54,46,40,34,28,34,26,34,25,33,24,32,23,31,20,12],
-    lines:[[14,20,284,20],[14,62,284,34]],arrow:"up"
+    y:[82,66,50,24,54,68,24,46,60,24,40,52,24,36,46,24,32,40,18,8],
+    lines:[[14,24,286,24],[14,82,286,36]],
+    labels:[["مقاومة",160,16],["دعم صاعد",92,78]],arrow:"up"
   },
   triple_top:{
-    y:[22,30,38,46,40,34,30,38,46,40,34,30,38,46,40,34,28,36,48,62],
-    lines:[[42,42,278,42]],dots:[[62,30],[160,30],[258,30]],
-    labels:[["قمة",62,22],["قمة",160,22],["قمة",258,22],["خط العنق",160,55]],arrow:"down"
+    y:[60,50,40,30,42,52,42,32,42,30,42,52,42,32,42,30,46,62,78,94],
+    lines:[[42,48,282,48]],dots:[[56,30],[141,30],[225,30]],
+    labels:[["قمة",56,21],["قمة",141,21],["قمة",225,21],["خط العنق",160,58]],arrow:"down"
   },
   triple_bottom:{
-    y:[92,84,76,68,74,80,84,76,68,74,80,84,76,68,74,80,86,78,66,52],
-    lines:[[42,80,278,80]],dots:[[62,84],[160,84],[258,84]],
-    labels:[["قاع",62,96],["قاع",160,96],["قاع",258,96],["خط العنق",160,73]],arrow:"up"
+    y:[54,64,74,84,72,62,72,82,72,84,72,62,72,82,72,84,68,52,36,20],
+    lines:[[42,64,282,64]],dots:[[56,84],[141,84],[225,84]],
+    labels:[["قاع",56,98],["قاع",141,98],["قاع",225,98],["خط العنق",160,59]],arrow:"up"
   },
   broadening:{
-    y:[46,38,54,32,58,28,62,24,66,20,74,14],
-    lines:[[14,42,286,8],[14,50,286,84]],arrow:"dir"
+    y:[54,46,60,40,66,34,72,28,78,22,84,16,90,10,96,6,100,2],
+    lines:[[14,48,286,4],[14,58,286,102]],
+    labels:[["قمة أعلى",96,16],["قاع أدنى",210,98]],arrow:"dir"
   },
   bull_pennant:{
-    y:[86,72,58,44,30,22,18,22,20,24,21,25,22,26,23,14,6],
-    lines:[[108,16,232,30],[108,28,232,40]],arrow:"up"
+    y:[90,80,68,56,44,34,24,30,22,28,23,29,24,30,25,31,26,18,12,6],
+    lines:[[110,20,236,28],[110,32,236,38]],
+    labels:[["الراية",173,48]],arrow:"up"
   },
   bear_pennant:{
-    y:[14,28,42,56,70,78,82,78,80,76,79,75,78,74,77,86,94],
-    lines:[[108,84,232,70],[108,72,232,58]],arrow:"down"
+    y:[20,32,44,56,68,78,88,82,90,84,89,83,88,82,87,81,86,92,98,104],
+    lines:[[110,88,236,80],[110,76,236,68]],
+    labels:[["الراية",173,60]],arrow:"down"
   },
   rounded_bottom:{
-    y:[24,28,34,42,52,62,70,76,80,82,80,76,70,62,52,42,34,26,22,14],
-    paths:["M18 26 Q160 132 286 26"],
-    lines:[[220,24,300,24]],
+    y:[30,31,34,39,46,55,64,72,78,82,84,82,78,72,64,55,46,39,30,20],
+    paths:["M18 30 Q160 132 286 30"],
+    lines:[[220,30,300,30]],
     labels:[["قاع مستدير",160,98]],arrow:"up"
   },
   rounded_top:{
-    y:[86,82,76,68,58,48,40,34,30,28,30,34,40,48,58,68,76,84,88,96],
-    paths:["M18 84 Q160 -22 286 84"],
-    lines:[[220,88,300,88]],
+    y:[80,79,76,71,64,55,46,38,32,28,26,28,32,38,46,55,64,71,80,90],
+    paths:["M18 80 Q160 -22 286 80"],
+    lines:[[220,80,300,80]],
     labels:[["قمة مستديرة",160,12]],arrow:"down"
   }
 };
@@ -1572,6 +1598,9 @@ function render(){
     if(f.tf&&r.tf!==f.tf) return false;
     return true;
   });
+  const gw=$("galleryWrap");
+  const showAll=!f.pattern;
+  if(gw) gw.style.display=showAll?"block":"none";
   if(state.sort==="score") list.sort((a,b)=>b.score-a.score);
   else if(state.sort==="change") list.sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
   else list.sort((a,b)=>(PHASE_PRIORITY[allPh.get(a).key]-PHASE_PRIORITY[allPh.get(b).key])||b.score-a.score);
@@ -1689,7 +1718,6 @@ function closeOriginalTV(){
 let lastPostedHeight=0;
 function postHeight(){
   if(window.parent===window) return;
-  if(!state.results.length) return;
   try{
     const h=Math.max(900,Math.ceil(document.documentElement.scrollHeight));
     if(Math.abs(h-lastPostedHeight)<20) return;
@@ -1776,6 +1804,11 @@ function buildLegend(){
   }).join("");
   $("fPattern").innerHTML='<option value="">كل الأنماط</option>'+Object.keys(PATTERNS).map(k=>'<option value="'+k+'">'+PATTERNS[k].n+'. '+esc(PATTERNS[k].ar)+'</option>').join("");
   $("fTf").innerHTML='<option value="">كل الفريمات</option>'+TFS.map(tf=>'<option value="'+tf+'">'+esc(TF_META[tf].label)+'</option>').join("");
+  const pg=$("patternGallery");
+  if(pg) pg.innerHTML=Object.keys(PATTERNS).map(k=>{
+    const p=PATTERNS[k];
+    return '<div class="pattern-tile"><div class="pt-top"><b>'+p.n+'</b><span class="pt-dir '+p.dir+'">'+dirLabel(p.dir)+'</span></div><div class="pt-name">'+esc(p.ar)+'</div><div class="pt-en">'+esc(p.en)+'</div><div class="pt-fig">'+genericFig(k,p.dir)+'</div></div>';
+  }).join("");
 }
 function syncControls(){
   $("autoChk").checked=state.auto;
