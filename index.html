@@ -59,7 +59,7 @@
 <link rel="apple-touch-startup-image" href="icon-512.png">
 <style>:root{--bg:#0a0e1a;--bg2:#10162a;--card:#141b33cc;--line:#ffffff14;--txt:#eef1ff;--mut:#9aa3c7;--up:#16c784;--down:#ea3943;--gold:#f0b90b;--blue:#4f7cff;--grad:linear-gradient(135deg,#f0b90b,#ff6b35 50%,#4f7cff);}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
+body{font-family:'Cairo',Tahoma,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
 body.light{--bg:#f2f4fb;--bg2:#fff;--card:#ffffffee;--line:#0a0e1a14;--txt:#141a30;--mut:#5b6486}
 .bg-glow{position:fixed;inset:0;pointer-events:none;background:radial-gradient(600px 300px at 85% -5%,#f0b90b33,transparent),radial-gradient(700px 350px at 10% 0%,#4f7cff33,transparent);z-index:0}
 .container{max-width:1400px;margin:0 auto;padding:0 18px;position:relative;z-index:1}
@@ -702,11 +702,13 @@ canvas.spark{width:100%;height:46px;background:#00000044;border-radius:10px}
 .tv-btn{flex:1;text-align:center;background:#131f6b;color:#fff;border-radius:10px;padding:8px;font-weight:900;font-size:.8rem;text-decoration:none;border:1px solid #4f7cff66;font-family:inherit;cursor:pointer}
 .tv-btn.ghost{background:transparent;color:#8fa9ff}
 .tv-btn:hover{filter:brightness(1.25)}
-#tvModal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;z-index:200;align-items:center;justify-content:center;padding:18px}
+#tvModal{position:fixed;inset:0;background:#05070d;display:none;z-index:200;align-items:center;justify-content:center;padding:18px;isolation:isolate;contain:paint;transform:translateZ(0);will-change:transform}
 #tvModal.show{display:flex}
-.tv-box{background:#0b1226;border:1px solid #4f7cff66;border-radius:18px;width:min(1000px,100%);overflow:hidden}
+#tvModal.show .tv-box{animation:tvPanelIn .22s ease-out both}
+@keyframes tvPanelIn{from{opacity:.01;transform:translateZ(0) scale(.985)}to{opacity:1;transform:translateZ(0) scale(1)}}
+.tv-box{background:#0b1226;border:1px solid #4f7cff66;border-radius:18px;width:min(1000px,100%);overflow:hidden;transform:translateZ(0);will-change:transform;isolation:isolate}
 .tv-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--line)}
-#tvFrame{width:100%;height:520px;background:#000}
+#tvFrame{width:100%;height:520px;background:#000;position:relative;transform:translateZ(0);will-change:transform}
 @media(max-width:600px){#tvFrame{height:420px}.cmd-bar{font-size:.78rem}}
 
 /* ===== v35.3 TRADE TICKET ===== */
@@ -1521,8 +1523,8 @@ body.linkmode #masterFab{display:none!important}
   <div class="ob-grid" id="liqGrid"></div>
 </div>
 <div class="radar-sec" id="patternsSec" style="margin:12px 0;border:2px solid #38d9ff66;border-radius:20px;overflow:hidden;background:#0b0d15">
-<div style="display:flex;align-items:center;gap:8px;padding:12px 14px;font-weight:900">📐 رادار النماذج الفنية — 12 نموذج على عملات مختارة<span style="margin-inline-start:auto"></span><a href="patterns.html" style="color:#38d9ff;font-size:.8rem">فتح كاملاً ←</a></div>
-<iframe src="patterns.html?embed=1" style="width:100%;height:1250px;border:0;display:block;background:#06070b" loading="lazy" title="رادار النماذج الفنية"></iframe>
+<div style="display:flex;align-items:center;gap:8px;padding:12px 14px;font-weight:900">📐 رادار النماذج الفنية — 20 نموذجاً على عملات مختارة<span style="margin-inline-start:auto"></span><a href="patterns.html" style="color:#38d9ff;font-size:.8rem">فتح كاملاً ←</a></div>
+<iframe src="patterns.html?embed=1&v=svg7" style="width:100%;height:1250px;border:0;display:block;background:#06070b" loading="lazy" title="رادار النماذج الفنية"></iframe>
 </div>
 <div class="member-bar" id="memberBar">
   <span class="mb-badge mb-guest" id="mbBadge">👤 زائر</span>
@@ -2384,6 +2386,25 @@ function openTV(id){
 }
 function closeTV(){ const m=document.getElementById('tvModal'), f=document.getElementById('tvFrame'); if(m) m.classList.remove('show'); if(f) f.src=''; }
 window.openTV=openTV; window.closeTV=closeTV;
+function openTVSymbol(sym,int,label,note){
+  const s=String(sym||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  const raw=String(int||"60").trim().toUpperCase().replace(/[^0-9A-Z]/g,"");
+  const iv=/^(?:[1-9]\d*|[DWM])$/.test(raw)?raw:"60";
+  const m=document.getElementById('tvModal'),f=document.getElementById('tvFrame'),cap=document.getElementById('tvCap');
+  if(cap) cap.textContent=(label||s)+' — TradingView الأصلي'+(note?' • '+note:'');
+  const url='https://www.tradingview.com/widgetembed/?symbol=BINANCE%3A'+encodeURIComponent(s)+'&interval='+iv+'&theme=dark&style=1&locale=ar&hide_side_toolbar=0&withdateranges=1&allow_symbol_change=0&save_image=0&details=1';
+  if(m) m.classList.add('show');
+  if(f) setTimeout(()=>{ f.src=url; },40);
+}
+window.openTVSymbol=openTVSymbol;
+window.addEventListener('message',e=>{
+  const d=e.data; if(!d||typeof d!=='object') return;
+  if(d.type==='patt-open-tv'){ openTVSymbol(d.symbol,d.interval,d.title,d.note); return; }
+  if(d.type==='patt-height'){
+    const f=document.querySelector('#patternsSec iframe'); if(!f) return;
+    const h=Math.max(900,Math.min(14000,+d.height||0)); if(h>0) f.style.height=h+'px';
+  }
+});
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeTV(); });
 
 function bindCards(g,all){
