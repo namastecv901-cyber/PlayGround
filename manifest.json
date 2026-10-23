@@ -1,17 +1,25 @@
 {
-  "name": "TRAININGV8 Premium",
-  "short_name": "TRAININGV8",
-  "description": "ذكاء + حاسبة + حارس — بطاقة واحدة",
+  "name": "الأنماط الصاعدة — Bullish Patterns",
+  "short_name": "الأنماط الصاعدة",
+  "description": "كاشف 19 نمطاً صاعداً على Binance Spot مع خطة دخول ووقف و3 أهداف — شراء فقط بلا رافعة",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0a0e1a",
-  "theme_color": "#0a0e1a",
+  "background_color": "#06070b",
+  "theme_color": "#06070b",
   "dir": "rtl",
   "lang": "ar",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
