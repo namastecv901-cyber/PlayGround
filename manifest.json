@@ -1,7 +1,7 @@
 {
   "name": "الأنماط الصاعدة — Bullish Patterns",
   "short_name": "الأنماط الصاعدة",
-  "description": "كاشف 19 نمطاً صاعداً على Binance Spot مع خطة دخول ووقف و3 أهداف — شراء فقط بلا رافعة",
+  "description": "كاشف 19 نمطاً صاعداً على Binance Spot (1H/4H/8H/12H/15H/1D/2D/3D) مع شراء ذهبي مكتمل وخطة دخول ووقف و3 أهداف — شراء فقط بلا رافعة",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

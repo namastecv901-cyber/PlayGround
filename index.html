@@ -99,7 +99,17 @@ details.plan b{color:var(--txt)}
 .feat-head a{margin-inline-start:auto;color:#8fd6ff;font-weight:900;text-decoration:none;font-size:.72rem}
 .feat-live{font-size:.66rem;font-weight:900;color:#d4af37;animation:featbeat 1.8s infinite;white-space:nowrap}
 @keyframes featbeat{0%,100%{opacity:1}50%{opacity:.35}}
-.feat-tv{position:relative;height:340px;background:#070a12;overflow:hidden}
+.feat-tv{position:relative;height:370px;background:radial-gradient(400px 200px at 80% 0%,#d4af3710,transparent),#070a12;overflow:hidden}
+.feat-hud{position:absolute;top:8px;left:9px;z-index:4;display:flex;align-items:center;gap:7px;flex-wrap:wrap;max-width:calc(100% - 70px);padding:5px 8px;border:1px solid #d4af3740;border-radius:9px;background:rgba(7,10,18,.82);backdrop-filter:blur(6px);font-size:.6rem;font-weight:900;color:#c9c0a8;direction:rtl;pointer-events:none}
+.feat-hud .fh-sym{color:#f6e27a;font-size:.72rem}
+.feat-hud .fh-tf{color:#070a12;background:#d4af37;border-radius:5px;padding:1px 5px}
+.feat-hud .fh-pat{color:#e8dcb8}
+.feat-hud .fh-score{color:#86efac}
+.feat-hud .fh-ema i{display:inline-block;width:7px;height:7px;border-radius:50%;margin:0 2px}
+.feat-hud .fh-ema i.e20{background:#f6e27a}
+.feat-hud .fh-ema i.e50{background:#38bdf8}
+.feat-hud .fh-vol{color:#8fd6ff}
+@media(max-width:520px){.feat-tv{height:330px}.feat-hud{font-size:.55rem;gap:5px;padding:4px 6px}}
 .feat-tv iframe{width:100%;height:100%;border:0;display:block;position:relative;z-index:2}
 .tv-load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:.78rem;font-weight:800;z-index:1;pointer-events:none;text-align:center;padding:12px}
 .feat-plan{padding:7px 12px;border-top:1px solid #d4af3733;font-size:.72rem;color:#f6e27a;font-weight:800;line-height:1.7}
@@ -151,11 +161,11 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 </header>
 <main>
 <div class="sec" id="patSec" style="border-top:none;padding-top:0;margin-top:0">
-<h2>📐 كاشف الأنماط الصاعدة — 19 نموذجاً على شموع مغلقة (1H/4H/1D) — Spot BUY</h2>
+<h2>📐 كاشف الأنماط الصاعدة — 19 نموذجاً على شموع مغلقة (1H • 4H • 8H • 12H • 15H • 1D • 2D • 3D) — Spot BUY</h2>
 <div class="bar" style="margin-top:10px">
 <button id="patScanBtn">📐 افحص الأنماط الآن</button>
 <button class="chip on" id="patAutoBn">⏱ تلقائي 30ث: مفعّل</button>
-<select id="patTfSel"><option value="best" selected>🔎 أقوى فريم (1H+4H+1D)</option><option value="1h">1H فقط</option><option value="4h">4H فقط</option><option value="1d">1D فقط</option></select>
+<select id="patTfSel"><option value="best" selected>🔎 أقوى فريم (1H+4H+8H+12H+15H+1D+2D)</option><option value="1h">1H فقط</option><option value="4h">4H فقط</option><option value="8h">8H فقط</option><option value="12h">12H فقط</option><option value="15h">15H فقط</option><option value="1d">1D فقط</option><option value="2d">2D فقط</option><option value="3d">3D فقط</option></select>
 <select id="patRrSel"><option value="1.5" selected>RR ≥ 1.5</option><option value="1.2">RR ≥ 1.2</option><option value="2">RR ≥ 2</option><option value="2.5">RR ≥ 2.5</option></select>
 <select id="patVolSel"><option value="0" selected>كل القائمة المختارة</option><option value="1000000">سيولة ≥ $1M</option><option value="5000000">سيولة ≥ $5M</option><option value="20000000">سيولة ≥ $20M</option></select>
 <span class="chip on" id="patWatchChip">⭐ قائمتك المختارة فقط</span>
@@ -166,13 +176,13 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 <div><small>👀 يتشكل (مخفي)</small><b id="pat3">0</b></div>
 <div><small>📐 إجمالي مكتشف</small><b id="pat4">0</b></div>
 </div>
-<div class="note">🟡 <b>نعرض فقط الشراء الذهبي المكتمل من كل شيء</b> — نراقب الباقي حتى تكتمل شروطه ثم يظهر بلون ذهبي.<br>⭐ نفحص <b>قائمتك المختارة فقط</b> — لا تظهر أي عملة خارجها. العملات غير المتاحة على Binance Spot تُذكر أدناه ولا تُفحص.<br>📐 نرصد <b>19 نموذجاً صاعداً</b> هندسياً: قاع مزدوج/ثلاثي، رأس وكتفان مقلوب، مستطيل، مثلثات، علم، وتد، كوب ومقبض، قاع مستدير…<br>✅ شرط الشراء الذهبي: <b>إغلاق شمعة فوق مستوى النمط</b> + <b>حجم ≥1.5×</b> + <b>EMA20&gt;EMA50 والسعر فوق EMA20</b> + <b>RR≥1.5</b> + <b>درجة ≥75</b> + مسافة دخول مناسبة.<br>🛑 الوقف أسفل <b>مستوى الاختراق</b> (وقف فشل الاختراق) وليس أسفل القاع البعيد — لذلك قد يُضرب في إعادة اختبار عميقة. الأهداف من ارتفاع النمط وATR. <b>شراء فقط • Spot USDT • بلا رافعة</b>.</div>
+<div class="note">🟡 <b>نعرض فقط الشراء الذهبي المكتمل من كل شيء</b> — نراقب الباقي حتى تكتمل شروطه ثم يظهر بلون ذهبي.<br>⭐ نفحص <b>قائمتك المختارة فقط</b> على <b>1H • 4H • 8H • 12H • 15H • 1D • 2D • 3D</b>. العملات غير المتاحة على Binance Spot تُذكر أدناه ولا تُفحص.<br>📐 نرصد <b>19 نموذجاً صاعداً</b> هندسياً: قاع مزدوج/ثلاثي، رأس وكتفان مقلوب، مستطيل، مثلثات، علم، وتد، كوب ومقبض، قاع مستدير…<br>✅ شرط الشراء الذهبي: <b>إغلاق شمعة فوق مستوى النمط</b> + <b>حجم ≥1.5×</b> + <b>EMA20&gt;EMA50 والسعر فوق EMA20</b> + <b>RR≥1.5</b> + <b>درجة ≥75</b> + مسافة دخول مناسبة.<br>🛑 الوقف أسفل <b>مستوى الاختراق</b> (وقف فشل الاختراق) وليس أسفل القاع البعيد — لذلك قد يُضرب في إعادة اختبار عميقة. الأهداف من ارتفاع النمط وATR. <b>شراء فقط • Spot USDT • بلا رافعة</b>.</div>
 <div class="watch-note" id="patWatchNote">⭐ جارٍ التحقق من قائمة العملات...</div>
 <div class="feat" id="patFeat" hidden>
 <div class="feat-head"><b id="patFeatTitle">📈 TradingView — رسم النموذج</b><span class="feat-live" id="patFeatLive">● حي</span><a id="patFeatExt" href="#" target="_blank" rel="noopener">↗ فتح على TradingView</a></div>
 <div class="feat-tv" id="patFeatTV"></div>
 <div class="feat-plan" id="patFeatPlan"></div>
-<div class="feat-note">🟡 الشراء المكتمل • 🟨 مستوى الاختراق • 🔵 حدود النموذج • 🔴 الوقف • 🟢 الهدف الأول • الشموع الحقيقية من Binance (شموع مغلقة). الرسم تقريبي وليس توصية.</div>
+<div class="feat-note">🟡 الشراء المكتمل • 🟨 مستوى الاختراق • 🔵 حدود النموذج • 🔴 الوقف • 🟢 الهدف الأول • 🟡 EMA20 • 🔵 EMA50 • أعمدة الحجم. شموع حقيقية/مجمّعة من Binance (مغلقة). الرسم تقريبي وليس توصية.</div>
 </div>
 <details class="buy-method" open>
 <summary>📐 طريقة الشراء على النموذج — لا شراء قبل اكتمال كل الشروط — شراء فقط</summary>
@@ -205,7 +215,7 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 </div>
 <ol>
 <li><b>الفكرة:</b> النمط الصاعد هو <b>بنية سعرية هندسية</b> (قيعان/قمم/خطوط) تعطي احتمالاً أعلى للصعود عند اختراق مستوى التأكيد — وليس تنبؤاً مؤكداً ولا ضمان ربح.</li>
-<li><b>الفريمات:</b> 1H للفرص المتوسطة • 4H للنماذج الأقوى • 1D للاتجاه الكبير. نستخدم <b>الشموع المغلقة فقط</b> (نستبعد الشمعة الجارية) لمنع إعادة الرسم.</li>
+<li><b>الفريمات:</b> 1H • 4H • 8H • 12H • 15H • 1D • 2D • 3D. فريم <b>15H</b> مُجمّع من شموع 1H، و<b>2D</b> من شموع 1D، والبقية أصلية من Binance. نستخدم <b>الشموع المغلقة فقط</b> (نستبعد الشمعة الجارية) لمنع إعادة الرسم.</li>
 <li><b>مستوى التأكيد:</b> خط الرقبة أو المقاومة/سقف النمط. الشرط هو <b>إغلاق شمعة فوقه</b>، وليس لمسه. الاختراق الوهمي (عودة الإغلاق داخل النمط) يُلغي الإشارة.</li>
 <li><b>الحجم:</b> <b>الشراء الذهبي</b> يتطلب حجم شمعة الاختراق ≥1.5× متوسط 20 شمعة، و<b>المراقبة/المعلّق</b> ≥1.0×. الحجم الضعيف يخفض الدرجة ويمنع إشارة الشراء.</li>
 <li><b>الاتجاه:</b> EMA20 &gt; EMA50 والسعر فوقهما يزيد الجودة. النمط الانعكاسي ضد هبوط قوي يُرفض أو يُخفَّض.</li>
@@ -219,12 +229,15 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 </details>
 </div>
 </main>
-<footer>📐 الأنماط الصاعدة — قائمة مختارة فقط • 19 نموذجاً على شموع Binance Spot المغلقة • 1H/4H/1D • خطة دخول/وقف/3 أهداف مع RR • تحديث تلقائي (30ث) • شراء فقط بلا رافعة • تعليمي — ليس نصيحة مالية</footer>
+<footer>📐 الأنماط الصاعدة — قائمة مختارة فقط • 19 نموذجاً على شموع Binance Spot المغلقة • 1H/4H/8H/12H/15H/1D/2D/3D • خطة دخول/وقف/3 أهداف مع RR • شراء ذهبي مكتمل فقط • تحديث تلقائي (30ث) • شراء فقط بلا رافعة • تعليمي — ليس نصيحة مالية</footer>
 <script src="lightweight-charts.js"></script>
-<script>/* ===== 📐 الأنماط الصاعدة — كشف النماذج قبل الانطلاق (1H/4H/1D) ===== */
+<script>/* ===== 📐 الأنماط الصاعدة — كشف النماذج قبل الانطلاق (1H/4H/8H/12H/15H/1D/2D/3D) ===== */
 (function(){
 "use strict";
-var AUTO_MS=30000, NUM=9999, GAP=30, CONC=20, LS='ai_pat_v1';
+var AUTO_MS=30000, NUM=9999, GAP=20, CONC=22, LS='ai_pat_v1';
+var TF_BEST=['1h','4h','8h','12h','15h','1d','2d'], TF_ORDER=['1h','4h','8h','12h','15h','1d','2d','3d'];
+var TF_BONUS={'1h':0,'4h':3,'8h':5,'12h':6,'15h':7,'1d':8,'2d':9,'3d':10};
+var TF_SYNTH={'15h':{base:'1h',group:15},'2d':{base:'1d',group:2}};
 /* ⭐ قائمة العملات المختارة: لا تُفحص أي عملة خارجها */
 var WATCH='SOL,XRP,DOGE,ADA,SUI,AVAX,LINK,WLD,DOT,ARB,NEAR,LTC,SEI,HBAR,XLM,OP,FET,APT,TIA,TAO,ATOM,ALGO,PYTH,GALA,FIL,SUS,GRT,TON,VET,POL,ICP,BCH,ARKM,ETC,SAND,BIO,KAITO,MANA,THETA,JASMY,ROSE,AR,APE,STX,CHZ,CFX,OM,QNT,IO,ZRO,ENS,EGLD,ORDI,IMX,VIRTUAL,PAXG,ZK,ONE,ZIL,IOTA,XTZ,MANTA,AIXBT,TRB,LUNA,BAND,MASK,MAGIC,API3,SKL,LPT,XAI,ENJ,COOKIE,CGPT,ALT,ID,FLUX,MOVE,PROVE,LRC,HYPER,PORTAL,DASH,PHB,VANRY,RVN,MINA,GMT,AXL,HOT,SAHARA,FLOW,SAGA,KSM,CYBER,GPS,RLC,BAT,CHR,ARPA,PHA,CKB,SXP,CELO,MDT,QTUM,INIT,BLUR,PLUME,HOOK,RARE,TOWNS,ACH,DUSK,ANKR,NIL,METIS,EPIC,CELR,TWT,SSV,DIA,ZEN,SHELL,ALICE,MOVR,ACT,STORJ,GLMR,VANA,IOTX,DENT,CTSI,POLYX,XVG,FIDA,DGB,RONIN,ASTR,LAYER,SCR,AVA,BICO,SXT,VTHO,NFP,EDU,ICX,HIGH,ALPINE,TNSR,WCT,ACE,A,KAIA,AMP,DEXE,PARTI,TFUEL,NKN,NEWT,RAD,VIC,POND,PUNDIX,AGLD,GTC,WIN,SYS,XNO,A2Z,GLM,SC,IOST,RIF,SIGN,XEC,GAS,UTK,FIO,SOPH,SCRT,HEI,BMT,SFP,ATA,ARK,DATA,ERA,ADX,OXT,LINEA,SOMI,DCR,G,ARDR,LSK,STEEM,QKC,PIVX,SAPIEN,KITE,ENSO,WAL,2Z,MIRA,XPL,OG,ZKC,HOLO,OPEN,C,LA,AWE,TUT,DUS,MTL,CVC,COS,POWR,ZEC,RENDER,BANANA,UMA,RSR,W,0G,BEAMX,BREV,IQ,HIVE,ZKP,STRAX,REQ,PROM,AI,EIGEN,ME,ONG,SKY'.split(','), WATCH_SET={};
 for(var wi=0;wi<WATCH.length;wi++) WATCH_SET[WATCH[wi]]=1;
@@ -256,7 +269,7 @@ function jget(url){
   var order=bases.slice(host).concat(bases.slice(0,host));
   function go(i){
     if(i>=order.length) return Promise.reject(new Error('all-hosts-failed'));
-    var ctl=new AbortController(), to=setTimeout(function(){ try{ctl.abort();}catch(e){} },60000);
+    var ctl=new AbortController(), to=setTimeout(function(){ try{ctl.abort();}catch(e){} },18000);
     return gateFetch(order[i]+url,ctl.signal).then(function(r){ clearTimeout(to); if(!r.ok) throw new Error('HTTP '+r.status); host=i; return r.json(); })
     .catch(function(){ clearTimeout(to); return new Promise(function(res){ setTimeout(res,250); }).then(function(){ return go(i+1); }); });
   }
@@ -271,10 +284,33 @@ function tradableSet(){
     exCache.set=s; exCache.t=Date.now(); return s;
   }).catch(function(){ return null; });
 }
+function aggregateKL(base,group){
+  var out=[], i=base.length;
+  while(i>=group){
+    var ch=base.slice(i-group,i), hi=-Infinity, lo=Infinity, vol=0, j;
+    for(j=0;j<group;j++){
+      var kk=ch[j], hh=parseFloat(kk[2]), ll=parseFloat(kk[3]), vv=parseFloat(kk[5])||0;
+      if(hh>hi) hi=hh; if(ll<lo) lo=ll; vol+=vv;
+    }
+    out.push([ch[0][0],ch[0][1],hi,lo,ch[group-1][4],vol,ch[group-1][6],0]);
+    i-=group;
+  }
+  out.reverse(); return out;
+}
 function klines(sym,tf,ttl){
   var key=sym+'|'+tf, c=cache[key];
   if(c&&Date.now()-c.t<(ttl||45000)) return Promise.resolve(c.kl);
-  return jget('/api/v3/klines?symbol='+sym+'&interval='+tf+'&limit=240').then(function(kl){
+  var sp=TF_SYNTH[tf];
+  if(sp){
+    return klines(sym,sp.base,ttl).then(function(base){
+      if(!base||base.length<sp.group*60) return null;
+      var agg=aggregateKL(base,sp.group);
+      if(!agg||agg.length<60) return null;
+      cache[key]={kl:agg,t:Date.now()}; return agg;
+    }).catch(function(){ return null; });
+  }
+  var lim=tf==='1h'?1000:(tf==='1d'?300:240);
+  return jget('/api/v3/klines?symbol='+sym+'&interval='+tf+'&limit='+lim).then(function(kl){
     if(!kl||kl.length<100) return null;
     var now=Date.now();
     while(kl.length&&parseInt(kl[kl.length-1][6],10)>now) kl=kl.slice(0,-1);
@@ -314,7 +350,7 @@ function minOf(a){ var m=1e18,i; for(i=0;i<a.length;i++) if(a[i]<m) m=a[i]; retu
 function detect(kl,tf,chg24,minRR){
   minRR=minRR||1.5;
   try{
-    var n=kl.length; if(n<120) return [];
+    var n=kl.length, minBar=(tf==='15h'?60:120); if(n<minBar) return [];
     var o=col(kl,1), h=col(kl,2), l=col(kl,3), c=col(kl,4), v=col(kl,5);
     var cur=c[n-1], atr=atrKL(kl,14)||cur*0.01;
     var avgV=mean(v.slice(Math.max(0,n-21),n-1))||1;
@@ -600,7 +636,7 @@ function finalize(cand,ctx){
 
 function analyze(kl,tf,minRR,chg24){
   try{
-    if(!kl||kl.length<120) return null;
+    var minBar=(tf==='15h'?60:120); if(!kl||kl.length<minBar) return null;
     tf=tf||'1h'; minRR=minRR||1.5;
     var arr=detect(kl,tf,chg24||0,minRR); if(!arr.length) return null;
     var cur=parseFloat(kl[kl.length-1][4]);
@@ -687,7 +723,7 @@ function scan(){
   var pulse=$('patPulse'); if(pulse) pulse.classList.add('scan');
   var st=$('patStatus'); if(st) st.textContent='⏳ جلب العملات...';
   var tfSel=($('patTfSel')&&$('patTfSel').value)||'best';
-  var TFS=tfSel==='best'?['1h','4h','1d']:[tfSel];
+  var TFS=tfSel==='best'?TF_BEST:[tfSel];
   var MIN=parseFloat(($('patVolSel')&&$('patVolSel').value)||0);
   var minRR=parseFloat(($('patRrSel')&&$('patRrSel').value)||1.5);
   return Promise.all([tradableSet(),jget('/api/v3/ticker/24hr')]).then(function(res){
@@ -707,7 +743,7 @@ function scan(){
       if(parseFloat(t.quoteVolume||0)<MIN) return false;
       return true;
     }).sort(function(a,b){ return parseFloat(b.quoteVolume)-parseFloat(a.quoteVolume); });
-    if(st) st.textContent='⏳ فحص '+pool.length+' عملة من قائمتك'+(TFS.length>1?' × 3 فريمات':' ('+TFS[0].toUpperCase()+')')+'...';
+    if(st) st.textContent='⏳ فحص '+pool.length+' عملة من قائمتك'+(TFS.length>1?' × '+TFS.length+' فريمات':' ('+TFS[0].toUpperCase()+')')+'...';
     var px={}; pool.forEach(function(t){ px[t.symbol]=parseFloat(t.lastPrice)||0; });
     var out=[]; okN=0; tryN=pool.length;
     return runPool(pool,CONC,function(t){
@@ -727,7 +763,7 @@ function scan(){
         for(var qi=0;qi<arr.length;qi++){
           var q=arr[qi]; if(!q) continue;
           scores[q.tf]=q.r.score; stages[q.tf]=q.r.stage;
-          var w=(q.r.entryOK?1000:0)+(q.r.pendingOK?500:0)+q.r.score+(q.tf==='1d'?6:q.tf==='4h'?3:0);
+          var w=(q.r.entryOK?1000:0)+(q.r.pendingOK?500:0)+q.r.score+(TF_BONUS[q.tf]||0);
           if(w>bestW){ bestW=w; best=q; }
         }
         if(!best) return;
@@ -774,18 +810,18 @@ function spark(c,level){
   }catch(e){ return ''; }
 }
 
-function tvInterval(tf){ return tf==='4h'?'240':(tf==='1d'?'D':'60'); }
+function tvInterval(tf){ var m={'15m':'15','1h':'60','4h':'240','8h':'480','12h':'720','15h':'60','1d':'D','2d':'D','3d':'D'}; return m[tf]||'60'; }
 function tvUrl(sym,tf){
   return 'https://www.tradingview.com/widgetembed/?symbol='+encodeURIComponent('BINANCE:'+sym)+'&interval='+tvInterval(tf)+'&theme=dark&style=1&locale=ar&hide_side_toolbar=1&allow_symbol_change=0&withdateranges=1&details=1&calendar=0&hotlist=0';
 }
-var featChart=null,featSeries=null,featRO=null,featOverlay=null,featDraw=[],featRedraw=null;
+var featChart=null,featSeries=null,featVol=null,featEma20=null,featEma50=null,featRO=null,featOverlay=null,featDraw=[],featRedraw=null;
 function lwc(){ return window.LightweightCharts||null; }
 function destroyFeat(){
   try{ if(featRO){ featRO.disconnect(); featRO=null; } }catch(e){}
   try{ if(featOverlay&&featOverlay.parentNode) featOverlay.parentNode.removeChild(featOverlay); }catch(e){}
   featOverlay=null; featDraw=[]; featRedraw=null;
   try{ if(featChart){ featChart.remove(); featChart=null; } }catch(e){}
-  featSeries=null;
+  featSeries=null; featVol=null; featEma20=null; featEma50=null;
 }
 function renderFeatured(x,force){
   try{
@@ -824,15 +860,42 @@ function drawFeatChart(x,kl){
     for(var i=0;i<data.length;i++){
       var k=data[i], t=Math.floor(parseInt(k[0],10)/1000);
       if(seenT[t]) continue; seenT[t]=1;
-      cdata.push({time:t,open:+k[1],high:+k[2],low:+k[3],close:+k[4]});
+      cdata.push({time:t,open:+k[1],high:+k[2],low:+k[3],close:+k[4],volume:+k[5]||0});
     }
     if(cdata.length<5){ tv.innerHTML='<div class="tv-load">لا توجد شموع كافية للرسم.</div>'; return; }
-    var w=Math.max(200,tv.clientWidth||360), h=Math.max(220,tv.clientHeight||330);
+    var w=Math.max(200,tv.clientWidth||360), h=Math.max(240,tv.clientHeight||380);
     var lastC=cdata[cdata.length-1].close;
     var prec=lastC>=100?2:lastC>=1?3:lastC>=0.01?5:lastC>=0.0001?7:8;
-    featChart=L.createChart(tv,{width:w,height:h,layout:{background:{type:'solid',color:'#070a12'},textColor:'#a89f83',fontSize:11},grid:{vertLines:{color:'#ffffff08'},horzLines:{color:'#ffffff0d'}},crosshair:{mode:(L.CrosshairMode?L.CrosshairMode.Normal:0)},rightPriceScale:{borderColor:'#2a2e39',scaleMargins:{top:0.12,bottom:0.20}},timeScale:{borderColor:'#2a2e39',timeVisible:x.tf!=='1d',secondsVisible:false,rightOffset:4},localization:{locale:'en-US'},watermark:{visible:true,fontSize:18,horzAlign:'center',vertAlign:'center',color:'rgba(246,226,122,0.055)',text:(r.ar||'')+' • '+x.tf.toUpperCase()}});
+    var isDaily=(x.tf==='1d'||x.tf==='2d'||x.tf==='3d');
+    featChart=L.createChart(tv,{width:w,height:h,layout:{background:{type:'solid',color:'#070a12'},textColor:'#bbae8f',fontSize:11,fontFamily:'Cairo,system-ui,sans-serif'},grid:{vertLines:{color:'#ffffff07'},horzLines:{color:'#ffffff0c'}},crosshair:{mode:(L.CrosshairMode?L.CrosshairMode.Normal:0),vertLine:{color:'#d4af3755',width:1,style:2,labelBackgroundColor:'#2a2208'},horzLine:{color:'#d4af3755',width:1,style:2,labelBackgroundColor:'#2a2208'}},rightPriceScale:{borderColor:'#2a2e39',scaleMargins:{top:0.08,bottom:0.24},entireTextOnly:true},timeScale:{borderColor:'#2a2e39',timeVisible:!isDaily,secondsVisible:false,rightOffset:5,barSpacing:6},localization:{locale:'en-US'},watermark:{visible:true,fontSize:18,horzAlign:'center',vertAlign:'center',color:'rgba(246,226,122,0.05)',text:(r.ar||'')+' • '+x.tf.toUpperCase()}});
     featSeries=featChart.addCandlestickSeries({upColor:'#22c55e',downColor:'#ef4444',wickUpColor:'#22c55e',wickDownColor:'#ef4444',borderVisible:false,priceLineVisible:false,lastValueVisible:true,priceFormat:{type:'price',precision:prec,minMove:Math.pow(10,-prec)}});
     featSeries.setData(cdata);
+    try{
+      featVol=featChart.addHistogramSeries({priceScaleId:'',priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false,priceFormat:{type:'volume'}});
+      featVol.setData(cdata.map(function(c){return {time:c.time,value:c.volume||0,color:(c.close>=c.open?'rgba(34,197,94,0.24)':'rgba(239,68,68,0.22)')};}));
+      featVol.priceScale().applyOptions({scaleMargins:{top:0.8,bottom:0}});
+    }catch(e){}
+    function emaVals(vals,per){
+      var k=2/(per+1), out=[], i, prev=null;
+      for(i=0;i<vals.length;i++){
+        if(i<per-1){ out.push(null); continue; }
+        if(prev==null){ var sum=0,j; for(j=0;j<per;j++) sum+=vals[j]; prev=sum/per; }
+        else prev=vals[i]*k+prev*(1-k);
+        out.push(prev);
+      }
+      return out;
+    }
+    var closes=cdata.map(function(c){return c.close;});
+    function lineData(vals){ var a=[],i; for(i=0;i<vals.length;i++){ if(vals[i]!=null&&isFinite(vals[i])) a.push({time:cdata[i].time,value:vals[i]}); } return a; }
+    try{
+      featEma20=featChart.addLineSeries({color:'#f6e27a',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
+      featEma20.setData(lineData(emaVals(closes,20)));
+      featEma50=featChart.addLineSeries({color:'#38bdf8',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
+      featEma50.setData(lineData(emaVals(closes,50)));
+    }catch(e){}
+    var hud=document.createElement('div'); hud.className='feat-hud';
+    hud.innerHTML='<span class="fh-sym">'+x.sym+'</span><span class="fh-tf">'+x.tf.toUpperCase()+'</span><span class="fh-pat">'+(r.ar||'')+'</span><span class="fh-score">'+(r.score||'—')+'/100</span><span class="fh-ema"><i class="e20"></i>EMA20 <i class="e50"></i>EMA50</span><span class="fh-vol">VOL '+((r.volRatio||0).toFixed(1))+'×</span>';
+    tv.appendChild(hud);
     featOverlay=document.createElement('canvas');
     featOverlay.style.cssText='position:absolute;inset:0;z-index:3;pointer-events:none';
     tv.appendChild(featOverlay);
@@ -875,7 +938,7 @@ function drawFeatChart(x,kl){
       }
     }
     featRedraw=drawOverlay;
-    if(window.ResizeObserver){ featRO=new ResizeObserver(function(){ try{ if(featChart&&tv.clientWidth) featChart.applyOptions({width:tv.clientWidth,height:tv.clientHeight||330}); }catch(e){} if(featRedraw) setTimeout(featRedraw,40); }); featRO.observe(tv); }
+    if(window.ResizeObserver){ featRO=new ResizeObserver(function(){ try{ if(featChart&&tv.clientWidth) featChart.applyOptions({width:tv.clientWidth,height:tv.clientHeight||380}); }catch(e){} if(featRedraw) setTimeout(featRedraw,40); }); featRO.observe(tv); }
     var scheduleOverlay=function(){ if(featRedraw) setTimeout(featRedraw,20); };
     try{ featChart.timeScale().subscribeVisibleLogicalRangeChange(scheduleOverlay); }catch(e){}
     try{ featChart.timeScale().subscribeVisibleTimeRangeChange(scheduleOverlay); }catch(e){}
@@ -1039,7 +1102,8 @@ function tvBadge(sym){ return '<a class="tv-badge" href="https://www.tradingview
 function tfStrength(x){
   if(!x.tfScores) return '';
   var out=['<div class="tf-strength"><span>قوة الفريم:</span>'];
-  ['1h','4h','1d'].forEach(function(tf){
+  TF_ORDER.forEach(function(tf){
+    if(!(tf in x.tfScores)) return;
     var sc=x.tfScores[tf];
     var cls=(tf===x.tf?' best':'')+((sc!=null&&sc<60)?' weak':'');
     out.push('<span class="tf-str'+cls+'">'+tf.toUpperCase()+' '+(sc==null?'—':sc)+'</span>');
