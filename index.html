@@ -237,7 +237,7 @@ footer{text-align:center;color:var(--mut);font-size:.72rem;padding:14px;line-hei
 var AUTO_MS=30000, NUM=9999, GAP=20, CONC=22, LS='ai_pat_v1';
 var TF_BEST=['1h','4h','8h','12h','15h','1d','2d'], TF_ORDER=['1h','4h','8h','12h','15h','1d','2d','3d'];
 var TF_BONUS={'1h':0,'4h':3,'8h':5,'12h':6,'15h':7,'1d':8,'2d':9,'3d':10};
-var TF_SYNTH={'15h':{base:'1h',group:15},'2d':{base:'1d',group:2}};
+var TF_SYNTH={'15h':{base:'1h',group:15,pages:2,extra:800},'2d':{base:'1d',group:2}};
 /* ⭐ قائمة العملات المختارة: لا تُفحص أي عملة خارجها */
 var WATCH='SOL,XRP,DOGE,ADA,SUI,AVAX,LINK,WLD,DOT,ARB,NEAR,LTC,SEI,HBAR,XLM,OP,FET,APT,TIA,TAO,ATOM,ALGO,PYTH,GALA,FIL,SUS,GRT,TON,VET,POL,ICP,BCH,ARKM,ETC,SAND,BIO,KAITO,MANA,THETA,JASMY,ROSE,AR,APE,STX,CHZ,CFX,OM,QNT,IO,ZRO,ENS,EGLD,ORDI,IMX,VIRTUAL,PAXG,ZK,ONE,ZIL,IOTA,XTZ,MANTA,AIXBT,TRB,LUNA,BAND,MASK,MAGIC,API3,SKL,LPT,XAI,ENJ,COOKIE,CGPT,ALT,ID,FLUX,MOVE,PROVE,LRC,HYPER,PORTAL,DASH,PHB,VANRY,RVN,MINA,GMT,AXL,HOT,SAHARA,FLOW,SAGA,KSM,CYBER,GPS,RLC,BAT,CHR,ARPA,PHA,CKB,SXP,CELO,MDT,QTUM,INIT,BLUR,PLUME,HOOK,RARE,TOWNS,ACH,DUSK,ANKR,NIL,METIS,EPIC,CELR,TWT,SSV,DIA,ZEN,SHELL,ALICE,MOVR,ACT,STORJ,GLMR,VANA,IOTX,DENT,CTSI,POLYX,XVG,FIDA,DGB,RONIN,ASTR,LAYER,SCR,AVA,BICO,SXT,VTHO,NFP,EDU,ICX,HIGH,ALPINE,TNSR,WCT,ACE,A,KAIA,AMP,DEXE,PARTI,TFUEL,NKN,NEWT,RAD,VIC,POND,PUNDIX,AGLD,GTC,WIN,SYS,XNO,A2Z,GLM,SC,IOST,RIF,SIGN,XEC,GAS,UTK,FIO,SOPH,SCRT,HEI,BMT,SFP,ATA,ARK,DATA,ERA,ADX,OXT,LINEA,SOMI,DCR,G,ARDR,LSK,STEEM,QKC,PIVX,SAPIEN,KITE,ENSO,WAL,2Z,MIRA,XPL,OG,ZKC,HOLO,OPEN,C,LA,AWE,TUT,DUS,MTL,CVC,COS,POWR,ZEC,RENDER,BANANA,UMA,RSR,W,0G,BEAMX,BREV,IQ,HIVE,ZKP,STRAX,REQ,PROM,AI,EIGEN,ME,ONG,SKY'.split(','), WATCH_SET={};
 for(var wi=0;wi<WATCH.length;wi++) WATCH_SET[WATCH[wi]]=1;
@@ -303,10 +303,22 @@ function klines(sym,tf,ttl){
   var sp=TF_SYNTH[tf];
   if(sp){
     return klines(sym,sp.base,ttl).then(function(base){
-      if(!base||base.length<sp.group*60) return null;
-      var agg=aggregateKL(base,sp.group);
-      if(!agg||agg.length<60) return null;
-      cache[key]={kl:agg,t:Date.now()}; return agg;
+      if(!base||!base.length) return null;
+      function make(arr){
+        if(!arr||arr.length<sp.group*60) return null;
+        var agg=aggregateKL(arr,sp.group);
+        if(!agg||agg.length<60) return null;
+        cache[key]={kl:agg,t:Date.now()}; return agg;
+      }
+      if(!sp.pages||sp.pages<=1) return make(base);
+      var end=parseInt(base[0][0],10)-1;
+      return jget('/api/v3/klines?symbol='+sym+'&interval='+sp.base+'&limit='+(sp.extra||800)+'&endTime='+end).then(function(old){
+        var all=(old||[]).concat(base), m={}, arr=[], i;
+        for(i=0;i<all.length;i++){ var kk=all[i]; if(kk&&kk[0]) m[kk[0]]=kk; }
+        for(var kk2 in m) arr.push(m[kk2]);
+        arr.sort(function(a,b){ return parseInt(a[0],10)-parseInt(b[0],10); });
+        return make(arr)||make(base);
+      }).catch(function(){ return make(base); });
     }).catch(function(){ return null; });
   }
   var lim=tf==='1h'?1000:(tf==='1d'?300:240);
