@@ -1507,7 +1507,7 @@ body.linkmode #masterFab{display:none!important}
       <button class="btn btn-ghost btn-sm" id="installBtn" hidden>📲 تثبيت التطبيق</button>
     </span>
   </div>
-  <p>قسمان فقط — 💧 دخول السيولة و📐 رادار النماذج الفنية — وكل شيء داخل <b>البطاقة نفسها</b>: الشارة • خطة الصفقة • 🧮 الحاسبة • 🛡 الحارس الحي • التحليل • الشارت.</p>
+  <p>💧 دخول السيولة وكل شيء داخل <b>البطاقة نفسها</b>: الشارة • خطة الصفقة • 🧮 الحاسبة • 🛡 الحارس الحي • التحليل • الشارت.</p>
   <div class="count-line">
     <span>المحللة: <b id="scanCount">0</b>/500</span><span>•</span>
     <span id="statusLine">...</span><span>•</span>
@@ -1521,10 +1521,6 @@ body.linkmode #masterFab{display:none!important}
   <div class="ob-head"><h2>💧 دخول السيولة — عملات دخلتها أموال الآن</h2><span class="ob-count" id="liqCount">0</span></div>
   <div class="ob-status" id="liqStatus">💧 يراقب دخول السيولة...</div>
   <div class="ob-grid" id="liqGrid"></div>
-</div>
-<div class="radar-sec" id="patternsSec" style="margin:12px 0;border:2px solid #38d9ff66;border-radius:20px;overflow:hidden;background:#0b0d15">
-<div style="display:flex;align-items:center;gap:8px;padding:12px 14px;font-weight:900">📐 رادار النماذج الفنية — 20 نموذجاً على عملات مختارة<span style="margin-inline-start:auto"></span><a href="patterns.html" style="color:#38d9ff;font-size:.8rem">فتح كاملاً ←</a></div>
-<iframe src="patterns.html?embed=1&v=svg10" style="width:100%;height:1250px;border:0;display:block;background:#06070b" loading="lazy" title="رادار النماذج الفنية"></iframe>
 </div>
 <div class="member-bar" id="memberBar">
   <span class="mb-badge mb-guest" id="mbBadge">👤 زائر</span>
@@ -2386,25 +2382,6 @@ function openTV(id){
 }
 function closeTV(){ const m=document.getElementById('tvModal'), f=document.getElementById('tvFrame'); if(m) m.classList.remove('show'); if(f) f.src=''; }
 window.openTV=openTV; window.closeTV=closeTV;
-function openTVSymbol(sym,int,label,note){
-  const s=String(sym||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
-  const raw=String(int||"60").trim().toUpperCase().replace(/[^0-9A-Z]/g,"");
-  const iv=/^(?:[1-9]\d*|[DWM])$/.test(raw)?raw:"60";
-  const m=document.getElementById('tvModal'),f=document.getElementById('tvFrame'),cap=document.getElementById('tvCap');
-  if(cap) cap.textContent=(label||s)+' — TradingView الأصلي'+(note?' • '+note:'');
-  const url='https://www.tradingview.com/widgetembed/?symbol=BINANCE%3A'+encodeURIComponent(s)+'&interval='+iv+'&theme=dark&style=1&locale=ar&hide_side_toolbar=0&withdateranges=1&allow_symbol_change=0&save_image=0&details=1';
-  if(m) m.classList.add('show');
-  if(f) setTimeout(()=>{ f.src=url; },40);
-}
-window.openTVSymbol=openTVSymbol;
-window.addEventListener('message',e=>{
-  const d=e.data; if(!d||typeof d!=='object') return;
-  if(d.type==='patt-open-tv'){ openTVSymbol(d.symbol,d.interval,d.title,d.note); return; }
-  if(d.type==='patt-height'){
-    const f=document.querySelector('#patternsSec iframe'); if(!f) return;
-    const h=Math.max(900,Math.min(14000,+d.height||0)); if(h>0) f.style.height=h+'px';
-  }
-});
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeTV(); });
 
 function bindCards(g,all){
