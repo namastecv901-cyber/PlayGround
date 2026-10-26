@@ -1,0 +1,17 @@
+{
+  "name": "مِكسب — خطة 1000$ في 60 يوم",
+  "short_name": "مِكسب",
+  "description": "مرشد ذكي وخطة عملية للوصول إلى 1000$ خلال 60 يوماً، مع استوديو تحسين صور وأدوات تسعير ومحتوى وعملاء ودخل.",
+  "start_url": "./maksab.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#070a12",
+  "theme_color": "#070a12",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    { "src": "maksab-icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "maksab-icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
