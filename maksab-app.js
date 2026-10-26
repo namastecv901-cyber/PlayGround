@@ -7,8 +7,9 @@ const fmt1=n=>(Math.round((Number(n)||0)*10)/10).toFixed(1);
 const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
 
 function defaultState(){
-  return {profile:null,plan:null,daily:null,income:[],leads:[],extraTasks:[],pricing:null,chat:[],
-    settings:{ai:{enabled:false,base:'https://api.openai.com/v1',model:'gpt-4o-mini',key:''}},
+  return {profile:null,plan:null,daily:null,dailyHistory:[],income:[],leads:[],extraTasks:[],pricing:null,chat:[],
+    settings:{ai:{enabled:false,provider:'openai',base:'https://api.openai.com/v1',model:'gpt-4o-mini',key:''}},
+    auto:{active:false,step:0,service:'',price:0,caseIndex:0,editing:false,notes:{},tasks:{}},
     ui:{view:'home',openWeeks:[]}};
 }
 function loadState(){
@@ -20,6 +21,7 @@ function loadState(){
     const merged=Object.assign(base,p);
     merged.settings=Object.assign(base.settings,p.settings||{});
     merged.settings.ai=Object.assign(base.settings.ai,(p.settings&&p.settings.ai)||{});
+    merged.dailyHistory=Array.isArray(p.dailyHistory)?p.dailyHistory:[];
     merged.ui=Object.assign(base.ui,p.ui||{});
     return merged;
   }catch(e){return defaultState();}
@@ -69,6 +71,13 @@ function defaultPricing(){
 function ensureDaily(){
   const t=todayStr();
   if(!state.daily||state.daily.date!==t||state.daily.items.length<4){
+    if(state.daily&&state.daily.date&&state.daily.date!==t){
+      state.dailyHistory=Array.isArray(state.dailyHistory)?state.dailyHistory:[];
+      if(!state.dailyHistory.some(h=>h.date===state.daily.date)){
+        state.dailyHistory.push({date:state.daily.date,done:state.daily.items.filter(x=>x.done).length,total:state.daily.items.length});
+      }
+      if(state.dailyHistory.length>120)state.dailyHistory=state.dailyHistory.slice(-120);
+    }
     const s=SKILLS[state.profile&&state.profile.skill]||SKILLS.none;
     const pool=[
       'تواصل مع 5 عملاء محتملين جدد',
@@ -92,6 +101,23 @@ function ensureDaily(){
   }
 }
 
+function dailyStreak(){
+  const hist=Array.isArray(state.dailyHistory)?state.dailyHistory:[];
+  const map=new Map(hist.map(h=>[h.date,h]));
+  const today=state.daily;
+  const todayDone=today&&today.date===todayStr()?today.items.filter(x=>x.done).length:0;
+  let streak=0;
+  const d=new Date();
+  if(todayDone>=3)streak++;
+  d.setDate(d.getDate()-1);
+  for(let i=0;i<400;i++){
+    const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const rec=map.get(key);
+    if(rec&&rec.done>=3){streak++;d.setDate(d.getDate()-1);}else break;
+  }
+  return streak;
+}
+
 function toast(msg){
   const el=$('#toast');
   if(!el)return;
@@ -102,6 +128,7 @@ function toast(msg){
 }
 
 function switchView(v){
+  if(!$('#view-'+v))v='home';
   state.ui.view=v;
   $$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
   $$('.view').forEach(s=>s.classList.toggle('active',s.id==='view-'+v));
@@ -149,11 +176,12 @@ function renderHome(){
   ].map(([k,v,c])=>`<div class="kpi"><small>${k}</small><b class="${c}">${v}</b></div>`).join('');
 
   const nx=nextAction();
-  $('#nextCard').innerHTML=`<div class="lbl">الخطوة التالية</div><h3>${esc(nx.title)}</h3><p>${esc(nx.desc)}</p>
+  $('#nextCard').innerHTML=`<span class="watermark">${s.icon}</span><div class="lbl">الخطوة التالية</div><h3>${esc(nx.title)}</h3><p>${esc(nx.desc)}</p>
     <button class="btn small" data-go="${nx.view}">${esc(nx.btn)}</button>`;
 
   ensureDaily();
-  $('#todayCard').innerHTML=`<h3>مهام اليوم <span class="muted" style="font-size:.7rem">${arDate(state.daily.date)}</span></h3>`+
+  const streak=dailyStreak();
+  $('#todayCard').innerHTML=`<h3>مهام اليوم <span class="muted" style="font-size:.7rem">${arDate(state.daily.date)}</span>${streak>0?` <span class="streak">🔥 ${streak}</span>`:''}</h3>`+
     state.daily.items.map(it=>`<label class="mission ${it.done?'done':''}"><input type="checkbox" data-daily="${it.id}" ${it.done?'checked':''}><span>${esc(it.text)}</span></label>`).join('')+
     `<div class="hint">أنجز 3 من 4 على الأقل. الأفعال اليومية أهم من الأرقام.</div>`;
 

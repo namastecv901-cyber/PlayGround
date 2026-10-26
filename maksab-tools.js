@@ -80,6 +80,8 @@ function generateContent(){
   const name=(state.profile&&state.profile.name)||'';
   const soft=tone==='احترافية رسمية'?'يسعدني أن أشارككم':'تحب نجرب؟';
   const hook=tone==='حماسية تسويقية'?'🔥 عرض سريع':'فكرة قد تفيدك';
+  const proof={design:'تصاميم ومنشورات',photo:'صور منتجات',writing:'نصوص ووصف',dev:'صفحات ومواقع',marketing:'حملات ومحتوى',support:'ردود ومتابعة',none:'خدمات جاهزة'}[state.profile&&state.profile.skill]||'خدمات';
+  const sample={design:'عينة تصميم',photo:'صورة محسّنة',writing:'نصاً تجريبياً',dev:'مراجعة سريعة',marketing:'خطة مصغرة',support:'تجربة ردود',none:'عينة صغيرة'}[state.profile&&state.profile.skill]||'عينة صغيرة';
   const posts=[
     {t:'عرض مباشر',body:`${hook} لـ ${audience}
 
@@ -88,20 +90,20 @@ ${benefit}.
 أقدم ${service} بسعر ${fmt(price)}، مع تسليم منظم ومراجعة واحدة.
 
 مناسب لك إذا:
-• عندك صور/محتوى لكنه لا يبدو احترافياً
-• تحتاج نتيجة جاهزة للنشر بسرعة
+• تحتاج ${proof} بمستوى احترافي
+• تحتاج تسليماً سريعاً وواضحاً
 
 ${soft} أرسل لك عينة مجانية صغيرة قبل البدء.
 
 — ${name}`},
-    {t:'قبل / بعد',body:`قبل: صورة عادية لا توقف أحداً.
+    {t:'قبل / بعد',body:`قبل: نسخة عادية لا توقف أحداً.
 بعد: ${benefit}.
 
 هذا بالضبط ما أفعله في ${service}.
 
 أعمل مع ${audience}، والسعر يبدأ من ${fmt(price)}.
 
-أرسل لي كلمة «عينة» وسأحسّن صورة واحدة لك مجاناً.
+أرسل لي كلمة «عينة» وسأجهّز ${sample} لك مجاناً.
 
 — ${name}`},
     {t:'رسالة متابعة',body:`مرحباً 👋
@@ -277,6 +279,19 @@ function finishOnboard(){
   toast('خطتك جاهزة — ابدأ بمهمة اليوم');
 }
 
+const AI_PRESETS={
+  openai:{base:'https://api.openai.com/v1',model:'gpt-4o-mini'},
+  openrouter:{base:'https://openrouter.ai/api/v1',model:'meta-llama/llama-3.3-70b-instruct:free'},
+  groq:{base:'https://api.groq.com/openai/v1',model:'llama-3.3-70b-versatile'},
+  deepseek:{base:'https://api.deepseek.com/v1',model:'deepseek-chat'},
+  ollama:{base:'http://127.0.0.1:11434/v1',model:'llama3.2'},
+  custom:{base:'',model:''}
+};
+function aiProviderKey(ai){
+  const base=String(ai.base||'').replace(/\/+$/,'');
+  const hit=Object.entries(AI_PRESETS).find(([k,v])=>v.base&&v.base.replace(/\/+$/,'')===base);
+  return hit?hit[0]:(ai.provider&&AI_PRESETS[ai.provider]?ai.provider:'custom');
+}
 function openSettings(){
   if(!state.profile)return;
   $('#setName').value=state.profile.name;
@@ -286,6 +301,7 @@ function openSettings(){
   $('#setGoal').value=state.profile.goal;
   $('#setDays').value=state.profile.days;
   $('#aiEnabled').checked=!!state.settings.ai.enabled;
+  $('#aiProvider').value=aiProviderKey(state.settings.ai);
   $('#aiBase').value=state.settings.ai.base;
   $('#aiModel').value=state.settings.ai.model;
   $('#aiKey').value=state.settings.ai.key;
@@ -330,6 +346,7 @@ function saveProfile(){
 function saveAI(){
   state.settings.ai={
     enabled:$('#aiEnabled').checked,
+    provider:$('#aiProvider').value,
     base:$('#aiBase').value.trim()||'https://api.openai.com/v1',
     model:$('#aiModel').value.trim()||'gpt-4o-mini',
     key:$('#aiKey').value.trim()
@@ -337,6 +354,43 @@ function saveAI(){
   save();
   renderChat();
   toast(state.settings.ai.enabled?'فُعّل الذكاء السحابي':'المرشد المحلي فقط');
+}
+
+async function testAI(){
+  const base=$('#aiBase').value.trim().replace(/\/+$/,'');
+  const model=$('#aiModel').value.trim();
+  const key=$('#aiKey').value.trim();
+  if(!base||!model){toast('أدخل عنوان API والموديل');return;}
+  if(!key&&!/^https?:\/\/(127\.0\.0\.1|localhost)(:|\/|$)/.test(base)){toast('أدخل المفتاح أولاً');return;}
+  const btn=$('#btnTestAI');
+  const old=btn.textContent;
+  btn.disabled=true;btn.textContent='جارٍ الاختبار…';
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),15000);
+  try{
+    const res=await fetch(base+'/chat/completions',{
+      method:'POST',
+      headers:Object.assign({'Content-Type':'application/json'},key?{'Authorization':'Bearer '+key}:{}),
+      body:JSON.stringify({model,messages:[{role:'user',content:'قل: جاهز'}],max_tokens:8,temperature:0}),
+      signal:ctrl.signal
+    });
+    clearTimeout(timer);
+    if(!res.ok){
+      let detail='';
+      try{const j=await res.json();detail=(j.error&&j.error.message)||'';}catch(e){}
+      throw new Error('HTTP '+res.status+(detail?' — '+detail.slice(0,90):''));
+    }
+    const j=await res.json();
+    const txt=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
+    if(!txt)throw new Error('رد فارغ');
+    toast('الاتصال ناجح ✅');
+  }catch(e){
+    const msg=e.name==='AbortError'?'انتهت المهلة':(e instanceof TypeError?'تعذر الاتصال — قد يمنع المزوّد CORS أو العنوان خاطئ':e.message);
+    toast('فشل الاتصال: '+msg);
+  }finally{
+    clearTimeout(timer);
+    btn.disabled=false;btn.textContent=old;
+  }
 }
 
 function exportData(){
@@ -526,6 +580,8 @@ function bind(){
 
   $('#btnSaveProfile').addEventListener('click',saveProfile);
   $('#btnSaveAI').addEventListener('click',saveAI);
+  $('#aiProvider').addEventListener('change',e=>{const p=AI_PRESETS[e.target.value];if(!p||e.target.value==='custom')return;$('#aiBase').value=p.base;$('#aiModel').value=p.model;});
+  $('#btnTestAI').addEventListener('click',testAI);
   $('#btnExport').addEventListener('click',exportData);
   $('#btnImport').addEventListener('click',()=>$('#importFile').click());
   $('#importFile').addEventListener('change',e=>{importData(e.target.files&&e.target.files[0]);e.target.value='';});
