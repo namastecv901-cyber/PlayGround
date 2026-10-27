@@ -318,7 +318,7 @@ body.embed .legend{display:none}
     <div class="logo">📐</div>
     <div>
       <h1>رادار النماذج الفنية</h1>
-      <p>20 نموذجاً كلاسيكياً • 240 عملة مختارة • نماذج مؤكدة فقط • TradingView مباشر</p>
+      <p>20 نموذجاً كلاسيكياً • 240 عملة مختارة • نماذج مؤكدة ومتشكلة • TradingView مباشر</p>
     </div>
   </div>
   <div class="head-actions">
@@ -396,7 +396,7 @@ body.embed .legend{display:none}
 
   <section class="gallery-wrap" id="galleryWrap">
     <div class="gallery-head"><span>🖼️ كل الأنماط المدعومة</span><b>20</b></div>
-    <div class="gallery-note">أمثلة توضيحية لكل الأنماط. قسم الإشارات أسفل الصفحة يعرض فقط النماذج المؤكدة حالياً.</div>
+    <div class="gallery-note">أمثلة توضيحية لكل الأنماط. قسم الإشارات أسفل الصفحة يعرض النماذج المؤكدة والمتشكلة حالياً.</div>
     <div class="pattern-gallery" id="patternGallery"></div>
   </section>
 
@@ -811,8 +811,20 @@ function detectBest(kl,tf){
   const minScore=(tf==="1m"||tf==="3m"||tf==="5m")?84:(tf==="15m"||tf==="30m")?78:74;
   const cands=[];
   const add=o=>{
-    if(!o||o.status!=="confirmed") return;
+    if(!o||(o.status!=="confirmed"&&o.status!=="forming")) return;
     if(!(o.trigger>0&&o.stop>0&&o.target>0)) return;
+    const upDir=o.dir==="bull";
+    if(o.status==="forming"){
+      if(o.dir!=="bull"&&o.dir!=="bear") return;
+      if(upDir?(o.stop>=o.trigger||o.target<=o.trigger):(o.stop<=o.trigger||o.target>=o.trigger)) return;
+      const risk=Math.abs(o.trigger-o.stop),reward=Math.abs(o.target-o.trigger);
+      if(!(risk>0)||reward<risk*1.2) return;
+      if(reward/price<Math.max(0.004,atrF*0.8)) return;
+      if(o.score<minScore-12) return;
+      o.rr=reward/risk;
+      cands.push(o);
+      return;
+    }
     const q=confirmBreak(o.trigger,o.dir==="bull"?"up":"down");
     if(!q) return;
     const up=o.dir==="bull";
@@ -1095,6 +1107,14 @@ function detectBest(kl,tf){
             add({pattern:"sym_triangle",dir:cUp?"bull":"bear",status:"confirmed",score,price,trigger:cUp?up1:lo1,triggerName:cUp?"المقاومة":"الدعم",target:cUp?up1+(up1-lo1):lo1-(up1-lo1),stop:cUp?lo1*0.995:up1*1.005,vr,
               lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
           }
+          const insideSym=!cUp&&!cDn&&price<up1*0.998&&price>lo1*1.002;
+          const edgeSym=(up1-lo1)>0?Math.min(up1-price,price-lo1)/(up1-lo1):1;
+          if(insideSym&&edgeSym<=0.35){
+            const bull=price>=(up1+lo1)/2,trig=bull?up1:lo1;
+            const score=clamp(58+clamp((1-w1/w0)/0.5,0,1)*10+(vr>1.2?4:0),54,90);
+            add({pattern:"sym_triangle",dir:bull?"bull":"bear",status:"forming",score,price,trigger:trig,triggerName:bull?"المقاومة":"الدعم",target:bull?trig+(up1-lo1):trig-(up1-lo1),stop:bull?lo1*0.995:up1*1.005,vr,
+              lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+          }
         }
         if(upMove>Math.max(0.015,widthPct*0.2)&&loMove>Math.max(0.015,widthPct*0.2)&&loMove>upMove*1.1+0.008){
           const brokeDn=price<lo1*0.9995;
@@ -1135,6 +1155,14 @@ function detectBest(kl,tf){
               lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
           }
         }
+        const insideB=!cUp&&!cDn&&price<up1*0.999&&price>lo1*1.001;
+        const edgeB=(up1-lo1)>0?Math.min(up1-price,price-lo1)/(up1-lo1):1;
+        if(insideB&&edgeB<=0.35){
+          const bull=price>=(up1+lo1)/2,trig=bull?up1:lo1,move=up1-lo1;
+          const score=clamp(56+clamp((w1/w0-1)/0.5,0,1)*10+(vr>1.2?4:0),54,90);
+          add({pattern:"broadening",dir:bull?"bull":"bear",status:"forming",score,price,trigger:trig,triggerName:bull?"المقاومة":"الدعم",target:bull?trig+move:trig-move,stop:bull?lo1*0.995:up1*1.005,vr,
+            lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+        }
       }
       if(Math.abs(upMove)<0.008&&Math.abs(loMove)<0.008&&widthPct>=0.02&&widthPct<=0.06&&span>=30){
         const brokeUp=price>up1*1.001,brokeDn=price<lo1*0.999;
@@ -1144,6 +1172,14 @@ function detectBest(kl,tf){
         if(!late&&(cUp||cDn)){
           const score=clamp(62+clamp((widthPct/0.05),0,1)*10+10+(vr>1.2?4:0),54,92);
           add({pattern:"rectangle",dir:cUp?"bull":"bear",status:"confirmed",score,price,trigger:cUp?up1:lo1,triggerName:cUp?"المقاومة":"الدعم",target:cUp?up1+(up1-lo1):lo1-(up1-lo1),stop:cUp?lo1*0.995:up1*1.005,vr,
+            lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+        }
+        const insideR=!cUp&&!cDn&&price<up1*0.998&&price>lo1*1.002;
+        const edgeR=(up1-lo1)>0?Math.min(up1-price,price-lo1)/(up1-lo1):1;
+        if(insideR&&edgeR<=0.35){
+          const bull=price>=(up1+lo1)/2,trig=bull?up1:lo1;
+          const score=clamp(54+clamp((widthPct/0.05),0,1)*10+(vr>1.2?4:0),54,88);
+          add({pattern:"rectangle",dir:bull?"bull":"bear",status:"forming",score,price,trigger:trig,triggerName:bull?"المقاومة":"الدعم",target:bull?trig+(up1-lo1):trig-(up1-lo1),stop:bull?lo1*0.995:up1*1.005,vr,
             lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
         }
       }
@@ -1282,9 +1318,10 @@ function detectBest(kl,tf){
   }
 
   if(!cands.length) return null;
-  cands.sort((x,y)=>y.score-x.score);
+  cands.sort((x,y)=>(y.status==="confirmed"?1:0)-(x.status==="confirmed"?1:0)||y.score-x.score);
   const best=cands[0];
-  if(!best||best.status!=="confirmed"||!best.confirm) return null;
+  if(!best) return null;
+  if(best.status==="confirmed"&&!best.confirm) return null;
   const M=100,st=Math.max(0,NN-M);
   let entryIdx=null,retested=false,outcome=null;
   if(best.status==="confirmed"&&best.trigger>0&&best.stop>0&&best.target>0){
@@ -1473,13 +1510,19 @@ async function scan(manual){
   })());
   await Promise.all(workers);
   const bestBySym=new Map();
+  const formingOut=[],seenForming=new Set();
   for(const r of results){
     if(TV_SET&&!TV_SET.has(r.symbol)) continue;
+    if(r.status==="forming"){
+      if(!seenForming.has(r.key)){ seenForming.add(r.key); formingOut.push(r); }
+      continue;
+    }
     const w=r.score+(r.status==="confirmed"?8:0);
     const prev=bestBySym.get(r.symbol);
     if(!prev||w>prev.w) bestBySym.set(r.symbol,{r,w});
   }
-  state.results=[...bestBySym.values()].map(x=>x.r);
+  state.results=[...formingOut,...[...bestBySym.values()].map(x=>x.r)];
+  state.results.sort((a,b)=>(b.status==="confirmed"?1:0)-(a.status==="confirmed"?1:0)||b.score-a.score);
   state.lastScan=Date.now();
   state.scanning=false;
   state.force=false;
@@ -1592,7 +1635,8 @@ function render(){
     if(f.dir&&r.dir!==f.dir) return false;
     if(f.status){
       const k=allPh.get(r).key;
-      if(f.status==="done"){ if(k!=="target"&&k!=="stop") return false; }
+      if(f.status==="forming"){ if(r.status!=="forming"&&k!=="forming") return false; }
+      else if(f.status==="done"){ if(k!=="target"&&k!=="stop") return false; }
       else if(k!==f.status) return false;
     }
     if(f.tf&&r.tf!==f.tf) return false;
@@ -1644,6 +1688,7 @@ function render(){
       +'<div class="fig"><div class="chart-pane" data-pane="patt">'+legend+patternFig(r)+'</div></div>'
       +'<div class="phase-note" data-role="note">'+esc(ph.note)+'</div>'
       +'<div class="badges"><span class="badge '+dcls+'">'+dirLabel(r.dir)+'</span>'
+      +(r.status==="forming"?'<span class="badge form">يتشكل</span>':'')
       +'<span class="badge phase '+ph.cls+'" data-role="phase">'+ph.label+'</span>'
       +'<span class="badge neutral">'+TF_META[r.tf].short+'</span>'
       +(r.confirm?'<span class="badge neutral">حجم ×'+r.confirm.volRatio.toFixed(1)+'</span>':'')
