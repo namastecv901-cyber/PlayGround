@@ -269,6 +269,9 @@ body.live-off .pulse{background:linear-gradient(135deg,#f0b90b,#ff8a3d)}
 .pattern-tile .pt-dir.bull{color:#8bf3c7;background:#16c78418;border-color:#16c78444}
 .pattern-tile .pt-dir.bear{color:#ffa3a8;background:#ea394318;border-color:#ea394344}
 .pattern-tile .pt-dir.neutral{color:#ffe27a;background:#f0b90b18;border-color:#f0b90b44}
+.pattern-tile .pt-live{font-size:.52rem;font-weight:900;color:#7f8bb0;background:#ffffff0a;border:1px solid #ffffff12;border-radius:99px;padding:1px 5px;min-width:18px;text-align:center}
+.pattern-tile .pt-live.on{color:#0b1020;background:linear-gradient(135deg,#f0b90b,#ffd85e);border-color:#f0b90b;box-shadow:0 0 10px #f0b90b55}
+.pattern-tile.has-live{border-color:#f0b90b55;box-shadow:0 0 0 1px #f0b90b22,0 0 18px #f0b90b0f}
 .pattern-tile .pt-name{font-size:.64rem;font-weight:900;color:#dfe5ff;line-height:1.35}
 .pattern-tile .pt-en{font-size:.5rem;color:var(--mut);font-weight:700;line-height:1.3;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pattern-tile .pt-fig{border:1px solid #ffffff0d;border-radius:6px;overflow:hidden;background:linear-gradient(180deg,#08101c,#0a1020)}
@@ -318,12 +321,13 @@ body.embed .legend{display:none}
     <div class="logo">📐</div>
     <div>
       <h1>رادار النماذج الفنية</h1>
-      <p>20 نموذجاً كلاسيكياً • 240 عملة مختارة • نماذج مؤكدة فقط • TradingView مباشر</p>
+      <p>20 نموذجاً كلاسيكياً • 240 عملة مختارة • نماذج متشكلة ومؤكدة • TradingView مباشر</p>
     </div>
   </div>
   <div class="head-actions">
     <span class="live"><i></i> رصد حي</span>
     <button class="icon-btn" id="soundBtn" title="تشغيل/إيقاف الصوت" aria-label="الصوت">🔊</button>
+    <button class="icon-btn" id="tvQuick" title="TradingView مباشر" aria-label="TradingView مباشر">📈</button>
     <a class="icon-btn" href="index.html" title="الرئيسية" aria-label="الرئيسية">⌂</a>
   </div>
 </header>
@@ -396,7 +400,7 @@ body.embed .legend{display:none}
 
   <section class="gallery-wrap" id="galleryWrap">
     <div class="gallery-head"><span>🖼️ كل الأنماط المدعومة</span><b>20</b></div>
-    <div class="gallery-note">أمثلة توضيحية لكل الأنماط. قسم الإشارات أسفل الصفحة يعرض فقط النماذج المؤكدة حالياً.</div>
+    <div class="gallery-note">كل الأنماط مع عدد الإشارات الحية. اضغط أي نموذج للتصفية. الإشارات أسفل الصفحة تعرض المتشكلة والمؤكدة مباشرة.</div>
     <div class="pattern-gallery" id="patternGallery"></div>
   </section>
 
@@ -811,32 +815,39 @@ function detectBest(kl,tf){
   const minScore=(tf==="1m"||tf==="3m"||tf==="5m")?84:(tf==="15m"||tf==="30m")?78:74;
   const cands=[];
   const add=o=>{
-    if(!o||o.status!=="confirmed") return;
+    if(!o||(o.status!=="forming"&&o.status!=="confirmed")) return;
     if(!(o.trigger>0&&o.stop>0&&o.target>0)) return;
-    const q=confirmBreak(o.trigger,o.dir==="bull"?"up":"down");
-    if(!q) return;
     const up=o.dir==="bull";
     if(up?(o.stop>=o.trigger||o.target<=o.trigger):(o.stop<=o.trigger||o.target>=o.trigger)) return;
-    const bIdx=ci-q.ago;
-    const oldRisk=Math.abs(o.trigger-o.stop);
-    if(up){
-      const swingLow=Math.min.apply(null,L.slice(bIdx,ci+1));
-      const minRisk=Math.max(price*atrF*0.8,oldRisk*0.25);
-      let stop=Math.max(o.stop,swingLow*0.995);
-      stop=Math.min(stop,o.trigger-minRisk);
-      if(stop>0&&stop<o.trigger) o.stop=stop;
-    }else{
-      const swingHigh=Math.max.apply(null,H.slice(bIdx,ci+1));
-      const minRisk=Math.max(price*atrF*0.8,oldRisk*0.25);
-      let stop=Math.min(o.stop,swingHigh*1.005);
-      stop=Math.max(stop,o.trigger+minRisk);
-      if(stop>0&&stop>o.trigger) o.stop=stop;
+    let q=null;
+    if(o.status==="confirmed"){
+      q=confirmBreak(o.trigger,up?"up":"down");
+      if(!q) return;
+      const bIdx=ci-q.ago;
+      const oldRisk=Math.abs(o.trigger-o.stop);
+      if(up){
+        const swingLow=Math.min.apply(null,L.slice(bIdx,ci+1));
+        const minRisk=Math.max(price*atrF*0.8,oldRisk*0.25);
+        let stop=Math.max(o.stop,swingLow*0.995);
+        stop=Math.min(stop,o.trigger-minRisk);
+        if(stop>0&&stop<o.trigger) o.stop=stop;
+      }else{
+        const swingHigh=Math.max.apply(null,H.slice(bIdx,ci+1));
+        const minRisk=Math.max(price*atrF*0.8,oldRisk*0.25);
+        let stop=Math.min(o.stop,swingHigh*1.005);
+        stop=Math.max(stop,o.trigger+minRisk);
+        if(stop>0&&stop>o.trigger) o.stop=stop;
+      }
     }
     const risk=Math.abs(o.trigger-o.stop),reward=Math.abs(o.target-o.trigger);
-    if(!(risk>0)||reward<risk*1.4) return;
-    if(reward/price<Math.max(0.004,atrF*0.8)) return;
-    o.score=clamp(o.score+q.bonus,0,98);
-    if(o.score<minScore) return;
+    if(!(risk>0)||reward<risk*(o.status==="confirmed"?1.4:1.0)) return;
+    if(reward/price<Math.max(o.status==="confirmed"?0.004:0.0025,atrF*(o.status==="confirmed"?0.8:0.45))) return;
+    if(o.status==="confirmed"){
+      o.score=clamp(o.score+q.bonus,0,98);
+      if(o.score<minScore) return;
+    }else{
+      o.score=clamp(o.score,0,96);
+    }
     o.confirm=q;o.rr=reward/risk;
     cands.push(o);
   };
@@ -1094,6 +1105,12 @@ function detectBest(kl,tf){
             const score=clamp(62+clamp((1-w1/w0)/0.5,0,1)*12+12+(vr>1.2?4:0),54,94);
             add({pattern:"sym_triangle",dir:cUp?"bull":"bear",status:"confirmed",score,price,trigger:cUp?up1:lo1,triggerName:cUp?"المقاومة":"الدعم",target:cUp?up1+(up1-lo1):lo1-(up1-lo1),stop:cUp?lo1*0.995:up1*1.005,vr,
               lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+          }else if(!cUp&&!cDn&&w1<w0*0.82&&price>lo1*1.002&&price<up1*0.998){
+            const prior=C[ci]-C[Math.max(0,ci-20)];
+            const bull=prior>=0;
+            const score=clamp(58+clamp((1-w1/w0)/0.5,0,1)*12+(vr>1.2?3:0),52,88);
+            add({pattern:"sym_triangle",dir:bull?"bull":"bear",status:"forming",score,price,trigger:bull?up1:lo1,triggerName:bull?"المقاومة":"الدعم",target:bull?up1+(up1-lo1):lo1-(up1-lo1),stop:bull?lo1*0.995:up1*1.005,vr,
+              lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
           }
         }
         if(upMove>Math.max(0.015,widthPct*0.2)&&loMove>Math.max(0.015,widthPct*0.2)&&loMove>upMove*1.1+0.008){
@@ -1134,6 +1151,16 @@ function detectBest(kl,tf){
             add({pattern:"broadening",dir:bull?"bull":"bear",status:"confirmed",score,price,trigger:trig,triggerName:bull?"المقاومة":"الدعم",target:bull?trig+move:trig-move,stop,vr,
               lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
           }
+        }else{
+          const nearUp=(up1-price)/price<=Math.max(0.02,atrF*0.8);
+          const nearDn=(price-lo1)/price<=Math.max(0.02,atrF*0.8);
+          if(nearUp||nearDn){
+            const bull=nearUp&&(!nearDn||up1-price<=price-lo1);
+            const trig=bull?up1:lo1,stop=bull?lo1*0.995:up1*1.005,move=up1-lo1;
+            const score=clamp(58+clamp((w1/w0-1)/0.5,0,1)*10+(vr>1.2?3:0),52,88);
+            add({pattern:"broadening",dir:bull?"bull":"bear",status:"forming",score,price,trigger:trig,triggerName:bull?"المقاومة":"الدعم",target:bull?trig+move:trig-move,stop,vr,
+              lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+          }
         }
       }
       if(Math.abs(upMove)<0.008&&Math.abs(loMove)<0.008&&widthPct>=0.02&&widthPct<=0.06&&span>=30){
@@ -1145,6 +1172,15 @@ function detectBest(kl,tf){
           const score=clamp(62+clamp((widthPct/0.05),0,1)*10+10+(vr>1.2?4:0),54,92);
           add({pattern:"rectangle",dir:cUp?"bull":"bear",status:"confirmed",score,price,trigger:cUp?up1:lo1,triggerName:cUp?"المقاومة":"الدعم",target:cUp?up1+(up1-lo1):lo1-(up1-lo1),stop:cUp?lo1*0.995:up1*1.005,vr,
             lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+        }else if(!cUp&&!cDn&&price>lo1*1.002&&price<up1*0.998){
+          const nearUp=(up1-price)/price<=Math.max(0.012,atrF*0.5);
+          const nearDn=(price-lo1)/price<=Math.max(0.012,atrF*0.5);
+          if(nearUp||nearDn){
+            const bull=nearUp&&(!nearDn||up1-price<=price-lo1);
+            const score=clamp(56+clamp((widthPct/0.05),0,1)*10+(vr>1.2?3:0),50,86);
+            add({pattern:"rectangle",dir:bull?"bull":"bear",status:"forming",score,price,trigger:bull?up1:lo1,triggerName:bull?"المقاومة":"الدعم",target:bull?up1+(up1-lo1):lo1-(up1-lo1),stop:bull?lo1*0.995:up1*1.005,vr,
+              lines:[{i1:first,v1:up0,i2:last,v2:up1},{i1:first,v1:lo0,i2:last,v2:lo1}]});
+          }
         }
       }
     }
@@ -1281,36 +1317,41 @@ function detectBest(kl,tf){
     }
   }
 
-  if(!cands.length) return null;
-  cands.sort((x,y)=>y.score-x.score);
-  const best=cands[0];
-  if(!best||best.status!=="confirmed"||!best.confirm) return null;
+  const usable=cands.filter(c=>c.status!=="confirmed"||c.confirm);
+  if(!usable.length) return null;
+  usable.sort((x,y)=>((y.status==="confirmed")-(x.status==="confirmed"))||y.score-x.score);
   const M=100,st=Math.max(0,NN-M);
-  let entryIdx=null,retested=false,outcome=null;
-  if(best.status==="confirmed"&&best.trigger>0&&best.stop>0&&best.target>0){
-    const upDir=best.dir==="bull",trig=best.trigger;
-    entryIdx=NN-1;
-    for(let i=ci;i>=1;i--){
-      if(upDir?(C[i-1]<trig&&C[i]>=trig):(C[i-1]>trig&&C[i]<=trig)){ entryIdx=i; break; }
-    }
-    for(let i=entryIdx+1;i<=ci;i++){
-      if(upDir){
-        if(L[i]<=best.stop){ outcome="stop"; break; }
-        if(H[i]>=best.target){ outcome="target"; break; }
-        if(!retested&&L[i]<=trig*1.004&&C[i]>=trig*0.997) retested=true;
-      }else{
-        if(H[i]>=best.stop){ outcome="stop"; break; }
-        if(L[i]<=best.target){ outcome="target"; break; }
-        if(!retested&&H[i]>=trig*0.996&&C[i]<=trig*1.003) retested=true;
+  const withChart=c=>{
+    let entryIdx=null,retested=false,outcome=null;
+    if(c.status==="confirmed"&&c.trigger>0&&c.stop>0&&c.target>0){
+      const upDir=c.dir==="bull",trig=c.trigger;
+      entryIdx=NN-1;
+      for(let i=ci;i>=1;i--){
+        if(upDir?(C[i-1]<trig&&C[i]>=trig):(C[i-1]>trig&&C[i]<=trig)){ entryIdx=i; break; }
+      }
+      for(let i=entryIdx+1;i<=ci;i++){
+        if(upDir){
+          if(L[i]<=c.stop){ outcome="stop"; break; }
+          if(H[i]>=c.target){ outcome="target"; break; }
+          if(!retested&&L[i]<=trig*1.004&&C[i]>=trig*0.997) retested=true;
+        }else{
+          if(H[i]>=c.stop){ outcome="stop"; break; }
+          if(L[i]<=c.target){ outcome="target"; break; }
+          if(!retested&&H[i]>=trig*0.996&&C[i]<=trig*1.003) retested=true;
+        }
       }
     }
-  }
-  best.near=Math.max(0.004,atrF*0.6);
-  best.boIdx=entryIdx;
-  best.retested=retested;
-  best.outcome=outcome;
-  best.chart={start:st,t:a.slice(st).map(k=>+k[0]),o:O.slice(st),h:H.slice(st),l:L.slice(st),c:C.slice(st),lines:best.lines||[],marks:best.marks||[],
-    trade:entryIdx==null?null:{entry:best.trigger,stop:best.stop,target:best.target,idx:entryIdx,dir:best.dir}};
+    c.near=Math.max(0.004,atrF*0.6);
+    c.boIdx=entryIdx;
+    c.retested=retested;
+    c.outcome=outcome;
+    c.chart={start:st,t:a.slice(st).map(k=>+k[0]),o:O.slice(st),h:H.slice(st),l:L.slice(st),c:C.slice(st),lines:c.lines||[],marks:c.marks||[],
+      trade:entryIdx==null?null:{entry:c.trigger,stop:c.stop,target:c.target,idx:entryIdx,dir:c.dir}};
+    return c;
+  };
+  usable.forEach(withChart);
+  const best=usable[0];
+  Object.defineProperty(best,"all",{value:usable,enumerable:false});
   return best;
 }
 
@@ -1461,10 +1502,13 @@ async function scan(manual){
         let det=null;
         try{ det=detectBest(kl,tf); }catch(e){}
         if(!det) continue;
-        const key=det.pattern+"|"+s.symbol+"|"+tf;
-        const isNew=!state.seen[key]||(t0-state.seen[key]>6*3600*1000);
-        if(isNew){ state.seen[key]=t0;seenThis[key]=1;newCount++;if(det.status==="confirmed") newConfirmed++; }
-        results.push({...det,symbol:s.symbol,sym:s.base,tf,chg:s.chg,key,isNew,ts:t0});
+        const dets=det.all||[det];
+        for(const d of dets){
+          const key=d.pattern+"|"+s.symbol+"|"+tf;
+          const isNew=!state.seen[key]||(t0-state.seen[key]>6*3600*1000);
+          if(isNew){ state.seen[key]=t0;seenThis[key]=1;newCount++;if(d.status==="confirmed") newConfirmed++; }
+          results.push({...d,symbol:s.symbol,sym:s.base,tf,chg:s.chg,key,isNew,ts:t0});
+        }
       }
       state.scanned++;
       if(state.scanned%6===0) updateProgress();
@@ -1476,8 +1520,9 @@ async function scan(manual){
   for(const r of results){
     if(TV_SET&&!TV_SET.has(r.symbol)) continue;
     const w=r.score+(r.status==="confirmed"?8:0);
-    const prev=bestBySym.get(r.symbol);
-    if(!prev||w>prev.w) bestBySym.set(r.symbol,{r,w});
+    const group=r.symbol+"|"+r.pattern;
+    const prev=bestBySym.get(group);
+    if(!prev||w>prev.w) bestBySym.set(group,{r,w});
   }
   state.results=[...bestBySym.values()].map(x=>x.r);
   state.lastScan=Date.now();
@@ -1591,9 +1636,12 @@ function render(){
     if(f.pattern&&r.pattern!==f.pattern) return false;
     if(f.dir&&r.dir!==f.dir) return false;
     if(f.status){
-      const k=allPh.get(r).key;
-      if(f.status==="done"){ if(k!=="target"&&k!=="stop") return false; }
-      else if(k!==f.status) return false;
+      if(f.status==="forming"){ if(r.status!=="forming") return false; }
+      else {
+        const k=allPh.get(r).key;
+        if(f.status==="done"){ if(k!=="target"&&k!=="stop") return false; }
+        else if(k!==f.status) return false;
+      }
     }
     if(f.tf&&r.tf!==f.tf) return false;
     return true;
@@ -1601,6 +1649,14 @@ function render(){
   const gw=$("galleryWrap");
   const showAll=!f.pattern;
   if(gw) gw.style.display=showAll?"block":"none";
+  const counts={};
+  for(const r of state.results) counts[r.pattern]=(counts[r.pattern]||0)+1;
+  document.querySelectorAll("#patternGallery .pattern-tile").forEach(t=>{
+    const n=counts[t.dataset.pattern]||0,b=t.querySelector(".pt-live");
+    if(b){ b.textContent=n; b.classList.toggle("on",n>0); }
+    t.classList.toggle("has-live",n>0);
+    t.title=n?n+" نموذج حي — اضغط للتصفية":"لا يوجد نموذج حي الآن — اضغط للتصفية";
+  });
   if(state.sort==="score") list.sort((a,b)=>b.score-a.score);
   else if(state.sort==="change") list.sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
   else list.sort((a,b)=>(PHASE_PRIORITY[allPh.get(a).key]-PHASE_PRIORITY[allPh.get(b).key])||b.score-a.score);
@@ -1644,6 +1700,7 @@ function render(){
       +'<div class="fig"><div class="chart-pane" data-pane="patt">'+legend+patternFig(r)+'</div></div>'
       +'<div class="phase-note" data-role="note">'+esc(ph.note)+'</div>'
       +'<div class="badges"><span class="badge '+dcls+'">'+dirLabel(r.dir)+'</span>'
+      +(r.status==="forming"?'<span class="badge form">يتشكل</span>':'')
       +'<span class="badge phase '+ph.cls+'" data-role="phase">'+ph.label+'</span>'
       +'<span class="badge neutral">'+TF_META[r.tf].short+'</span>'
       +(r.confirm?'<span class="badge neutral">حجم ×'+r.confirm.volRatio.toFixed(1)+'</span>':'')
@@ -1807,7 +1864,7 @@ function buildLegend(){
   const pg=$("patternGallery");
   if(pg) pg.innerHTML=Object.keys(PATTERNS).map(k=>{
     const p=PATTERNS[k];
-    return '<div class="pattern-tile"><div class="pt-top"><b>'+p.n+'</b><span class="pt-dir '+p.dir+'">'+dirLabel(p.dir)+'</span></div><div class="pt-name">'+esc(p.ar)+'</div><div class="pt-en">'+esc(p.en)+'</div><div class="pt-fig">'+genericFig(k,p.dir)+'</div></div>';
+    return '<div class="pattern-tile" data-pattern="'+k+'"><div class="pt-top"><b>'+p.n+'</b><span class="pt-live" data-live="'+k+'">0</span><span class="pt-dir '+p.dir+'">'+dirLabel(p.dir)+'</span></div><div class="pt-name">'+esc(p.ar)+'</div><div class="pt-en">'+esc(p.en)+'</div><div class="pt-fig">'+genericFig(k,p.dir)+'</div></div>';
   }).join("");
 }
 function syncControls(){
@@ -1820,6 +1877,7 @@ function syncControls(){
 function bind(){
   $("scanBtn").onclick=()=>{ if(!state.scanning) scan(true); };
   $("soundBtn").onclick=()=>{ state.sound=!state.sound; $("soundBtn").textContent=state.sound?"🔊":"🔇"; savePrefs(); if(state.sound) beep(); };
+  $("tvQuick").onclick=()=>openOriginalTV("BTCUSDT","240","BTCUSDT","");
   $("autoChk").onchange=e=>{ state.auto=e.target.checked; savePrefs(); if(state.auto&&!state.scanning) scan(false); };
   $("universeSel").onchange=e=>{ state.universe=e.target.value; savePrefs(); if(!state.scanning) scan(true); };
   $("tfChips").addEventListener("click",e=>{
@@ -1845,6 +1903,12 @@ function bind(){
     render();
   };
   $("q").oninput=onFilter;
+  $("patternGallery").addEventListener("click",e=>{
+    const t=e.target.closest(".pattern-tile");
+    if(!t) return;
+    $("fPattern").value=t.dataset.pattern;
+    $("fPattern").dispatchEvent(new Event("change",{bubbles:true}));
+  });
   ["fPattern","fDir","fStatus","fTf"].forEach(id=>{ $(id).onchange=onFilter; });
   $("fSort").onchange=e=>{ state.sort=e.target.value; savePrefs(); render(); };
   $("tvClose").onclick=closeOriginalTV;
