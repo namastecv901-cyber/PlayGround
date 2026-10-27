@@ -20,7 +20,8 @@
   </div>
   <nav class="tabs" id="tabs">
     <button class="tab active" data-view="home">🎯 المسار</button>
-    <button class="tab" data-view="mentor">🤖 المرشد</button>
+    <button class="tab" data-view="robots">🤖 الروبوتات</button>
+    <button class="tab" data-view="mentor">💬 المرشد</button>
     <button class="tab" data-view="studio">🖼️ الاستوديو</button>
     <button class="tab" data-view="pricing">💵 التسعير</button>
     <button class="tab" data-view="content">✍️ المحتوى</button>
@@ -56,6 +57,13 @@
     <p class="fine">مِكسب أداة تخطيط وتنفيذ، وليست وعداً بالربح. الأرقام تقديرية وتختلف حسب السوق والجهد. لا تدفع لأي جهة تضمن لك أرباحاً.</p>
   </section>
 
+  <section class="view" id="view-robots">
+    <div class="card robotHero" id="robotHero"></div>
+    <div class="robotRoster" id="robotRoster"></div>
+    <div class="card robotStage" id="robotStage"></div>
+    <div class="card robotFeed" id="robotFeed"></div>
+  </section>
+
   <section class="view" id="view-mentor">
     <div class="card" style="padding:12px 15px">
       <div class="row">
@@ -66,6 +74,7 @@
         <span class="badge" id="mentorMode">محلي</span>
       </div>
     </div>
+    <div class="card autoCard" id="autoCard"></div>
     <div class="card chatwrap">
       <div class="chatlog" id="chatlog"></div>
       <div class="chips" id="chatChips"></div>
@@ -336,7 +345,7 @@
 
     <hr style="border:none;border-top:1px solid #ffffff12;margin:16px 0">
     <h3>🤖 الذكاء السحابي (اختياري)</h3>
-    <p class="hint" style="margin-bottom:8px">المرشد المحلي يكفي للخطة. فعّل هذا فقط إن أردت أسئلة عامة مفتوحة. مفتاحك يبقى في جهازك ويُرسل مباشرة إلى المزوّد الذي تختاره.</p>
+    <p class="hint" style="margin-bottom:8px">الروبوتات تعمل محلياً بدون مفتاح. فعّل هذا لتحسين تقاريرها بالذكاء السحابي. مفتاحك يبقى في جهازك ويُرسل مباشرة إلى المزوّد الذي تختاره.</p>
     <label class="toggle"><input type="checkbox" id="aiEnabled"><div>تفعيل الذكاء السحابي<small>أي واجهة متوافقة مع OpenAI</small></div></label>
     <label>المزوّد</label>
     <select id="aiProvider">
@@ -375,6 +384,8 @@
 <script src="maksab-data.js"></script>
 <script src="maksab-app.js"></script>
 <script src="maksab-studio.js"></script>
+<script src="maksab-auto.js"></script>
+<script src="maksab-robots.js"></script>
 <script src="maksab-tools.js"></script>
 </body>
 </html>

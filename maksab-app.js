@@ -10,6 +10,7 @@ function defaultState(){
   return {profile:null,plan:null,daily:null,dailyHistory:[],income:[],leads:[],extraTasks:[],pricing:null,chat:[],
     settings:{ai:{enabled:false,provider:'openai',base:'https://api.openai.com/v1',model:'gpt-4o-mini',key:''}},
     auto:{active:false,step:0,service:'',price:0,caseIndex:0,editing:false,notes:{},tasks:{}},
+    robots:{active:false,stage:0,status:'idle',goal:500,outputs:{},approvals:{},notes:{},logs:{},editing:false,startedAt:null,finishedAt:null,error:'',mode:''},
     ui:{view:'home',openWeeks:[]}};
 }
 function loadState(){
@@ -22,6 +23,11 @@ function loadState(){
     merged.settings=Object.assign(base.settings,p.settings||{});
     merged.settings.ai=Object.assign(base.settings.ai,(p.settings&&p.settings.ai)||{});
     merged.dailyHistory=Array.isArray(p.dailyHistory)?p.dailyHistory:[];
+    merged.auto=Object.assign(base.auto,p.auto||{});
+    merged.auto.notes=merged.auto.notes&&typeof merged.auto.notes==='object'?merged.auto.notes:{};
+    merged.auto.tasks=merged.auto.tasks&&typeof merged.auto.tasks==='object'?merged.auto.tasks:{};
+    merged.robots=Object.assign(base.robots,p.robots||{});
+    ['outputs','approvals','notes','logs'].forEach(k=>{merged.robots[k]=merged.robots[k]&&typeof merged.robots[k]==='object'?merged.robots[k]:{};});
     merged.ui=Object.assign(base.ui,p.ui||{});
     return merged;
   }catch(e){return defaultState();}
@@ -133,7 +139,8 @@ function switchView(v){
   $$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
   $$('.view').forEach(s=>s.classList.toggle('active',s.id==='view-'+v));
   if(v==='home')renderHome();
-  if(v==='mentor')renderChat();
+  if(v==='robots'&&typeof renderRobots==='function')renderRobots();
+  if(v==='mentor'){renderChat();if(typeof renderAuto==='function')renderAuto();}
   if(v==='pricing')renderPricing();
   if(v==='content')fillContentDefaults();
   if(v==='clients')renderClients();
@@ -233,7 +240,7 @@ function renderChat(){
     return `<div class="msg ${m.role==='user'?'user':'bot'}">${inner}<span class="ts">${esc(m.ts||'')}</span></div>`;
   }).join('');
   log.scrollTop=log.scrollHeight;
-  const chips=['كيف أبدأ اليوم؟','كيف ألاقي عملاء؟','أول 100$','كيف أسعّر؟','كيف أتفاوض؟','أساسيات التصوير','أدوات مجانية','حسّن صوري'];
+  const chips=['🤖 فريق الروبوتات','🚀 التنفيذ التلقائي','كيف أبدأ اليوم؟','كيف ألاقي عملاء؟','أول 100$','كيف أسعّر؟','كيف أتفاوض؟','أساسيات التصوير','أدوات مجانية','حسّن صوري'];
   $('#chatChips').innerHTML=chips.map(c=>`<button class="chip" type="button" data-chip="${esc(c)}">${esc(c)}</button>`).join('');
   const cloudOn=state.settings.ai.enabled&&!!state.settings.ai.key;
   $('#mentorMode').textContent=cloudOn?'سحابي':'محلي';

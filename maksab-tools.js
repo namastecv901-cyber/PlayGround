@@ -336,7 +336,7 @@ function saveProfile(){
   if(skill!==oldSkill&&!confirm('تغيير المهارة سيولّد خطة جديدة ويمسح علامات المهام الحالية. متابعة؟'))return;
   const rebuild=skill!==oldSkill;
   state.profile=Object.assign({},state.profile,{name,skill,hours,capital,goal,days});
-  if(rebuild){state.plan=buildPlan(skill);state.ui.openWeeks=[0];}
+  if(rebuild){state.plan=buildPlan(skill);state.ui.openWeeks=[0];if(typeof autoDefault==='function')state.auto=autoDefault();if(typeof robotDefault==='function')state.robots=robotDefault();}
   save();
   renderAll();
   $('#settingsModal').classList.add('hidden');
@@ -544,6 +544,8 @@ function bind(){
     const c=e.target.closest('[data-chip]');
     if(!c)return;
     if(c.dataset.chip==='حسّن صوري'){switchView('studio');return;}
+    if(c.dataset.chip==='🤖 فريق الروبوتات'){switchView('robots');return;}
+    if(c.dataset.chip==='🚀 التنفيذ التلقائي'){if(typeof autoStart==='function')autoStart();return;}
     sendChat(c.dataset.chip);
   });
 
@@ -598,9 +600,12 @@ function bind(){
     localStorage.removeItem(STORE);
     location.reload();
   });
+  if(typeof bindAuto==='function')bindAuto();
+  if(typeof bindRobots==='function')bindRobots();
 }
 
 function init(){
+  if(typeof robotRecover==='function')robotRecover();
   if(state.profile&&!state.plan)state.plan=buildPlan(state.profile.skill);
   if(state.profile&&!state.pricing)state.pricing=defaultPricing();
   if(!state.profile){

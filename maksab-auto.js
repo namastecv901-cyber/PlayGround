@@ -39,12 +39,12 @@ function autoDefault(){
 
 function autoData(){
   if(!state.auto||typeof state.auto!=='object')state.auto=autoDefault();
+  const a=state.auto;
   const d=autoDefault();
-  Object.assign(d,state.auto);
-  d.notes=d.notes&&typeof d.notes==='object'?d.notes:{};
-  d.tasks=d.tasks&&typeof d.tasks==='object'?d.tasks:{};
-  state.auto=d;
-  return d;
+  Object.keys(d).forEach(k=>{if(a[k]===undefined)a[k]=d[k];});
+  if(!a.notes||typeof a.notes!=='object')a.notes={};
+  if(!a.tasks||typeof a.tasks!=='object')a.tasks={};
+  return a;
 }
 
 function autoSkillKey(){
@@ -76,6 +76,13 @@ function autoDeliveryDays(){
   return AUTO_DAYS[autoSkillKey()]||2;
 }
 
+function autoDaysText(n){
+  n=Math.max(1,Math.round(Number(n)||1));
+  if(n===1)return 'يوم واحد';
+  if(n===2)return 'يومين';
+  return n+' أيام';
+}
+
 function autoChannels(){
   return autoSkill().channels||[];
 }
@@ -100,15 +107,10 @@ function autoCaseIndex(){
 function autoPacks(){
   const p=autoPrice();
   return [
-    {name:'الأساسية',price:p,desc:'خدمة واحدة + مراجعتان + تسليم '+autoDeliveryDays()+' أيام'},
+    {name:'الأساسية',price:p,desc:'خدمة واحدة + مراجعتان + تسليم '+autoDaysText(autoDeliveryDays())},
     {name:'الوسطى',price:Math.round(p*1.8),desc:'3 نماذج + 3 مراجعات + تسليم أسرع + ملفات المصدر'},
     {name:'العليا',price:Math.round(p*3),desc:'5 نماذج + أولوية تسليم + حقوق استخدام + متابعة شهر'}
   ];
-}
-
-function autoNote(key){
-  const n=autoData().notes[key];
-  return n?'\n\nملاحظتك المطبقة: '+n:'';
 }
 
 function autoOfferText(){
@@ -119,7 +121,7 @@ function autoOfferText(){
     'من أنا: '+name+'، أساعد '+autoAudience()+' على '+autoBenefit()+'.\n\n'+
     'ما تحصل عليه:\n'+
     '• '+autoService()+' بجودة ثابتة وبسيطة.\n'+
-    '• تسليم خلال '+autoDeliveryDays()+' يوم عمل.\n'+
+    '• تسليم خلال '+autoDaysText(autoDeliveryDays())+' عمل.\n'+
     '• مراجعتان مشمولتان.\n'+
     '• ملفات جاهزة للنشر أو الاستخدام.\n\n'+
     'الباقات:\n'+
@@ -128,7 +130,7 @@ function autoOfferText(){
     '• العليا: '+fmt(packs[2].price)+' — '+packs[2].desc+'\n\n'+
     'الدفع: 50% مقدماً و50% عند التسليم.\n'+
     'للتأكيد: أرسل تفاصيل المشروع وسأبدأ خلال 24 ساعة.\n'+
-    'الأسعار قابلة للتعديل حسب حجم العمل.'+autoNote('offer');
+    'الأسعار قابلة للتعديل حسب حجم العمل.';
 }
 
 function autoPortfolioText(){
@@ -139,13 +141,13 @@ function autoPortfolioText(){
     '• أرفق النتيجة فقط، بلا شرح طويل.\n\n'+
     '2) نموذج عرض/إعلان\n'+
     '• حوّل الخدمة إلى إعلان قصير: المشكلة، الحل، السعر، الخطوة التالية.\n'+
-    '• الكابشن: «هذا ما ستحصل عليه خلال '+autoDeliveryDays()+' أيام». \n'+
+    '• الكابشن: «هذا ما ستحصل عليه خلال '+autoDaysText(autoDeliveryDays())+'». \n'+
     '• اذكر السعر بوضوح لتصفية العملاء غير الجادين.\n\n'+
     '3) نموذج كواليس/ثقة\n'+
     '• صوّر خطوة واحدة من عملك (قبل، أثناء، بعد).\n'+
     '• الكابشن: «هكذا أضمن أن كل عميل يحصل على نفس الجودة». \n'+
     '• الثقة تبيع أكثر من الكمال.\n\n'+
-    'طريقة العرض: انشر النماذج الثلاثة في حساب واحد أو ملف PDF بسيط، وضع الرابط في كل رسالة.'+autoNote('portfolio');
+    'طريقة العرض: انشر النماذج الثلاثة في حساب واحد أو ملف PDF بسيط، وضع الرابط في كل رسالة.';
 }
 
 function autoLeadsText(){
@@ -169,7 +171,7 @@ function autoLeadsText(){
     'القنوات المقترحة: '+ch.join('، ')+'\n\n'+
     'لكل عميل سجّل: الاسم، القناة، المشكلة، الرسالة، الحالة، تاريخ المتابعة.\n'+
     'معيار التأهيل: يحتاج الخدمة الآن + يستطيع الدفع + يمكن الوصول لصاحب القرار.\n'+
-    'القاعدة: لا ترسل أكثر من 3 رسائل لنفس الشخص، ولا تكرر نفس النص حرفياً.'+autoNote('leads');
+    'القاعدة: لا ترسل أكثر من 3 رسائل لنفس الشخص، ولا تكرر نفس النص حرفياً.';
 }
 
 function autoOutreachText(){
@@ -185,7 +187,7 @@ function autoOutreachText(){
     '• 15 رسالة مخصصة يومياً كحد أقصى.\n'+
     '• لا تنسخ نفس الرسالة للجميع؛ غيّر التفصيل الأول.\n'+
     '• تابع مرة واحدة بعد 48 ساعة، ثم أغلق.\n'+
-    '• لا ترسل مرفقات ثقيلة في أول رسالة.'+autoNote('outreach');
+    '• لا ترسل مرفقات ثقيلة في أول رسالة.';
 }
 
 function autoDeliveryText(){
@@ -205,7 +207,7 @@ function autoDeliveryText(){
     '6. اكتب ما تم إنجازه وما لم يُنجز.\n'+
     '7. احتفظ بنسخة احتياطية 30 يوماً.\n\n'+
     'رسالة التسليم:\n'+
-    'مرحباً [الاسم]، هذا تسليم '+s+'. تجد الملفات في [الرابط]. راجعت [ما راجعته] وتأكدت من [ما تأكدت منه]. إن كان هناك تعديل ضمن المراجعتين، أرسله في رسالة واحدة وسأنفذه. شكراً لثقتك.'+autoNote('delivery');
+    'مرحباً [الاسم]، هذا تسليم '+s+'. تجد الملفات في [الرابط]. راجعت [ما راجعته] وتأكدت من [ما تأكدت منه]. إن كان هناك تعديل ضمن المراجعتين، أرسله في رسالة واحدة وسأنفذه. شكراً لثقتك.';
 }
 
 function autoPaymentText(){
@@ -226,8 +228,8 @@ function autoPaymentText(){
     'السعر: '+fmt(autoPrice())+'\n'+
     'المدفوع: 50% = '+fmt(Math.round(autoPrice()/2))+'\n'+
     'المتبقي: '+fmt(autoPrice()-Math.round(autoPrice()/2))+' عند التسليم\n'+
-    'التسليم: '+autoDeliveryDays()+' أيام عمل\n'+
-    'ملاحظة: أي عمل خارج النطاق يُسعّر قبل التنفيذ.'+autoNote('payment');
+    'التسليم: '+autoDaysText(autoDeliveryDays())+' عمل\n'+
+    'ملاحظة: أي عمل خارج النطاق يُسعّر قبل التنفيذ.';
 }
 
 function autoFollowupText(){
@@ -239,7 +241,7 @@ function autoFollowupText(){
     'مرحباً [الاسم]، هل تحتاج دفعة جديدة من '+autoService()+' هذا الشهر؟ لعميل سابق، أستطيع تجهيز [باقة] بسعر [السعر] وتسليم أسرع.\n\n'+
     'طلب إحالة:\n'+
     'هل تعرف شخصاً واحداً يحتاج نفس الخدمة؟ أرسل لي اسمه فقط، وأتولى الباقي بأدب.\n\n'+
-    'قاعدة: لا تطلب التقييم قبل التسليم، ولا تعرض ترقية قبل أن يرى النتيجة.'+autoNote('followup');
+    'قاعدة: لا تطلب التقييم قبل التسليم، ولا تعرض ترقية قبل أن يرى النتيجة.';
 }
 
 function autoDailyText(){
@@ -255,7 +257,7 @@ function autoDailyText(){
     '1. جهّز/حدّث عرضك في 3 أسطر.\n'+
     '2. أرسل 5 رسائل مخصصة.\n'+
     '3. سجّل كل رد في قسم العملاء.\n\n'+
-    'القاعدة: 15 تواصلاً يومياً أفضل من 100 رسالة مرة واحدة. التحويل الواقعي في البداية 5–15%.'+autoNote('daily');
+    'القاعدة: 15 تواصلاً يومياً أفضل من 100 رسالة مرة واحدة. التحويل الواقعي في البداية 5–15%.';
 }
 
 function autoDoneText(){
@@ -270,7 +272,7 @@ function autoDoneText(){
     '• خطة تسليم + بوابة دفع آمنة.\n'+
     '• متابعة وتقييم وعرض ترقية.\n'+
     '• خطة تنفيذ 7 أيام.\n\n'+
-    'تذكير: لا يوجد ضمان للربح. النتيجة تعتمد على التنفيذ والسوق. ابدأ بأول 5 رسائل اليوم، وعدّل بناءً على الردود.'+autoNote('done');
+    'تذكير: لا يوجد ضمان للربح. النتيجة تعتمد على التنفيذ والسوق. ابدأ بأول 5 رسائل اليوم، وعدّل بناءً على الردود.';
 }
 
 function autoText(){
@@ -319,10 +321,12 @@ function autoActions(){
   const st=AUTO_STEPS[a.step];
   const isDone=st.key==='done';
   let html='<div class="row autoActions">';
-  html+='<button class="btn green" data-auto="'+(isDone?'reset':'next')+'">'+(isDone?'🔄 مشروع جديد':'✅ '+st.cta)+'</button>';
+  html+='<button class="btn green" data-auto="'+(isDone?'reset':'next')+'">'+(isDone?'🔄 مشروع جديد':'✅ نعم — '+st.cta)+'</button>';
+  if(!isDone)html+='<button class="btn ghost small" data-auto="no">❌ لا</button>';
   if(!isDone)html+='<button class="btn ghost small" data-auto="edit">✏️ غيّر</button>';
   if(st.key==='research')html+='<button class="btn ghost small" data-auto="case">🔁 مثال آخر</button>';
   html+='<button class="mini" data-auto="copy">نسخ</button>';
+  if(isDone)html+='<button class="mini" data-go="home">🎯 لوحة المسار</button>';
   if(a.step>0&&!isDone)html+='<button class="mini" data-auto="prev">← السابق</button>';
   html+='<button class="mini" data-auto="stop">إيقاف</button>';
   html+='</div>';
@@ -335,7 +339,12 @@ function autoEditHtml(){
   return '<div class="autoEdit"><label>اكتب التعديل</label>'+
     '<input id="autoEditInput" placeholder="مثال: السعر 40، أو الخدمة تحسين صور مطاعم، أو اجعل الرسالة أقصر">'+
     '<div class="row" style="margin-top:7px"><button class="btn small" data-auto="apply">تطبيق التعديل</button><button class="mini" data-auto="cancel">إلغاء</button></div>'+
-    '<p class="hint">'+(st.key==='offer'?'إذا كتبت رقماً سأعتبره السعر الجديد.':'سأضيف ملاحظتك إلى هذه المرحلة وأعيد تجهيزها.')+'</p></div>';
+    '<p class="hint">'+(st.key==='offer'?'إذا كتبت رقماً سأعتبره السعر الجديد، وأحفظ نص ملاحظتك.':'سأحفظ ملاحظتك مع هذه المرحلة وأعرضها لك.')+'</p></div>';
+}
+
+function autoNoteHtml(){
+  const n=autoData().notes[AUTO_STEPS[autoData().step].key];
+  return n?'<div class="tip" style="margin-top:8px"><b>📝 تعديلك:</b> '+esc(n)+'</div>':'';
 }
 
 function renderAuto(){
@@ -361,26 +370,32 @@ function renderAuto(){
     '<div class="progress"><i style="width:'+pct+'%"></i></div>'+
     '<div class="autoSteps">'+AUTO_STEPS.map((s,i)=>'<span class="'+(i<a.step?'done':i===a.step?'now':'')+'" title="'+esc(s.title)+'">'+s.icon+'</span>').join('')+'</div>'+
     (st.key==='research'?autoResearchHtml():'<div class="resultbox">'+esc(autoText())+'</div>')+
+    autoNoteHtml()+
     (st.key==='payment'?'<div class="warn" style="margin-top:8px"><b>لن أدفع أي مبلغ الآن.</b> أي دفع أو شراء يحتاج موافقتك الصريحة أولاً.</div>':'')+
     (a.editing?autoEditHtml():'')+
     autoActions()+
-    '<p class="hint">أنت توافق فقط. إن قلت «غيّر» سأعيد تجهيز هذه المرحلة. أي دفع أو إرسال مبلغ يتوقف حتى تأذن.</p>';
+    '<p class="hint">أنت توافق فقط. «نعم» يتابع، «لا» يعرض بديلاً أو يفتح التعديل، «غيّر» يعدّل هذه المرحلة. أي دفع أو إرسال مبلغ يتوقف حتى تأذن.</p>';
+}
+
+function autoScroll(){
+  const el=$('#autoCard');
+  if(!el)return;
+  const head=document.querySelector('header');
+  const offset=(head?head.offsetHeight:110)+8;
+  window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-offset,behavior:'smooth'});
 }
 
 function autoStart(){
   const a=autoData();
   if(!a.active&&a.step===0){
-    a.service=autoService();
-    a.price=autoPrice();
-    a.caseIndex=0;
-    a.notes={};
-    a.tasks={};
+    if(!a.service)a.service=autoService();
+    if(!a.price)a.price=autoPrice();
   }
   a.active=true;
   save();
   switchView('mentor');
   renderAuto();
-  setTimeout(()=>{const el=$('#autoCard');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},60);
+  setTimeout(autoScroll,60);
   toast('بدأ المرشد التلقائي');
 }
 
@@ -391,7 +406,7 @@ function autoNext(){
     a.editing=false;
     save();
     renderAuto();
-    setTimeout(()=>{const el=$('#autoCard');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},40);
+    setTimeout(autoScroll,40);
   }
 }
 
@@ -422,6 +437,16 @@ function autoCancelEdit(){
   renderAuto();
 }
 
+function autoReject(){
+  const a=autoData();
+  if(AUTO_STEPS[a.step].key==='research'&&autoCases().length>1){autoNextCase();toast('هذا مثال آخر');return;}
+  a.editing=true;
+  save();
+  renderAuto();
+  setTimeout(()=>{const el=$('#autoEditInput');if(el){el.placeholder='اكتب ما لا يعجبك أو البديل الذي تريده';el.focus();}},40);
+  toast('اكتب البديل وسأحفظه مع هذه المرحلة');
+}
+
 function autoApplyEdit(){
   const el=$('#autoEditInput');
   const text=el?el.value.trim():'';
@@ -430,7 +455,11 @@ function autoApplyEdit(){
   if(text){
     const num=text.match(/(\d+)/);
     if(key==='research')a.service=text;
-    else if(key==='offer'&&num)a.price=Math.max(1,Number(num[1]));
+    else if(key==='offer'&&num){
+      a.price=Math.max(1,Number(num[1]));
+      const note=text.replace(/[0-9٠-٩$]/g,'').replace(/السعر|سعر|بسعر|دولار|ريال|درهم|إلى|الى/g,'').trim();
+      if(note)a.notes.offer=text;else delete a.notes.offer;
+    }
     else a.notes[key]=text;
   }
   a.editing=false;
@@ -468,6 +497,7 @@ function bindAuto(){
     else if(act==='next')autoNext();
     else if(act==='prev')autoPrev();
     else if(act==='case')autoNextCase();
+    else if(act==='no')autoReject();
     else if(act==='edit')autoEdit();
     else if(act==='cancel')autoCancelEdit();
     else if(act==='apply')autoApplyEdit();
