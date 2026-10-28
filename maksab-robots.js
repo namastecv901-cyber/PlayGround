@@ -1,13 +1,13 @@
 const ROBOTS=[
-  {key:'scout',name:'راصد السوق',icon:'🔭',role:'يبحث عن أفضل خدمة وعرض وأمثلة حقيقية',color:'#60a5fa'},
-  {key:'architect',name:'مهندس العرض',icon:'📐',role:'يبني العرض والباقات والتسعير ليصل الهدف الشهري',color:'#e8c258'},
-  {key:'maker',name:'صانع الأصول',icon:'🎨',role:'ينتج النماذج والملف التعريفي والمنشورات',color:'#a78bfa'},
-  {key:'hunter',name:'صائد العملاء',icon:'🎯',role:'يجد 30 عميلاً ويكتب رسائل التواصل والمتابعة',color:'#34d399'},
-  {key:'operator',name:'مدير التسليم',icon:'📦',role:'ينظم التسليم والدفع والخطة اليومية',color:'#f87171'}
+  {key:'scout',name:'راصد السوق',icon:'🔭',role:'يبحث عن أمثلة حقيقية وأفضل زاوية لأي عمل',color:'#60a5fa'},
+  {key:'architect',name:'مهندس العرض',icon:'📐',role:'يبني العرض والباقات لأي عمل ليصل الهدف الشهري',color:'#e8c258'},
+  {key:'maker',name:'صانع الأصول',icon:'🎨',role:'ينتج النماذج والملف التعريفي لأي عمل',color:'#a78bfa'},
+  {key:'hunter',name:'صائد العملاء',icon:'🎯',role:'يجد 30 عميلاً لأي عمل ويكتب رسائل التواصل',color:'#34d399'},
+  {key:'operator',name:'مدير التسليم',icon:'📦',role:'ينظم التسليم والدفع والخطة اليومية لأي عمل',color:'#f87171'}
 ];
 
 const ROBOT_STEPS=[
-  ['أقرأ ملفك وهدف الشهر','أفحص المهارة والسعر والوقت المتاح','أراجع الأمثلة المنشورة','أحدد أفضل زاوية للسوق','أكتب تقرير الرادار'],
+  ['أقرأ ملفك والعمل المختار','أفحص السعر والوقت المتاح','أراجع الأمثلة المنشورة','أتحقق من المصادر','أحدد أفضل زاوية للسوق','أكتب تقرير الرادار'],
   ['أحسب هدف الشهر من السعر الحالي','أبني 3 باقات متدرجة','أحدد عدد العملاء والمحادثات المطلوبة','أكتب العرض والضمان والترقية','أراجع منطق الأرقام'],
   ['أختار 3 أصول سريعة','أبني قبل/بعد ودراسة مصغرة وكواليس','أكتب الملف التعريفي','أكتب 3 كابشنات','أراجع عدم وجود ادعاءات غير حقيقية'],
   ['أبني قائمة 30 هدفاً في 3 قوائم','أجهز روابط البحث','أكتب 3 رسائل تواصل','أضبط جدول المتابعة','أراجع معايير التأهيل'],
@@ -17,13 +17,13 @@ const ROBOT_STEPS=[
 
 const BIZ_CASES=[
   {who:'سارة بليكلي، مؤسسة Spanx',title:'من فكرة بسيطة إلى علامة عالمية',service:'ملابس داخلية وتجارب منتجات',
-    tags:['منتج','ملابس','تجميل','صالون','حلاقة','عناية','متجر','إلكتروني','product','fashion','beauty','ecommerce'],
+    tags:['منتج','ملابس','تجميل','صالون','حلاقة','عناية','عطور','مكياج','إكسسوارات','حرف','هدايا','متجر','إلكتروني','product','fashion','beauty','ecommerce'],
     wiki:'Sara Blakely',source:'Wikipedia',url:'https://en.wikipedia.org/wiki/Sara_Blakely',
     result:'أسست Spanx وبنَت علامة ملابس داخلية عالمية من فكرة حلّت مشكلة شخصية.',
     steps:['بدأت بفكرة منتج بسيط','جرّبت النموذج بنفسها','عرضت المنتج على متاجر','وسّعت العلامة'],
     lesson:'فكرة تحل مشكلة شخصية + جرأة العرض = بداية قوية.',general:true},
   {who:'برايان سكودامور، مؤسس 1-800-GOT-JUNK?',title:'من شاحنة مستعملة إلى شبكة فروع',service:'إزالة المخلفات والخدمات المنزلية',
-    tags:['تنظيف','مخلفات','نقل','صيانة','سباكة','كهرباء','دهان','سيارات','غسيل','توصيل','خدمات','منزلية','دعم','مساعد','إداري','خدمة عملاء','local','cleaning','junk','repair','moving','service','support'],
+    tags:['تنظيف','مخلفات','نقل','صيانة','سباكة','كهرباء','دهان','سيارات','غسيل','ميكانيكا','ورشة','توصيل','خدمات','منزلية','دعم','مساعد','إداري','خدمة عملاء','local','cleaning','junk','repair','moving','service','support'],
     wiki:'Brian Scudamore',source:'Wikipedia',url:'https://en.wikipedia.org/wiki/Brian_Scudamore',
     result:'حوّل خدمة إزالة مخلفات بسيطة إلى علامة وشبكة فروع في أمريكا الشمالية.',
     steps:['بدأ بخدمة محلية صغيرة','استخدم شاحنة مستعملة','وحّد طريقة العمل','وسّع بالفروع'],
@@ -35,25 +35,25 @@ const BIZ_CASES=[
     steps:['تعلّم البرمجة','عمل في شركات تقنية','أسس WhatsApp مع شريك','ركّز على البساطة'],
     lesson:'حل مشكلة واحدة بشكل ممتاز يتفوق على الميزات الكثيرة.',general:true},
   {who:'ميلاني بيركنز، شريكة مؤسسة Canva',title:'من فكرة مرفوضة إلى منصة عالمية',service:'تصميم ومنصات رقمية',
-    tags:['تصميم','شعار','هوية','مونتاج','منصة','تطبيق','تقنية','design','logo','brand','canva','tech','app'],
+    tags:['تصميم','شعار','هوية','مونتاج','منصة','تطبيق','تقنية','رقمي','منتجات رقمية','design','logo','brand','canva','tech','app'],
     wiki:'Melanie Perkins',source:'Wikipedia',url:'https://en.wikipedia.org/wiki/Melanie_Perkins',
     result:'شاركت في تأسيس Canva، من أشهر منصات التصميم في العالم.',
     steps:['بدأت بفكرة تبسيط التصميم','رفضها مستثمرون كثيرون','أطلقت Canva','وسّعت المنتج عالمياً'],
     lesson:'الرفض لا يعني نهاية الفكرة؛ حسّن العرض وكرر المحاولة.',general:true},
   {who:'برايان تشيسكي، شريك مؤسس Airbnb',title:'من تأجير مرتبة هوائية إلى منصة حجوزات',service:'سفر واستضافة',
-    tags:['سفر','سياحة','رحلات','حجوزات','فندق','استضافة','travel','tourism','tour','hotel','booking','airbnb'],
+    tags:['سفر','سياحة','رحلات','حجوزات','فندق','استضافة','عقارات','إيجار','travel','tourism','tour','hotel','booking','airbnb'],
     wiki:'Brian Chesky',source:'Wikipedia',url:'https://en.wikipedia.org/wiki/Brian_Chesky',
     result:'شارك في تأسيس Airbnb، منصة حجوزات عالمية.',
     steps:['استضاف ضيوفاً في شقته','أطلق فكرة الحجز','تجاوز رفض المستثمرين','وسّع عالمياً'],
     lesson:'ابدأ بحل صغير لمشكلة حقيقية ثم وسّع.',general:true},
   {who:'توم موناغان، مؤسس Domino’s Pizza',title:'من مطعم بيتزا واحد إلى سلسلة عالمية',service:'مطاعم ووجبات',
-    tags:['مطعم','طعام','وجبات','بيتزا','مقهى','كافيه','مخبز','حلويات','food','restaurant','pizza','cafe','bakery'],
+    tags:['مطعم','طعام','وجبات','بيتزا','مقهى','كافيه','قهوة','مخبز','حلويات','طبخ','شيف','food','restaurant','pizza','cafe','bakery'],
     wiki:'Tom Monaghan',source:'Wikipedia',url:'https://en.wikipedia.org/wiki/Tom_Monaghan',
     result:'أسس Domino’s Pizza عام 1960 ووسّعها عالمياً.',
     steps:['بدأ بمطعم بيتزا واحد','ركّز على التوصيل','وسّع الفروع','بنى نظام تشغيل'],
     lesson:'وعد واضح مثل التوصيل السريع يصنع الفرق.'},
   {who:'هارلاند ساندرز، مؤسس KFC',title:'من وصفة دجاج إلى سلسلة عالمية',service:'مطاعم ووجبات',
-    tags:['مطعم','طعام','وجبات','دجاج','مقهى','كافيه','food','restaurant','chicken','cafe'],
+    tags:['مطعم','طعام','وجبات','دجاج','مقهى','كافيه','طبخ','شيف','food','restaurant','chicken','cafe'],
     wiki:'Harland Sanders',source:'Wikipedia',url:'https://en.wikipedia.org/wiki/Harland_Sanders',
     result:'أسس KFC من وصفة دجاج ومطعم على الطريق، ووسّعها بالامتياز.',
     steps:['بدأ ببيع الدجاج','طوّر وصفته','بدأ الامتياز','وسّع السلسلة'],
@@ -65,7 +65,7 @@ const BIZ_CASES=[
     steps:['شاركت في تأسيس Tinder','غادرت وأسست Bumble','ركّزت على تجربة المرأة','وسّعت العلامة'],
     lesson:'اعرف جمهورك وابنِ تجربة تحترمه.'},
   {who:'إميلي فايس، مؤسسة Glossier',title:'من مدونة جمال إلى علامة تجميل',service:'تجميل ومحتوى',
-    tags:['تجميل','عناية','بشرة','شعر','منتجات','متجر','محتوى','كتابة','beauty','skincare','product','ecommerce','content','writing'],
+    tags:['تجميل','عناية','بشرة','شعر','عطور','مكياج','منتجات','متجر','محتوى','كتابة','ترجمة','beauty','skincare','product','ecommerce','content','writing'],
     wiki:'Emily Weiss',source:'Wikipedia',url:'https://en.wikipedia.org/wiki/Emily_Weiss',
     result:'حوّلت مدونة Into The Gloss إلى علامة تجميل Glossier.',
     steps:['بدأت مدونة','جمعت آراء الجمهور','أطلقت منتجات','بنت مجتمعاً'],
@@ -89,7 +89,7 @@ const BIZ_CASES=[
     steps:['بدأ بمطعم واحد','ركّز على مكونات واضحة','وسّع الفروع','بنى علامة'],
     lesson:'وعد واضح بالجودة يبني ثقة.'},
   {who:'كيفن سيستروم، شريك مؤسس Instagram',title:'من تطبيق صور إلى صفقة بمليار',service:'تصوير وسوشيال',
-    tags:['تصوير','صور','فيديو','سوشيال','تطبيق','photo','photography','video','social','app','instagram'],
+    tags:['تصوير','صور','فيديو','يوتيوب','سوشيال','تطبيق','photo','photography','video','youtube','social','app','instagram'],
     wiki:'Kevin Systrom',source:'Wikipedia',url:'https://en.wikipedia.org/wiki/Kevin_Systrom',
     result:'شارك في تأسيس Instagram، وبيعه لفيسبوك بمليار دولار.',
     steps:['تعلّم البرمجة','بنى تطبيقاً بسيطاً','ركّز على الصور','وسّع الشبكة'],
@@ -200,7 +200,10 @@ function robotCases(){
   const b=String(robotData().business||'').trim().toLowerCase();
   if(b){
     const matched=BIZ_CASES.filter(c=>(c.tags||[]).some(t=>b.includes(String(t).toLowerCase())));
-    if(matched.length)return matched;
+    if(matched.length){
+      const extra=BIZ_CASES.filter(c=>c.general&&!matched.includes(c));
+      return matched.concat(extra).slice(0,3);
+    }
     return BIZ_CASES.filter(c=>c.general);
   }
   return (typeof CASES!=='undefined'&&CASES[robotCaseKey()])||(typeof CASES!=='undefined'&&CASES.none)||[];
@@ -295,7 +298,7 @@ function robotScoutText(){
   const r=robotData();
   const ch=robotChannels();
   const exact=robotCaseExact();
-  const label=!String(r.business||'').trim()?'أمثلة منشورة':(exact?'أمثلة قريبة من عملك':'أمثلة عامة + بحث مباشر');
+  const label=!String(r.business||'').trim()?'أمثلة منشورة':(exact?'أمثلة قريبة من عملك + أمثلة عامة':'أمثلة عامة + بحث مباشر');
   const lines=[];
   lines.push('تقرير راصد السوق — دقة عالية');
   lines.push('العمل المختار: '+biz);
@@ -319,8 +322,9 @@ function robotScoutText(){
   lines.push('');
   lines.push('التحقق:');
   cs.slice(0,3).forEach(c=>{
-    const v=r.verify&&r.verify[c.wiki];
-    lines.push('• '+c.who+': '+(v&&v.ok?'✅ تحقق آلي من ويكيبيديا ('+v.title+')':'⚠️ تعذر التحقق الآلي الآن — افتح المصدر')+' — '+c.url);
+    const v=c.wiki&&r.verify&&r.verify[c.wiki];
+    const vtext=c.wiki?(v&&v.ok?'✅ تحقق آلي من ويكيبيديا ('+v.title+')':'⚠️ تعذر التحقق الآلي الآن — افتح المصدر'):'📎 المصدر الأصلي متاح (لا يوجد تحقق آلي)';
+    lines.push('• '+c.who+': '+vtext+' — '+c.url);
   });
   lines.push('• الحساب: '+fmt(g)+' ÷ '+fmt(p)+' = '+Math.ceil(g/p)+' عميل/طلب. تحقق حسابي.');
   lines.push('• تنبيه: القصص المنشورة ليست ضماناً لنتيجتك. تحقق من المصدر قبل الاقتباس.');
@@ -655,7 +659,10 @@ async function robotRun(stage){
     }
   }
   if(token!==robotRunToken)return;
-  if(!text)text=robotLocalText(stage);
+  if(!text){
+    text=robotLocalText(stage);
+    if(r.notes[stage])text='📝 ملاحظة مطبقة: '+r.notes[stage]+'\n\n'+text;
+  }
   r.outputs[stage]=text;
   r.status='waiting';
   r.mode=usedAI?'ai':'local';
@@ -746,9 +753,12 @@ function robotStop(){
 function robotReset(){
   if(!confirm('إعادة الفريق من البداية؟ سيتم مسح التقارير الحالية.'))return;
   robotRunToken++;
-  const g=robotData().goal;
+  const old=robotData();
+  const g=old.goal, b=old.business, pr=old.price;
   state.robots=robotDefault();
   state.robots.goal=g;
+  state.robots.business=b;
+  state.robots.price=pr;
   save();
   renderRobots();
   toast('الفريق جاهز من جديد');
@@ -790,18 +800,20 @@ function robotLinkify(text){
 }
 
 function robotSearchLinks(stage){
-  const s=robotSkill();
+  const biz=robotBusiness();
+  const field=robotField();
   if(stage===0){
-    const google='https://www.google.com/search?q='+encodeURIComponent(s.service+' case study freelancer');
-    const upwork='https://www.upwork.com/nx/search/jobs/?q='+encodeURIComponent(s.service);
-    return '<div class="rLinks"><a href="'+esc(google)+'" target="_blank" rel="noopener">🔎 أمثلة على جوجل</a><a href="'+esc(upwork)+'" target="_blank" rel="noopener">Upwork</a></div>';
+    const google='https://www.google.com/search?q='+encodeURIComponent(biz+' success story revenue');
+    const youtube='https://www.youtube.com/results?search_query='+encodeURIComponent(biz+' business journey');
+    const upwork='https://www.upwork.com/nx/search/jobs/?q='+encodeURIComponent(biz);
+    return '<div class="rLinks"><a href="'+esc(google)+'" target="_blank" rel="noopener">🔎 قصص نجاح على جوجل</a><a href="'+esc(youtube)+'" target="_blank" rel="noopener">▶️ YouTube</a><a href="'+esc(upwork)+'" target="_blank" rel="noopener">Upwork</a></div>';
   }
   if(stage===3){
-    const insta='https://www.google.com/search?q='+encodeURIComponent('site:instagram.com '+s.label+' متجر');
-    const maps='https://www.google.com/maps/search/'+encodeURIComponent(s.service+' '+s.label);
-    const upwork='https://www.upwork.com/nx/search/jobs/?q='+encodeURIComponent(s.service);
-    const khamsat='https://khamsat.com/search?q='+encodeURIComponent(s.service);
-    const mostaql='https://mostaql.com/projects?keyword='+encodeURIComponent(s.service);
+    const insta='https://www.google.com/search?q='+encodeURIComponent('site:instagram.com '+biz);
+    const maps='https://www.google.com/maps/search/'+encodeURIComponent(biz+' '+field);
+    const upwork='https://www.upwork.com/nx/search/jobs/?q='+encodeURIComponent(biz);
+    const khamsat='https://khamsat.com/search?q='+encodeURIComponent(biz);
+    const mostaql='https://mostaql.com/projects?keyword='+encodeURIComponent(biz);
     return '<div class="rLinks"><a href="'+esc(insta)+'" target="_blank" rel="noopener">إنستقرام</a><a href="'+esc(maps)+'" target="_blank" rel="noopener">خرائط جوجل</a><a href="'+esc(khamsat)+'" target="_blank" rel="noopener">خمسات</a><a href="'+esc(mostaql)+'" target="_blank" rel="noopener">مستقل</a><a href="'+esc(upwork)+'" target="_blank" rel="noopener">Upwork</a></div>';
   }
   return '';
@@ -811,6 +823,39 @@ function robotCaseStrip(){
   const cs=robotCases().slice(0,3);
   if(!cs.length)return '';
   return '<div class="rCases">'+cs.map((c,i)=>'<a class="rCase" href="'+esc(c.url)+'" target="_blank" rel="noopener"><b>'+(i+1)+'. '+esc(c.title)+'</b><small>'+esc(c.who)+' — '+esc(c.result)+'</small><span>المصدر ↗</span></a>').join('')+'</div>';
+}
+
+function robotVerifyStrip(){
+  const r=robotData();
+  const cs=robotCases().slice(0,3).filter(c=>c.wiki);
+  const ok=cs.filter(c=>r.verify&&r.verify[c.wiki]&&r.verify[c.wiki].ok).length;
+  if(!ok)return '';
+  return '<div class="rVerify">✅ تحقق آلي من '+ok+' من '+cs.length+' مصادر على ويكيبيديا</div>';
+}
+
+function robotBizExamplesHtml(){
+  const cs=robotCases().slice(0,3);
+  const biz=robotBusiness();
+  const google='https://www.google.com/search?q='+encodeURIComponent(biz+' success story revenue');
+  const youtube='https://www.youtube.com/results?search_query='+encodeURIComponent(biz+' business journey');
+  return '<div class="rBizExamples"><div class="row"><h3 style="flex:1">📚 أمثلة حقيقية</h3><span class="badge">مصادر</span></div>'+
+    (cs.length?'<div class="rCases">'+cs.map((c,i)=>'<a class="rCase" href="'+esc(c.url)+'" target="_blank" rel="noopener"><b>'+(i+1)+'. '+esc(c.title)+'</b><small>'+esc(c.who)+' — '+esc(c.result)+'</small><span>المصدر ↗</span></a>').join('')+'</div>':'<p class="sub">اكتب عملاً لعرض أمثلة قريبة.</p>')+
+    '<div class="rLinks"><a href="'+esc(google)+'" target="_blank" rel="noopener">🔎 بحث قصص نجاح</a><a href="'+esc(youtube)+'" target="_blank" rel="noopener">▶️ YouTube</a></div>'+
+    '<p class="hint">الأمثلة منشورة ومصادرها ظاهرة. تحقق منها قبل الاقتباس.</p></div>';
+}
+
+function renderRobotExamples(){
+  const box=$('#robotExamples');
+  if(box)box.innerHTML=robotBizExamplesHtml();
+}
+
+function robotGoalHint(){
+  return Math.ceil(robotGoal()/robotPrice())+' عميل/طلب بسعر '+fmt(robotPrice())+' للوصول إلى '+fmt(robotGoal());
+}
+
+function updateRobotGoalHint(){
+  const el=$('#robotGoalHint');
+  if(el)el.textContent=robotGoalHint();
 }
 
 function robotDownload(name,content,type){
@@ -835,14 +880,14 @@ function robotDownloadCSV(){
 }
 
 function robotSummaryText(){
-  return ROBOTS.map((b,i)=>b.icon+' '+b.name+'\n'+robotOutputText(i)).join('\n\n--------------------\n\n');
+  return 'خطة '+robotBusiness()+' — هدف '+fmt(robotGoal())+'/شهر\n\n'+ROBOTS.map((b,i)=>b.icon+' '+b.name+'\n'+robotOutputText(i)).join('\n\n--------------------\n\n');
 }
 
 function robotHowHtml(){
   return '<h2>كيف يعمل الفريق؟</h2>'+
-    '<p class="sub">خمسة روبوتات تعمل بالترتيب. كل روبوت ينتج تقريراً، ثم تتوقف المهمة حتى توافق أنت.</p>'+
+    '<p class="sub">خمسة روبوتات تعمل على أي عمل تكتبه. كل روبوت ينتج تقريراً، ثم تتوقف المهمة حتى توافق أنت.</p>'+
     '<div class="rHowGrid">'+ROBOTS.map((b,i)=>'<div class="rHow"><span>'+(i+1)+'</span><div><b>'+b.icon+' '+esc(b.name)+'</b><small>'+esc(b.role)+'</small></div></div>').join('')+'</div>'+
-    '<div class="tip">الروبوتات تعمل داخل المتصفح: تحسب، ترتب، وتنتج الملفات. لا ترسل رسائل ولا تدفع. أي خطوة خارجية تحتاج موافقتك.</div>';
+    '<div class="tip">دقة عالية: يتحقق الفريق من المصادر والحسابات، ويترك لك القرار. يعمل داخل المتصفح: يحسب، يرتب، وينتج الملفات. لا يرسل رسائل ولا يدفع، وأي خطوة خارجية تحتاج موافقتك.</div>';
 }
 
 function robotDoneHtml(){
@@ -850,7 +895,7 @@ function robotDoneHtml(){
   const p=robotPrice();
   const g=robotGoal();
   const total=Math.ceil(g/p);
-  return '<div class="row"><div style="flex:1;min-width:0"><h2>✅ الخطة الكاملة جاهزة</h2><p class="sub">5 تقارير + عرض + نماذج + 30 عميلاً + تسليم + خطة 7 أيام.</p></div><span class="badge green">100%</span></div>'+
+  return '<div class="row"><div style="flex:1;min-width:0"><h2>✅ الخطة الكاملة جاهزة</h2><p class="sub">5 تقارير عن '+esc(robotBusiness())+' + عرض + نماذج + 30 عميلاً + تسليم + خطة 7 أيام.</p></div><span class="badge green">100%</span></div>'+
     '<div class="rDoneStats"><div><b>'+fmt(g)+'</b><small>هدف الشهر</small></div><div><b>'+fmt(p)+'</b><small>سعر الخدمة</small></div><div><b>'+total+'</b><small>عميل/شهر</small></div><div><b>5</b><small>روبوتات</small></div></div>'+
     '<div class="rSummary">'+ROBOTS.map((b,i)=>'<div class="rSumRow"><span>'+b.icon+'</span><div><b>'+esc(b.name)+'</b><small>'+esc(String(r.outputs[i]||'').split('\n').slice(0,2).join(' — '))+'</small></div><button class="mini" data-robot="copyone" data-stage="'+i+'">نسخ</button></div>').join('')+'</div>'+
     '<div class="row"><button class="btn green" data-robot="copyall">📋 نسخ الخطة الكاملة</button><button class="btn ghost" data-robot="reset">🔄 مشروع جديد</button></div>';
@@ -868,27 +913,29 @@ function renderRobotHero(){
   }
   if(r.status==='done'){
     const total=Math.ceil(robotGoal()/robotPrice());
-    box.innerHTML='<div class="rHeroTop"><div style="flex:1;min-width:0"><span class="badge green">اكتمل</span><h1>خطة '+fmt(robotGoal())+' شهرياً جاهزة</h1><p class="sub">5 روبوتات أنجزوا البحث والعرض والنماذج والعملاء والتسليم. راجع الخطة ثم ابدأ التنفيذ.</p></div><div class="rPct"><b>100%</b><small>مكتمل</small></div></div>'+
+    box.innerHTML='<div class="rHeroTop"><div style="flex:1;min-width:0"><span class="badge green">اكتمل</span><h1>خطة '+fmt(robotGoal())+' شهرياً جاهزة</h1><p class="sub">5 روبوتات أنجزوا خطة '+esc(robotBusiness())+': البحث والعرض والنماذج والعملاء والتسليم. راجع الخطة ثم ابدأ التنفيذ.</p></div><div class="rPct"><b>100%</b><small>مكتمل</small></div></div>'+
       '<div class="rDoneStats"><div><b>'+fmt(robotGoal())+'</b><small>هدف الشهر</small></div><div><b>'+fmt(robotPrice())+'</b><small>سعر الخدمة</small></div><div><b>'+total+'</b><small>عميل/شهر</small></div><div><b>5</b><small>روبوتات</small></div></div>'+
       '<div class="row"><button class="btn green" data-robot="copyall">📋 نسخ الخطة الكاملة</button><button class="btn ghost" data-robot="reset">🔄 مشروع جديد</button><button class="mini" data-robot="settings">⚙️ الإعدادات</button></div>';
     return;
   }
   if(r.active){
     const pct=robotHeroPercent();
-    box.innerHTML='<div class="rHeroTop"><div style="flex:1;min-width:0"><span class="badge">المرحلة '+(r.stage+1)+' من 5</span><h1>'+bot.icon+' '+esc(bot.name)+'</h1><p class="sub">'+esc(bot.role)+'</p></div><div class="rPct"><b>'+pct+'%</b><small>تقدم المهمة</small></div></div>'+
+    box.innerHTML='<div class="rHeroTop"><div style="flex:1;min-width:0"><span class="badge">المرحلة '+(r.stage+1)+' من 5</span><h1>'+bot.icon+' '+esc(bot.name)+'</h1><p class="sub">'+esc(bot.role)+' — العمل: '+esc(robotBusiness())+'</p></div><div class="rPct"><b>'+pct+'%</b><small>تقدم المهمة</small></div></div>'+
       '<div class="progress"><i style="width:'+pct+'%"></i></div>'+
       '<div class="row"><span class="badge '+(r.status==='working'?'green':'')+'">'+robotStatusLabel(r.status)+'</span><span class="hint">الهدف '+fmt(robotGoal())+'/شهر</span><span class="hint">'+(ai?'AI سحابي':'محلي ذكي')+'</span><span class="spacer"></span><button class="mini" data-robot="stop">⏸️ إيقاف</button><button class="mini" data-robot="reset">↺ جديد</button></div>';
     return;
   }
   if(Object.keys(r.outputs||{}).length){
-    box.innerHTML='<div class="rHeroTop"><div style="flex:1;min-width:0"><span class="badge">متوقف مؤقتاً</span><h1>فريق مِكسب</h1><p class="sub">توقفنا عند '+bot.icon+' '+esc(bot.name)+'. يمكنك المتابعة من نفس المرحلة.</p></div><div class="rPct"><b>'+robotHeroPercent()+'%</b><small>تقدم</small></div></div>'+
+    box.innerHTML='<div class="rHeroTop"><div style="flex:1;min-width:0"><span class="badge">متوقف مؤقتاً</span><h1>فريق مِكسب</h1><p class="sub">توقفنا عند '+bot.icon+' '+esc(bot.name)+' — '+esc(robotBusiness())+'. يمكنك المتابعة من نفس المرحلة.</p></div><div class="rPct"><b>'+robotHeroPercent()+'%</b><small>تقدم</small></div></div>'+
       '<div class="row"><button class="btn green" data-robot="resume">▶️ أكمل من المرحلة '+(r.stage+1)+'</button><button class="btn ghost" data-robot="reset">↺ ابدأ من جديد</button><button class="mini" data-robot="settings">⚙️ الإعدادات</button></div>';
     return;
   }
-  box.innerHTML='<div class="rHeroTop"><div style="flex:1;min-width:0"><span class="badge green">5 روبوتات</span><h1>فريق مِكسب</h1><p class="sub">خمسة روبوتات تعمل بالترتيب: يبحثون، يحسبون، يصنعون، يصطادون العملاء، ثم ينظمون التسليم. أنت توافق فقط بعد كل مرحلة.</p></div><div class="rGoalBox"><label>هدف الشهر</label><div class="rGoalInput"><input id="robotGoal" type="number" min="50" step="50" value="'+robotGoal()+'"><span>$</span></div><small>'+Math.ceil(robotGoal()/robotPrice())+' عميلاً بسعر '+fmt(robotPrice())+'</small></div></div>'+
+  box.innerHTML='<div class="rHeroTop"><div style="flex:1;min-width:0"><span class="badge green">5 روبوتات</span><h1>فريق مِكسب</h1><p class="sub">خمسة روبوتات تعمل بالترتيب: يبحثون، يحسبون، يصنعون، يصطادون العملاء، ثم ينظمون التسليم. أنت توافق فقط بعد كل مرحلة.</p></div></div>'+
+    '<div class="rBizBox"><label>أي عمل/خدمة تريد؟</label><input id="robotBusiness" type="text" value="'+esc(r.business||'')+'" placeholder="مثال: تنظيف سيارات، دروس رياضيات، متجر ملابس..."><div class="rBizRow"><div><label>سعر الطلب/الخدمة</label><div class="rGoalInput"><input id="robotPrice" type="number" min="1" step="5" value="'+robotPrice()+'"><span>$</span></div></div><div><label>هدف الشهر</label><div class="rGoalInput"><input id="robotGoal" type="number" min="50" step="50" value="'+robotGoal()+'"><span>$</span></div><small id="robotGoalHint">'+robotGoalHint()+'</small></div></div><small class="hint">اتركه فارغاً لاستخدام مهارتك: '+esc(robotSkill().service)+' — أو اكتب أي عمل آخر.</small></div>'+
     '<div class="rPitch"><span>🔭 بحث وأمثلة</span><span>📐 عرض وباقات</span><span>🎨 نماذج وأصول</span><span>🎯 30 عميلاً</span><span>📦 تسليم ودفع آمن</span></div>'+
-    '<div class="row" style="margin-top:12px"><button class="btn green" data-robot="start" style="flex:1">🚀 شغّل الفريق الآن</button><button class="mini" data-robot="settings">⚙️ '+(ai?'AI سحابي':'إعداد AI')+'</button></div>'+
-    '<p class="hint">يعمل محلياً بدون إنترنت. لتشغيل الذكاء السحابي أضف مفتاح API من الإعدادات. لن يرسل الفريق رسالة أو يدفع أي مبلغ.</p>';
+    '<div class="row" style="margin-top:12px"><button class="btn green" data-robot="start" style="flex:1">🚀 شغّل الفريق على هذا العمل</button><button class="mini" data-robot="settings">⚙️ '+(ai?'AI سحابي':'إعداد AI')+'</button></div>'+
+    '<p class="hint">دقة عالية: يتحقق من المصادر والحسابات، ولا يرسل رسالة أو يدفع دون موافقتك. يعمل محلياً بدون إنترنت، وAI اختياري.</p>'+
+    '<div id="robotExamples">'+robotBizExamplesHtml()+'</div>';
 }
 
 function renderRobotRoster(){
@@ -924,7 +971,7 @@ function renderRobotStage(){
     return;
   }
   const bot=ROBOTS[r.stage];
-  let html='<div class="row"><div style="flex:1;min-width:0"><h2>'+bot.icon+' '+esc(bot.name)+'</h2><p class="sub">'+esc(bot.role)+'</p></div><span class="badge '+(r.status==='working'?'green':'')+'">'+robotStatusLabel(r.status)+'</span></div>';
+  let html='<div class="row"><div style="flex:1;min-width:0"><h2>'+bot.icon+' '+esc(bot.name)+'</h2><p class="sub">'+esc(bot.role)+' — العمل: '+esc(robotBusiness())+'</p></div><span class="badge '+(r.status==='working'?'green':'')+'">'+robotStatusLabel(r.status)+'</span></div>';
   if(r.status==='working'){
     const logs=(r.logs[r.stage]||[]).slice(-6);
     html+='<div class="rWork"><span class="rPulse"><i></i><i></i><i></i></span><b>يعمل الآن…</b></div>';
@@ -932,6 +979,7 @@ function renderRobotStage(){
     html+='<div class="rIndeterminate"><i></i></div>';
   }else if(r.outputs[r.stage]){
     if(r.error)html+='<div class="warn">'+esc(r.error)+'</div>';
+    if(r.stage===0)html+=robotVerifyStrip();
     html+='<div class="rOutput">'+robotLinkify(r.outputs[r.stage])+'</div>';
     if(r.stage===0)html+=robotCaseStrip();
     html+=robotSearchLinks(r.stage);
@@ -988,18 +1036,32 @@ function bindRobots(){
     else if(act==='settings')openSettings();
   });
   root.addEventListener('change',e=>{
+    const r=robotData();
     if(e.target.id==='robotGoal'){
-      const r=robotData();
       r.goal=Math.max(50,Math.round(Number(e.target.value)||500));
       save();
-      renderRobots();
+      updateRobotGoalHint();
       toast('هدف الشهر: '+fmt(r.goal));
+    }else if(e.target.id==='robotPrice'){
+      r.price=Math.max(1,Math.round(Number(e.target.value)||robotPrice()));
+      save();
+      updateRobotGoalHint();
+      toast('سعر الطلب: '+fmt(r.price));
+    }else if(e.target.id==='robotBusiness'){
+      r.business=e.target.value.trim();
+      save();
+      renderRobotExamples();
+      toast('العمل: '+robotBusiness());
     }
   });
   root.addEventListener('keydown',e=>{
     if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)&&e.target.id==='robotEditInput'){
       e.preventDefault();
       robotApplyEdit();
+    }
+    if(e.key==='Enter'&&e.target.id==='robotBusiness'){
+      e.preventDefault();
+      robotStart();
     }
   });
 }

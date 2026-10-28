@@ -234,6 +234,15 @@ input[type=checkbox]{width:auto;accent-color:#e8c258}
 .rGoalInput input{padding:8px 10px;font-weight:900;color:var(--gold);text-align:center}
 .rGoalInput span{font-weight:900;color:var(--green)}
 .rGoalBox small{display:block;color:var(--mut);font-size:.66rem;margin-top:6px}
+.rBizBox{background:#ffffff05;border:1px solid var(--line2);border-radius:14px;padding:12px;margin-top:12px}
+.rBizBox label{display:block;margin:0 0 5px}
+.rBizBox input{width:100%;padding:10px 12px;border-radius:11px;background:#0a1220;border:1px solid var(--line2);color:var(--txt);font-size:.86rem;font-weight:700}
+.rBizBox input:focus{outline:none;border-color:#60a5fa66;box-shadow:0 0 0 3px #60a5fa12}
+.rBizRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.rBizRow small{display:block;color:var(--mut);font-size:.62rem;margin-top:5px}
+.rBizExamples{margin-top:12px}
+.rBizExamples h3{font-size:.82rem}
+.rVerify{display:inline-flex;align-items:center;gap:5px;background:#34d39912;border:1px solid #34d39944;border-radius:99px;padding:5px 10px;font-size:.68rem;font-weight:800;color:#6ee7b7;margin-top:9px}
 .rPitch{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
 .rPitch span{background:#ffffff08;border:1px solid var(--line2);border-radius:99px;padding:5px 9px;font-size:.68rem;font-weight:800;color:var(--mut)}
 .robotRoster{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:13px}
@@ -302,5 +311,5 @@ input[type=checkbox]{width:auto;accent-color:#e8c258}
 .rFeedTs{color:#60a5fa;font-variant-numeric:tabular-nums;flex:none}
 .rFeedIcon{flex:none}
 @media(max-width:1000px){.robotRoster{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:760px){.rHeroTop{flex-direction:column}.rPct{width:100%;display:flex;align-items:baseline;justify-content:space-between;text-align:start}.rPct b{font-size:1.1rem}.rGoalBox{width:100%}.robotRoster{grid-template-columns:1fr 1fr}.rHowGrid{grid-template-columns:1fr}.rCases{grid-template-columns:1fr}.rDoneStats{grid-template-columns:1fr 1fr}.rActions .btn{min-width:100%}.rOutput{max-height:60vh}}
+@media(max-width:760px){.rBizRow{grid-template-columns:1fr}.rBizBox input,.rGoalInput input{font-size:16px}.rHeroTop{flex-direction:column}.rPct{width:100%;display:flex;align-items:baseline;justify-content:space-between;text-align:start}.rPct b{font-size:1.1rem}.rGoalBox{width:100%}.robotRoster{grid-template-columns:1fr 1fr}.rHowGrid{grid-template-columns:1fr}.rCases{grid-template-columns:1fr}.rDoneStats{grid-template-columns:1fr 1fr}.rActions .btn{min-width:100%}.rOutput{max-height:60vh}}
 @media(max-width:420px){.robotRoster{grid-template-columns:1fr}}
