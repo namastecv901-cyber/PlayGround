@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>قاع + سيولة — 3 قواعد نزول + شمعة خضراء | Binance Spot</title>
+<meta name="theme-color" content="#06070b">
+<meta name="description" content="كاشف مستقل على Binance Spot: 3 قواعد نزول منتهية، ثم شمعة حمراء وشمعة خضراء اختراقية مع حجم سيولة، وخطة دخول ووقف وأهداف.">
+<link rel="icon" href="icon-192.png" type="image/png">
+<style>
+:root{--bg:#06070b;--bg2:#0c0e16;--card:#10131fe6;--line:#d4af1f26;--txt:#f6f1df;--mut:#a89f83;--up:#22c55e;--dn:#ef4444;--gold:#d4af37;--red:#ff5d6c;--grad:linear-gradient(135deg,#f6e27a,#d4af37 55%,#9a7b1e);--redgrad:linear-gradient(135deg,#ff8b95,#ef4444 60%,#991b1b)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:system-ui,'Cairo',sans-serif;background:radial-gradient(900px 420px at 50% -12%,#ef444422,transparent),radial-gradient(700px 380px at 90% 20%,#d4af3714,transparent),var(--bg);color:var(--txt);min-height:100dvh;padding-bottom:40px}
+header{position:sticky;top:0;z-index:20;background:#06070bf5;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:12px 14px}
+h1{font-size:1.12rem;font-weight:900;line-height:1.5}.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}.red{color:var(--red)}
+.sub{color:var(--mut);font-size:.72rem;margin-top:3px;line-height:1.8}
+.live{display:inline-flex;align-items:center;gap:6px;font-weight:900;color:var(--up)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--up);box-shadow:0 0 0 0 #16c784aa;animation:pl 1.6s infinite}
+.dot.scan{background:#f6e27a;animation:pl .7s infinite}
+@keyframes pl{70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.modes{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.modes a{font-size:.72rem;font-weight:900;color:var(--mut);text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:6px 12px;background:#ffffff08}
+.modes a.on{background:var(--redgrad);color:#fff;border-color:transparent;box-shadow:0 4px 18px #ef444433}
+main{max-width:1040px;margin:0 auto;padding:12px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+button{font-family:inherit;font-weight:900;border-radius:12px;border:none;cursor:pointer;padding:11px 14px;font-size:.86rem;touch-action:manipulation}
+#scanBtn{flex:1;min-width:150px;background:var(--redgrad);color:#fff;box-shadow:0 8px 24px #ef444426}
+#scanBtn:disabled{opacity:.5}
+select,input{background:#0d1020;border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:9px;font-family:inherit;font-weight:800;font-size:.76rem}
+.chip{background:#ffffff0d;border:1px solid var(--line);border-radius:99px;padding:7px 12px;font-size:.72rem;font-weight:800;color:var(--mut)}
+.chip.on{background:var(--grad);color:#231b05;border-color:transparent}
+.note{background:#ef444410;border:1px solid #ef444444;color:#ffd3d8;border-radius:14px;padding:10px 12px;font-size:.74rem;line-height:1.9;margin-bottom:12px}
+.note b{color:#fff}.note .gold{color:#f6e27a}
+.strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.strip div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.strip small{display:block;color:var(--mut);font-size:.62rem}.strip b{font-size:1.2rem;color:#f6e27a}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.strip{grid-template-columns:1fr 1fr}.strip div:last-child{grid-column:span 2}}
+.card{background:linear-gradient(160deg,#121527,#0b0d15);border:1px solid #ffffff14;border-radius:20px;padding:13px;box-shadow:0 10px 30px #00000055;overflow:hidden}
+.card.confirmed{border-color:#22c55e88;background:linear-gradient(160deg,#071a10,#0b0d15)}
+.card.early{border-color:#d4af3799;background:linear-gradient(160deg,#1a1508,#0b0d15)}
+.card.watch{border-color:#64748b55;opacity:.92}
+.card.ignition{border-color:#22d3ee99;background:linear-gradient(160deg,#031b1a,#0b0d15)}
+.ctop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ctop b{font-size:1.16rem}
+.symprice{margin-inline-start:auto;text-align:left;font-size:.78rem;color:var(--mut);line-height:1.5}
+.symprice b{display:block;color:var(--txt);font-size:.95rem;font-variant-numeric:tabular-nums}
+.badge{font-size:.62rem;font-weight:900;border:1px solid;border-radius:99px;padding:3px 8px;white-space:nowrap}
+.badge.confirmed{color:#86efac;border-color:#22c55e66;background:#22c55e14}
+.badge.early{color:#f6e27a;border-color:#d4af3766;background:#d4af3714}
+.badge.watch{color:#cbd5e1;border-color:#64748b66;background:#64748b14}
+.badge.ignition{color:#67e8f9;border-color:#22d3ee66;background:#22d3ee14}
+.score{margin-inline-start:auto;font-size:.72rem;color:var(--mut);font-weight:900}
+.score b{font-size:1.15rem;color:#f6e27a}
+.chart{width:100%;height:96px;display:block;margin-top:9px;background:#070a12;border:1px solid #ffffff0d;border-radius:10px}
+.chart .kup{fill:#22c55e;stroke:#22c55e}.chart .kdn{fill:#ef4444;stroke:#ef4444}.chart .wick{stroke-width:1}
+.chart .lvl{stroke-dasharray:3 3;stroke-width:1}.chart .lbl{font-size:7px;fill:#a89f83;font-family:system-ui}
+.metrics{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-top:9px}
+.metrics div{background:#ffffff08;border:1px solid #ffffff0d;border-radius:9px;padding:6px;text-align:center}
+.metrics small{display:block;color:var(--mut);font-size:.56rem;line-height:1.5}.metrics b{font-size:.75rem;font-variant-numeric:tabular-nums}
+.metrics b.ok{color:#86efac}.metrics b.bad{color:#ff9aa2}
+.plan{margin-top:9px;border:1px solid #ffffff14;border-radius:12px;padding:9px 10px;background:#00000022}
+.planhead{font-size:.62rem;color:#f6e27a;font-weight:900;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid #ffffff10}.card.ignition .planhead{color:#67e8f9}
+.prow{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.72rem;padding:3px 0;border-bottom:1px dashed #ffffff0d}
+.prow:last-child{border-bottom:none}
+.prow span{color:var(--mut)}.prow b{font-variant-numeric:tabular-nums}
+.prow.entry b{color:#f6e27a}.prow.stop b{color:#ff8d95}.prow.tp b{color:#86efac}
+.why{margin-top:8px;display:flex;gap:5px;flex-wrap:wrap}
+.why span{font-size:.62rem;font-weight:800;padding:3px 7px;border-radius:99px;background:#ffffff0a;border:1px solid #ffffff12;color:#c9c0a8}
+.liqbar{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px}
+.liqbar span{font-size:.62rem;font-weight:800;padding:5px 7px;border-radius:8px;background:#ffffff07;border:1px solid #ffffff10;color:var(--mut);line-height:1.5}
+.liqbar span.ok{color:#86efac;border-color:#22c55e44;background:#22c55e0d}
+.liqbar span.no{color:#ffb4ba;border-color:#ef444433;background:#ef44440a}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.actions a,.actions button{font-size:.68rem;font-weight:900;text-decoration:none;border:1px solid #d4af3766;border-radius:9px;padding:6px 9px;color:#f6e27a;background:#d4af370d;cursor:pointer}
+.actions button{padding:6px 9px;border-radius:9px;background:#ffffff08;color:#cbd5e1;border-color:#ffffff18}
+.warnline{font-size:.66rem;font-weight:800;color:#ffd28a;background:#f59e0b0d;border:1px dashed #f59e0b55;border-radius:9px;padding:6px 8px;margin-top:8px;line-height:1.8}
+.empty{grid-column:1/-1;text-align:center;color:var(--mut);padding:28px;border:1px dashed var(--line);border-radius:16px;font-size:.84rem;line-height:2}
+.empty b{color:#f6e27a}
+details.rules{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+details.rules summary{cursor:pointer;font-weight:900;color:#f6e27a;font-size:.85rem}
+details.rules ol{margin:9px 20px 0 0;font-size:.74rem;line-height:2;color:var(--mut)}
+details.rules b{color:var(--txt)}
+details.rules .warn{color:#ffd28a}
+footer{text-align:center;color:var(--mut);font-size:.7rem;padding:14px;line-height:1.9}
+.toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,20px);z-index:99;background:#141203;border:1px solid #d4af3799;color:#fff3c4;border-radius:14px;padding:10px 16px;font-size:.8rem;font-weight:900;box-shadow:0 10px 40px #000a;opacity:0;pointer-events:none;transition:.3s;max-width:92vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<header>
+<h1><span class="red">قاع + سيولة</span> — 3 قواعد نزول وشمعة خضراء اختراقية</h1>
+<div class="sub"><span class="live"><span class="dot" id="pulse"></span> Binance Spot</span> • <span id="status">جارٍ تجهيز الفحص...</span> • <span id="next" style="color:#f0d675;font-weight:900"></span></div>
+<nav class="modes"><a href="index.html">الأنماط الصاعدة</a><a class="on" href="red-candle.html">قاع + سيولة</a></nav>
+</header>
+<main>
+<div class="note"><b>شراء قيعان فقط — Spot BUY بلا شورت.</b> نفحص <b>كل عملات USDT</b> على Binance Spot ضمن فلتر السيولة. نبحث عن <b>3 قواعد نزول منتهية + شمعة خضراء اختراقية</b>، أو <b>شمعة حمراء في نهاية هبوط</b> قرب قاع، ثم نتحقق من <b>دخول سيولة</b>: حجم أعلى من المتوسط، شراء تيكر ≥52%، تدفق صافي ≥10%، وتدفق نقدي/OBV موجب. <span class="gold">الدخول المبكر عند إغلاق الأحمر عالي المخاطرة؛ الدخول الأقوى عند إغلاق الأخضر فوق قمة الأحمر مع تضاعف الحجم.</span></div>
+<div class="bar">
+<button id="scanBtn">افحص قيعان Binance الآن</button>
+<select id="tfSel"><option value="15m">15 دقيقة</option><option value="1h" selected>1 ساعة</option><option value="4h">4 ساعات</option><option value="1d">يومي</option></select>
+<select id="uniSel"><option value="60">أفضل 60 سيولة</option><option value="100">أفضل 100 سيولة</option><option value="150">أفضل 150 سيولة</option><option value="250" selected>كل عملات USDT ≥ $1M (حتى 250)</option></select>
+<select id="minVolSel"><option value="1000000" selected>سيولة 24س ≥ $1M</option><option value="5000000">≥ $5M</option><option value="10000000">≥ $10M</option><option value="20000000">≥ $20M</option></select>
+<button class="chip on" id="autoBn">تلقائي 60ث: مفعّل</button>
+<button class="chip on" id="onlyBn">إشارات القيعان فقط</button>
+</div>
+<div class="strip">
+<div><small>3 قواعد + شمعة خضراء</small><b id="s0">0</b></div>
+<div><small>سيولة دخلت + تأكيد</small><b id="s1">0</b></div>
+<div><small>قاع بسيولة مبكرة</small><b id="s2">0</b></div>
+<div><small>قيعان مرشحة</small><b id="s3">0</b></div>
+<div><small>عملات تم فحصها</small><b id="s4">0</b></div>
+</div>
+<div class="grid" id="grid"><div class="empty">جارٍ جلب عملات Binance Spot وفحص آخر شموع مغلقة...</div></div>
+<details class="rules" open>
+<summary>طريقة القسم — قاع حقيقي + سيولة، وليس أي شمعة حمراء</summary>
+<ol>
+<li><b>البنية:</b> هبوط واضح قبل القاع، السعر تحت EMA20 وEMA50 أو EMA20 تحت EMA50، وتراجع لا يقل عن 5% من آخر قمة محلية. لا نشتري قاعاً داخل اتجاه صاعد ممتد.</li>
+<li><b>الشمعة الحمراء:</b> آخر قاع مرشح يجب أن يكون شمعة حمراء مغلقة. نفضّل ذيلاً سفلياً طويلاً وإغلاقاً بعيداً عن القاع، لأن ذلك يعني رفض السعر الأقل وامتصاص البيع.</li>
+<li><b>دخول السيولة:</b> حجم الشمعة ≥1.2× متوسط 20 شمعة، شراء التيكر ≥52%، تدفق صافي ≥10%، CMF/OBV موجب، وMFI مرتفع من منطقة تشبع بيعي. هذه هي علامات دخول المشترين وليس مجرد ارتداد ضعيف.</li>
+<li><b>المخاطرة:</b> التشبع البيعي (RSI≤40) يزيد الجودة، لكنه ليس شرطاً وحده. نرفض القيعان التي حدث فيها صعود سريع >5% بالفعل لأن الدخول أصبح مطاردة.</li>
+<li><b>الدخول المبكر:</b> عند إغلاق الشمعة الحمراء القاعية (أعلى مخاطرة، أفضل سعر). <b>الدخول المؤكد:</b> بعد إغلاق شمعة خضراء فوق قمة الشمعة الحمراء مع حجم وشراء تيكر — أكثر أماناً لكن السعر أعلى.</li>
+<li><b>نمط 3 قواعد + شمعة خضراء:</b> نرصد 3 قيعان هابطة متتالية (كل قاع أقل من السابق) في نهاية الهبوط، ثم شمعة حمراء أخيرة، ثم شمعة خضراء تغلق فوق قمة تلك الحمراء وفوق أعلى 3 شموع سابقة، مع حجم ≥1.5× المتوسط وأعلى 1.5× من الشمعتين السابقتين، شراء تيكر ≥52%، وتدفق صافي ≥10%. الدخول عند إغلاق الأخضر أو إعادة اختبار قمة الأحمر، والوقف أسفل أدنى نقطة في الشمعة الخضراء/الحمراء.</li>
+<li><b>الوقف:</b> أسفل أدنى نقطة في الشمعة الحمراء (وأسفل الشمعة الخضراء التأكيدية إن كانت أقل) بمسافة 0.35×ATR أو 0.4%، أيهما أكبر. إغلاق شمعة تحت الوقف = فشل النمط.</li>
+<li><b>الأهداف:</b> 1.5R / 2.5R / 4R من المخاطرة، مع خصم رسوم 0.2% عند حساب RR. أغلق جزءاً عند الهدف الأول وارفع الوقف للتعادل.</li>
+<li><b>الفلترة:</b> Binance Spot USDT فقط ضمن فلتر السيولة الافتراضي ≥ $1M (ويمكنك رفعه)، واستبعاد العملات المستقرة والرموز ذات الرافعة. الفحص على <b>شموع مغلقة فقط</b> ولا يضمن الربح.</li>
+<li><b class="warn">تنبيه:</b> الدخول في الشمعة الحمراء قبل ظهور شمعة خضراء تأكيدية قد يفشل ويستمر النزول. لا تدخل بكل رأس المال، ولا تتجاوز 1% مخاطرة للصفقة. هذا تعليمي وليس نصيحة مالية.</li>
+</ol>
+</details>
+</main>
+<footer>قاع + سيولة — كاشف مستقل على Binance Spot • 3 قواعد نزول + شمعة خضراء بحجم سيولة • شموع مغلقة • شراء فقط بلا رافعة • تعليمي وليس نصيحة مالية</footer>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+'use strict';
+var API='https://data-api.binance.vision';
+var AUTO_MS=60000, GAP=25, CONC=10, RECENT=6, LS='ai_red_v1';
+var TF_LABEL={'15m':'15 دقيقة','1h':'1 ساعة','4h':'4 ساعات','1d':'يومي'};
+var stable={USDC:1,FDUSD:1,TUSD:1,BUSD:1,DAI:1,USDP:1,EUR:1,AEUR:1,GBP:1,TRY:1,BRL:1,ARS:1};
+var state={scanning:false,auto:true,only:true,nextAt:0,fail:0,last:[],scanned:0};
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function px(n){n=+n;if(!isFinite(n))return '—';if(n>=1000)return n.toFixed(2);if(n>=1)return n.toFixed(4);if(n>=0.01)return n.toFixed(5);if(n>=0.0001)return n.toFixed(6);return n.toFixed(8)}
+function pct(n){return (n>=0?'+':'')+(+n).toFixed(2)+'%'}
+function avg(a){return a.length?a.reduce(function(x,y){return x+y},0)/a.length:0}
+function emaArr(v,p){var k=2/(p+1),e=v[0],out=[e],i;for(i=1;i<v.length;i++){e=v[i]*k+e*(1-k);out.push(e)}return out}
+function rsiArr(v,p){p=p||14;var out=[],i,g=0,l=0;for(i=0;i<v.length;i++){if(i===0){out.push(50);continue}var d=v[i]-v[i-1];if(i<=p){if(d>=0)g+=d;else l-=d;if(i===p){g/=p;l/=p;out.push(l===0?100:100-100/(1+g/l))}else out.push(50);}else{g=(g*(p-1)+Math.max(d,0))/p;l=(l*(p-1)+Math.max(-d,0))/p;out.push(l===0?100:100-100/(1+g/l))}}return out}
+function atrAt(kl,p,i){if(i<p)return 0;var s=0,j;for(j=i-p+1;j<=i;j++){var h=+kl[j][2],l=+kl[j][3],pc=+kl[j-1][4];s+=Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc))}return s/p}
+function avgQuote(kl,i,p){if(i<=0)return 0;var s=0,j;for(j=Math.max(0,i-p);j<i;j++)s+=+kl[j][7];return s/Math.max(1,i-Math.max(0,i-p))}
+function avgTrades(kl,i,p){if(i<=0)return 0;var s=0,j;for(j=Math.max(0,i-p);j<i;j++)s+=+kl[j][8];return s/Math.max(1,i-Math.max(0,i-p))}
+function mfiAt(kl,p,i){var pos=0,neg=0,j;for(j=Math.max(1,i-p+1);j<=i;j++){var tp=(+kl[j][2]+ +kl[j][3]+ +kl[j][4])/3,ptp=(+kl[j-1][2]+ +kl[j-1][3]+ +kl[j-1][4])/3,q=+kl[j][7];if(tp>ptp)pos+=q;else if(tp<ptp)neg+=q}return neg===0?100:100-100/(1+pos/neg)}
+function cmfAt(kl,p,i){var mf=0,vol=0,j;for(j=Math.max(0,i-p+1);j<=i;j++){var h=+kl[j][2],l=+kl[j][3],c=+kl[j][4],v=+kl[j][7],r=h-l||1e-12;mf+=((c-l)-(h-c))/r*v;vol+=v}return vol?mf/vol:0}
+function obvAt(kl,p,i){var obv=0,arr=[],j;for(j=Math.max(1,i-p+1);j<=i;j++){var c=+kl[j][4],pc=+kl[j-1][4],v=+kl[j][5];obv+=c>pc?v:(c<pc?-v:0);arr.push(obv)}if(arr.length<3)return 0;var mx=Math.max.apply(null,arr),mn=Math.min.apply(null,arr);return mx===mn?0:(arr[arr.length-1]-arr[0])/(mx-mn)}
+function basePattern(kl,n){
+  var start=Math.max(2,n-60),piv=[],i;
+  for(i=start;i<=n-3;i++){
+    var l=+kl[i][3];
+    if(l<=+kl[i-1][3]&&l<=+kl[i-2][3]&&l<+kl[i+1][3]&&l<+kl[i+2][3])piv.push(i);
+  }
+  var startLow=Math.max(0,n-24),baseIdx=-1,baseLow=Infinity,j;
+  for(j=startLow;j<n-1;j++){if(+kl[j][3]<baseLow){baseLow=+kl[j][3];baseIdx=j}}
+  if(baseIdx<0)return null;
+  var before=piv.filter(function(x){return x<=baseIdx});
+  if(before.length<3)return null;
+  var p3=before.slice(-3);
+  if(Math.abs(p3[2]-baseIdx)>2)return null;
+  if(p3[1]-p3[0]<2||p3[2]-p3[1]<2)return null;
+  var l1=+kl[p3[0]][3],l2=+kl[p3[1]][3],l3=+kl[p3[2]][3];
+  if(!(l1>l2&&l2>l3))return null;
+  var hh=-Infinity;
+  for(j=Math.max(0,baseIdx-30);j<baseIdx;j++)hh=Math.max(hh,+kl[j][2]);
+  return {idx:baseIdx,pivots:p3,lows:[l1,l2,l3],low:baseLow,drop:hh>0?(hh-baseLow)/hh*100:0};
+}
+function jget(path,ms){var ctrl=typeof AbortController!=='undefined'?new AbortController():null;var timer=setTimeout(function(){if(ctrl)ctrl.abort()},ms||16000);return fetch(API+path,{cache:'no-store',signal:ctrl?ctrl.signal:undefined}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).finally(function(){clearTimeout(timer)})}
+function setStatus(t){var el=$('status');if(el)el.textContent=t}
+function toast(t){var d=$('toast');if(!d)return;d.textContent=t;d.classList.add('show');setTimeout(function(){d.classList.remove('show')},3500)}
+function tvLink(sym){return 'https://www.tradingview.com/chart/?symbol='+encodeURIComponent('BINANCE:'+sym)}
+function binanceLink(sym){var base=sym.slice(0,-4);return 'https://www.binance.com/en/trade/'+base+'_USDT?type=spot'}
+function spark(kl,bi,entry,stop,tps){
+  try{
+    var arr=kl.slice(-52),n=arr.length;if(n<3)return '';
+    var lows=arr.map(function(k){return +k[3]}),highs=arr.map(function(k){return +k[2]});
+    var mn=Math.min.apply(null,lows),mx=Math.max.apply(null,highs);if(!(mx>mn))return '';
+    var W=360,H=100,pad=4,pw=(W-pad*2)/n;
+    function y(v){return pad+(mx-v)/(mx-mn)*(H-pad*2)}
+    var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">';
+    var levels=[['E',entry,'#d4af37'],['S',stop,'#ef4444'],['T1',tps[0],'#22c55e']];
+    levels.forEach(function(l){s+='<line class="lvl" x1="0" y1="'+y(l[1]).toFixed(1)+'" x2="'+W+'" y2="'+y(l[1]).toFixed(1)+'" stroke="'+l[2]+'" opacity=".55"/>'});
+    arr.forEach(function(k,i){var o=+k[1],c=+k[4],h=+k[2],l=+k[3],x=pad+i*pw+pw/2,up=c>=o,col=up?'kup':'kdn';var yo=y(o),yc=y(c),yh=y(h),yl=y(l);var top=Math.min(yo,yc),bh=Math.max(1,Math.abs(yc-yo));s+='<line class="wick '+col+'" x1="'+x.toFixed(1)+'" y1="'+yh.toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+yl.toFixed(1)+'" stroke="'+(up?'#22c55e':'#ef4444')+'" opacity=".85"/>';s+='<rect class="'+col+'" x="'+(x-pw*.32).toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+Math.max(1.2,pw*.64).toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="0.6"/>';if(i===n-(kl.length-bi)){s+='<circle cx="'+x.toFixed(1)+'" cy="'+y(+k[3]).toFixed(1)+'" r="3" fill="none" stroke="#f6e27a" stroke-width="1.4"/>'}});
+    s+='<text class="lbl" x="4" y="'+(y(entry)-3).toFixed(1)+'" fill="#d4af37">E '+px(entry)+'</text>';
+    s+='</svg>';return s;
+  }catch(e){return ''}
+}
+function analyze(kl,tick,tf){
+  var n=kl.length;if(n<50)return null;
+  var closes=kl.map(function(k){return +k[4]});
+  var ema20=emaArr(closes,20),ema50=emaArr(closes,50),rsi=rsiArr(closes,14);
+  var bi=-1,bl=Infinity,j;
+  for(j=Math.max(1,n-RECENT);j<n;j++){if(+kl[j][4]<+kl[j][1]&&+kl[j][3]<bl){bl=+kl[j][3];bi=j}}
+  if(bi<0)return null;
+  var bottom=kl[bi],age=n-1-bi;
+  var bO=+bottom[1],bH=+bottom[2],bL=+bottom[3],bC=+bottom[4],bQ=+bottom[7],bV=+bottom[5],bBuy=clamp(+bottom[10]/bQ,0,1);
+  var atr=atrAt(kl,14,bi),bAvgQ=avgQuote(kl,bi,20),bAvgTrades=avgTrades(kl,bi,20);
+  var bVr=bAvgQ?bQ/bAvgQ:0,bTrade=bAvgTrades?(+bottom[8])/bAvgTrades:0;
+  var h30=-Infinity,minLow=Infinity,k;
+  for(k=Math.max(0,bi-30);k<bi;k++){h30=Math.max(h30,+kl[k][2]);minLow=Math.min(minLow,+kl[k][3])}
+  if(!isFinite(h30))h30=bH;
+  if(!isFinite(minLow))minLow=bL;
+  var drop=h30?(h30-bL)/h30*100:0;
+  var range=(bH-bL)||1e-12,lowW=(Math.min(bO,bC)-bL)/range,closePos=(bC-bL)/range;
+  var supportDist=atr?(bL-minLow)/atr:0;
+  var div=false,prevLow=Infinity,prevLowIdx=-1;
+  for(k=Math.max(1,bi-25);k<bi;k++){if(+kl[k][3]<prevLow){prevLow=+kl[k][3];prevLowIdx=k}}
+  if(prevLowIdx>0&&bL<prevLow&&rsi[bi]>rsi[prevLowIdx]+2)div=true;
+  var latest=kl[n-1],lO=+latest[1],lC=+latest[4],lQ=+latest[7],lBuy=clamp(+latest[10]/lQ,0,1);
+  var lAvgQ=avgQuote(kl,n-1,20),lVr=lAvgQ?lQ/lAvgQ:0;
+  var lTrades=avgTrades(kl,n-1,20)?(+latest[8])/avgTrades(kl,n-1,20):0;
+  var lCmf=cmfAt(kl,20,n-1),lMfi=mfiAt(kl,14,n-1),lObv=obvAt(kl,20,n-1),lMfiPrev=mfiAt(kl,14,n-2);
+  var lNet=(lBuy-(1-lBuy))*100;
+  var bp=basePattern(kl,n),ign=false,bases=0,baseLow=0,baseIdx=-1,baseLows=[],ignRedIdx=-1,ignRedH=0,ignRangeHigh=0,ignGain=0,ignStep=0;
+  if(bp){
+    var baseAge=n-1-bp.idx,prevQ=+kl[n-2][7],prev2Q=+kl[n-3][7],qBase=Math.max(prevQ,prev2Q,1);
+    var r=0;for(r=n-4;r<=n-2;r++)ignRangeHigh=Math.max(ignRangeHigh,+kl[r][2]);
+    for(r=n-2;r>=Math.max(0,n-4);r--){if(+kl[r][4]<+kl[r][1]){ignRedIdx=r;break}}
+    ignRedH=ignRedIdx>=0?+kl[ignRedIdx][2]:0;
+    ignGain=(lC-bp.low)/bp.low*100;
+    ignStep=lQ/qBase;
+    if(baseAge>=2&&baseAge<=14&&ignRedIdx>bp.idx&&lC>lO&&lC>ignRangeHigh&&lC>+kl[bp.idx][2]&&lC>ema20[n-1]&&bp.drop>=7&&ignGain>0&&ignGain<=20&&lVr>=1.5&&ignStep>=1.5&&lBuy>=.52&&lNet>=10&&(lCmf>0||lObv>0)&&rsi[bp.idx]<=45){
+      ign=true;bases=bp.lows.length;baseLow=bp.low;baseIdx=bp.idx;baseLows=bp.lows;
+    }
+  }
+  var bottomScore=5,why=[];
+  if(ema20[bi]<ema50[bi]){bottomScore+=14;why.push('EMA20<EMA50')}
+  if(bC<ema20[bi]){bottomScore+=6;why.push('تحت EMA20')}
+  if(drop>=8){bottomScore+=18;why.push('هبوط '+drop.toFixed(1)+'%')}else if(drop>=5){bottomScore+=9;why.push('هبوط '+drop.toFixed(1)+'%')}
+  if(rsi[bi]<=32){bottomScore+=16;why.push('RSI '+rsi[bi].toFixed(0))}else if(rsi[bi]<=40){bottomScore+=8;why.push('RSI '+rsi[bi].toFixed(0))}
+  if(lowW>=.4){bottomScore+=14;why.push('ذيل سفلي '+Math.round(lowW*100)+'%')}else if(lowW>=.2){bottomScore+=7;why.push('ذيل '+Math.round(lowW*100)+'%')}
+  if(closePos>=.5){bottomScore+=7;why.push('إغلاق أعلى النطاق')}else if(closePos>=.25){bottomScore+=3}
+  if(bVr>=1.3){bottomScore+=8;why.push('حجم القاع '+bVr.toFixed(1)+'×')}else if(bVr>=1){bottomScore+=4}
+  if(bBuy>=.5){bottomScore+=6;why.push('شراء تيكر '+Math.round(bBuy*100)+'%')}
+  if(supportDist>=-0.2&&supportDist<=1.2){bottomScore+=5;why.push('قرب دعم')}else if(supportDist<0){bottomScore+=3;why.push('قاع جديد')}
+  if(div){bottomScore+=8;why.push('دايفرجنس RSI')}
+  bottomScore=clamp(Math.round(bottomScore),0,100);
+  var liqScore=0,lwhy=[];
+  var useBottom=age===0,V=useBottom?bVr:lVr,B=useBottom?bBuy:lBuy,C=useBottom?cmfAt(kl,20,bi):lCmf,O=useBottom?obvAt(kl,20,bi):lObv;
+  if(V>=2){liqScore+=24;lwhy.push('حجم '+V.toFixed(1)+'×')}else if(V>=1.5){liqScore+=18;lwhy.push('حجم '+V.toFixed(1)+'×')}else if(V>=1.2){liqScore+=10;lwhy.push('حجم '+V.toFixed(1)+'×')}
+  if(B>=.58){liqScore+=22;lwhy.push('شراء '+Math.round(B*100)+'%')}else if(B>=.53){liqScore+=13;lwhy.push('شراء '+Math.round(B*100)+'%')}else if(B>=.5){liqScore+=6;lwhy.push('شراء '+Math.round(B*100)+'%')}
+  if(C>.05){liqScore+=15;lwhy.push('CMF موجب')}else if(C>0){liqScore+=8;lwhy.push('تدفق إيجابي')}
+  if(lMfi>=45&&lMfi>=lMfiPrev){liqScore+=10;lwhy.push('MFI '+lMfi.toFixed(0)+'↑')}
+  if(O>0){liqScore+=10;lwhy.push('OBV صاعد')}
+  if(lTrades>=1.5){liqScore+=6;lwhy.push('صفقات '+lTrades.toFixed(1)+'×')}else if(lTrades>=1.2){liqScore+=3}
+  if(lNet>0){liqScore+=5;lwhy.push('تدفق صافي +' + lNet.toFixed(0)+'%')}
+  liqScore=clamp(Math.round(liqScore),0,100);
+  var gain=(lC-bC)/bC*100,late=age>4||gain>6;
+  var breakHigh=lC>bH,green=lC>lO;
+  var status='';
+  if(ign)status='ignition';
+  else if(age===0&&bottomScore>=58&&liqScore>=50&&bVr>=1.2&&bBuy>=.5&&drop>=5&&rsi[bi]<=45&&!late)status='early';
+  else if(age<=3&&green&&breakHigh&&lVr>=1.15&&lBuy>=.52&&lNet>=10&&(lCmf>0||lObv>0)&&bottomScore>=45&&liqScore>=50&&drop>=5&&rsi[bi]<=45&&!late)status='confirmed';
+  else if(bottomScore>=50&&liqScore>=35&&age<=4&&!late)status='watch';
+  if(!status)return null;
+  if(ign){why.unshift('3 قواعد: '+baseLows.map(function(v){return px(v)}).join(' → '));why.push('تسارع الحجم '+ignStep.toFixed(1)+'×')}
+  var score=clamp(Math.round(bottomScore*.55+liqScore*.45+(status==='ignition'?24:status==='confirmed'?8:0)),0,100);
+  var buffer,stop,eA,eC,riskA,riskC;
+  if(status==='ignition'){
+    var ignAtr=atrAt(kl,14,n-1);buffer=Math.max(ignAtr*.35,lC*.004);eA=lC;eC=ignRedH;stop=Math.min(+latest[3],+kl[ignRedIdx][3])-buffer;
+  }else{buffer=Math.max(atr*.35,bC*.004);var confirmLow=Math.min(bL,+latest[3]);stop=(status==='confirmed'?confirmLow:bL)-buffer;eA=bC;eC=bH;}
+  riskA=eA-stop;riskC=eC-stop;
+  var tpA=[eA+riskA*1.5,eA+riskA*2.5,eA+riskA*4];
+  var tpC=[eC+riskC*1.5,eC+riskC*2.5,eC+riskC*4];
+  var rr=riskA?((tpA[0]-eA)/riskA-.002):0,rrC=riskC?((tpC[0]-eC)/riskC-.002):0;
+  return {sym:tick.symbol,base:tick.symbol.slice(0,-4),price:lC,chg:+tick.priceChangePercent,qv:+tick.quoteVolume,tf:tf,status:status,score:score,bottomScore:bottomScore,liqScore:liqScore,age:ign?n-1-baseIdx:age,gain:ign?ignGain:gain,late:late,bottom:{o:bO,h:bH,l:bL,c:bC,v:bQ,vr:bVr,buy:bBuy,trades:bTrade},latest:{o:lO,c:lC,vr:lVr,buy:lBuy,net:lNet,cmf:lCmf,mfi:lMfi,obv:lObv,trades:lTrades},rsi:rsi[ign?baseIdx:bi],drop:ign?bp.drop:drop,lowWick:lowW,closePos:closePos,supportDist:supportDist,div:div,atr:atr,entryA:eA,entryC:eC,stop:stop,tpA:tpA,tpC:tpC,rr:rr,rrC:rrC,why:why,lwhy:lwhy,kl:kl,bi:ign?baseIdx:bi,ignition:ign,bases:bases,baseLows:baseLows,baseLow:baseLow,baseIdx:baseIdx,redHigh:ignRedH,redIdx:ignRedIdx,ignStep:ignStep};
+}
+function statusLabel(s){return s==='ignition'?'3 قواعد + شمعة خضراء':s==='confirmed'?'سيولة دخلت + تأكيد':s==='early'?'قاع + سيولة مبكرة':'قاع مرشح — بانتظار سيولة'}
+function card(x){
+  var st=x.status,cls=st,badge=statusLabel(st);
+  var metrics=st==='ignition'
+    ? '<div class="metrics">'
+      +'<div><small>حجم الاختراق</small><b class="'+(x.latest.vr>=1.5?'ok':'bad')+'">'+x.latest.vr.toFixed(1)+'×</b></div>'
+      +'<div><small>شراء التيكر</small><b class="'+(x.latest.buy>=.52?'ok':'bad')+'">'+Math.round(x.latest.buy*100)+'%</b></div>'
+      +'<div><small>قواعد نزول</small><b class="ok">'+x.bases+'</b></div>'
+      +'<div><small>من القاع</small><b class="'+(x.gain<=15?'ok':'bad')+'">+'+x.gain.toFixed(1)+'%</b></div>'
+      +'</div>'
+    : '<div class="metrics">'
+      +'<div><small>حجم الشمعة</small><b class="'+(x.latest.vr>=1.2?'ok':'bad')+'">'+x.latest.vr.toFixed(1)+'×</b></div>'
+      +'<div><small>شراء التيكر</small><b class="'+(x.latest.buy>=.5?'ok':'bad')+'">'+Math.round(x.latest.buy*100)+'%</b></div>'
+      +'<div><small>RSI القاع</small><b>'+x.rsi.toFixed(0)+'</b></div>'
+      +'<div><small>هبوط قبل القاع</small><b>'+x.drop.toFixed(1)+'%</b></div>'
+      +'</div>';
+  var liq='<div class="liqbar">'
+    +'<span class="'+(x.latest.net>0?'ok':'no')+'">تدفق صافي '+(x.latest.net>0?'+':'')+x.latest.net.toFixed(0)+'%</span>'
+    +'<span class="'+(x.latest.cmf>0?'ok':'no')+'">CMF '+(x.latest.cmf>0?'موجب':'سالب')+'</span>'
+    +'<span class="'+(x.latest.obv>0?'ok':'no')+'">OBV '+(x.latest.obv>0?'صاعد':'هابط')+'</span>'
+    +'<span class="'+(x.latest.mfi>=45?'ok':'no')+'">MFI '+x.latest.mfi.toFixed(0)+'</span>'
+    +'</div>';
+  var why=(x.why.concat(x.lwhy)).slice(0,9).map(function(w){return '<span>'+esc(w)+'</span>'}).join('');
+  var warn=st==='ignition'?(x.gain>15?'تحرك '+x.gain.toFixed(1)+'% من القاع — لا تطارد السعر الآن؛ انتظر إعادة اختبار قمة الأحمر.':'اختراق 3 قواعد مؤكد بحجم '+x.latest.vr.toFixed(1)+'× وشراء '+Math.round(x.latest.buy*100)+'%. الأفضل الدخول عند إعادة اختبار قمة الأحمر، وإغلاق تحت أدنى الأخضر = فشل النمط.')
+    :st==='early'?'دخول مبكر: السعر داخل الشمعة الحمراء. الأفضل انتظار اختراق قمتها أو إغلاق أخضر فوقها، وإلا فقد يستمر النزول.'
+    :st==='confirmed'?(x.gain>3?'السيولة دخلت لكن السعر تحرك '+x.gain.toFixed(1)+'% — لا تطارد؛ انتظر إعادة اختبار قمة الشمعة الحمراء.':'تأكيد أولي جيد. انتظر إعادة اختبار قمة الشمعة الحمراء إن أمكن قبل الدخول.')
+    :'قاع مرشح فقط — لم تكتمل سيولة الدخول. لا تعتبره شراءً حتى يتحول إلى تأكيد.';
+  var chart=spark(x.kl,x.bi,x.entryA,x.stop,x.tpA);
+  return '<article class="card '+cls+'">'
+    +'<div class="ctop"><b>'+esc(x.base)+'</b><span class="badge '+cls+'">'+badge+'</span><div class="symprice"><b>'+px(x.price)+'</b><span style="color:'+(x.chg>=0?'var(--up)':'#ff8d95')+'">'+pct(x.chg)+' 24س</span></div></div>'
+    +'<div class="score">درجة الإشارة <b>'+x.score+'</b>/100 • '+esc(TF_LABEL[x.tf])+'</div>'
+    +chart+metrics
+    +'<div class="plan">'
+    +'<div class="planhead">'+(st==='ignition'||st==='confirmed'?'خطة بعد التأكيد — دخول / وقف / أهداف':st==='early'?'خطة الدخول المبكر — دخول / وقف / أهداف':'خطة مبدئية — ليست دخولاً حتى التأكيد')+'</div>'
+    +'<div class="prow entry"><span>'+(st==='ignition'?'دخول الاختراق (إغلاق الأخضر)':'دخول مبكر (إغلاق الأحمر)')+'</span><b>'+px(x.entryA)+'</b></div>'
+    +'<div class="prow"><span>'+(st==='ignition'?'إعادة اختبار قمة الأحمر':'دخول مؤكد (فوق قمة الأحمر)')+'</span><b>'+px(x.entryC)+'</b></div>'
+    +'<div class="prow stop"><span>'+(st==='ignition'||st==='confirmed'?'وقف (أسفل الأخضر/الأحمر)':'وقف (أسفل القاع)')+'</span><b>'+px(x.stop)+'</b></div>'
+    +'<div class="prow tp"><span>'+(st==='ignition'?'أهداف الاختراق':'أهداف الدخول المبكر')+'</span><b dir="ltr">'+px(x.tpA[0])+' / '+px(x.tpA[1])+' / '+px(x.tpA[2])+'</b></div>'
+    +'<div class="prow tp"><span>'+(st==='ignition'?'أهداف إعادة الاختبار':'أهداف الدخول المؤكد')+'</span><b dir="ltr">'+px(x.tpC[0])+' / '+px(x.tpC[1])+' / '+px(x.tpC[2])+'</b></div>'
+    +'<div class="prow"><span>'+(st==='ignition'?'RR (اختراق / إعادة اختبار)':'RR (مبكر / مؤكد)')+'</span><b dir="ltr">'+x.rr.toFixed(2)+' / '+x.rrC.toFixed(2)+'</b></div>'
+    +'</div>'+liq+'<div class="why">'+why+'</div><div class="warnline">'+warn+'</div>'
+    +'<div class="actions"><a href="'+binanceLink(x.sym)+'" target="_blank" rel="noopener">فتح Binance</a><a href="'+tvLink(x.sym)+'" target="_blank" rel="noopener">شارت TradingView</a><button data-copy="'+esc(x.sym)+'">نسخ الخطة</button></div>'
+    +'</article>';
+}
+function copyPlan(sym){
+  var x=state.last.filter(function(y){return y.sym===sym})[0];if(!x)return;
+  var ig=x.status==='ignition';
+  var t='خطة قاع + سيولة — '+x.base+' ('+TF_LABEL[x.tf]+')\n'
+    +'الحالة: '+statusLabel(x.status)+' | الدرجة '+x.score+'/100\n'
+    +(ig?'القواعد: '+x.baseLows.map(function(v){return px(v)}).join(' → ')+' | من القاع +'+x.gain.toFixed(1)+'%\n':'')
+    +(ig?'دخول الاختراق (إغلاق الأخضر): ':'دخول مبكر (إغلاق الأحمر): ')+px(x.entryA)+'\n'
+    +(ig?'إعادة اختبار قمة الأحمر: ':'دخول مؤكد (فوق قمة الأحمر): ')+px(x.entryC)+'\n'
+    +'وقف: '+px(x.stop)+'\n'
+    +(ig?'TP1/2/3 اختراق: ':'TP1/2/3 مبكر: ')+px(x.tpA[0])+' | '+px(x.tpA[1])+' | '+px(x.tpA[2])+'\n'
+    +(ig?'TP1/2/3 إعادة اختبار: ':'TP1/2/3 مؤكد: ')+px(x.tpC[0])+' | '+px(x.tpC[1])+' | '+px(x.tpC[2])+'\n'
+    +'RR: '+x.rr.toFixed(2)+' / '+x.rrC.toFixed(2)+'\n'
+    +'حجم الشمعة: '+x.latest.vr.toFixed(2)+'x | شراء التيكر: '+Math.round(x.latest.buy*100)+'%\n'
+    +'Spot فقط • بلا رافعة • تعليمي وليس نصيحة مالية';
+  function fallback(){try{var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('تم نسخ خطة '+x.base)}catch(e){toast('تعذر النسخ')}}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast('تم نسخ خطة '+x.base)},fallback);
+  else fallback();
+}
+function render(){
+  var grid=$('grid');if(!grid)return;
+  var show=state.last.filter(function(x){return !state.only||x.status!=='watch'});
+  $('s0').textContent=state.last.filter(function(x){return x.status==='ignition'}).length;
+  $('s1').textContent=state.last.filter(function(x){return x.status==='confirmed'}).length;
+  $('s2').textContent=state.last.filter(function(x){return x.status==='early'}).length;
+  $('s3').textContent=state.last.filter(function(x){return x.status==='watch'}).length;
+  $('s4').textContent=state.scanned||0;
+  if(!show.length){
+    grid.innerHTML='<div class="empty"><b>لا توجد إشارات قيعان مكتملة الآن.</b><br>'+(state.only?'نعرض فقط القيعان التي دخلتها السيولة. اضغط زر «إشارات القيعان فقط» لإظهار القيعان المرشحة التي تنتظر السيولة.':'لم يتم العثور على قيعان مرشحة في هذه الدورة.')+'<br><span style="font-size:.7rem">الفحص على شموع مغلقة — لا تطارد السعر.</span></div>';
+  }else grid.innerHTML=show.map(card).join('');
+  grid.querySelectorAll('[data-copy]').forEach(function(b){b.onclick=function(){copyPlan(b.getAttribute('data-copy'))}});
+}
+function scan(){
+  if(state.scanning)return;
+  state.scanning=true;var btn=$('scanBtn');if(btn)btn.disabled=true;
+  var pulse=$('pulse');if(pulse)pulse.classList.add('scan');
+  var tf=$('tfSel')?$('tfSel').value:'1h',limit=+($('uniSel')?$('uniSel').value:250),minVol=+($('minVolSel')?$('minVolSel').value:1e6);
+  state.fail=0;setStatus('جلب عملات Binance Spot...');
+  jget('/api/v3/ticker/24hr',18000).then(function(list){
+    var tick=(list||[]).filter(function(t){var b=t.symbol.slice(0,-4);return t.symbol.slice(-4)==='USDT'&&!stable[b]&&!/^(UP|DOWN|BULL|BEAR)/.test(b)&&!(/(UP|DOWN|BULL|BEAR)$/.test(b)&&b.length>=5)&&+t.quoteVolume>=minVol}).sort(function(a,b){return +b.quoteVolume-+a.quoteVolume}).slice(0,limit);
+    state.scanned=0;var out=[],fail=0,i=0,done=0;
+    setStatus('فحص '+tick.length+' عملة على '+TF_LABEL[tf]+'...');
+    function worker(){
+      if(i>=tick.length)return Promise.resolve();
+      var t=tick[i++];
+      return jget('/api/v3/klines?symbol='+encodeURIComponent(t.symbol)+'&interval='+tf+'&limit=300',16000).then(function(raw){
+        var kl=(raw||[]).filter(function(k){return +k[6]<Date.now()}).slice(-300);
+        var r=analyze(kl,t,tf);done++;state.scanned=done;
+        if(r)out.push(r);
+        if(done%8===0)setStatus('فحص '+done+'/'+tick.length+' • عثرت على '+out.length+' قاع...');
+      }).catch(function(){fail++}).then(function(){return new Promise(function(res){setTimeout(res,GAP)})}).then(worker);
+    }
+    var workers=[];for(var w=0;w<CONC;w++)workers.push(worker());
+    return Promise.all(workers).then(function(){
+      out.sort(function(a,b){var pa=a.status==='ignition'?2:a.status==='confirmed'?1:0,pb=b.status==='ignition'?2:b.status==='confirmed'?1:0;return pb-pa||b.score-a.score||b.liqScore-a.liqScore});
+      state.last=out;state.fail=fail;
+      render();
+      var ig=out.filter(function(x){return x.status==='ignition'}).length,c=out.filter(function(x){return x.status==='confirmed'}).length,e=out.filter(function(x){return x.status==='early'}).length,wt=out.filter(function(x){return x.status==='watch'}).length;
+      setStatus('اكتمل: '+ig+' اختراق 3 قواعد • '+c+' تأكيد • '+e+' مبكر • '+wt+' مرشح • '+done+' عملة');
+      if(ig+c+e&&ig+c+e!==state.lastAlerted){state.lastAlerted=ig+c+e;toast('إشارات جديدة: '+(ig+c+e))}
+    });
+  }).catch(function(err){
+    setStatus('تعذر جلب Binance — تحقق من الاتصال');toast('تعذر الجلب: '+err.message);
+    var grid=$('grid');if(grid)grid.innerHTML='<div class="empty">تعذر جلب بيانات Binance.<br>حاول مرة أخرى بعد ثوانٍ.</div>';
+  }).then(function(){state.scanning=false;if(btn)btn.disabled=false;if(pulse)pulse.classList.remove('scan');armNext()});
+}
+function armNext(){state.nextAt=Date.now()+AUTO_MS}
+function doScan(){armNext();scan()}
+$('scanBtn').onclick=doScan;
+$('tfSel').onchange=doScan;$('uniSel').onchange=doScan;$('minVolSel').onchange=doScan;
+$('onlyBn').onclick=function(){state.only=!state.only;this.classList.toggle('on',state.only);this.textContent=state.only?'إشارات القيعان فقط':'عرض المرشحات';render()};
+$('autoBn').onclick=function(){state.auto=!state.auto;this.classList.toggle('on',state.auto);this.textContent='تلقائي 60ث: '+(state.auto?'مفعّل':'متوقف');if(state.auto)armNext()};
+setInterval(function(){
+  var el=$('next');if(!state.auto||!state.nextAt){if(el)el.textContent='';return}
+  var left=Math.max(0,Math.round((state.nextAt-Date.now())/1000));
+  if(el)el.textContent='التحديث بعد '+left+'ث';
+  if(!state.scanning&&Date.now()>=state.nextAt&&!document.hidden)doScan();
+},1000);
+try{var qp=new URLSearchParams(location.search);var qt=qp.get('tf');if(qt&&TF_LABEL[qt]&&$('tfSel'))$('tfSel').value=qt;var qu=qp.get('uni');if(qu&&$('uniSel'))$('uniSel').value=qu;var qv=qp.get('min');if(qv&&$('minVolSel'))$('minVolSel').value=qv;}catch(e){}
+setTimeout(function(){if(!state.nextAt)doScan()},500);
+})();
+</script>
+</body>
+</html>
