@@ -4,14 +4,31 @@
 - Do not background them in bounded commands without explicit detachment and cleanup.
 - After a timeout, inspect the process and endpoint before retrying or claiming failure.
 
-## Linux browser and WebGPU capture
+## Mac browser and 3D capture
 
 - Use the preinstalled `playwright-cli` executable from Actions or SSH.
-- Use its headed Chromium, persistent Xvfb display, and SwiftShader configuration.
-- Run `playwright-cli open http://localhost:3002` for the Pascal development server.
-- Load a saved scene. Wait for actual geometry and the active WebGPU renderer.
-- Run `playwright-cli screenshot --filename=screenshots/linux.png` after creating the output directory.
-- Inspect the image. Reject loading screens, empty grids, and blank canvases.
-- Report SwiftShader as CPU software rendering. Do not claim GPU hardware acceleration.
-- Inspect `$HOME/.local/share/omgithub-playwright/linux.json` for launch settings.
-- Use `playwright-cli --help` for commands and named sessions. Pass configuration only to `open`.
+- Keep its default full Chromium channel, headed mode, and Metal launch flags.
+- Read `playwright-cli --help` for commands. Do not substitute `npx playwright screenshot` for this configured CLI.
+- Start the app in a persistent session. Open its localhost HTTP URL.
+
+```sh
+playwright-cli open http://127.0.0.1:3000
+playwright-cli snapshot
+playwright-cli eval 'async () => { const a = await navigator.gpu?.requestAdapter(); if (!a) throw new Error("No WebGPU adapter"); const d = await a.requestDevice(); const info = { vendor: a.info.vendor, architecture: a.info.architecture, isFallbackAdapter: a.info.isFallbackAdapter }; d.destroy(); return info; }'
+playwright-cli screenshot --filename=screenshots/final-mac.png
+playwright-cli close
+```
+
+- Create `screenshots/` before capture. Wait for the app's scene-ready signal and inspect the screenshot for actual geometry, not only page controls or a canvas border.
+- Confirm the application's active WebGPU renderer separately. Adapter availability alone does not prove that the app uses WebGPU.
+- Inspect `chrome://gpu` in a separate tab when diagnosis is needed. Record the adapter, Metal backend, browser version, and console errors.
+- Report Apple Paravirtual device as virtual Metal acceleration. Do not claim physical GPU performance from this result.
+- Treat a missing adapter, failed device creation, or blank scene as a failed GPU test. Preserve diagnostic output.
+- Inspect `$HOME/.local/share/omgithub-playwright/metal.json` for the installed configuration. Keep Vulkan flags out of the macOS Metal configuration.
+
+## Mobile browser games
+
+- Support Android and iOS phones and tablets with responsive layouts and usable touch controls.
+- Keep gameplay and controls visible within safe areas and avoid browser gesture conflicts.
+- Add tilt controls only when appropriate; offer touch alternatives and request iOS motion permission from a user gesture when needed.
+- Follow explicit device and control requirements in the user request.
